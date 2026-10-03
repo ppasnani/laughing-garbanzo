@@ -1,0 +1,12 @@
+{
+  "name": "thermal-reproduction-pilot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pilot": "node pilot.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@ironclad/rivet-node": "1.25.0"
+  }
+}

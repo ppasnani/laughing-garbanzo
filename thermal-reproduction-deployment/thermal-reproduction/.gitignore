@@ -1,0 +1,5 @@
+node_modules/
+pilot-output/
+*.db
+*.db-shm
+*.db-wal

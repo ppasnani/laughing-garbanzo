@@ -1,0 +1,27 @@
+{
+  "extraction": {
+    "paper_id": "W4206159291",
+    "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+    "evidence": [
+      {"field": "thermal_method", "value": "FEniCS direct numerical simulation and proper orthogonal decomposition", "pdf_page": 1},
+      {"field": "processor", "value": "Alpha EV6 processor floorplan", "pdf_page": 2},
+      {"field": "geometry", "value": "Three-dimensional CPU structure", "pdf_page": 2},
+      {"field": "mesh", "value": "FEniCS simulation uses a 129×129×7 mesh over 3 ms", "pdf_page": 2},
+      {"field": "power", "value": "Three localized pulsed power sources, with a 3.333 microsecond period described for each source", "pdf_page": 2},
+      {"field": "boundary", "value": "Robin boundary condition and 0 °C ambient in the paper model", "pdf_page": 2},
+      {"field": "reported_result", "value": "Spatial and dynamic temperature profiles from POD compared with FEniCS", "pdf_page": 3}
+    ],
+    "missing_for_exact_replication": [
+      "The paper's FEniCS/POD procedure is not the HotSpot backend",
+      "The paper's 3D geometry and pulsed power inputs are not accepted by Studio"
+    ]
+  },
+  "assessment": {
+    "verdict": "adapted_only",
+    "summary": "The EV6/GCC HotSpot run demonstrates the artifact pipeline but does not reproduce the paper's FEniCS/POD temperature profiles.",
+    "limitations": [
+      "The paper uses three-dimensional geometry and localized pulsed power rather than the bundled GCC power trace.",
+      "The paper compares POD with FEniCS, so these HotSpot temperatures have no like-for-like published target."
+    ]
+  }
+}
