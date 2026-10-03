@@ -13,6 +13,8 @@ const PAPER_ID = 'W4206159291';
 const PAPER_FILE = '2020_W4206159291_Thermal_Simulation_of_a_CPU_Based_on_Model_Order_Reduction.pdf';
 const GRAPH = join(HERE, 'paper-pilot.rivet-project');
 const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5-20251001';
+const EVIDENCE_FIELDS = ['processor', 'thermal_method', 'geometry', 'mesh', 'power', 'boundary', 'reported_result'];
+const REQUIRED_EVIDENCE_FIELDS = ['processor', 'thermal_method', 'geometry', 'power', 'reported_result'];
 
 const EXTRACTION_SCHEMA = {
   type: 'object', additionalProperties: false,
@@ -22,7 +24,8 @@ const EXTRACTION_SCHEMA = {
     paper_title: { type: 'string' },
     evidence: { type: 'array', items: { type: 'object', additionalProperties: false,
       required: ['field', 'value', 'pdf_page'], properties: {
-        field: { type: 'string' }, value: { type: 'string' }, pdf_page: { type: 'integer' },
+        field: { type: 'string', enum: EVIDENCE_FIELDS }, value: { type: 'string' },
+        pdf_page: { type: 'integer' },
       } } },
     missing_for_exact_replication: { type: 'array', items: { type: 'string' } },
   },
@@ -65,15 +68,15 @@ export function reviewFeasibility(extraction, packet) {
       throw Error('Extraction contains an invalid field or PDF page citation');
     }
   }
-  const fields = new Set(extraction.evidence.map(item => item.field));
-  for (const field of ['processor', 'thermal_method', 'geometry', 'power', 'reported_result']) {
-    if (!fields.has(field)) throw Error(`Extraction lacks ${field}`);
-  }
+  const fields = new Set(extraction.evidence.map(item => item.field.trim().toLowerCase()));
+  const missingEvidenceFields = REQUIRED_EVIDENCE_FIELDS.filter(field => !fields.has(field));
   return {
     paper_id: PAPER_ID,
     decision: 'adapted_only',
     exact_replication_allowed: false,
     adapted_demo_allowed: true,
+    extraction_complete: missingEvidenceFields.length === 0,
+    missing_evidence_fields: missingEvidenceFields,
     reason: 'The paper uses an Alpha EV6 but its 3D FEniCS/POD experiment and pulsed power are different from the fixed EV6/GCC HotSpot run.',
     current_backend: 'EV6 floorplan, GCC power trace, HotSpot block/grid; steady and seeded transient outputs',
     comparison_valid: false,
@@ -156,7 +159,9 @@ async function main() {
   const saveStage = async (name, value) => { await jsonFile(join(outputDir, `${name}.json`), value); return { type: 'object', value }; };
   const externalFunctions = {
     extractPaper: async (_context, input, systemPrompt) => {
-      if (typeof systemPrompt !== 'string' || !systemPrompt.trim()) throw Error('Extraction instructions are empty');
+      if (typeof systemPrompt !== 'string' || !systemPrompt.trim()) {
+        throw Error('Extraction instructions are empty. Check that paper-pilot.rivet-project has an Extraction instructions Text node connected through Extraction arguments; unzip -n does not replace an older graph.');
+      }
       const result = fixture ? fixture.extraction : await anthropicJson({ system: systemPrompt,
         user: JSON.stringify(input), schema: EXTRACTION_SCHEMA });
       return saveStage('extraction', result);
@@ -168,13 +173,20 @@ async function main() {
       return saveStage('simulation', result);
     },
     assessResult: async (_context, simulation, systemPrompt) => {
-      if (typeof systemPrompt !== 'string' || !systemPrompt.trim()) throw Error('Assessment instructions are empty');
+      if (typeof systemPrompt !== 'string' || !systemPrompt.trim()) {
+        throw Error('Assessment instructions are empty. Check that paper-pilot.rivet-project has an Assessment instructions Text node connected through Assessment arguments; unzip -n does not replace an older graph.');
+      }
       const proposed = fixture ? fixture.assessment : await anthropicJson({ system: systemPrompt,
         user: JSON.stringify({ extraction: JSON.parse(await readFile(join(outputDir, 'extraction.json'))),
           feasibility: JSON.parse(await readFile(join(outputDir, 'feasibility.json'))), simulation }),
         schema: ASSESSMENT_SCHEMA });
+      const feasibility = JSON.parse(await readFile(join(outputDir, 'feasibility.json')));
+      const limitations = [...(Array.isArray(proposed.limitations) ? proposed.limitations : [])];
+      if (feasibility.missing_evidence_fields?.length) {
+        limitations.push(`LLM extraction omitted evidence for: ${feasibility.missing_evidence_fields.join(', ')}. Review the PDF before using this result.`);
+      }
       const result = { verdict: 'adapted_only', comparison_valid: false,
-        summary: String(proposed.summary || ''), limitations: proposed.limitations || [] };
+        summary: String(proposed.summary || ''), limitations };
       return saveStage('assessment', result);
     },
   };

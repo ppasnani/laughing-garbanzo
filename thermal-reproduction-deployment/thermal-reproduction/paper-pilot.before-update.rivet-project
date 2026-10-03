@@ -1,0 +1,77 @@
+version: 4
+data:
+  metadata:
+    id: thermal-paper-pilot
+    title: Thermal paper pilot
+    description: Extract, screen, simulate, and assess one paper.
+    mainGraphId: paper-pilot
+  graphs:
+    paper-pilot:
+      metadata:
+        id: paper-pilot
+        name: Paper pilot
+        description: Two LLM calls with deterministic feasibility and HotSpot API stages.
+      nodes:
+        '[paper-input]:graphInput "Paper Packet"':
+          data:
+            id: paper_packet
+            dataType: object
+            useDefaultValueInput: false
+          outgoingConnections:
+            - data->"Extract paper evidence" extract/arguments
+          visualData: 100/200/300/1
+        '[extract]:externalCall "Extract paper evidence"':
+          data:
+            functionName: extractPaper
+            useFunctionNameInput: false
+            useErrorOutput: false
+          outgoingConnections:
+            - result->"Review feasibility" review/arguments
+            - result->"Extraction" extraction-output/value
+          visualData: 500/200/250/2
+        '[review]:externalCall "Review feasibility"':
+          data:
+            functionName: reviewFeasibility
+            useFunctionNameInput: false
+            useErrorOutput: false
+          outgoingConnections:
+            - result->"Run HotSpot" simulate/arguments
+            - result->"Feasibility" feasibility-output/value
+          visualData: 900/200/250/3
+        '[simulate]:externalCall "Run HotSpot"':
+          data:
+            functionName: runHotspot
+            useFunctionNameInput: false
+            useErrorOutput: false
+          outgoingConnections:
+            - result->"Assess result" assess/arguments
+            - result->"Simulation" simulation-output/value
+          visualData: 1300/200/250/4
+        '[assess]:externalCall "Assess result"':
+          data:
+            functionName: assessResult
+            useFunctionNameInput: false
+            useErrorOutput: false
+          outgoingConnections:
+            - result->"Assessment" assessment-output/value
+          visualData: 1700/200/250/5
+        '[extraction-output]:graphOutput "Extraction"':
+          data:
+            id: extraction
+            dataType: object
+          visualData: 900/500/300/6
+        '[feasibility-output]:graphOutput "Feasibility"':
+          data:
+            id: feasibility
+            dataType: object
+          visualData: 1300/500/300/7
+        '[simulation-output]:graphOutput "Simulation"':
+          data:
+            id: simulation
+            dataType: object
+          visualData: 1700/500/300/8
+        '[assessment-output]:graphOutput "Assessment"':
+          data:
+            id: assessment
+            dataType: object
+          visualData: 2100/500/300/9
