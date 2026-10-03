@@ -3,3 +3,4 @@ pilot-output/
 *.db
 *.db-shm
 *.db-wal
+chip_thermal_management_papers/
