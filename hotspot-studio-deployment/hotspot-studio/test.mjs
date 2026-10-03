@@ -1,0 +1,13 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {parse,serialize,validate,fields,native,display} from './dist/model.mjs';
+const baseline=readFileSync(new URL('./dist/example.config',import.meta.url),'utf8');
+test('round trip preserves original config and comments',()=>assert.equal(serialize(baseline,{}),baseline));
+test('unit conversions export real SI values',()=>{for(const [key,value,expected] of [['ambient',45,318.15],['t_chip',150,.00015],['sampling_intvl',10,.01]]){const f=fields.find(x=>x[0]===key);assert.equal(Number(native(value,f)),expected);assert.ok(Math.abs(display(expected,f)-value)<1e-9);}});
+test('editing preserves unknown flags and comments',()=>{const out=serialize('# sample\n-ambient 300 # K\n-custom_flag untouched\n',{ambient:'310'});assert.equal(out,'# sample\n-ambient 310 # K\n-custom_flag untouched\n');});
+test('baseline validates without blocking errors',()=>assert.equal(validate(baseline).filter(i=>i.level==='error').length,0));
+test('grid rules depend on selected build',()=>{const config='-model_type grid\n-grid_rows 39\n-grid_cols 32';assert.ok(validate(config,'off').some(i=>i.level==='error'));assert.ok(!validate(config,'on').some(i=>i.level==='error'));});
+test('incompatible cooling options are blocked',()=>assert.ok(validate('-model_type grid\n-model_secondary 1\n-use_microfluidic_cooling 1','on').some(i=>i.level==='error')));
+test('duplicates, blank values and NaN blocked',()=>{for(const text of ['-ambient 300\n-ambient 310','-ambient ','-ambient NaN'])assert.ok(validate(text).some(i=>i.level==='error'));});
+test('material override warns and original property survives',()=>{const text='-material_chip silicon\n-k_chip 100';assert.ok(validate(text).some(i=>i.level==='warning'));assert.equal(parse(text).values.k_chip,'100');});
