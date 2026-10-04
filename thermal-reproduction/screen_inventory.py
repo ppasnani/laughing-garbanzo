@@ -104,7 +104,7 @@ def build(results_dir):
 
 def markdown(snapshot):
     lines = ["# Custom 2D snapshot screening inventory", "",
-             f"Manifest SHA-256: `{snapshot['manifest_sha256']}`  ",
+             f"Manifest SHA-256: `{snapshot['manifest_sha256']}`", "",
              f"Rubric SHA-256: `{snapshot['rubric_sha256']}`", "",
              f"Rows: {snapshot['manifest_rows']}. Pending source-complete audits: "
              f"{snapshot['pending_audit']}. Counts final: "

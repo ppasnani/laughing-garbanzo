@@ -1,6 +1,7 @@
 # Custom 2D snapshot screening inventory
 
-Manifest SHA-256: `45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8`  
+Manifest SHA-256: `45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8`
+
 Rubric SHA-256: `8bcd4ad19b88b6064eba8339bb5e8debe17d79b7c147a498948b04efb9f7ad15`
 
 Rows: 31. Pending source-complete audits: 22. Counts final: no.
