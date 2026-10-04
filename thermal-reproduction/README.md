@@ -2,7 +2,7 @@
 
 ## What this pilot proves
 
-`feasibility_inventory.md` screens all 31 manifest entries against the current HotSpot Studio backend. The local collection has 22 PDFs; nine are unavailable. The screen found no exact match to Studio's fixed EV6/GCC experiment. The one-paper pilot uses the Alpha EV6 paper (`W4206159291`) as an **adapted** demonstration. The paper uses a 3D FEniCS/POD model and localized pulsed power (PDF p. 2); the pilot runs Studio's EV6/GCC HotSpot case. Its database comparison is explicitly invalid for a numerical paper-result match.
+[`feasibility_inventory.md`](feasibility_inventory.md) records the original screen of all 31 manifest entries against Studio's bundled EV6/GCC experiment. The local collection has 22 PDFs; nine are unavailable. That screen found no exact match to the bundled case; it has not been repeated for Studio's custom 2D steady runs. The one-paper pilot uses the Alpha EV6 paper (`W4206159291`) as an **adapted** demonstration. The paper uses a 3D FEniCS/POD model and localized pulsed power (PDF p. 2); the pilot runs Studio's EV6/GCC HotSpot case. Its database comparison is explicitly invalid for a numerical paper-result match.
 
 The editable Rivet project is `paper-pilot.rivet-project`. Its stages are paper extraction (LLM), feasibility review (deterministic), HotSpot API run, and result assessment (LLM). The two LLM system prompts are editable Text nodes named **Extraction instructions** and **Assessment instructions**. The live path makes two LLM calls. `--mock-llm` substitutes a checked, page-cited fixture and makes no LLM calls; it still runs HotSpot through the API and downloads both artifacts.
 
