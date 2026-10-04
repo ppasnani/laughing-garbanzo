@@ -5,10 +5,15 @@
   "scripts": {
     "pilot": "node pilot.mjs",
     "batch": "bash batch.sh",
-    "inbox": "python3 inbox_server.py",
+    "inbox": "npm run build:inbox && python3 inbox_server.py",
+    "build:inbox": "vite build inbox --config inbox/vite.config.js",
     "test": "node --test test/*.test.mjs && python3 -m unittest discover -s test -p 'test_*.py'"
   },
   "dependencies": {
-    "@ironclad/rivet-node": "1.25.0"
+    "@blueprintjs/core": "^6.21.0",
+    "@ironclad/rivet-node": "1.25.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "vite": "^6.4.3"
   }
 }
