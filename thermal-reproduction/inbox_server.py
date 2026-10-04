@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Local, live inbox for the paper pilot results. Python standard library only."""
+"""Local inbox for the paper pilot results. Python standard library only."""
 
 import argparse
 import csv
 import importlib.util
 import json
+import mimetypes
 import re
 import subprocess
 import urllib.error
@@ -17,7 +18,7 @@ from urllib.parse import parse_qs, quote, urlparse
 HERE = Path(__file__).resolve().parent
 MANIFEST = HERE.parent / "chip_thermal_management_papers" / "download_manifest.csv"
 OUTPUT = HERE / "pilot-output"
-STATIC = HERE / "inbox"
+STATIC = HERE / "inbox" / "dist"
 EV6_FLOORPLAN = HERE.parent / "HotSpot" / "examples" / "example1" / "ev6.flp"
 PAPER_ID = re.compile(r"W\d+\Z")
 
@@ -253,12 +254,11 @@ class Handler(BaseHTTPRequestHandler):
             detail = paper_detail(paper_id)
             return self.send_body(200, json.dumps(detail), "application/json; charset=utf-8") if detail else self.send_body(
                 404, "Paper not found", "text/plain; charset=utf-8")
-        static = {"/": ("index.html", "text/html; charset=utf-8"),
-                  "/app.js": ("app.js", "text/javascript; charset=utf-8"),
-                  "/style.css": ("style.css", "text/css; charset=utf-8")}
-        if path in static:
-            name, content_type = static[path]
-            return self.send_body(200, (STATIC / name).read_bytes(), content_type)
+        if path == "/" or re.fullmatch(r"/assets/[A-Za-z0-9_.-]+", path):
+            file = STATIC / ("index.html" if path == "/" else path.lstrip("/"))
+            if file.is_file():
+                content_type = mimetypes.guess_type(file.name)[0] or "application/octet-stream"
+                return self.send_body(200, file.read_bytes(), content_type)
         self.send_body(404, "Not found", "text/plain; charset=utf-8")
 
 
