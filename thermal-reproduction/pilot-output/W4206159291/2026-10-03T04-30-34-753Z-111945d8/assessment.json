@@ -1,0 +1,14 @@
+{
+  "verdict": "adapted_only",
+  "comparison_valid": false,
+  "summary": "This is an adapted EV6/GCC HotSpot simulation, not a reproduction of the paper. The paper describes a 3D thermal model using Proper Orthogonal Decomposition (POD) with Galerkin projection in FEniCS, applied to the Alpha EV6 with three pulsed power sources (3.333 μs period) and adiabatic/Robin boundary conditions. The simulation provided uses the EV6 floorplan with GCC power trace data in HotSpot, producing steady-state and transient temperature outputs at functional units and substrate layers. While both involve the EV6 processor, they employ fundamentally different thermal modeling approaches (POD reduction vs. block-based transient HotSpot), different power inputs (synthetic pulsed power vs. GCC trace), and different boundary conditions. No direct numerical comparison is valid.",
+  "limitations": [
+    "Paper uses 3D FEniCS/POD model; simulation uses 2D HotSpot block-grid approach—different spatial discretization and solver",
+    "Paper applies synthetic uniform pulsed power (3 units, 3.333 μs period); simulation uses GCC benchmark power trace—different temporal and spatial power profiles",
+    "Paper defines adiabatic surfaces and Robin boundary condition with 0°C ambient; HotSpot uses its own thermal interface and boundary model—incompatible boundary representations",
+    "Paper reports POD reduction to 3–5 modes with 4 orders of magnitude DOF reduction; simulation reports steady and transient temperatures—different outputs, different goals",
+    "Paper thermal properties (k, ρ, C) and chip dimensions not numerically specified in extraction; cannot validate material parameters",
+    "Simulation steady-state and transient temperatures cannot be benchmarked against paper's POD accuracy claims without identical geometry, materials, power, and boundary conditions",
+    "EV6 floorplan and GCC trace are standard HotSpot inputs; paper's 3D geometry and pulsed power are not reproducible from this run"
+  ]
+}

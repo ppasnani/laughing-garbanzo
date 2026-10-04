@@ -1,0 +1,93 @@
+{
+  "paper_id": "W4206159291",
+  "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+  "evidence": [
+    {
+      "field": "Authors",
+      "value": "Kayla Ruttan, Lin Jiang, Anthony Dowling, Yu Liu, Ming-C. Cheng",
+      "pdf_page": 1
+    },
+    {
+      "field": "Institution",
+      "value": "Clarkson University",
+      "pdf_page": 1
+    },
+    {
+      "field": "Approach",
+      "value": "Model order reduction based on proper orthogonal decomposition (POD)",
+      "pdf_page": 1
+    },
+    {
+      "field": "CPU Model",
+      "value": "Alpha EV6 processor",
+      "pdf_page": 2
+    },
+    {
+      "field": "Simulation Platform",
+      "value": "FEniCS",
+      "pdf_page": 1
+    },
+    {
+      "field": "Mesh Resolution",
+      "value": "129×129×7",
+      "pdf_page": 2
+    },
+    {
+      "field": "Simulation Duration",
+      "value": "3 ms",
+      "pdf_page": 2
+    },
+    {
+      "field": "Power Source Period",
+      "value": "3.333 μs",
+      "pdf_page": 2
+    },
+    {
+      "field": "Power Source Frequency",
+      "value": "3 GHz",
+      "pdf_page": 2
+    },
+    {
+      "field": "Number of Power Sources",
+      "value": "3 (located at functional units A, B, and C)",
+      "pdf_page": 2
+    },
+    {
+      "field": "Boundary Conditions",
+      "value": "Adiabatic surfaces except bottom substrate with Robin boundary condition at ambient temperature 0°C",
+      "pdf_page": 2
+    },
+    {
+      "field": "Optimal POD Modes for Accuracy",
+      "value": "3 to 5 modes",
+      "pdf_page": 2
+    },
+    {
+      "field": "Eigenvalue Reduction",
+      "value": "4 orders of magnitude from first to third mode, nearly 6 orders to fifth mode",
+      "pdf_page": 3
+    },
+    {
+      "field": "Degree of Freedom Reduction",
+      "value": "More than 4 orders of magnitude compared to DNS",
+      "pdf_page": 4
+    },
+    {
+      "field": "Funding",
+      "value": "National Science Foundation Grant Nos. OAC-1852102 and ECCS-2003307",
+      "pdf_page": 4
+    }
+  ],
+  "missing_for_exact_replication": [
+    "Specific thermal conductivity values for CPU materials",
+    "Specific heat capacity values for CPU materials",
+    "Material density values for CPU layers",
+    "Exact power density distribution in each functional unit",
+    "Time-dependent power profile details beyond period specification",
+    "Complete geometrical coordinates of functional units A, B, and C",
+    "Layer-specific material properties and dimensions",
+    "Method of snapshots implementation details not fully specified",
+    "FEniCS solver parameters and convergence criteria",
+    "Detailed methodology for collecting training thermal data snapshots"
+  ]
+}

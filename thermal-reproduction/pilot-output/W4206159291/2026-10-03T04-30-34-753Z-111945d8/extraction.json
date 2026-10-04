@@ -1,0 +1,50 @@
+{
+  "paper_id": "W4206159291",
+  "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+  "evidence": [
+    {
+      "field": "processor",
+      "value": "Alpha EV6 processor",
+      "pdf_page": 2
+    },
+    {
+      "field": "thermal_method",
+      "value": "Proper Orthogonal Decomposition (POD) with Galerkin projection method",
+      "pdf_page": 1
+    },
+    {
+      "field": "geometry",
+      "value": "CPU structure with 3D layers including device layer and substrate; floorplan with functional units A, B, and C",
+      "pdf_page": 2
+    },
+    {
+      "field": "mesh",
+      "value": "129×129×7 mesh for FEniCS simulation",
+      "pdf_page": 2
+    },
+    {
+      "field": "power",
+      "value": "3 uniform power pulses applied at functional units A, B, and C; each power source with period of 3.333μs representing average over 10k cycles at 3 GHz",
+      "pdf_page": 2
+    },
+    {
+      "field": "boundary",
+      "value": "Adiabatic boundary conditions applied to chip surfaces except bottom of substrate where Robin boundary condition is used with ambient temperature of 0°C",
+      "pdf_page": 2
+    },
+    {
+      "field": "reported_result",
+      "value": "POD model with 3 modes provides good accuracy; 5 modes achieve excellent agreement with FEniCS simulation; reduction in numerical degrees of freedom by more than 4 orders of magnitude; temperature evolution shown in Functional unit C and spatial profiles along x and y directions",
+      "pdf_page": 3
+    }
+  ],
+  "missing_for_exact_replication": [
+    "Exact chip dimensions not numerically specified",
+    "Thermal conductivity (k) values for different layers",
+    "Density (ρ) and specific heat (C) values for materials",
+    "Heat transfer coefficient for Robin boundary condition details",
+    "Exact power density magnitudes at functional units A, B, C",
+    "Time step size for numerical integration",
+    "Convergence criteria for POD mode generation"
+  ]
+}
