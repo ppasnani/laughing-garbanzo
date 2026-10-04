@@ -79,6 +79,17 @@ npm run batch
 
 `batch.sh` reads `../chip_thermal_management_papers/download_manifest.csv` with a CSV parser and calls the existing custom pilot once for each downloaded paper. The PDFs are read from that same directory. Unavailable rows are printed and skipped. The pilot's input and scientific-verdict gates decide whether Studio runs; each paper's evidence and result are saved under `pilot-output/<paper-id>/<attempt>/`. A failed paper is reported while the loop continues, and the script exits nonzero if any paper fails. This batch does not fetch paper-linked code or data; provide those to individual runs with `--assets-file` when needed.
 
+## View results in the paper inbox
+
+Run the local frontend in another terminal while the batch is running:
+
+```sh
+cd thermal-reproduction
+npm run inbox
+```
+
+Open `http://127.0.0.1:8765`. In a Codespace, forward port 8765 and open the forwarded URL. The inbox shows all manifest papers with search and the latest attempt for each paper, refreshing every 15 seconds. The right pane shows citation and author metadata, the assessment, feasibility decision, limitations, and Studio results. Author names come from OpenAlex or Crossref when reachable, with PDF metadata as an offline fallback; if none supplies a name, the UI says so. Completed runs embed the existing `pilot-output/visualize_run.py` heatmap. A custom run uses `input.flp` and `temperatures.steady`; its `input.ptrace` is a **power** snapshot and appears as watts in the result table. Bundled runs can also play the thermal `gcc.ttrace` samples. The server reads the latest result folders on each refresh, so it does not need restarting as the batch progresses.
+
 ## Bundled EV6/GCC regression demo
 
 The original paper `W4206159291` uses 3D FEniCS/POD and pulsed power. The bundled HotSpot run is an **adapted artifact-pipeline demo**, with no valid numerical paper comparison:
