@@ -5,7 +5,7 @@ import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { runGraphInFile } from '@ironclad/rivet-node';
-import { sha256, reviewFeasibility, validateExperiment, CHECKS } from './screening.mjs';
+import { sha256, reviewFeasibility, suitableVerdict, validateExperiment, CHECKS } from './screening.mjs';
 
 const execFileAsync = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -301,8 +301,13 @@ export async function execute({ row, packet, config, outputDir, runType, allowAd
       return save('feasibility', result);
     },
     runHotspot: async (_context, review) => {
-      if (!review.simulation_allowed || runType === 'bundled' && !allowAdapted) {
-        return save('simulation', { status: 'skipped', reason: review.reason, artifacts: {} });
+      if (!review.simulation_allowed || !suitableVerdict(review.decision) ||
+          runType === 'custom' && !review.input_gate_pass ||
+          runType === 'bundled' && !allowAdapted) {
+        return save('simulation', { status: 'skipped',
+          reason: runType === 'bundled' && !allowAdapted
+            ? 'Bundled adapted demonstration requires --allow-adapted.' : review.reason,
+          artifacts: {} });
       }
       const extraction = JSON.parse(await readFile(join(outputDir, 'extraction.json'), 'utf8'));
       const result = await runStudio({ baseUrl, config, outputDir,

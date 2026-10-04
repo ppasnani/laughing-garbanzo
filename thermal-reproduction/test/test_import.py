@@ -49,6 +49,7 @@ class CustomImportTest(unittest.TestCase):
             "independent_review": {"reviewer": "second reader"},
             "feasibility": {"decision": "candidate_2d_snapshot",
                             "simulation_allowed": True,
+                            "input_gate_pass": True,
                             "independently_verified": True,
                             "evidence_sha256": "evidencehash"},
             "simulation": {"status": status, "studio_run_id": "a" * 32 if status != "skipped" else None,
@@ -74,6 +75,23 @@ class CustomImportTest(unittest.TestCase):
         manifest = self.manifest()
         (self.folder / "input.ptrace").write_text("core0\n9\n")
         with self.assertRaisesRegex(ValueError, "integrity mismatch"):
+            load_2d_screening(self.conn, manifest)
+
+    def test_caveated_verdict_can_be_imported(self):
+        manifest = self.manifest()
+        value = json.loads(manifest.read_text())
+        value["feasibility"]["decision"] = "illustrative_2d_only"
+        value["assessment"]["verdict"] = "illustrative_2d_only"
+        manifest.write_text(json.dumps(value))
+        load_2d_screening(self.conn, manifest)
+
+    def test_unsuitable_verdict_cannot_be_imported_as_simulated(self):
+        manifest = self.manifest()
+        value = json.loads(manifest.read_text())
+        value["feasibility"]["decision"] = "not_2d_applicable"
+        value["assessment"]["verdict"] = "not_2d_applicable"
+        manifest.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError, "bypassed the screening gate"):
             load_2d_screening(self.conn, manifest)
 
 

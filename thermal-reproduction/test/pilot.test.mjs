@@ -6,7 +6,7 @@ import test from 'node:test';
 import { runGraphInFile } from '@ironclad/rivet-node';
 import { anthropicJson, anthropicExtraction, execute, parseCsv, runStudio, normalizeExtraction,
   EXTRACTION_SCHEMA, EXTRACTION_SECTION_SCHEMAS } from '../pilot.mjs';
-import { reviewDigest, reviewFeasibility, sha256, validateExperiment } from '../screening.mjs';
+import { reviewDigest, reviewFeasibility, suitableVerdict, sha256, validateExperiment } from '../screening.mjs';
 
 const config = await readFile(resolve('../hotspot-studio/dist/example.config'), 'utf8');
 const packet = { paper_id: 'W123', pdf_sha256: 'pdfhash',
@@ -69,7 +69,15 @@ test('structured extraction schema uses fixed properties and normalizes named po
   assert.deepEqual(result.experiment, experiment);
 });
 
-test('scientific checks affect verdict while valid custom inputs remain runnable', () => {
+test('scientific verdict and Studio inputs both control simulation permission', () => {
+  for (const verdict of ['candidate_2d_snapshot', 'conditional_2d_snapshot',
+    'conditional_with_caveats', 'illustrative_2d_only', 'adapted_only']) {
+    assert.equal(suitableVerdict(verdict), true, verdict);
+  }
+  for (const verdict of ['not_2d_applicable', 'source_unavailable',
+    'unsupported_current_backend', '', null]) {
+    assert.equal(suitableVerdict(verdict), false, String(verdict));
+  }
   assert.equal(reviewFeasibility(extraction, adversarial, packet, config).decision,
     'conditional_2d_snapshot');
   const accepted = reviewFeasibility(extraction, adversarial, packet, config, review);
@@ -87,6 +95,18 @@ test('scientific checks affect verdict while valid custom inputs remain runnable
   const changed = structuredClone(extraction);
   changed.experiment.power_w.core0 = 10;
   assert.equal(reviewFeasibility(changed, adversarial, packet, config, review).simulation_allowed, true);
+  const illustrative = structuredClone(extraction);
+  illustrative.physical_mismatches.push({ reason: 'Vertical cooling affects the result', essential: true });
+  const illustrativeReview = reviewFeasibility(illustrative, adversarial, packet, config, review);
+  assert.equal(illustrativeReview.decision, 'illustrative_2d_only');
+  assert.equal(illustrativeReview.scientific_gate_pass, false);
+  assert.equal(illustrativeReview.simulation_allowed, true);
+  const unsuitable = structuredClone(extraction);
+  unsuitable.scenario.steady_2d_relevant = false;
+  const unsuitableReview = reviewFeasibility(unsuitable, adversarial, packet, config, review);
+  assert.equal(unsuitableReview.decision, 'not_2d_applicable');
+  assert.equal(unsuitableReview.input_gate_pass, true);
+  assert.equal(unsuitableReview.simulation_allowed, false);
   const invalid = structuredClone(extraction);
   invalid.experiment.floorplan[1].x_m = invalid.experiment.floorplan[0].x_m;
   assert.equal(reviewFeasibility(invalid, adversarial, packet, config, review).simulation_allowed, false);
@@ -259,6 +279,40 @@ test('unreviewed custom evidence still runs as a non-comparable exploratory simu
     assert.equal(result.simulation.status, 'completed');
     assert.equal(result.assessment.comparison_valid, false);
     assert.equal(result.adversarial.findings[0].reason, 'Power source unverified');
+  } finally { await rm(dir, { recursive: true }); }
+});
+
+test('illustrative verdict permits a Studio proxy without implying scientific equivalence', async () => {
+  const dir = await mkdtemp(resolve(tmpdir(), 'paper-pilot-'));
+  try {
+    const proxy = structuredClone(extraction);
+    proxy.physical_mismatches.push({ reason: 'Vertical heat path is omitted', essential: true });
+    const result = await execute({ row: { openalex_id: 'W123', title: 'Test paper',
+      status: 'downloaded', source_url: 'test' }, packet, config, outputDir: dir,
+      runType: 'custom', fixture: { extraction: proxy, adversarial,
+        assessment: { summary: 'Illustrative proxy', limitations: [] } },
+      fetchImpl: studioFetch() });
+    assert.equal(result.feasibility.decision, 'illustrative_2d_only');
+    assert.equal(result.feasibility.scientific_gate_pass, false);
+    assert.equal(result.simulation.status, 'completed');
+    assert.equal(result.assessment.comparison_valid, false);
+  } finally { await rm(dir, { recursive: true }); }
+});
+
+test('unsuitable paper stops before Studio while retaining feasibility evidence', async () => {
+  const dir = await mkdtemp(resolve(tmpdir(), 'paper-pilot-'));
+  try {
+    const unsuitable = structuredClone(extraction);
+    unsuitable.scenario.steady_2d_relevant = false;
+    const result = await execute({ row: { openalex_id: 'W123', title: 'Test paper',
+      status: 'downloaded', source_url: 'test' }, packet, config, outputDir: dir,
+      runType: 'custom', fixture: { extraction: unsuitable, adversarial,
+        assessment: { summary: 'No suitable 2D scenario', limitations: [] } },
+      fetchImpl: () => { throw Error('Studio must not be called'); } });
+    assert.equal(result.feasibility.decision, 'not_2d_applicable');
+    assert.equal(result.simulation.status, 'skipped');
+    assert.match(result.simulation.reason, /verdict not_2d_applicable/);
+    assert.equal(result.assessment.verdict, 'not_2d_applicable');
   } finally { await rm(dir, { recursive: true }); }
 });
 

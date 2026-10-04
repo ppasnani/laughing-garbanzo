@@ -3,6 +3,9 @@ import { createHash } from 'node:crypto';
 export const sha256 = value => createHash('sha256').update(value).digest('hex');
 export const LABELS = ['candidate_2d_snapshot', 'conditional_2d_snapshot',
   'illustrative_2d_only', 'not_2d_applicable', 'source_unavailable'];
+export const suitableVerdict = verdict => verdict === 'candidate_2d_snapshot' ||
+  verdict === 'adapted_only' || verdict === 'illustrative_2d_only' ||
+  typeof verdict === 'string' && verdict.startsWith('conditional');
 export const CHECKS = ['methods', 'code', 'parameters', 'config', 'data'];
 const GEOMETRY = ['x_m', 'y_m', 'width_m', 'height_m'];
 const REQUIRED = [...GEOMETRY, 'power_w'];
@@ -206,13 +209,14 @@ export function reviewFeasibility(extraction, adversarial, packet, config, indep
     scientific_gate_pass: relevant && !essential, independently_verified: Boolean(independentlyVerified),
     input_errors: inputErrors, blocking_facts: blockers, physical_mismatches: mismatch,
     studio_assumptions: extraction.studio_assumptions || [], evidence_sha256: digest,
-    // Scientific concerns remain in the verdict and blocking_facts. Studio may
-    // still run a valid input as an exploratory, non-comparable simulation.
-    simulation_allowed: inputErrors.length === 0,
+    // Caveated verdicts can run as exploratory, non-comparable simulations.
+    simulation_allowed: inputErrors.length === 0 && suitableVerdict(decision),
     comparison_valid: false,
     reason: inputErrors.length
       ? inputErrors.join('; ')
+      : !suitableVerdict(decision)
+        ? `The scientific suitability verdict ${decision} does not permit a Studio run.`
       : decision === 'candidate_2d_snapshot'
         ? 'A reviewed paper-derived 2D snapshot can be run under Studio bundled package/material assumptions.'
-        : 'Studio input is valid for an exploratory run; evidence and adversarial concerns prevent a paper comparison.' };
+        : 'The caveated scientific suitability verdict permits an exploratory Studio run; evidence and physical mismatches remain visible.' };
 }
