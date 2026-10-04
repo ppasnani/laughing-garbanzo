@@ -19,9 +19,9 @@ In the Ports tab, forward port 8000, keep its visibility Private, and click Open
 
 1. Edit or import a configuration. Apply any raw source edits, then select **Bundled EV6/GCC** or **Custom 2D steady**. For a custom run, enter named block rectangles and watts, or paste/import the paired experiment JSON. Review the floorplan preview.
 2. Click **Save configuration & run**.
-3. Studio validates server-side and snapshots the configuration and bundled experiment inputs into `hotspot-studio/runs/<id>/`.
+3. Studio validates server-side and snapshots the configuration and selected experiment inputs into `hotspot-studio/runs/<id>/`.
 4. Bundled runs compute steady-state EV6/gcc temperatures, then run the gcc power trace from those temperatures. Custom runs compute one steady-state phase from a single per-block power row. The 60-second limit applies to the entire run.
-5. Read node temperatures in °C and the solver log. Reopen earlier runs using Saved runs. Download their original configurations, `gcc.steady`, and `gcc.ttrace`.
+5. Read node temperatures in °C and the solver log. Reopen earlier runs using Saved runs. Download their original configurations and available artifacts: `gcc.steady` and `gcc.ttrace` for bundled runs, or `temperatures.steady` and optional `temperatures.grid.steady` for custom runs.
 
 The `gcc.steady` file contains native Kelvin temperatures; `gcc.ttrace` contains the transient temperature trace initialized from `gcc.steady`. Custom runs produce `temperatures.steady` and, in grid mode, `temperatures.grid.steady`. `result.json` includes Kelvin and Celsius, timestamp, status, logs, run type, and available artifact URLs. Package nodes are included and labelled using HotSpot's original names. `submitted.config` preserves the original source; `tuned.config` is its canonicalized execution form. Only one simulation runs at a time; storage is limited to 100 run folders. Archive old folders to free capacity. Interrupted runs are marked after restart. Older runs with `result.steady` expose it as a `gcc.steady` download; they have no `gcc.ttrace` until rerun.
 
