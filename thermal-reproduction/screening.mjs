@@ -206,9 +206,13 @@ export function reviewFeasibility(extraction, adversarial, packet, config, indep
     scientific_gate_pass: relevant && !essential, independently_verified: Boolean(independentlyVerified),
     input_errors: inputErrors, blocking_facts: blockers, physical_mismatches: mismatch,
     studio_assumptions: extraction.studio_assumptions || [], evidence_sha256: digest,
-    simulation_allowed: decision === 'candidate_2d_snapshot',
+    // Scientific concerns remain in the verdict and blocking_facts. Studio may
+    // still run a valid input as an exploratory, non-comparable simulation.
+    simulation_allowed: inputErrors.length === 0,
     comparison_valid: false,
-    reason: decision === 'candidate_2d_snapshot'
-      ? 'A reviewed paper-derived 2D snapshot can be run under Studio bundled package/material assumptions.'
-      : [...blockers, ...mismatch.map(item => item.reason)].join('; ') || 'The selected scenario is outside steady 2D scope.' };
+    reason: inputErrors.length
+      ? inputErrors.join('; ')
+      : decision === 'candidate_2d_snapshot'
+        ? 'A reviewed paper-derived 2D snapshot can be run under Studio bundled package/material assumptions.'
+        : 'Studio input is valid for an exploratory run; evidence and adversarial concerns prevent a paper comparison.' };
 }

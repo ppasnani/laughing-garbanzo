@@ -69,7 +69,7 @@ test('structured extraction schema uses fixed properties and normalizes named po
   assert.deepEqual(result.experiment, experiment);
 });
 
-test('adversarial and independent verification gate custom simulation', () => {
+test('scientific checks affect verdict while valid custom inputs remain runnable', () => {
   assert.equal(reviewFeasibility(extraction, adversarial, packet, config).decision,
     'conditional_2d_snapshot');
   const accepted = reviewFeasibility(extraction, adversarial, packet, config, review);
@@ -79,14 +79,17 @@ test('adversarial and independent verification gate custom simulation', () => {
   challenged.checklist.parameters.status = 'contradicted';
   challenged.findings.push({ field: 'power_w', reason: 'wrong scenario', locator: 'Table 1' });
   challenged.approved = false;
-  assert.equal(reviewFeasibility(extraction, challenged, packet, config, review).simulation_allowed, false);
+  assert.equal(reviewFeasibility(extraction, challenged, packet, config, review).simulation_allowed, true);
   const invented = structuredClone(extraction);
   invented.evidence = invented.evidence.filter(item =>
     !(item.field === 'power_w' && item.block_name === 'core1'));
-  assert.equal(reviewFeasibility(invented, adversarial, packet, config, review).simulation_allowed, false);
+  assert.equal(reviewFeasibility(invented, adversarial, packet, config, review).simulation_allowed, true);
   const changed = structuredClone(extraction);
   changed.experiment.power_w.core0 = 10;
-  assert.equal(reviewFeasibility(changed, adversarial, packet, config, review).simulation_allowed, false);
+  assert.equal(reviewFeasibility(changed, adversarial, packet, config, review).simulation_allowed, true);
+  const invalid = structuredClone(extraction);
+  invalid.experiment.floorplan[1].x_m = invalid.experiment.floorplan[0].x_m;
+  assert.equal(reviewFeasibility(invalid, adversarial, packet, config, review).simulation_allowed, false);
 });
 
 test('backend input gate rejects overlapping blocks and mismatched names', () => {
@@ -163,11 +166,11 @@ test('Rivet graph executes extraction, adversarial review, gate, run, and assess
         return { type: 'object', value: reviewFeasibility(extraction, input, packet, config) };
       },
       runHotspot: async (_ctx, input) => {
-        calls.push('run'); assert.equal(input.simulation_allowed, false);
-        return { type: 'object', value: { status: 'skipped' } };
+        calls.push('run'); assert.equal(input.simulation_allowed, true);
+        return { type: 'object', value: { status: 'completed' } };
       },
       assessResult: async (_ctx, input, prompt) => {
-        calls.push('assess'); assert.equal(input.status, 'skipped');
+        calls.push('assess'); assert.equal(input.status, 'completed');
         assert.match(prompt, /conservatively/);
         return { type: 'object', value: { verdict: 'conditional_2d_snapshot' } };
       },
@@ -234,6 +237,28 @@ test('complete custom Rivet execution saves a reviewed candidate and Studio arti
     assert.equal(result.assessment.comparison_valid, false);
     assert.equal(result.simulation.artifacts['input.flp'].sha256,
       sha256(await readFile(resolve(dir, 'input.flp'))));
+  } finally { await rm(dir, { recursive: true }); }
+});
+
+test('unreviewed custom evidence still runs as a non-comparable exploratory simulation', async () => {
+  const dir = await mkdtemp(resolve(tmpdir(), 'paper-pilot-'));
+  try {
+    const disputed = structuredClone(adversarial);
+    disputed.approved = false;
+    disputed.checklist.data.status = 'missing';
+    disputed.findings.push({ field: 'power_w', reason: 'Power source unverified', locator: 'Table 1' });
+    const uncited = structuredClone(extraction);
+    uncited.evidence = [];
+    const result = await execute({ row: { openalex_id: 'W123', title: 'Test paper',
+      status: 'downloaded', source_url: 'test' }, packet, config, outputDir: dir,
+      runType: 'custom', fixture: { extraction: uncited, adversarial: disputed,
+        assessment: { summary: 'Exploratory Studio run', limitations: [] } },
+      fetchImpl: studioFetch() });
+    assert.equal(result.feasibility.decision, 'conditional_2d_snapshot');
+    assert.equal(result.feasibility.simulation_allowed, true);
+    assert.equal(result.simulation.status, 'completed');
+    assert.equal(result.assessment.comparison_valid, false);
+    assert.equal(result.adversarial.findings[0].reason, 'Power source unverified');
   } finally { await rm(dir, { recursive: true }); }
 });
 
