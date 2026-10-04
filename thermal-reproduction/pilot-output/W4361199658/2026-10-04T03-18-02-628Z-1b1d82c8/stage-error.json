@@ -1,0 +1,5 @@
+{
+  "paper_id": "W4361199658",
+  "stage": "extractPaper",
+  "message": "Anthropic returned 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"The compiled grammar is too large, which would cause performance issues. Simplify your tool schemas or reduce the number of strict tools.\"},\"request_id\":\"req_011CfgUQoiBg6v3SWCCYg9zP\"}"
+}
