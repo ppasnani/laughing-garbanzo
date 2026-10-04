@@ -1,0 +1,517 @@
+{
+  "generated_at": "2026-10-04T02:44:10.129537+00:00",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "rubric_sha256": "8bcd4ad19b88b6064eba8339bb5e8debe17d79b7c147a498948b04efb9f7ad15",
+  "manifest_rows": 31,
+  "counts": {
+    "candidate_2d_snapshot": 0,
+    "conditional_2d_snapshot": 0,
+    "illustrative_2d_only": 0,
+    "not_2d_applicable": 0,
+    "source_unavailable": 9
+  },
+  "pending_audit": 22,
+  "counts_final": false,
+  "records": [
+    {
+      "openalex_id": "W7167828524",
+      "title": "ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators",
+      "doi": "https://doi.org/10.48550/arxiv.2607.07096",
+      "status": "downloaded",
+      "filename": "2026_W7167828524_ThermoDSE_A_Thermal_Aware_and_Comprehensive_Design_Space_Exploration_for_Ch.pdf",
+      "source_url": "https://arxiv.org/pdf/2607.07096",
+      "notes": "",
+      "pdf_sha256": "60543f71fbca5f32854ee353cd3336e15ea992df385d1e784ac9684dc43e10fc",
+      "pdf_pages": 14,
+      "pdf_bytes": 5698967,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4413989692",
+      "title": "MFIT : Multi-FIdelity Thermal Modeling for 2.5D and 3D Multi-Chiplet Architectures",
+      "doi": "https://doi.org/10.1145/3765905",
+      "status": "downloaded",
+      "filename": "2025_W4413989692_MFIT_Multi_FIdelity_Thermal_Modeling_for_2_5D_and_3D_Multi_Chiplet_Architec.pdf",
+      "source_url": "https://arxiv.org/pdf/2410.09188",
+      "notes": "",
+      "pdf_sha256": "338f47aec0fc6559dc7fbe87cc888b2f74a03d5873b53e4b0afe62277a35bbe2",
+      "pdf_pages": 26,
+      "pdf_bytes": 4433401,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4413762875",
+      "title": "M3D-MDA: New scratchpad memory for enhancing GPU performance and energy efficiency",
+      "doi": "https://doi.org/10.4218/etrij.2024-0538",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "onlinelibrary.wiley.com: HTTP Error 403: Forbidden",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "onlinelibrary.wiley.com: HTTP Error 403: Forbidden"
+      ]
+    },
+    {
+      "openalex_id": "W4411713360",
+      "title": "TACPlace: Ultrafast Thermal-Aware Chiplet Placement with Feasibility Seeking",
+      "doi": "https://doi.org/10.1145/3716368.3735185",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "No public PDF link found in OpenAlex or known author repositories",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "No public PDF link found in OpenAlex or known author repositories"
+      ]
+    },
+    {
+      "openalex_id": "W4414900343",
+      "title": "Cool-3D: An End-to-End Thermal-Aware Framework for Early-Phase Design Space Exploration of Microfluidic-Cooled 3DICs",
+      "doi": "https://doi.org/10.48550/arxiv.2503.07297",
+      "status": "downloaded",
+      "filename": "2025_W4414900343_Cool_3D_An_End_to_End_Thermal_Aware_Framework_for_Early_Phase_Design_Space_.pdf",
+      "source_url": "https://arxiv.org/pdf/2503.07297",
+      "notes": "",
+      "pdf_sha256": "64c3630504ec6744568c05c0eb301870f858b1ae75bf464649217bc8eaf640a5",
+      "pdf_pages": 15,
+      "pdf_bytes": 3041914,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4409282844",
+      "title": "ATPlace2.5D: Analytical Thermal-Aware Chiplet Placement Framework for Large-Scale 2.5D-IC",
+      "doi": "https://doi.org/10.1145/3676536.3676648",
+      "status": "downloaded",
+      "filename": "2024_W4409282844_ATPlace2_5D_Analytical_Thermal_Aware_Chiplet_Placement_Framework_for_Large_.pdf",
+      "source_url": "https://yibolin.com/publications/papers/PLACE_ICCAD2024_Wang.pdf",
+      "notes": "",
+      "pdf_sha256": "c0a44ebba682a3bdff889ba82e6411a633d75e0c797a10ad4b328c4c26268f25",
+      "pdf_pages": 9,
+      "pdf_bytes": 2343401,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4400409743",
+      "title": "A computational search for the optimal microelectronic heat sink using ANSYS Icepak",
+      "doi": "https://doi.org/10.1016/j.ijft.2024.100759",
+      "status": "downloaded",
+      "filename": "2024_W4400409743_A_computational_search_for_the_optimal_microelectronic_heat_sink_using_ANSY.pdf",
+      "source_url": "https://faculty.uobasrah.edu.iq/uploads/publications/1736548601.pdf",
+      "notes": "",
+      "pdf_sha256": "a8c1ce6f4bd9c4f3c45fb26258ffc07b6da54043d8156673d0ee2f628de85ad0",
+      "pdf_pages": 12,
+      "pdf_bytes": 12595710,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4390437658",
+      "title": "RLPlanner: Reinforcement Learning based Floorplanning for Chiplets with Fast Thermal Analysis",
+      "doi": "https://doi.org/10.48550/arxiv.2312.16895",
+      "status": "downloaded",
+      "filename": "2023_W4390437658_RLPlanner_Reinforcement_Learning_based_Floorplanning_for_Chiplets_with_Fast.pdf",
+      "source_url": "https://arxiv.org/pdf/2312.16895",
+      "notes": "",
+      "pdf_sha256": "965c0d8955bba981f3938dd02cda06a3fc9242d73b002bd3d3cd01e3ae417c7e",
+      "pdf_pages": 2,
+      "pdf_bytes": 1031529,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4387010219",
+      "title": "Impact of 3-D Integration on Thermal Performance of RISC-V MemPool Multicore SOC",
+      "doi": "https://doi.org/10.1109/tvlsi.2023.3314135",
+      "status": "downloaded",
+      "filename": "2023_W4387010219_Impact_of_3_D_Integration_on_Thermal_Performance_of_RISC_V_MemPool_Multicor.pdf",
+      "source_url": "https://lirias.kuleuven.be/retrieve/47a21a9c-207a-4741-a1cb-b264dad7825a",
+      "notes": "",
+      "pdf_sha256": "c3da429cbd4a70669e0bc859b032b58d72eddbf6e8bf10ec02b73087c193fd72",
+      "pdf_pages": 9,
+      "pdf_bytes": 2291523,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4394711422",
+      "title": "Effect of Thermal Interface Materials on Thermal Performance and Reliability of Large Size Flip Chips",
+      "doi": "https://doi.org/10.1109/icept59018.2023.10492353",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "No public PDF link found in OpenAlex or known author repositories",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "No public PDF link found in OpenAlex or known author repositories"
+      ]
+    },
+    {
+      "openalex_id": "W4394712637",
+      "title": "A junction temperature prediction model for 3D stacked packaging chip based on thermal resistance matrix",
+      "doi": "https://doi.org/10.1109/icept59018.2023.10492176",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "No public PDF link found in OpenAlex or known author repositories",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "No public PDF link found in OpenAlex or known author repositories"
+      ]
+    },
+    {
+      "openalex_id": "W4381799710",
+      "title": "Thermal aware task assignment for multicore processors using genetic algorithm",
+      "doi": "https://doi.org/10.11591/ijece.v13i5.pp5253-5264",
+      "status": "downloaded",
+      "filename": "2023_W4381799710_Thermal_aware_task_assignment_for_multicore_processors_using_genetic_algori.pdf",
+      "source_url": "https://ijece.iaescore.com/index.php/IJECE/article/download/30148/16825",
+      "notes": "",
+      "pdf_sha256": "b22bccce04e5f63bfc72b3af41dc458e9e80f6130c2ef885d0451cd9eb73a99a",
+      "pdf_pages": 12,
+      "pdf_bytes": 879793,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4385525472",
+      "title": "A Novel Indium Metal Thermal Interface Material and Package Design Configuration to Enhance High-Power Advanced Si Packages Thermal Performance",
+      "doi": "https://doi.org/10.1109/ectc51909.2023.00356",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "No public PDF link found in OpenAlex or known author repositories",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "No public PDF link found in OpenAlex or known author repositories"
+      ]
+    },
+    {
+      "openalex_id": "W4361199658",
+      "title": "Chiplet Multi-Objective Optimization Algorithm Based on Communication Consumption and Temperature",
+      "doi": "https://doi.org/10.3390/electronics12071604",
+      "status": "downloaded",
+      "filename": "2023_W4361199658_Chiplet_Multi_Objective_Optimization_Algorithm_Based_on_Communication_Consu.pdf",
+      "source_url": "https://mdpi-res.com/d_attachment/electronics/electronics-12-01604/article_deploy/electronics-12-01604.pdf",
+      "notes": "",
+      "pdf_sha256": "02f8f33031b8f732e3a5027a482ef797ea27b8831f393d6a2746bfc005a8bb8d",
+      "pdf_pages": 14,
+      "pdf_bytes": 3192476,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4312786694",
+      "title": "From 2.5D to 3D Chiplet Systems: Investigation of Thermal Implications with HotSpot 7.0",
+      "doi": "https://doi.org/10.1109/itherm54085.2022.9899649",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "No public PDF link found in OpenAlex or known author repositories",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "No public PDF link found in OpenAlex or known author repositories"
+      ]
+    },
+    {
+      "openalex_id": "W4205499638",
+      "title": "HotGauge: A Methodology for Characterizing Advanced Hotspots in Modern and Next Generation Processors",
+      "doi": "https://doi.org/10.1109/iiswc53511.2021.00025",
+      "status": "downloaded",
+      "filename": "2021_W4205499638_HotGauge_A_Methodology_for_Characterizing_Advanced_Hotspots_in_Modern_and_N.pdf",
+      "source_url": "https://sites.tufts.edu/tcal/files/2021/11/HotGauge_IISWC_2021.pdf",
+      "notes": "",
+      "pdf_sha256": "580a481466cd2a8c04520cda8f0cc6f1b80ab9ccec614a9a6a2e214366a5c137",
+      "pdf_pages": 13,
+      "pdf_bytes": 3183215,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3197485759",
+      "title": "WaFFLe: Gated Cache-Ways with Per-Core Fine-Grained DVFS for Reduced On-Chip Temperature and Leakage Consumption",
+      "doi": "https://doi.org/10.1145/3471908",
+      "status": "downloaded",
+      "filename": "2021_W3197485759_WaFFLe_Gated_Cache_Ways_with_Per_Core_Fine_Grained_DVFS_for_Reduced_On_Chip.pdf",
+      "source_url": "https://www.sjalander.com/research/pdf/sjalander-taco2021.pdf",
+      "notes": "",
+      "pdf_sha256": "390e6d0d26a68f207b0eb068cdb0bf337ed4f7eff8d1cd205e86c2ca2e67525d",
+      "pdf_pages": 25,
+      "pdf_bytes": 2350022,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3163019281",
+      "title": "PACT: An Extensible Parallel Thermal Simulator for Emerging Integration and Cooling Technologies",
+      "doi": "https://doi.org/10.1109/tcad.2021.3079166",
+      "status": "downloaded",
+      "filename": "2021_W3163019281_PACT_An_Extensible_Parallel_Thermal_Simulator_for_Emerging_Integration_and_.pdf",
+      "source_url": "https://www.bu.edu/peaclab/files/2024/02/PACT_An_Extensible_Parallel_Thermal_Simulator_for_Emerging_Integration_and_Cooling_Technologies.pdf",
+      "notes": "",
+      "pdf_sha256": "90e99a3bb934d329f6e79998ff730ccaefabb7afc67d945d3a7f0253bf1f5f90",
+      "pdf_pages": 14,
+      "pdf_bytes": 4918607,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3161169265",
+      "title": "Fast Thermal Goodness Evaluation of a 3D-IC Floorplan",
+      "doi": "https://doi.org/10.1109/isqed51717.2021.9424278",
+      "status": "downloaded",
+      "filename": "2021_W3161169265_Fast_Thermal_Goodness_Evaluation_of_a_3D_IC_Floorplan.pdf",
+      "source_url": "https://www.isqed.org/English/Archives/2021/ISQED_2021_Papers/pdf/3B-4-125.pdf",
+      "notes": "",
+      "pdf_sha256": "059052211befaf7d80fa25269e10ba5af0b13e4935e664fedfc5b29498abf51a",
+      "pdf_pages": 7,
+      "pdf_bytes": 1024009,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3198823353",
+      "title": "Characterizing the Thermal Feasibility of Monolithic 3D Microprocessors",
+      "doi": "https://doi.org/10.1109/access.2021.3108628",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "ieeexplore.ieee.org: HTTP Error 404: Not Found",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "ieeexplore.ieee.org: HTTP Error 404: Not Found"
+      ]
+    },
+    {
+      "openalex_id": "W3107631902",
+      "title": "An Improved Matrix Generation Framework for Thermal Aware Placement in VLSI",
+      "doi": "https://doi.org/10.1109/access.2020.3041365",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "ieeexplore.ieee.org: HTTP Error 404: Not Found",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "ieeexplore.ieee.org: HTTP Error 404: Not Found"
+      ]
+    },
+    {
+      "openalex_id": "W3109296144",
+      "title": "DTaPO: Dynamic Thermal-Aware Performance Optimization for Dark Silicon Many-Core Systems",
+      "doi": "https://doi.org/10.3390/electronics9111980",
+      "status": "downloaded",
+      "filename": "2020_W3109296144_DTaPO_Dynamic_Thermal_Aware_Performance_Optimization_for_Dark_Silicon_Many_.pdf",
+      "source_url": "https://mdpi-res.com/d_attachment/electronics/electronics-09-01980/article_deploy/electronics-09-01980.pdf",
+      "notes": "",
+      "pdf_sha256": "78fabcf2cd55491b4aaea83280949af87939f99dcb8937b71c50f111c46ddd56",
+      "pdf_pages": 18,
+      "pdf_bytes": 2653498,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W4206159291",
+      "title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+      "doi": "https://doi.org/10.1109/urtc51696.2020.9668879",
+      "status": "downloaded",
+      "filename": "2020_W4206159291_Thermal_Simulation_of_a_CPU_Based_on_Model_Order_Reduction.pdf",
+      "source_url": "https://par.nsf.gov/servlets/purl/10200426",
+      "notes": "",
+      "pdf_sha256": "65ba02859190c22cc57b4b25e6510c5913c840b1bc5c5d6f36a3be37e7ac9fd9",
+      "pdf_pages": 4,
+      "pdf_bytes": 635401,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3086153377",
+      "title": "A Thermal-Aware On-Line Fault Tolerance Method for TSV Lifetime Reliability in 3D-NoC Systems",
+      "doi": "https://doi.org/10.1109/access.2020.3022904",
+      "status": "downloaded",
+      "filename": "2020_W3086153377_A_Thermal_Aware_On_Line_Fault_Tolerance_Method_for_TSV_Lifetime_Reliability.pdf",
+      "source_url": "https://ieeexplore.ieee.org/ielx7/6287639/8948470/09189765.pdf",
+      "notes": "",
+      "pdf_sha256": "7e4c2531fadcb36a91e28c5fad6891eac6f30c1a283d52c971e869f9249ddd98",
+      "pdf_pages": 16,
+      "pdf_bytes": 5849876,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3157445859",
+      "title": "Thermal distribution and reliability prediction for 3D Networks-on-Chip",
+      "doi": "https://doi.org/10.25073/2588-1086/vnucsce.245",
+      "status": "downloaded",
+      "filename": "2020_W3157445859_Thermal_distribution_and_reliability_prediction_for_3D_Networks_on_Chip.pdf",
+      "source_url": "https://jcsce.vnu.edu.vn/index.php/jcsce/article/view/245/110",
+      "notes": "",
+      "pdf_sha256": "d9da0f08c0e84e9714a5779d16e1bf07fd897ebcb49344c00d442e2e3d6a03b8",
+      "pdf_pages": 13,
+      "pdf_bytes": 1181871,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3032668683",
+      "title": "TAMER: an adaptive task allocation method for aging reduction in multi-core embedded real-time systems",
+      "doi": "https://doi.org/10.1007/s11227-020-03326-7",
+      "status": "unavailable",
+      "filename": "",
+      "source_url": "",
+      "notes": "No public PDF link found in OpenAlex or known author repositories",
+      "audit_status": "screened",
+      "decision": "source_unavailable",
+      "blocking_facts": [
+        "No public PDF link found in OpenAlex or known author repositories"
+      ]
+    },
+    {
+      "openalex_id": "W3021197939",
+      "title": "TRIC: A Thermal Resistance and Impedance Calculator for Electronic Packages",
+      "doi": "https://doi.org/10.3390/en13092252",
+      "status": "downloaded",
+      "filename": "2020_W3021197939_TRIC_A_Thermal_Resistance_and_Impedance_Calculator_for_Electronic_Packages.pdf",
+      "source_url": "https://mdpi-res.com/d_attachment/energies/energies-13-02252/article_deploy/energies-13-02252.pdf",
+      "notes": "",
+      "pdf_sha256": "32da4e3b8ba3965fbfaafa485cd95f9d902e8ed86e65f62d70263970d96eed21",
+      "pdf_pages": 16,
+      "pdf_bytes": 4471320,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3035869053",
+      "title": "A Spectral Approach to Scalable Vectorless Thermal Integrity Verification",
+      "doi": "https://doi.org/10.23919/date48585.2020.9116438",
+      "status": "downloaded",
+      "filename": "2020_W3035869053_A_Spectral_Approach_to_Scalable_Vectorless_Thermal_Integrity_Verification.pdf",
+      "source_url": "https://par.nsf.gov/servlets/purl/10174293",
+      "notes": "",
+      "pdf_sha256": "c67f3b0e6575fccabb0617f5e76cbdb2288aae22792cb94ef7ee783850184a1f",
+      "pdf_pages": 6,
+      "pdf_bytes": 1287366,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3036764451",
+      "title": "Thermal-Cycling-aware Dynamic Reliability Management in Many-Core System-on-Chip",
+      "doi": "https://doi.org/10.23919/date48585.2020.9116325",
+      "status": "downloaded",
+      "filename": "2020_W3036764451_Thermal_Cycling_aware_Dynamic_Reliability_Management_in_Many_Core_System_on.pdf",
+      "source_url": "https://re.public.polimi.it/retrieve/handle/11311/1150421/551972/thermal_cycling_in_resource_management.pdf",
+      "notes": "",
+      "pdf_sha256": "27da01be396649e88269c3a25d65288872bc48389e58102707ba93812401bbf4",
+      "pdf_pages": 6,
+      "pdf_bytes": 924449,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3006943355",
+      "title": "Fuzzy-Based Thermal Management Scheme for 3D Chip Multicores with Stacked Caches",
+      "doi": "https://doi.org/10.3390/electronics9020346",
+      "status": "downloaded",
+      "filename": "2020_W3006943355_Fuzzy_Based_Thermal_Management_Scheme_for_3D_Chip_Multicores_with_Stacked_C.pdf",
+      "source_url": "https://mdpi-res.com/d_attachment/electronics/electronics-09-00346/article_deploy/electronics-09-00346.pdf",
+      "notes": "",
+      "pdf_sha256": "822635a2a633e60f82983071e0daebfb8e22e507caede87cd808a1a4cf7be028",
+      "pdf_pages": 12,
+      "pdf_bytes": 652864,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    },
+    {
+      "openalex_id": "W3001987830",
+      "title": "On the Reproducibility of Thermal Measurements and of Related Thermal Metrics in Static and Transient Tests of Power Devices",
+      "doi": "https://doi.org/10.3390/en13030557",
+      "status": "downloaded",
+      "filename": "2020_W3001987830_On_the_Reproducibility_of_Thermal_Measurements_and_of_Related_Thermal_Metri.pdf",
+      "source_url": "https://mdpi-res.com/d_attachment/energies/energies-13-00557/article_deploy/energies-13-00557.pdf",
+      "notes": "",
+      "pdf_sha256": "ba290d3bec43be45a22374892cb0f1c1c82a20f616109fe543b4f171ed216c67",
+      "pdf_pages": 29,
+      "pdf_bytes": 7319341,
+      "audit_status": "pending_audit",
+      "decision": null,
+      "blocking_facts": [
+        "No source-complete 2D screening record"
+      ]
+    }
+  ]
+}

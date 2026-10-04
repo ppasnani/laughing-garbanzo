@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "pilot": "node pilot.mjs",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs && python3 -m unittest discover -s test -p test_import.py"
   },
   "dependencies": {
     "@ironclad/rivet-node": "1.25.0"

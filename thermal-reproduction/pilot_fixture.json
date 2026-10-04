@@ -3,18 +3,150 @@
     "paper_id": "W4206159291",
     "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
     "evidence": [
-      {"field": "thermal_method", "value": "FEniCS direct numerical simulation and proper orthogonal decomposition", "pdf_page": 1},
-      {"field": "processor", "value": "Alpha EV6 processor floorplan", "pdf_page": 2},
-      {"field": "geometry", "value": "Three-dimensional CPU structure", "pdf_page": 2},
-      {"field": "mesh", "value": "FEniCS simulation uses a 129×129×7 mesh over 3 ms", "pdf_page": 2},
-      {"field": "power", "value": "Three localized pulsed power sources, with a 3.333 microsecond period described for each source", "pdf_page": 2},
-      {"field": "boundary", "value": "Robin boundary condition and 0 °C ambient in the paper model", "pdf_page": 2},
-      {"field": "reported_result", "value": "Spatial and dynamic temperature profiles from POD compared with FEniCS", "pdf_page": 3}
+      {
+        "field": "thermal_method",
+        "value": "FEniCS direct numerical simulation and proper orthogonal decomposition",
+        "pdf_page": 1,
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "asset_id": null,
+        "locator": "PDF p. 1",
+        "provenance": "explicit_text",
+        "uncertainty": null
+      },
+      {
+        "field": "processor",
+        "value": "Alpha EV6 processor floorplan",
+        "pdf_page": 2,
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "asset_id": null,
+        "locator": "PDF p. 2",
+        "provenance": "explicit_text",
+        "uncertainty": null
+      },
+      {
+        "field": "geometry",
+        "value": "Three-dimensional CPU structure",
+        "pdf_page": 2,
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "asset_id": null,
+        "locator": "PDF p. 2",
+        "provenance": "explicit_text",
+        "uncertainty": null
+      },
+      {
+        "field": "mesh",
+        "value": "FEniCS simulation uses a 129\u00d7129\u00d77 mesh over 3 ms",
+        "pdf_page": 2,
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "asset_id": null,
+        "locator": "PDF p. 2",
+        "provenance": "explicit_text",
+        "uncertainty": null
+      },
+      {
+        "field": "power",
+        "value": "Three localized pulsed power sources, with a 3.333 microsecond period described for each source",
+        "pdf_page": 2,
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "asset_id": null,
+        "locator": "PDF p. 2",
+        "provenance": "explicit_text",
+        "uncertainty": null
+      },
+      {
+        "field": "boundary",
+        "value": "Robin boundary condition and 0 \u00b0C ambient in the paper model",
+        "pdf_page": 2,
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "asset_id": null,
+        "locator": "PDF p. 2",
+        "provenance": "explicit_text",
+        "uncertainty": null
+      },
+      {
+        "field": "reported_result",
+        "value": "Spatial and dynamic temperature profiles from POD compared with FEniCS",
+        "pdf_page": 3,
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "asset_id": null,
+        "locator": "PDF p. 3",
+        "provenance": "explicit_text",
+        "uncertainty": null
+      }
     ],
     "missing_for_exact_replication": [
       "The paper's FEniCS/POD procedure is not the HotSpot backend",
       "The paper's 3D geometry and pulsed power inputs are not accepted by Studio"
-    ]
+    ],
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 2,
+      "figure_or_table": "Methods",
+      "description": "Alpha EV6 3D pulsed-power experiment",
+      "steady_2d_relevant": false,
+      "architecture": "Alpha EV6",
+      "workload": "pulsed power sources",
+      "operating_point": "3 ms simulation"
+    },
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_rows": []
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "K",
+      "location": "CPU",
+      "aggregation": "dynamic profile",
+      "pdf_page": 3
+    },
+    "physical_mismatches": [
+      {
+        "reason": "3D structure and pulsed power drive the reported result",
+        "essential": true
+      }
+    ],
+    "studio_assumptions": [
+      "Bundled example.materials and package.config"
+    ],
+    "missing_inputs": [
+      "No same-scenario planar floorplan and steady per-block power map"
+    ],
+    "original_setup": {
+      "solver": "FEniCS/POD",
+      "optimizer": "none",
+      "controller": "none",
+      "benchmark": "3D CPU thermal profile"
+    }
   },
   "assessment": {
     "verdict": "adapted_only",
@@ -23,5 +155,43 @@
       "The paper uses three-dimensional geometry and localized pulsed power rather than the bundled GCC power trace.",
       "The paper compares POD with FEniCS, so these HotSpot temperatures have no like-for-like published target."
     ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "FEniCS/POD differs from HotSpot"
+      },
+      "code": {
+        "status": "not_applicable",
+        "note": "No paper-linked code in this fixture"
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "No same-scenario steady block powers"
+      },
+      "config": {
+        "status": "contradicted",
+        "note": "Paper model is 3D and pulsed"
+      },
+      "data": {
+        "status": "missing",
+        "note": "No comparable steady output"
+      }
+    },
+    "findings": [
+      {
+        "field": "regime",
+        "reason": "Pulsed 3D profile is not a 2D steady target",
+        "locator": "PDF pp. 2-3"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3
+    ],
+    "checked_assets": []
   }
 }
