@@ -28,7 +28,7 @@ def artifact_manifest(folder, result):
         if name == 'gcc.steady' and (result.get('steadyExitCode', 0) != 0 or
                                     ('steadyExitCode' not in result and result.get('status') != 'completed')):
             continue
-        if name in CUSTOM_OUTPUTS and result.get('steadyExitCode') != 0:
+        if name in CUSTOM_OUTPUTS and result.get('steadyOutputValid') is not True:
             continue
         if name == 'gcc.ttrace' and result.get('status') != 'completed':
             continue
@@ -210,6 +210,7 @@ def run_simulation(text, experiment=None):
                    'assumptions':'Bundled example.materials and package.config',
                    'input_sha256':input_digest(folder, ['tuned.config','submitted.experiment.json','example.materials','package.config'])} if experiment else {'kind':'bundled_ev6_gcc'}
         result = {'id':run_id,'created':datetime.now(timezone.utc).isoformat(),'status':'running','rows':[],'log':'','experiment':summary}
+        if experiment: result['steadyOutputValid'] = False
         save_result(folder,result)
         args = [str(binary),'-c','tuned.config','-f','input.flp' if experiment else 'ev6.flp',
                 '-p','input.ptrace' if experiment else 'gcc.ptrace','-materials_file','example.materials']
@@ -233,12 +234,21 @@ def run_simulation(text, experiment=None):
                     break
                 if phase == 'steady':
                     result['rows'] = parse_steady(folder / ('temperatures.steady' if experiment else 'gcc.steady'))
+                    if experiment:
+                        missing = set(experiment['power_w']) - {row['name'] for row in result['rows']}
+                        if missing: raise ValueError(f'Steady output missing blocks: {sorted(missing)}')
+                        if summary['model_type'] == 'grid':
+                            grid_file = folder / 'temperatures.grid.steady'
+                            if not grid_file.is_file() or not grid_file.stat().st_size:
+                                raise ValueError('Grid steady output is missing or empty')
+                        result['steadyOutputValid'] = True
             else:
                 result['status'] = 'completed'
         except subprocess.TimeoutExpired:
             result['status']='timed_out'; result['log']='Simulation exceeded the 60-second limit.\n'+((folder/'run.log').read_text(errors='replace') if (folder/'run.log').exists() else '')[-64000:]
         except Exception as exc:
             result['status']='failed';result['log']=str(exc)
+            if experiment: result['rows'] = []
         if not result['log'] and (folder/'run.log').exists():
             result['log'] = (folder / 'run.log').read_text(errors='replace')[-64000:]
         result['artifacts'] = artifact_manifest(folder,result)

@@ -142,6 +142,14 @@ class BackendTests(unittest.TestCase):
                     failed=studio.run_simulation(self.config,self.experiment)
                 self.assertEqual(failed['status'],'failed')
                 self.assertEqual(set(failed['artifacts']),set(studio.CUSTOM_INPUTS))
+                def incomplete_solver(args,**kwargs):
+                    (Path(kwargs['cwd'])/'temperatures.steady').write_text('core0\t320\n')
+                    return type('Process',(),{'returncode':0})()
+                with patch.object(studio.subprocess,'run',side_effect=incomplete_solver):
+                    incomplete=studio.run_simulation(self.config,self.experiment)
+                self.assertEqual(incomplete['status'],'failed')
+                self.assertEqual(incomplete['rows'],[])
+                self.assertEqual(set(incomplete['artifacts']),set(studio.CUSTOM_INPUTS))
                 grid_config=self.grid_config()
                 self.assertNotEqual(grid_config,self.config)
                 def grid_solver(args,**kwargs):
