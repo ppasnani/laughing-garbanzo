@@ -1,0 +1,345 @@
+{
+  "id": "e2f991aab95d4dd7b985728589223538",
+  "created": "2026-10-04T03:56:05.359599+00:00",
+  "status": "completed",
+  "rows": [
+    {
+      "name": "mem3",
+      "kelvin": 388.85,
+      "celsius": 115.7
+    },
+    {
+      "name": "hs",
+      "kelvin": 398.86,
+      "celsius": 125.71
+    },
+    {
+      "name": "nr",
+      "kelvin": 394.46,
+      "celsius": 121.31
+    },
+    {
+      "name": "in",
+      "kelvin": 396.69,
+      "celsius": 123.54
+    },
+    {
+      "name": "vs",
+      "kelvin": 391.16,
+      "celsius": 118.01
+    },
+    {
+      "name": "mem2",
+      "kelvin": 464.55,
+      "celsius": 191.4
+    },
+    {
+      "name": "hvs",
+      "kelvin": 399.41,
+      "celsius": 126.26
+    },
+    {
+      "name": "jug1",
+      "kelvin": 392.65,
+      "celsius": 119.5
+    },
+    {
+      "name": "jug2",
+      "kelvin": 395.9,
+      "celsius": 122.75
+    },
+    {
+      "name": "se",
+      "kelvin": 409.62,
+      "celsius": 136.47
+    },
+    {
+      "name": "mem1",
+      "kelvin": 396.23,
+      "celsius": 123.08
+    },
+    {
+      "name": "blend",
+      "kelvin": 374.16,
+      "celsius": 101.01
+    },
+    {
+      "name": "iface_mem3",
+      "kelvin": 387.09,
+      "celsius": 113.94
+    },
+    {
+      "name": "iface_hs",
+      "kelvin": 396.6,
+      "celsius": 123.45
+    },
+    {
+      "name": "iface_nr",
+      "kelvin": 392.07,
+      "celsius": 118.92
+    },
+    {
+      "name": "iface_in",
+      "kelvin": 394.88,
+      "celsius": 121.73
+    },
+    {
+      "name": "iface_vs",
+      "kelvin": 390.53,
+      "celsius": 117.38
+    },
+    {
+      "name": "iface_mem2",
+      "kelvin": 453.28,
+      "celsius": 180.13
+    },
+    {
+      "name": "iface_hvs",
+      "kelvin": 397.71,
+      "celsius": 124.56
+    },
+    {
+      "name": "iface_jug1",
+      "kelvin": 391.5,
+      "celsius": 118.35
+    },
+    {
+      "name": "iface_jug2",
+      "kelvin": 394.21,
+      "celsius": 121.06
+    },
+    {
+      "name": "iface_se",
+      "kelvin": 406.7,
+      "celsius": 133.55
+    },
+    {
+      "name": "iface_mem1",
+      "kelvin": 394.54,
+      "celsius": 121.39
+    },
+    {
+      "name": "iface_blend",
+      "kelvin": 373.14,
+      "celsius": 99.99
+    },
+    {
+      "name": "hsp_mem3",
+      "kelvin": 379.46,
+      "celsius": 106.31
+    },
+    {
+      "name": "hsp_hs",
+      "kelvin": 386.79,
+      "celsius": 113.64
+    },
+    {
+      "name": "hsp_nr",
+      "kelvin": 381.69,
+      "celsius": 108.54
+    },
+    {
+      "name": "hsp_in",
+      "kelvin": 387.04,
+      "celsius": 113.89
+    },
+    {
+      "name": "hsp_vs",
+      "kelvin": 387.82,
+      "celsius": 114.67
+    },
+    {
+      "name": "hsp_mem2",
+      "kelvin": 404.45,
+      "celsius": 131.3
+    },
+    {
+      "name": "hsp_hvs",
+      "kelvin": 390.35,
+      "celsius": 117.2
+    },
+    {
+      "name": "hsp_jug1",
+      "kelvin": 386.55,
+      "celsius": 113.4
+    },
+    {
+      "name": "hsp_jug2",
+      "kelvin": 386.88,
+      "celsius": 113.73
+    },
+    {
+      "name": "hsp_se",
+      "kelvin": 394.02,
+      "celsius": 120.87
+    },
+    {
+      "name": "hsp_mem1",
+      "kelvin": 387.2,
+      "celsius": 114.05
+    },
+    {
+      "name": "hsp_blend",
+      "kelvin": 368.75,
+      "celsius": 95.6
+    },
+    {
+      "name": "hsink_mem3",
+      "kelvin": 376.6,
+      "celsius": 103.45
+    },
+    {
+      "name": "hsink_hs",
+      "kelvin": 382.69,
+      "celsius": 109.54
+    },
+    {
+      "name": "hsink_nr",
+      "kelvin": 377.39,
+      "celsius": 104.24
+    },
+    {
+      "name": "hsink_in",
+      "kelvin": 383.06,
+      "celsius": 109.91
+    },
+    {
+      "name": "hsink_vs",
+      "kelvin": 386.09,
+      "celsius": 112.94
+    },
+    {
+      "name": "hsink_mem2",
+      "kelvin": 388.61,
+      "celsius": 115.46
+    },
+    {
+      "name": "hsink_hvs",
+      "kelvin": 387.08,
+      "celsius": 113.93
+    },
+    {
+      "name": "hsink_jug1",
+      "kelvin": 384.23,
+      "celsius": 111.08
+    },
+    {
+      "name": "hsink_jug2",
+      "kelvin": 383.7,
+      "celsius": 110.55
+    },
+    {
+      "name": "hsink_se",
+      "kelvin": 388.16,
+      "celsius": 115.01
+    },
+    {
+      "name": "hsink_mem1",
+      "kelvin": 384,
+      "celsius": 110.85
+    },
+    {
+      "name": "hsink_blend",
+      "kelvin": 366.93,
+      "celsius": 93.78
+    },
+    {
+      "name": "inode_0",
+      "kelvin": 373.94,
+      "celsius": 100.79
+    },
+    {
+      "name": "inode_1",
+      "kelvin": 355.64,
+      "celsius": 82.49
+    },
+    {
+      "name": "inode_2",
+      "kelvin": 353.1,
+      "celsius": 79.95
+    },
+    {
+      "name": "inode_3",
+      "kelvin": 370.31,
+      "celsius": 97.16
+    },
+    {
+      "name": "inode_4",
+      "kelvin": 373.63,
+      "celsius": 100.48
+    },
+    {
+      "name": "inode_5",
+      "kelvin": 355.47,
+      "celsius": 82.32
+    },
+    {
+      "name": "inode_6",
+      "kelvin": 352.96,
+      "celsius": 79.81
+    },
+    {
+      "name": "inode_7",
+      "kelvin": 370.05,
+      "celsius": 96.9
+    },
+    {
+      "name": "inode_8",
+      "kelvin": 363.92,
+      "celsius": 90.77
+    },
+    {
+      "name": "inode_9",
+      "kelvin": 348.94,
+      "celsius": 75.79
+    },
+    {
+      "name": "inode_10",
+      "kelvin": 346.8,
+      "celsius": 73.65
+    },
+    {
+      "name": "inode_11",
+      "kelvin": 360.87,
+      "celsius": 87.72
+    }
+  ],
+  "log": "=== steady ===\nComputing steady-state temperatures...\nParsing input files...\nCreating thermal circuit...\nSimulation complete.\n",
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "block_count": 12,
+    "total_power_w": 375,
+    "model_type": "block",
+    "assumptions": "Bundled example.materials and package.config",
+    "input_sha256": "d9fcbed175a78f717293f3a94659a7b4f331db5aeaa6747040fd14f17568f0b9"
+  },
+  "steadyOutputValid": true,
+  "steadyExitCode": 0,
+  "exitCode": 0,
+  "artifacts": {
+    "submitted.experiment.json": {
+      "filename": "submitted.experiment.json",
+      "bytes": 1035,
+      "sha256": "13676388a3a941e614eedf89c113fb5fe5f495062c85ad834af9532dbe7b00e5",
+      "url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/submitted.experiment.json"
+    },
+    "input.flp": {
+      "filename": "input.flp",
+      "bytes": 344,
+      "sha256": "2f73e4c37fa13638f1c6369e54751b61d08974a880caa9469ad4d33fb97c07bd",
+      "url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/input.flp"
+    },
+    "input.ptrace": {
+      "filename": "input.ptrace",
+      "bytes": 85,
+      "sha256": "7f464a27958c743960cc8fde9dc362e0d6e1a546b445d445a9854681de43f985",
+      "url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/input.ptrace"
+    },
+    "temperatures.steady": {
+      "filename": "temperatures.steady",
+      "bytes": 910,
+      "sha256": "a4f492919ac85f2d511e8394ecb280fe12b1b76874fb56f2603b2325bd6ee739",
+      "url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/temperatures.steady"
+    }
+  }
+}

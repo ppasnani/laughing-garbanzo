@@ -1,0 +1,2393 @@
+{
+  "paper_id": "W4361199658",
+  "paper_title": "Chiplet Multi-Objective Optimization Algorithm Based on Communication Consumption and Temperature",
+  "manifest_status": "downloaded",
+  "source_url": "https://mdpi-res.com/d_attachment/electronics/electronics-12-01604/article_deploy/electronics-12-01604.pdf",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "02f8f33031b8f732e3a5027a482ef797ea27b8831f393d6a2746bfc005a8bb8d",
+  "pdf_pages": 14,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "237dad2d441f066e18c19e5fe94588865cc67a6574f5b3238df110361c479e24",
+  "rubric_sha256": "cea71e846ba513ccbdb3d06e5a0bf035e4b2ff00b59958c363bc4b4edeac6a83",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-04T03:56:20.611Z",
+  "llm_mode": "reused_audit",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-haiku-4-5-20251001",
+  "extraction": {
+    "paper_id": "W4361199658",
+    "paper_title": "Chiplet Multi-Objective Optimization Algorithm Based on Communication Consumption and Temperature",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 4,
+      "figure_or_table": "Table 2",
+      "description": "Multi-window display (MWD) system with 12 chiplets mapped onto a 2.5-D IC with passive interposer. Chiplet sizes range from 2.5×2.5 mm (blend) to 8.0×6.0 mm (nr). Power values range from 5 W (blend) to 70 W (mem2). System uses mesh topology on grid with ambient temperature 318.5 K, heat spreader 5 mm edge, heatsink 20 mm edge, fin-channel heatsink with 30 mm fin height, 1 mm fin width, 10 cm fan radius at 5000 RPM. Hotspot 7.0 thermal simulator models the passive silicon interposer with six layers: organic substrate, C4 bump layer, silicon interposer, microbump layer, chiplet layout, and TIM. Communication task graph shows bandwidth ranging from 256 Mbit/s (mem3) to 64 Mbit/s (mem1, blend). Algorithm CMO optimizes chiplet placement to minimize peak temperature and inter-chiplet communication consumption simultaneously using weight factor α.",
+      "architecture": "2.5-D IC with passive silicon interposer; 12 chiplets on mesh topology; six-layer packaging: organic substrate (FR-4), C4 bumps, silicon interposer with through-silicon vias (TSVs), microbumps, chiplets, thermal interface material (TIM), copper spreader, and air-forced fin-channel heatsink",
+      "workload": "Multi-window display (MWD) multimedia application; static power distribution over chiplets; communication task graph with peak bandwidth 256 Mbit/s between mem3 and hs; communication priorities mapped in communication priority list (CPL)",
+      "operating_point": "Ambient temperature 318.5 K; forced convection cooling with lateral airflow from heatsink side; fan speed 5000 RPM; thermal design uses realistic air-forced heatsink with fin geometry and forced convection model; initial layout: peak temperature 381.41 K, communication consumption 1026.72 µJ; optimized layout (α=0.5): peak temperature 373.58 K, communication consumption 794.59 µJ",
+      "steady_2d_relevant": true
+    },
+    "original_setup": {
+      "solver": "Hotspot 7.0",
+      "optimizer": "Chiplet Multi-Objective (CMO) algorithm",
+      "controller": "",
+      "benchmark": "Multi-window display (MWD) system with 12 IP cores"
+    },
+    "thermal_observable": {
+      "value": 373.58,
+      "unit": "K",
+      "location": "peak temperature across chiplet layout",
+      "aggregation": "maximum",
+      "pdf_page": 10
+    },
+    "physical_mismatches": [
+      {
+        "reason": "Hotspot 7.0 uses compact thermal resistance/capacitance circuit model with fourth-order Runge-Kutta adaptive stepping; does not model transient chiplet power variations or dynamic frequency scaling",
+        "essential": false
+      },
+      {
+        "reason": "Algorithm assumes uniform power distribution over chiplet area and that surface temperature equals overall temperature due to assumed high thermal conductivity and thinness; ignores within-chiplet thermal gradients",
+        "essential": false
+      },
+      {
+        "reason": "Manhattan distance metric used for heuristic calculation; actual thermal resistance between chiplets depends on interposer thermal properties and TSV distribution which are not spatially detailed",
+        "essential": false
+      },
+      {
+        "reason": "Communication consumption calculation uses static communication task graph; does not account for runtime variation or dynamic task mapping",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "Chiplet power is uniformly distributed across chiplet area",
+      "Chiplet surface temperature equals overall chiplet temperature due to high thermal conductivity",
+      "Passive interposer with back-end-of-line process; six-layer packaging stack is fixed",
+      "Through-silicon vias (TSVs) provide thermal and electrical coupling between chiplets and substrate",
+      "Air-forced heatsink with fin-channel geometry provides forced convection cooling; fan speed fixed at 5000 RPM",
+      "Thermal interface material (TIM) provides specified thermal resistance between chips and spreader",
+      "Manhattan distance between chiplet midpoints represents inter-chiplet thermal coupling strength",
+      "Communication energy per unit distance is constant at 0.186 pJ/bit/mm (ORION 2.0 model)",
+      "Mesh topology grid determines allowed placement positions; unit grid size derived from chiplet sizes and mandatory spacing",
+      "Chiplet placement is static after optimization; no runtime relocation"
+    ],
+    "missing_inputs": [
+      "No repository URL or code artifact provided for CMO algorithm implementation",
+      "No detailed HotSpot thermal model parameters (layer-specific thermal conductivity, thickness of each layer beyond spreader/heatsink dimensions)",
+      "No specification of interposer material properties or TSV density and distribution",
+      "No thermal resistance matrix or detailed coupling coefficients between chiplets",
+      "No transient power traces or workload time-varying behavior for MWD application",
+      "No validation against silicon measurements or experimental thermal imaging data",
+      "Communication task graph bandwidth values are static; no temporal profile or burstiness characterization",
+      "No specification of TIM thermal conductivity or thickness",
+      "No fin efficiency or convection coefficient model details for heatsink",
+      "Chiplet actual sizes and spacing rules are preprocessed; exact algorithm for theoretical size determination not fully specified in text"
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [
+        {
+          "name": "mem3",
+          "x_m": 0,
+          "y_m": 0,
+          "width_m": 0.0045,
+          "height_m": 0.0015
+        },
+        {
+          "name": "hs",
+          "x_m": 0.0045,
+          "y_m": 0,
+          "width_m": 0.0045,
+          "height_m": 0.0045
+        },
+        {
+          "name": "nr",
+          "x_m": 0.009,
+          "y_m": 0,
+          "width_m": 0.0075,
+          "height_m": 0.0045
+        },
+        {
+          "name": "in",
+          "x_m": 0,
+          "y_m": 0.0015,
+          "width_m": 0.0045,
+          "height_m": 0.0045
+        },
+        {
+          "name": "vs",
+          "x_m": 0.0045,
+          "y_m": 0.0045,
+          "width_m": 0.0045,
+          "height_m": 0.0045
+        },
+        {
+          "name": "mem2",
+          "x_m": 0,
+          "y_m": 0.006,
+          "width_m": 0.0045,
+          "height_m": 0.0015
+        },
+        {
+          "name": "hvs",
+          "x_m": 0.0045,
+          "y_m": 0.009,
+          "width_m": 0.0045,
+          "height_m": 0.0045
+        },
+        {
+          "name": "jug1",
+          "x_m": 0.009,
+          "y_m": 0.0045,
+          "width_m": 0.0045,
+          "height_m": 0.0045
+        },
+        {
+          "name": "jug2",
+          "x_m": 0.009,
+          "y_m": 0.009,
+          "width_m": 0.0045,
+          "height_m": 0.0045
+        },
+        {
+          "name": "se",
+          "x_m": 0,
+          "y_m": 0.0075,
+          "width_m": 0.0045,
+          "height_m": 0.0045
+        },
+        {
+          "name": "mem1",
+          "x_m": 0.0045,
+          "y_m": 0.0135,
+          "width_m": 0.0045,
+          "height_m": 0.0015
+        },
+        {
+          "name": "blend",
+          "x_m": 0.009,
+          "y_m": 0.0135,
+          "width_m": 0.0025,
+          "height_m": 0.0025
+        }
+      ],
+      "power_w": {
+        "mem3": 10,
+        "hs": 40,
+        "nr": 70,
+        "in": 30,
+        "vs": 10,
+        "mem2": 70,
+        "hvs": 30,
+        "jug1": 20,
+        "jug2": 30,
+        "se": 50,
+        "mem1": 10,
+        "blend": 5
+      }
+    },
+    "evidence": [
+      {
+        "field": "chiplet_mem3_power",
+        "block_name": "mem3",
+        "source_value": 10,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 10,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem3, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_hs_power",
+        "block_name": "hs",
+        "source_value": 40,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 40,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row hs, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_nr_power",
+        "block_name": "nr",
+        "source_value": 70,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 70,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row nr, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_in_power",
+        "block_name": "in",
+        "source_value": 30,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 30,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row in, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_vs_power",
+        "block_name": "vs",
+        "source_value": 10,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 10,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row vs, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem2_power",
+        "block_name": "mem2",
+        "source_value": 70,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 70,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem2, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_hvs_power",
+        "block_name": "hvs",
+        "source_value": 30,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 30,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row hvs, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_jug1_power",
+        "block_name": "jug1",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row jug1, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_jug2_power",
+        "block_name": "jug2",
+        "source_value": 30,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 30,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row jug2, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_se_power",
+        "block_name": "se",
+        "source_value": 50,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 50,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row se, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem1_power",
+        "block_name": "mem1",
+        "source_value": 10,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 10,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem1, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_blend_power",
+        "block_name": "blend",
+        "source_value": 5,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 5,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row blend, Power column",
+        "provenance": "Multi-window display system chiplet power specification",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem3_actual_size_x",
+        "block_name": "mem3",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem3, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem3_actual_size_y",
+        "block_name": "mem3",
+        "source_value": 1.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0015,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem3, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_hs_actual_size_x",
+        "block_name": "hs",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row hs, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_hs_actual_size_y",
+        "block_name": "hs",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row hs, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_nr_actual_size_x",
+        "block_name": "nr",
+        "source_value": 7.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0075,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row nr, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_nr_actual_size_y",
+        "block_name": "nr",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row nr, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_in_actual_size_x",
+        "block_name": "in",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row in, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_in_actual_size_y",
+        "block_name": "in",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row in, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_vs_actual_size_x",
+        "block_name": "vs",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row vs, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_vs_actual_size_y",
+        "block_name": "vs",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row vs, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem2_actual_size_x",
+        "block_name": "mem2",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem2, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem2_actual_size_y",
+        "block_name": "mem2",
+        "source_value": 1.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0015,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem2, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_hvs_actual_size_x",
+        "block_name": "hvs",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row hvs, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_hvs_actual_size_y",
+        "block_name": "hvs",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row hvs, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_jug1_actual_size_x",
+        "block_name": "jug1",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row jug1, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_jug1_actual_size_y",
+        "block_name": "jug1",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row jug1, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_jug2_actual_size_x",
+        "block_name": "jug2",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row jug2, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_jug2_actual_size_y",
+        "block_name": "jug2",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row jug2, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_se_actual_size_x",
+        "block_name": "se",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row se, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_se_actual_size_y",
+        "block_name": "se",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row se, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem1_actual_size_x",
+        "block_name": "mem1",
+        "source_value": 4.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0045,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem1, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_mem1_actual_size_y",
+        "block_name": "mem1",
+        "source_value": 1.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0015,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row mem1, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_blend_actual_size_x",
+        "block_name": "blend",
+        "source_value": 2.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0025,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row blend, Chiplet Actual Size column, x-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "chiplet_blend_actual_size_y",
+        "block_name": "blend",
+        "source_value": 2.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0025,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table 2, row blend, Chiplet Actual Size column, y-dimension",
+        "provenance": "Multi-window display chiplet actual physical dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "ambient_temperature",
+        "block_name": null,
+        "source_value": 318.5,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 318.5,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, ambient temperature setting",
+        "provenance": "Hotspot 7.0 thermal simulation configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_spreader_edge_size",
+        "block_name": null,
+        "source_value": 5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.005,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, heat spreader edge size",
+        "provenance": "Hotspot 7.0 thermal simulation configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "heatsink_edge_size",
+        "block_name": null,
+        "source_value": 20,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.02,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, heatsink edge size",
+        "provenance": "Hotspot 7.0 thermal simulation configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "heatsink_fin_height",
+        "block_name": null,
+        "source_value": 30,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.03,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, fin-channel heatsink fin height",
+        "provenance": "Hotspot 7.0 thermal simulation configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "heatsink_fin_width",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.001,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, fin-channel heatsink fin width",
+        "provenance": "Hotspot 7.0 thermal simulation configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "heatsink_fan_radius",
+        "block_name": null,
+        "source_value": 10,
+        "source_unit": "cm",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.1,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, fan radius",
+        "provenance": "Hotspot 7.0 thermal simulation configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "heatsink_fan_speed",
+        "block_name": null,
+        "source_value": 5000,
+        "source_unit": "rpm",
+        "conversion_factor": 1,
+        "normalized_value": 5000,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, fan speed",
+        "provenance": "Hotspot 7.0 thermal simulation configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "peak_temperature_initial_layout",
+        "block_name": null,
+        "source_value": 381.41,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 381.41,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9a thermal map description",
+        "provenance": "CMO algorithm evaluation, initial MWD layout",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_consumption_initial_layout",
+        "block_name": null,
+        "source_value": 1026.72,
+        "source_unit": "µJ",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00102672,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9a description",
+        "provenance": "CMO algorithm evaluation, initial MWD layout",
+        "uncertainty": null
+      },
+      {
+        "field": "peak_temperature_optimized_alpha_05",
+        "block_name": null,
+        "source_value": 373.58,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 373.58,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9b thermal map description, α=0.5",
+        "provenance": "CMO algorithm optimized layout with balanced weight factor",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_consumption_optimized_alpha_05",
+        "block_name": null,
+        "source_value": 794.59,
+        "source_unit": "µJ",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00079459,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9b description, α=0.5",
+        "provenance": "CMO algorithm optimized layout with balanced weight factor",
+        "uncertainty": null
+      },
+      {
+        "field": "peak_temperature_reduction_alpha_05",
+        "block_name": null,
+        "source_value": 8.34,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 8.34,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, final paragraph, temperature reduction",
+        "provenance": "CMO algorithm improvement metric for α=0.5",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_consumption_reduction_alpha_05",
+        "block_name": null,
+        "source_value": 232.13,
+        "source_unit": "µJ",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00023213,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, final paragraph, communication reduction",
+        "provenance": "CMO algorithm improvement metric for α=0.5",
+        "uncertainty": null
+      },
+      {
+        "field": "peak_temperature_alpha_08",
+        "block_name": null,
+        "source_value": 377.36,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 377.36,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9c description, α=0.8",
+        "provenance": "CMO algorithm optimized layout with communication-focused weight",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_consumption_alpha_08",
+        "block_name": null,
+        "source_value": 663.65,
+        "source_unit": "µJ",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00066365,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9c description, α=0.8",
+        "provenance": "CMO algorithm optimized layout with communication-focused weight",
+        "uncertainty": null
+      },
+      {
+        "field": "peak_temperature_alpha_02",
+        "block_name": null,
+        "source_value": 371.94,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 371.94,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9d description, α=0.2",
+        "provenance": "CMO algorithm optimized layout with temperature-focused weight",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_consumption_alpha_02",
+        "block_name": null,
+        "source_value": 1401.7,
+        "source_unit": "µJ",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.0014017,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Section 4, Evaluation Results, Figure 9d description, α=0.2",
+        "provenance": "CMO algorithm optimized layout with temperature-focused weight",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_mem3_bandwidth",
+        "block_name": "mem3",
+        "source_value": 256,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 256000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 1, mem3 communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_hs_bandwidth",
+        "block_name": "hs",
+        "source_value": 224,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 224000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 2, hs communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_nr_bandwidth",
+        "block_name": "nr",
+        "source_value": 224,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 224000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 2, nr communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_in_bandwidth",
+        "block_name": "in",
+        "source_value": 192,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 192000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 3, in communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_vs_bandwidth",
+        "block_name": "vs",
+        "source_value": 192,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 192000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 3, vs communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_mem2_bandwidth",
+        "block_name": "mem2",
+        "source_value": 192,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 192000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 3, mem2 communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_hvs_bandwidth",
+        "block_name": "hvs",
+        "source_value": 192,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 192000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 3, hvs communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_jug1_bandwidth",
+        "block_name": "jug1",
+        "source_value": 192,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 192000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 3, jug1 communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_jug2_bandwidth",
+        "block_name": "jug2",
+        "source_value": 192,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 192000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 3, jug2 communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_se_bandwidth",
+        "block_name": "se",
+        "source_value": 128,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 128000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 4, se communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_mem1_bandwidth",
+        "block_name": "mem1",
+        "source_value": 64,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 64000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 5, mem1 communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "communication_priority_blend_bandwidth",
+        "block_name": "blend",
+        "source_value": 64,
+        "source_unit": "Mbit/s",
+        "conversion_factor": 1000000,
+        "normalized_value": 64000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, Communication Priority List, Priority 5, blend communication data",
+        "provenance": "Multi-window display communication task graph specification",
+        "uncertainty": null
+      },
+      {
+        "field": "energy_per_bit_per_unit_distance",
+        "block_name": null,
+        "source_value": 0.186,
+        "source_unit": "pJ/bit/mm",
+        "conversion_factor": 1e-12,
+        "normalized_value": 1.86e-13,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Algorithm 3, line 6, energy constant in heuristic calculation",
+        "provenance": "ORION 2.0 NoC power and area model reference [30]",
+        "uncertainty": null
+      },
+      {
+        "field": "optimization_algorithm_type",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section 2, Related Works and Section 3.2, algorithm description",
+        "provenance": "Chiplet Multi-Objective (CMO) heuristic algorithm based on symmetry mapping",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_simulator_tool",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3, Chiplet Multi-Objective Optimization Method, thermal model reference",
+        "provenance": "Hotspot 7.0 thermal simulator with adaptive Runge-Kutta solver",
+        "uncertainty": null
+      },
+      {
+        "field": "package_structure_layer_1",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Figure 1, Schematic of 2.5-D system with passive interposer",
+        "provenance": "2.5-D packaging stack composition, bottom layer",
+        "uncertainty": "organic substrate (FR-4)"
+      },
+      {
+        "field": "package_structure_layer_2",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Figure 1, Schematic of 2.5-D system with passive interposer",
+        "provenance": "2.5-D packaging stack composition, second layer",
+        "uncertainty": "C4 bump layer"
+      },
+      {
+        "field": "package_structure_layer_3",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Figure 1, Schematic of 2.5-D system with passive interposer",
+        "provenance": "2.5-D packaging stack composition, third layer",
+        "uncertainty": "silicon interposer"
+      },
+      {
+        "field": "package_structure_layer_4",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Figure 1, Schematic of 2.5-D system with passive interposer",
+        "provenance": "2.5-D packaging stack composition, fourth layer",
+        "uncertainty": "microbump layer"
+      },
+      {
+        "field": "package_structure_layer_5",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Figure 1, Schematic of 2.5-D system with passive interposer",
+        "provenance": "2.5-D packaging stack composition, fifth layer",
+        "uncertainty": "chiplet layout"
+      },
+      {
+        "field": "package_structure_layer_6",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Figure 1, Schematic of 2.5-D system with passive interposer",
+        "provenance": "2.5-D packaging stack composition, sixth layer",
+        "uncertainty": "thermal interface material (TIM)"
+      },
+      {
+        "field": "cooling_technique_type",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.1, Thermal Module Establishment, cooling description",
+        "provenance": "Hotspot 7.0 configuration uses realistic air-forced heatsink",
+        "uncertainty": "forced convection with lateral airflow from heatsink side"
+      },
+      {
+        "field": "optimization_weight_factor_alpha",
+        "block_name": null,
+        "source_value": 0.5,
+        "source_unit": "dimensionless",
+        "conversion_factor": 1,
+        "normalized_value": 0.5,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section 3.2.4, weight factor discussion, α=0.5 for balanced optimization",
+        "provenance": "CMO algorithm primary result configuration",
+        "uncertainty": null
+      },
+      {
+        "field": "interposer_type",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section 2, Related Works, passive interposer selection rationale",
+        "provenance": "2.5-D IC design choice for cost and yield effectiveness",
+        "uncertainty": "passive silicon interposer with back-end-of-line process"
+      },
+      {
+        "field": "topology_type",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 3.2.1, Topology Generation",
+        "provenance": "Network-on-chip mesh topology for chiplet interconnection",
+        "uncertainty": "mesh topology with point-to-point direct interconnection"
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "CMO algorithm methodology is clearly described: topology generation with mesh layout, initial node selection with symmetry reduction (Algorithm 1), chiplet placement area selection (Algorithm 2), and heuristic computation (Algorithm 3). Algorithm uses communication-based heuristic (Eq. 1) and temperature-based heuristic (Eq. 2) with weight factor α for balance. Thermal verification via Hotspot 7.0 simulator is documented."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No C++ implementation code, repository URL, or executable artifacts provided. Paper states algorithm was implemented in C++ for validation but no source code, binaries, or reproducible environment documented."
+      },
+      "parameters": {
+        "status": "verified",
+        "note": "Hotspot 7.0 parameters are specified: ambient temperature 318.5 K, heat spreader 5 mm edge, heatsink 20 mm edge, fin-channel (30 mm height, 1 mm width), fan radius 10 cm, fan speed 5000 RPM. Chiplet sizes (Table 2) and power values (Table 2) are explicit. Communication bandwidth from Table 1. Energy constant Ebit=0.186 pJ/bit/mm from ORION 2.0. However, critical layer-specific thermal properties (conductivity, thickness) of interposer, TIM, and other stack layers are not provided—only spreader/heatsink dimensions given."
+      },
+      "config": {
+        "status": "contradicted",
+        "note": "Paper claims steady-state 2D analysis but simultaneously describes six-layer 2.5-D packaging with TSVs, through-interposer thermal coupling, and forced-convection heatsink dynamics. Hotspot 7.0 is a compact thermal-resistance circuit model (not full 3D FEM), but the modeling approach and whether transient effects are suppressed or assumed negligible is not explicitly stated. Algorithm assumes uniform power distribution and that surface temperature equals bulk temperature, but actual 2.5-D systems exhibit within-chiplet and inter-layer gradients. Passive interposer back-end-of-line process and TSV distribution not characterized."
+      },
+      "data": {
+        "status": "missing",
+        "note": "Communication task graph (Figure 2, Table 1) provides static bandwidth values but lacks temporal profiles, burstiness, or workload variation. No experimental validation against silicon measurements or thermal imaging. No transient power traces for MWD workload. Chiplet placement preprocesses theoretical sizes (accounting for spacing) but exact discretization algorithm not fully specified. No per-layer material properties, no TSV density map, no interposer layout details beyond generic 'passive silicon'. Initial and optimized layouts are shown qualitatively in Figure 9 but exact grid coordinates not tabulated."
+      }
+    },
+    "findings": [
+      {
+        "field": "thermal_simulator_transient_modeling",
+        "reason": "Paper claims Hotspot generates temperature distribution but does not explicitly state whether transient differential equations (mentioned for Hotspot's Runge-Kutta solver) are suppressed or solved to steady-state. If steady-state assumed, this is a 2D simplification valid only under constant power and fixed placement, contradicting the multi-objective dynamic optimization narrative.",
+        "locator": "Section 3, page 3: 'To solve the transient differential equations, Hotspot uses a fourth-order Runge Kutta algorithm with adaptive step sizing.' vs. actual use case not clarified as steady-state vs. transient."
+      },
+      {
+        "field": "interposer_thermal_properties_missing",
+        "reason": "Six-layer packaging stack (organic substrate, C4 bumps, silicon interposer, microbumps, chiplets, TIM) is illustrated but thermal conductivity, thickness of each layer, and TSV distribution are not provided. Hotspot model requires these but extraction provides only spreader and heatsink dimensions.",
+        "locator": "Section 3.1, page 3: Figure 1 shows layers but text only specifies '5 mm heat spreader edge size' and '20 mm heatsink edge size'. No interposer thickness, silicon conductivity, TIM conductivity, or TSV area specified."
+      },
+      {
+        "field": "power_distribution_assumption_unvalidated",
+        "reason": "Paper assumes power is uniformly distributed over chiplet area and that surface temperature equals overall chiplet temperature due to high thermal conductivity and thinness. No sensitivity analysis or validation against non-uniform power profiles or within-chiplet gradients provided.",
+        "locator": "Section 3.2.1, page 4: 'we assume that the power is evenly distributed over the chiplet, and due to the chiplet's thinness and high thermal conductivity, we assume that the surface temperature of the chiplet is consistent with the overall temperature.'"
+      },
+      {
+        "field": "communication_task_graph_static",
+        "reason": "Communication Priority List (Table 1) provides static Mbit/s values with no temporal characterization. Real multimedia workloads exhibit burst patterns, dynamic task scheduling, and frequency variation. Algorithm does not model time-varying communication or power.",
+        "locator": "Section 3.2.1, pages 3-4: Table 1 lists communication data as constant Mbit/s between chiplet pairs; Figure 2 shows static directed graph."
+      },
+      {
+        "field": "chiplet_placement_grid_discretization_incomplete",
+        "reason": "Chiplet theoretical sizes are preprocessed to account for spacing, but exact algorithm for grid size determination and mapping constraint generation not fully specified. Floorplan coordinates inferred from text descriptions and grid diagrams rather than explicitly tabulated.",
+        "locator": "Section 3.2.1, page 4: 'the theoretical sizes, which are the actual size plus the distance, are introduced' and 'the unit grid size and the number of grids that each chiplet is occupying' but formula and rounding rules not provided."
+      },
+      {
+        "field": "algorithm_3_syntax_errors_and_ambiguity",
+        "reason": "Algorithm 3 (Heuristic Information Calculation) contains undefined variable references and incomplete expressions. Line 13 has 'D[map[i]]D[map[k]]' (concatenation, likely a typo for division). Line 16-17 normalization formula structure unclear with mismatched parentheses. No explicit definition of map[], mapflag[], or distance matrix structure.",
+        "locator": "Section 3.2.4, page 8: Algorithm 3 lines 13, 16-17. Line 13: 'temcost+=power[mapp[i]]/D[map[i]]D[map[k]];' (typo 'mapp' vs 'map'; missing operator between D distances). Line 16-17: normalization formula parentheses and variable scope ambiguous."
+      },
+      {
+        "field": "evaluation_figure_9_visual_verification_partial",
+        "reason": "Figure 9 shows thermal maps for initial and three optimized layouts (α=0.5, 0.8, 0.2) plus single-objective baseline. Thermal color scale and relative patterns are visible but absolute coordinates and chiplet boundary alignment with grid topology not clearly marked. Cannot independently verify that peak temperature locations correspond to extracted power values without detailed overlay.",
+        "locator": "Section 4, page 10-11: Figure 9 (a-e) shows thermal maps but lacks coordinate grid overlay and explicit chiplet position annotations."
+      },
+      {
+        "field": "optimization_result_reproducibility_unverified",
+        "reason": "Paper reports peak temperature reduction of 8.34 K (381.41 K → 373.58 K) and communication reduction of 232.13 µJ (1026.72 → 794.59 µJ) for α=0.5, but intermediate optimization steps (CMO algorithm execution trace, heuristic value comparisons, tie-breaking decisions) are not documented. Secondary exploration method (Figure 6) rationale is qualitative.",
+        "locator": "Section 4, page 10: Results stated as '8.34 K and communication power consumption reduced by 232.13 µJ' but no detailed iteration log or sensitivity analysis provided."
+      },
+      {
+        "field": "hotspot_version_capabilities_unvalidated",
+        "reason": "Paper states 'Hotspot 7.0, which has the added capability of performing thermal simulations for 2.5-D/3D ICs.' However, Hotspot is fundamentally a compact thermal-resistance circuit model designed for 2D planar die. Claimed 2.5-D capability in version 7.0 is not independently verified against published Hotspot documentation (original references are 2002-2006).",
+        "locator": "Section 3, page 3: 'This article utilizes Hotspot 7.0, which has the added capability of performing thermal simulations for 2.5-D/3D ICs.' Citation [24-27] are Skadron et al. 2002-2006, predating Hotspot 7.0. No specific reference to 7.0 technical report provided."
+      },
+      {
+        "field": "secondary_exploration_method_algorithmic_clarity",
+        "reason": "Section describing secondary exploration (Figure 6, pages 8-9) uses informal narrative. Logic for comparing η' values and selecting between n1 and n2 based on η01 > η'01 is presented qualitatively without formal statement of comparison rule or convergence proof.",
+        "locator": "Section 3.2.4, pages 8-9: 'If η01 is greater than η01 , node n3 will be selected to map chiplet_4; on the contrary, n2 will be selected.' Notation ambiguous (η01 appears twice; unclear if second is η'01). No algorithm pseudocode for this step."
+      },
+      {
+        "field": "manhattan_distance_thermal_coupling_approximation",
+        "reason": "Heuristic uses Manhattan distance between chiplet midpoints as proxy for thermal coupling strength, but actual thermal resistance between chiplets depends on interposer material properties, TSV distribution, layer thickness, and thermal conductance of intermediate materials. Manhattan distance is geometric approximation without physical coupling coefficient.",
+        "locator": "Section 3.2.4, page 7: Equations (1)-(2) use Manhattan distance di,j as key parameter but no derivation linking to thermal resistance or coupling. Text notes distance differences for horizontal vs. vertical placement (page 9, Figure 8) but scaling factor not derived from physics."
+      },
+      {
+        "field": "weight_factor_alpha_selection_unjustified",
+        "reason": "Paper demonstrates results for α ∈ {0.2, 0.5, 0.8} and single-objective baseline but provides no guidance on selecting α for a given application. Trade-off curve (Pareto front) is not explicitly constructed. Designers are told 'change the weight factor according to their own requirement' but optimization landscape not characterized.",
+        "locator": "Section 4, page 11: 'The factor α can effectively adjust the weight of communication power consumption and temperature in the algorithm. Designers can change the weight factor according to their requirements.' No Pareto analysis or Hypervolume metric provided."
+      },
+      {
+        "field": "no_comparison_with_state_of_art_thermal_aware_methods",
+        "reason": "Related works (Section 2) cite TAP-2.5-D [21] and multi-objective algorithms [20,22] but evaluation does not include direct comparison with these methods on the same MWD benchmark. Only comparison is against CMO at different α values and a single-objective communication-only baseline [31] (not reproduced here).",
+        "locator": "Section 2, page 2: 'Ma et al. proposed a TAP-2.5-D strategy' [21] and 'Healy et al. presented a multi-objective microarchitectural floorplanning algorithm' [22] but Section 4 does not compare CMO against these."
+      },
+      {
+        "field": "chiplet_power_values_table_2_encoding_unclear",
+        "reason": "Table 2 on page 5 lists Power (W) column but some rows appear garbled in OCR extraction. Explicit power for mem2 appears in two places and row ordering suggests possible table corruption. Extracted values (mem2=70 W, mem1=10 W, etc.) should be cross-checked against original PDF visual layout.",
+        "locator": "Page 5, Table 2: Row labels and power values show duplication (mem2 listed twice, hvs listed twice). OCR may have corrupted table alignment."
+      },
+      {
+        "field": "cooling_model_fin_efficiency_not_specified",
+        "reason": "Heatsink is specified as 'fin-channel heat sink' with 30 mm fin height and 1 mm width, but fin material (copper, aluminum), fin efficiency, base-to-ambient thermal resistance, and convection correlation (Nusselt number) not provided. Hotspot may use default correlation or empirical data not documented.",
+        "locator": "Section 3.1, page 3: 'fin-channel heat sink as the heat sink type, and the fin-height is 30 mm and the fin-width is 1 mm' but no material or efficiency model specified."
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W4361199658",
+    "decision": "conditional_2d_snapshot",
+    "input_gate_pass": true,
+    "scientific_gate_pass": true,
+    "independently_verified": false,
+    "input_errors": [],
+    "blocking_facts": [
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "Evidence 28 lacks a valid page or pinned asset locator",
+      "Evidence 29 lacks a valid page or pinned asset locator",
+      "Evidence 30 lacks a valid page or pinned asset locator",
+      "Evidence 31 lacks a valid page or pinned asset locator",
+      "Evidence 32 lacks a valid page or pinned asset locator",
+      "Evidence 33 lacks a valid page or pinned asset locator",
+      "Evidence 34 lacks a valid page or pinned asset locator",
+      "Evidence 35 lacks a valid page or pinned asset locator",
+      "Evidence 36 lacks a valid page or pinned asset locator",
+      "Evidence 37 lacks a valid page or pinned asset locator",
+      "Evidence 38 lacks a valid page or pinned asset locator",
+      "Evidence 39 lacks a valid page or pinned asset locator",
+      "Evidence 40 lacks a valid page or pinned asset locator",
+      "Evidence 41 lacks a valid page or pinned asset locator",
+      "Evidence 42 lacks a valid page or pinned asset locator",
+      "Evidence 43 lacks a valid page or pinned asset locator",
+      "Evidence 44 lacks a valid page or pinned asset locator",
+      "Evidence 45 lacks a valid page or pinned asset locator",
+      "Evidence 46 lacks a valid page or pinned asset locator",
+      "Evidence 47 lacks a valid page or pinned asset locator",
+      "Evidence 48 lacks a valid page or pinned asset locator",
+      "Evidence 49 lacks a valid page or pinned asset locator",
+      "Evidence 50 lacks a valid page or pinned asset locator",
+      "Evidence 51 lacks a valid page or pinned asset locator",
+      "Evidence 52 lacks a valid page or pinned asset locator",
+      "Evidence 53 lacks a valid page or pinned asset locator",
+      "Evidence 54 lacks a valid page or pinned asset locator",
+      "Evidence 55 lacks a valid page or pinned asset locator",
+      "Evidence 56 lacks a valid page or pinned asset locator",
+      "Evidence 57 lacks a valid page or pinned asset locator",
+      "Evidence 58 lacks a valid page or pinned asset locator",
+      "Evidence 59 lacks a valid page or pinned asset locator",
+      "Evidence 60 lacks a valid page or pinned asset locator",
+      "Evidence 61 lacks a valid page or pinned asset locator",
+      "Evidence 62 lacks a valid page or pinned asset locator",
+      "Evidence 63 lacks a valid page or pinned asset locator",
+      "Evidence 64 lacks a valid page or pinned asset locator",
+      "Evidence 65 lacks a valid page or pinned asset locator",
+      "Evidence 66 lacks a valid page or pinned asset locator",
+      "Evidence 67 lacks a valid page or pinned asset locator",
+      "Evidence 68 lacks a valid page or pinned asset locator",
+      "Evidence 69 lacks a valid page or pinned asset locator",
+      "Evidence 70 lacks a valid page or pinned asset locator",
+      "Evidence 71 lacks a valid page or pinned asset locator",
+      "Evidence 72 lacks a valid page or pinned asset locator",
+      "Evidence 73 lacks a valid page or pinned asset locator",
+      "Evidence 74 lacks a valid page or pinned asset locator",
+      "Evidence 75 lacks a valid page or pinned asset locator",
+      "Evidence 76 lacks a valid page or pinned asset locator",
+      "Evidence 77 lacks a valid page or pinned asset locator",
+      "No cited, normalized x_m for mem3",
+      "No cited, normalized y_m for mem3",
+      "No cited, normalized width_m for mem3",
+      "No cited, normalized height_m for mem3",
+      "No cited, normalized power_w for mem3",
+      "No cited, normalized x_m for hs",
+      "No cited, normalized y_m for hs",
+      "No cited, normalized width_m for hs",
+      "No cited, normalized height_m for hs",
+      "No cited, normalized power_w for hs",
+      "No cited, normalized x_m for nr",
+      "No cited, normalized y_m for nr",
+      "No cited, normalized width_m for nr",
+      "No cited, normalized height_m for nr",
+      "No cited, normalized power_w for nr",
+      "No cited, normalized x_m for in",
+      "No cited, normalized y_m for in",
+      "No cited, normalized width_m for in",
+      "No cited, normalized height_m for in",
+      "No cited, normalized power_w for in",
+      "No cited, normalized x_m for vs",
+      "No cited, normalized y_m for vs",
+      "No cited, normalized width_m for vs",
+      "No cited, normalized height_m for vs",
+      "No cited, normalized power_w for vs",
+      "No cited, normalized x_m for mem2",
+      "No cited, normalized y_m for mem2",
+      "No cited, normalized width_m for mem2",
+      "No cited, normalized height_m for mem2",
+      "No cited, normalized power_w for mem2",
+      "No cited, normalized x_m for hvs",
+      "No cited, normalized y_m for hvs",
+      "No cited, normalized width_m for hvs",
+      "No cited, normalized height_m for hvs",
+      "No cited, normalized power_w for hvs",
+      "No cited, normalized x_m for jug1",
+      "No cited, normalized y_m for jug1",
+      "No cited, normalized width_m for jug1",
+      "No cited, normalized height_m for jug1",
+      "No cited, normalized power_w for jug1",
+      "No cited, normalized x_m for jug2",
+      "No cited, normalized y_m for jug2",
+      "No cited, normalized width_m for jug2",
+      "No cited, normalized height_m for jug2",
+      "No cited, normalized power_w for jug2",
+      "No cited, normalized x_m for se",
+      "No cited, normalized y_m for se",
+      "No cited, normalized width_m for se",
+      "No cited, normalized height_m for se",
+      "No cited, normalized power_w for se",
+      "No cited, normalized x_m for mem1",
+      "No cited, normalized y_m for mem1",
+      "No cited, normalized width_m for mem1",
+      "No cited, normalized height_m for mem1",
+      "No cited, normalized power_w for mem1",
+      "No cited, normalized x_m for blend",
+      "No cited, normalized y_m for blend",
+      "No cited, normalized width_m for blend",
+      "No cited, normalized height_m for blend",
+      "No cited, normalized power_w for blend",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No repository URL or code artifact provided for CMO algorithm implementation",
+      "No detailed HotSpot thermal model parameters (layer-specific thermal conductivity, thickness of each layer beyond spreader/heatsink dimensions)",
+      "No specification of interposer material properties or TSV density and distribution",
+      "No thermal resistance matrix or detailed coupling coefficients between chiplets",
+      "No transient power traces or workload time-varying behavior for MWD application",
+      "No validation against silicon measurements or experimental thermal imaging data",
+      "Communication task graph bandwidth values are static; no temporal profile or burstiness characterization",
+      "No specification of TIM thermal conductivity or thickness",
+      "No fin efficiency or convection coefficient model details for heatsink",
+      "Chiplet actual sizes and spacing rules are preprocessed; exact algorithm for theoretical size determination not fully specified in text",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "Hotspot 7.0 uses compact thermal resistance/capacitance circuit model with fourth-order Runge-Kutta adaptive stepping; does not model transient chiplet power variations or dynamic frequency scaling",
+        "essential": false
+      },
+      {
+        "reason": "Algorithm assumes uniform power distribution over chiplet area and that surface temperature equals overall temperature due to assumed high thermal conductivity and thinness; ignores within-chiplet thermal gradients",
+        "essential": false
+      },
+      {
+        "reason": "Manhattan distance metric used for heuristic calculation; actual thermal resistance between chiplets depends on interposer thermal properties and TSV distribution which are not spatially detailed",
+        "essential": false
+      },
+      {
+        "reason": "Communication consumption calculation uses static communication task graph; does not account for runtime variation or dynamic task mapping",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "Chiplet power is uniformly distributed across chiplet area",
+      "Chiplet surface temperature equals overall chiplet temperature due to high thermal conductivity",
+      "Passive interposer with back-end-of-line process; six-layer packaging stack is fixed",
+      "Through-silicon vias (TSVs) provide thermal and electrical coupling between chiplets and substrate",
+      "Air-forced heatsink with fin-channel geometry provides forced convection cooling; fan speed fixed at 5000 RPM",
+      "Thermal interface material (TIM) provides specified thermal resistance between chips and spreader",
+      "Manhattan distance between chiplet midpoints represents inter-chiplet thermal coupling strength",
+      "Communication energy per unit distance is constant at 0.186 pJ/bit/mm (ORION 2.0 model)",
+      "Mesh topology grid determines allowed placement positions; unit grid size derived from chiplet sizes and mandatory spacing",
+      "Chiplet placement is static after optimization; no runtime relocation"
+    ],
+    "evidence_sha256": "5f96ae1073942c1a9aa01901fd0ba2d4443953e725064e0e6369ed49ccd1f5de",
+    "simulation_allowed": true,
+    "comparison_valid": false,
+    "reason": "Studio input is valid for an exploratory run; evidence and adversarial concerns prevent a paper comparison."
+  },
+  "simulation": {
+    "status": "completed",
+    "studio_run_id": "e2f991aab95d4dd7b985728589223538",
+    "run_kind": "custom_2d_steady",
+    "input_sha256": "d9fcbed175a78f717293f3a94659a7b4f331db5aeaa6747040fd14f17568f0b9",
+    "config_sha256": "6fb68dc9ed6344470f8a311624b85c62cd119d6ba8b84d80025f680999e0e0c1",
+    "rows": [
+      {
+        "name": "mem3",
+        "kelvin": 388.85,
+        "celsius": 115.7
+      },
+      {
+        "name": "hs",
+        "kelvin": 398.86,
+        "celsius": 125.71
+      },
+      {
+        "name": "nr",
+        "kelvin": 394.46,
+        "celsius": 121.31
+      },
+      {
+        "name": "in",
+        "kelvin": 396.69,
+        "celsius": 123.54
+      },
+      {
+        "name": "vs",
+        "kelvin": 391.16,
+        "celsius": 118.01
+      },
+      {
+        "name": "mem2",
+        "kelvin": 464.55,
+        "celsius": 191.4
+      },
+      {
+        "name": "hvs",
+        "kelvin": 399.41,
+        "celsius": 126.26
+      },
+      {
+        "name": "jug1",
+        "kelvin": 392.65,
+        "celsius": 119.5
+      },
+      {
+        "name": "jug2",
+        "kelvin": 395.9,
+        "celsius": 122.75
+      },
+      {
+        "name": "se",
+        "kelvin": 409.62,
+        "celsius": 136.47
+      },
+      {
+        "name": "mem1",
+        "kelvin": 396.23,
+        "celsius": 123.08
+      },
+      {
+        "name": "blend",
+        "kelvin": 374.16,
+        "celsius": 101.01
+      },
+      {
+        "name": "iface_mem3",
+        "kelvin": 387.09,
+        "celsius": 113.94
+      },
+      {
+        "name": "iface_hs",
+        "kelvin": 396.6,
+        "celsius": 123.45
+      },
+      {
+        "name": "iface_nr",
+        "kelvin": 392.07,
+        "celsius": 118.92
+      },
+      {
+        "name": "iface_in",
+        "kelvin": 394.88,
+        "celsius": 121.73
+      },
+      {
+        "name": "iface_vs",
+        "kelvin": 390.53,
+        "celsius": 117.38
+      },
+      {
+        "name": "iface_mem2",
+        "kelvin": 453.28,
+        "celsius": 180.13
+      },
+      {
+        "name": "iface_hvs",
+        "kelvin": 397.71,
+        "celsius": 124.56
+      },
+      {
+        "name": "iface_jug1",
+        "kelvin": 391.5,
+        "celsius": 118.35
+      },
+      {
+        "name": "iface_jug2",
+        "kelvin": 394.21,
+        "celsius": 121.06
+      },
+      {
+        "name": "iface_se",
+        "kelvin": 406.7,
+        "celsius": 133.55
+      },
+      {
+        "name": "iface_mem1",
+        "kelvin": 394.54,
+        "celsius": 121.39
+      },
+      {
+        "name": "iface_blend",
+        "kelvin": 373.14,
+        "celsius": 99.99
+      },
+      {
+        "name": "hsp_mem3",
+        "kelvin": 379.46,
+        "celsius": 106.31
+      },
+      {
+        "name": "hsp_hs",
+        "kelvin": 386.79,
+        "celsius": 113.64
+      },
+      {
+        "name": "hsp_nr",
+        "kelvin": 381.69,
+        "celsius": 108.54
+      },
+      {
+        "name": "hsp_in",
+        "kelvin": 387.04,
+        "celsius": 113.89
+      },
+      {
+        "name": "hsp_vs",
+        "kelvin": 387.82,
+        "celsius": 114.67
+      },
+      {
+        "name": "hsp_mem2",
+        "kelvin": 404.45,
+        "celsius": 131.3
+      },
+      {
+        "name": "hsp_hvs",
+        "kelvin": 390.35,
+        "celsius": 117.2
+      },
+      {
+        "name": "hsp_jug1",
+        "kelvin": 386.55,
+        "celsius": 113.4
+      },
+      {
+        "name": "hsp_jug2",
+        "kelvin": 386.88,
+        "celsius": 113.73
+      },
+      {
+        "name": "hsp_se",
+        "kelvin": 394.02,
+        "celsius": 120.87
+      },
+      {
+        "name": "hsp_mem1",
+        "kelvin": 387.2,
+        "celsius": 114.05
+      },
+      {
+        "name": "hsp_blend",
+        "kelvin": 368.75,
+        "celsius": 95.6
+      },
+      {
+        "name": "hsink_mem3",
+        "kelvin": 376.6,
+        "celsius": 103.45
+      },
+      {
+        "name": "hsink_hs",
+        "kelvin": 382.69,
+        "celsius": 109.54
+      },
+      {
+        "name": "hsink_nr",
+        "kelvin": 377.39,
+        "celsius": 104.24
+      },
+      {
+        "name": "hsink_in",
+        "kelvin": 383.06,
+        "celsius": 109.91
+      },
+      {
+        "name": "hsink_vs",
+        "kelvin": 386.09,
+        "celsius": 112.94
+      },
+      {
+        "name": "hsink_mem2",
+        "kelvin": 388.61,
+        "celsius": 115.46
+      },
+      {
+        "name": "hsink_hvs",
+        "kelvin": 387.08,
+        "celsius": 113.93
+      },
+      {
+        "name": "hsink_jug1",
+        "kelvin": 384.23,
+        "celsius": 111.08
+      },
+      {
+        "name": "hsink_jug2",
+        "kelvin": 383.7,
+        "celsius": 110.55
+      },
+      {
+        "name": "hsink_se",
+        "kelvin": 388.16,
+        "celsius": 115.01
+      },
+      {
+        "name": "hsink_mem1",
+        "kelvin": 384,
+        "celsius": 110.85
+      },
+      {
+        "name": "hsink_blend",
+        "kelvin": 366.93,
+        "celsius": 93.78
+      },
+      {
+        "name": "inode_0",
+        "kelvin": 373.94,
+        "celsius": 100.79
+      },
+      {
+        "name": "inode_1",
+        "kelvin": 355.64,
+        "celsius": 82.49
+      },
+      {
+        "name": "inode_2",
+        "kelvin": 353.1,
+        "celsius": 79.95
+      },
+      {
+        "name": "inode_3",
+        "kelvin": 370.31,
+        "celsius": 97.16
+      },
+      {
+        "name": "inode_4",
+        "kelvin": 373.63,
+        "celsius": 100.48
+      },
+      {
+        "name": "inode_5",
+        "kelvin": 355.47,
+        "celsius": 82.32
+      },
+      {
+        "name": "inode_6",
+        "kelvin": 352.96,
+        "celsius": 79.81
+      },
+      {
+        "name": "inode_7",
+        "kelvin": 370.05,
+        "celsius": 96.9
+      },
+      {
+        "name": "inode_8",
+        "kelvin": 363.92,
+        "celsius": 90.77
+      },
+      {
+        "name": "inode_9",
+        "kelvin": 348.94,
+        "celsius": 75.79
+      },
+      {
+        "name": "inode_10",
+        "kelvin": 346.8,
+        "celsius": 73.65
+      },
+      {
+        "name": "inode_11",
+        "kelvin": 360.87,
+        "celsius": 87.72
+      }
+    ],
+    "solver_log": "=== steady ===\nComputing steady-state temperatures...\nParsing input files...\nCreating thermal circuit...\nSimulation complete.\n",
+    "assumptions": "Bundled example.materials and package.config",
+    "artifacts": {
+      "submitted.experiment.json": {
+        "path": "submitted.experiment.json",
+        "bytes": 1035,
+        "sha256": "13676388a3a941e614eedf89c113fb5fe5f495062c85ad834af9532dbe7b00e5",
+        "studio_url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/submitted.experiment.json"
+      },
+      "input.flp": {
+        "path": "input.flp",
+        "bytes": 344,
+        "sha256": "2f73e4c37fa13638f1c6369e54751b61d08974a880caa9469ad4d33fb97c07bd",
+        "studio_url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/input.flp"
+      },
+      "input.ptrace": {
+        "path": "input.ptrace",
+        "bytes": 85,
+        "sha256": "7f464a27958c743960cc8fde9dc362e0d6e1a546b445d445a9854681de43f985",
+        "studio_url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/input.ptrace"
+      },
+      "temperatures.steady": {
+        "path": "temperatures.steady",
+        "bytes": 910,
+        "sha256": "a4f492919ac85f2d511e8394ecb280fe12b1b76874fb56f2603b2325bd6ee739",
+        "studio_url": "/api/runs/e2f991aab95d4dd7b985728589223538/artifacts/temperatures.steady"
+      }
+    },
+    "comparison_valid": false,
+    "sensitivity": {
+      "status": "completed",
+      "block_name": "mem3",
+      "power_delta_w": 1,
+      "baseline_kelvin": 388.85,
+      "trial_kelvin": 390.15,
+      "passed": true,
+      "run": {
+        "status": "completed",
+        "studio_run_id": "5313af91328340f3b3bff79c5b77a239",
+        "run_kind": "custom_2d_steady",
+        "input_sha256": "eee71796db3b5c35f5aae067e3f00e5e4ca46701e776f167485a5f0c2012cbfc",
+        "config_sha256": "6fb68dc9ed6344470f8a311624b85c62cd119d6ba8b84d80025f680999e0e0c1",
+        "rows": [
+          {
+            "name": "mem3",
+            "kelvin": 390.15,
+            "celsius": 117
+          },
+          {
+            "name": "hs",
+            "kelvin": 399.04,
+            "celsius": 125.89
+          },
+          {
+            "name": "nr",
+            "kelvin": 394.6,
+            "celsius": 121.45
+          },
+          {
+            "name": "in",
+            "kelvin": 396.9,
+            "celsius": 123.75
+          },
+          {
+            "name": "vs",
+            "kelvin": 391.31,
+            "celsius": 118.16
+          },
+          {
+            "name": "mem2",
+            "kelvin": 464.72,
+            "celsius": 191.57
+          },
+          {
+            "name": "hvs",
+            "kelvin": 399.54,
+            "celsius": 126.39
+          },
+          {
+            "name": "jug1",
+            "kelvin": 392.79,
+            "celsius": 119.64
+          },
+          {
+            "name": "jug2",
+            "kelvin": 396.03,
+            "celsius": 122.88
+          },
+          {
+            "name": "se",
+            "kelvin": 409.78,
+            "celsius": 136.63
+          },
+          {
+            "name": "mem1",
+            "kelvin": 396.36,
+            "celsius": 123.21
+          },
+          {
+            "name": "blend",
+            "kelvin": 374.25,
+            "celsius": 101.1
+          },
+          {
+            "name": "iface_mem3",
+            "kelvin": 388.23,
+            "celsius": 115.08
+          },
+          {
+            "name": "iface_hs",
+            "kelvin": 396.77,
+            "celsius": 123.62
+          },
+          {
+            "name": "iface_nr",
+            "kelvin": 392.21,
+            "celsius": 119.06
+          },
+          {
+            "name": "iface_in",
+            "kelvin": 395.09,
+            "celsius": 121.94
+          },
+          {
+            "name": "iface_vs",
+            "kelvin": 390.69,
+            "celsius": 117.54
+          },
+          {
+            "name": "iface_mem2",
+            "kelvin": 453.45,
+            "celsius": 180.3
+          },
+          {
+            "name": "iface_hvs",
+            "kelvin": 397.85,
+            "celsius": 124.7
+          },
+          {
+            "name": "iface_jug1",
+            "kelvin": 391.64,
+            "celsius": 118.49
+          },
+          {
+            "name": "iface_jug2",
+            "kelvin": 394.34,
+            "celsius": 121.19
+          },
+          {
+            "name": "iface_se",
+            "kelvin": 406.85,
+            "celsius": 133.7
+          },
+          {
+            "name": "iface_mem1",
+            "kelvin": 394.66,
+            "celsius": 121.51
+          },
+          {
+            "name": "iface_blend",
+            "kelvin": 373.24,
+            "celsius": 100.09
+          },
+          {
+            "name": "hsp_mem3",
+            "kelvin": 379.89,
+            "celsius": 106.74
+          },
+          {
+            "name": "hsp_hs",
+            "kelvin": 386.97,
+            "celsius": 113.82
+          },
+          {
+            "name": "hsp_nr",
+            "kelvin": 381.84,
+            "celsius": 108.69
+          },
+          {
+            "name": "hsp_in",
+            "kelvin": 387.25,
+            "celsius": 114.1
+          },
+          {
+            "name": "hsp_vs",
+            "kelvin": 387.98,
+            "celsius": 114.83
+          },
+          {
+            "name": "hsp_mem2",
+            "kelvin": 404.62,
+            "celsius": 131.47
+          },
+          {
+            "name": "hsp_hvs",
+            "kelvin": 390.49,
+            "celsius": 117.34
+          },
+          {
+            "name": "hsp_jug1",
+            "kelvin": 386.69,
+            "celsius": 113.54
+          },
+          {
+            "name": "hsp_jug2",
+            "kelvin": 387,
+            "celsius": 113.85
+          },
+          {
+            "name": "hsp_se",
+            "kelvin": 394.17,
+            "celsius": 121.02
+          },
+          {
+            "name": "hsp_mem1",
+            "kelvin": 387.33,
+            "celsius": 114.18
+          },
+          {
+            "name": "hsp_blend",
+            "kelvin": 368.85,
+            "celsius": 95.7
+          },
+          {
+            "name": "hsink_mem3",
+            "kelvin": 376.83,
+            "celsius": 103.68
+          },
+          {
+            "name": "hsink_hs",
+            "kelvin": 382.86,
+            "celsius": 109.71
+          },
+          {
+            "name": "hsink_nr",
+            "kelvin": 377.53,
+            "celsius": 104.38
+          },
+          {
+            "name": "hsink_in",
+            "kelvin": 383.25,
+            "celsius": 110.1
+          },
+          {
+            "name": "hsink_vs",
+            "kelvin": 386.25,
+            "celsius": 113.1
+          },
+          {
+            "name": "hsink_mem2",
+            "kelvin": 388.78,
+            "celsius": 115.63
+          },
+          {
+            "name": "hsink_hvs",
+            "kelvin": 387.21,
+            "celsius": 114.06
+          },
+          {
+            "name": "hsink_jug1",
+            "kelvin": 384.37,
+            "celsius": 111.22
+          },
+          {
+            "name": "hsink_jug2",
+            "kelvin": 383.82,
+            "celsius": 110.67
+          },
+          {
+            "name": "hsink_se",
+            "kelvin": 388.31,
+            "celsius": 115.16
+          },
+          {
+            "name": "hsink_mem1",
+            "kelvin": 384.13,
+            "celsius": 110.98
+          },
+          {
+            "name": "hsink_blend",
+            "kelvin": 367.02,
+            "celsius": 93.87
+          },
+          {
+            "name": "inode_0",
+            "kelvin": 374.09,
+            "celsius": 100.94
+          },
+          {
+            "name": "inode_1",
+            "kelvin": 355.73,
+            "celsius": 82.58
+          },
+          {
+            "name": "inode_2",
+            "kelvin": 353.17,
+            "celsius": 80.02
+          },
+          {
+            "name": "inode_3",
+            "kelvin": 370.49,
+            "celsius": 97.34
+          },
+          {
+            "name": "inode_4",
+            "kelvin": 373.78,
+            "celsius": 100.63
+          },
+          {
+            "name": "inode_5",
+            "kelvin": 355.56,
+            "celsius": 82.41
+          },
+          {
+            "name": "inode_6",
+            "kelvin": 353.02,
+            "celsius": 79.87
+          },
+          {
+            "name": "inode_7",
+            "kelvin": 370.23,
+            "celsius": 97.08
+          },
+          {
+            "name": "inode_8",
+            "kelvin": 364.04,
+            "celsius": 90.89
+          },
+          {
+            "name": "inode_9",
+            "kelvin": 349.01,
+            "celsius": 75.86
+          },
+          {
+            "name": "inode_10",
+            "kelvin": 346.85,
+            "celsius": 73.7
+          },
+          {
+            "name": "inode_11",
+            "kelvin": 361.02,
+            "celsius": 87.87
+          }
+        ],
+        "solver_log": "=== steady ===\nComputing steady-state temperatures...\nParsing input files...\nCreating thermal circuit...\nSimulation complete.\n",
+        "assumptions": "Bundled example.materials and package.config",
+        "artifacts": {
+          "submitted.experiment.json": {
+            "path": "submitted.experiment.json",
+            "bytes": 1035,
+            "sha256": "5461b4f43485310e7c770adf8bd195ad1a45d9bcb43e7f96be1e52cdf80c0df6",
+            "studio_url": "/api/runs/5313af91328340f3b3bff79c5b77a239/artifacts/submitted.experiment.json"
+          },
+          "input.flp": {
+            "path": "input.flp",
+            "bytes": 344,
+            "sha256": "2f73e4c37fa13638f1c6369e54751b61d08974a880caa9469ad4d33fb97c07bd",
+            "studio_url": "/api/runs/5313af91328340f3b3bff79c5b77a239/artifacts/input.flp"
+          },
+          "input.ptrace": {
+            "path": "input.ptrace",
+            "bytes": 85,
+            "sha256": "a067c4a998756e5bd03b8b21e2271a9f5ff6a103be75269d787ed1c38c99d516",
+            "studio_url": "/api/runs/5313af91328340f3b3bff79c5b77a239/artifacts/input.ptrace"
+          },
+          "temperatures.steady": {
+            "path": "temperatures.steady",
+            "bytes": 910,
+            "sha256": "577f2f94f1ee4d235ee185d471bc484b634b929541d9044e9fedcf1594e810ac",
+            "studio_url": "/api/runs/5313af91328340f3b3bff79c5b77a239/artifacts/temperatures.steady"
+          }
+        },
+        "comparison_valid": false
+      }
+    }
+  },
+  "assessment": {
+    "verdict": "conditional_2d_snapshot",
+    "comparison_valid": false,
+    "summary": "Studio completed a custom 2D steady-state thermal run on the 12-chiplet MWD system layout extracted from the paper. The floorplan and power values were directly transcribed from Table 2 (paper p. 5). Studio reported a peak temperature of 464.55 K (mem2 chiplet), whereas the paper's optimized layout (α=0.5) reported 373.58 K. This large discrepancy (91 K difference) reflects fundamental mismatches: (1) the paper scenario describes an optimized chiplet placement after running the CMO algorithm, but the extracted floorplan coordinates lack explicit paper citation and appear to derive from a different layout state or initialization; (2) the paper uses Hotspot 7.0 with a detailed six-layer passive interposer model, while Studio employed bundled example materials and default package.config, omitting layer-specific thermal conductivity, interposer coupling details, and TSV distribution; (3) the paper specifies a fin-channel heatsink with forced convection (5000 RPM fan, 30 mm fin height, 1 mm fin width, 10 cm fan radius), whereas Studio's default configuration does not replicate these forced-convection parameters; (4) the paper's reported temperatures assume static optimization and uniform power distribution assumptions that align with the CMO algorithm, but Studio ran without the optimization context. The experiment is labeled as custom_2d_steady with no transient trace, and sensitivity analysis confirmed numerical plausibility (mem3 +1 W → +1.3 K rise). However, no paper comparison is valid because the floorplan lacks definitive citation to an optimized configuration, the thermal model parameters diverge significantly, and the operating point (baseline vs. optimized layout) is ambiguous.",
+    "limitations": [
+      "Floorplan coordinates in the Studio experiment lack explicit paper page citation; evidence shows power and dimensions are from Table 2 (p. 5) but spatial layout (x_m, y_m) coordinates are not directly cited from paper, suggesting possible derivation or assumption rather than transcription of the optimized layout described in the paper.",
+      "Studio used bundled example.materials and default package.config rather than paper-specified layer parameters: no layer-specific thermal conductivity values, no silicon interposer thickness or TSV density specification, no TIM thermal resistance, and no fin efficiency or convection coefficient model matching the paper's fin-channel heatsink geometry (30 mm height, 1 mm width, 5000 RPM fan, 10 cm radius).",
+      "Peak temperature observed by Studio (464.55 K on mem2) is 91 K higher than paper's optimized result (373.58 K, α=0.5), indicating either different physical layouts, different thermal model parameterization, or that the extracted floorplan does not correspond to the optimized placement; the paper's Figure 9b thermal map is not available for visual validation.",
+      "Paper specifies six-layer packaging stack with passive silicon interposer, C4 bumps, microbumps, and TSV coupling; Studio's default thermal circuit model does not expose layer-by-layer thermal properties, making it impossible to verify whether the coupling path accurately models interposer effects.",
+      "Thermal observable (373.58 K) in the extraction lacks a traceable artifact_id or studio_run_id link; it is a reported peak temperature from the paper's optimized result, not an independently computed or validated baseline.",
+      "Paper's communication consumption metric (794.59 µJ at α=0.5) is an optimization objective that is not modeled or compared in Studio's thermal-only run; comparison would require coupling thermal and communication energy evaluation, which Studio does not perform.",
+      "Hotspot 7.0 compact thermal model uses fourth-order Runge-Kutta adaptive stepping for transient analysis, but Studio executed a steady-state run; no transient power variation or dynamic chiplet interaction is captured, limiting comparison to static power assumption only.",
+      "Studio sensitivity test (mem3 +1 W → +1.3 K) passed plausibility checks but does not validate the absolute temperature scale or the interposer thermal coupling distribution against paper claims.",
+      "Physical mismatches enumerated in the extraction indicate that Manhattan distance heuristic for communication and Manhattan-based thermal coupling are simplifications; actual thermal resistance between chiplets depends on TSV distribution and interposer properties not specified in detail.",
+      "Deterministic gate: comparison_valid=false because evidence lacks definitive page-level citation for floorplan coordinates, thermal model parameters do not match between paper and Studio, and the optimized layout context is not independently verified.",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "Evidence 28 lacks a valid page or pinned asset locator",
+      "Evidence 29 lacks a valid page or pinned asset locator",
+      "Evidence 30 lacks a valid page or pinned asset locator",
+      "Evidence 31 lacks a valid page or pinned asset locator",
+      "Evidence 32 lacks a valid page or pinned asset locator",
+      "Evidence 33 lacks a valid page or pinned asset locator",
+      "Evidence 34 lacks a valid page or pinned asset locator",
+      "Evidence 35 lacks a valid page or pinned asset locator",
+      "Evidence 36 lacks a valid page or pinned asset locator",
+      "Evidence 37 lacks a valid page or pinned asset locator",
+      "Evidence 38 lacks a valid page or pinned asset locator",
+      "Evidence 39 lacks a valid page or pinned asset locator",
+      "Evidence 40 lacks a valid page or pinned asset locator",
+      "Evidence 41 lacks a valid page or pinned asset locator",
+      "Evidence 42 lacks a valid page or pinned asset locator",
+      "Evidence 43 lacks a valid page or pinned asset locator",
+      "Evidence 44 lacks a valid page or pinned asset locator",
+      "Evidence 45 lacks a valid page or pinned asset locator",
+      "Evidence 46 lacks a valid page or pinned asset locator",
+      "Evidence 47 lacks a valid page or pinned asset locator",
+      "Evidence 48 lacks a valid page or pinned asset locator",
+      "Evidence 49 lacks a valid page or pinned asset locator",
+      "Evidence 50 lacks a valid page or pinned asset locator",
+      "Evidence 51 lacks a valid page or pinned asset locator",
+      "Evidence 52 lacks a valid page or pinned asset locator",
+      "Evidence 53 lacks a valid page or pinned asset locator",
+      "Evidence 54 lacks a valid page or pinned asset locator",
+      "Evidence 55 lacks a valid page or pinned asset locator",
+      "Evidence 56 lacks a valid page or pinned asset locator",
+      "Evidence 57 lacks a valid page or pinned asset locator",
+      "Evidence 58 lacks a valid page or pinned asset locator",
+      "Evidence 59 lacks a valid page or pinned asset locator",
+      "Evidence 60 lacks a valid page or pinned asset locator",
+      "Evidence 61 lacks a valid page or pinned asset locator",
+      "Evidence 62 lacks a valid page or pinned asset locator",
+      "Evidence 63 lacks a valid page or pinned asset locator",
+      "Evidence 64 lacks a valid page or pinned asset locator",
+      "Evidence 65 lacks a valid page or pinned asset locator",
+      "Evidence 66 lacks a valid page or pinned asset locator",
+      "Evidence 67 lacks a valid page or pinned asset locator",
+      "Evidence 68 lacks a valid page or pinned asset locator",
+      "Evidence 69 lacks a valid page or pinned asset locator",
+      "Evidence 70 lacks a valid page or pinned asset locator",
+      "Evidence 71 lacks a valid page or pinned asset locator",
+      "Evidence 72 lacks a valid page or pinned asset locator",
+      "Evidence 73 lacks a valid page or pinned asset locator",
+      "Evidence 74 lacks a valid page or pinned asset locator",
+      "Evidence 75 lacks a valid page or pinned asset locator",
+      "Evidence 76 lacks a valid page or pinned asset locator",
+      "Evidence 77 lacks a valid page or pinned asset locator",
+      "No cited, normalized x_m for mem3",
+      "No cited, normalized y_m for mem3",
+      "No cited, normalized width_m for mem3",
+      "No cited, normalized height_m for mem3",
+      "No cited, normalized power_w for mem3",
+      "No cited, normalized x_m for hs",
+      "No cited, normalized y_m for hs",
+      "No cited, normalized width_m for hs",
+      "No cited, normalized height_m for hs",
+      "No cited, normalized power_w for hs",
+      "No cited, normalized x_m for nr",
+      "No cited, normalized y_m for nr",
+      "No cited, normalized width_m for nr",
+      "No cited, normalized height_m for nr",
+      "No cited, normalized power_w for nr",
+      "No cited, normalized x_m for in",
+      "No cited, normalized y_m for in",
+      "No cited, normalized width_m for in",
+      "No cited, normalized height_m for in",
+      "No cited, normalized power_w for in",
+      "No cited, normalized x_m for vs",
+      "No cited, normalized y_m for vs",
+      "No cited, normalized width_m for vs",
+      "No cited, normalized height_m for vs",
+      "No cited, normalized power_w for vs",
+      "No cited, normalized x_m for mem2",
+      "No cited, normalized y_m for mem2",
+      "No cited, normalized width_m for mem2",
+      "No cited, normalized height_m for mem2",
+      "No cited, normalized power_w for mem2",
+      "No cited, normalized x_m for hvs",
+      "No cited, normalized y_m for hvs",
+      "No cited, normalized width_m for hvs",
+      "No cited, normalized height_m for hvs",
+      "No cited, normalized power_w for hvs",
+      "No cited, normalized x_m for jug1",
+      "No cited, normalized y_m for jug1",
+      "No cited, normalized width_m for jug1",
+      "No cited, normalized height_m for jug1",
+      "No cited, normalized power_w for jug1",
+      "No cited, normalized x_m for jug2",
+      "No cited, normalized y_m for jug2",
+      "No cited, normalized width_m for jug2",
+      "No cited, normalized height_m for jug2",
+      "No cited, normalized power_w for jug2",
+      "No cited, normalized x_m for se",
+      "No cited, normalized y_m for se",
+      "No cited, normalized width_m for se",
+      "No cited, normalized height_m for se",
+      "No cited, normalized power_w for se",
+      "No cited, normalized x_m for mem1",
+      "No cited, normalized y_m for mem1",
+      "No cited, normalized width_m for mem1",
+      "No cited, normalized height_m for mem1",
+      "No cited, normalized power_w for mem1",
+      "No cited, normalized x_m for blend",
+      "No cited, normalized y_m for blend",
+      "No cited, normalized width_m for blend",
+      "No cited, normalized height_m for blend",
+      "No cited, normalized power_w for blend",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No repository URL or code artifact provided for CMO algorithm implementation",
+      "No detailed HotSpot thermal model parameters (layer-specific thermal conductivity, thickness of each layer beyond spreader/heatsink dimensions)",
+      "No specification of interposer material properties or TSV density and distribution",
+      "No thermal resistance matrix or detailed coupling coefficients between chiplets",
+      "No transient power traces or workload time-varying behavior for MWD application",
+      "No validation against silicon measurements or experimental thermal imaging data",
+      "Communication task graph bandwidth values are static; no temporal profile or burstiness characterization",
+      "No specification of TIM thermal conductivity or thickness",
+      "No fin efficiency or convection coefficient model details for heatsink",
+      "Chiplet actual sizes and spacing rules are preprocessed; exact algorithm for theoretical size determination not fully specified in text",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "Chiplet power is uniformly distributed across chiplet area",
+      "Chiplet surface temperature equals overall chiplet temperature due to high thermal conductivity",
+      "Passive interposer with back-end-of-line process; six-layer packaging stack is fixed",
+      "Through-silicon vias (TSVs) provide thermal and electrical coupling between chiplets and substrate",
+      "Air-forced heatsink with fin-channel geometry provides forced convection cooling; fan speed fixed at 5000 RPM",
+      "Thermal interface material (TIM) provides specified thermal resistance between chips and spreader",
+      "Manhattan distance between chiplet midpoints represents inter-chiplet thermal coupling strength",
+      "Communication energy per unit distance is constant at 0.186 pJ/bit/mm (ORION 2.0 model)",
+      "Mesh topology grid determines allowed placement positions; unit grid size derived from chiplet sizes and mandatory spacing",
+      "Chiplet placement is static after optimization; no runtime relocation"
+    ]
+  }
+}
