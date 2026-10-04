@@ -442,6 +442,10 @@ async function main() {
     allowAdapted: args.includes('--allow-adapted'), fixture, reusedAudit, independentReview,
     baseUrl: process.env.HOTSPOT_BASE_URL || 'http://127.0.0.1:8000' });
   console.log(JSON.stringify({ output_dir: outputDir, verdict: result.assessment.verdict,
+    comparison_valid: result.assessment.comparison_valid,
+    adversarial_checks: result.adversarial.checklist,
+    adversarial_findings: result.adversarial.findings,
+    evidence_issues: result.feasibility.blocking_facts.length,
     studio_run_id: result.simulation.studio_run_id || null,
     artifacts: Object.keys(result.simulation.artifacts) }, null, 2));
 }
