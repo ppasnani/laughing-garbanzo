@@ -209,3 +209,18 @@ test('complete custom Rivet execution saves a reviewed candidate and Studio arti
       sha256(await readFile(resolve(dir, 'input.flp'))));
   } finally { await rm(dir, { recursive: true }); }
 });
+
+test('extraction failure identifies the paper and stage after Rivet wraps the error', async () => {
+  const dir = await mkdtemp(resolve(tmpdir(), 'paper-pilot-'));
+  try {
+    const badExtraction = structuredClone(extraction);
+    badExtraction.experiment = { kind: 'custom_2d_steady', floorplan: experiment.floorplan,
+      power_rows: [{ name: 'core0', watts: 8 }, { name: 'core0', watts: 6 }] };
+    await assert.rejects(execute({ row: { openalex_id: 'W123', title: 'Test paper' },
+      packet, config, outputDir: dir, runType: 'custom',
+      fixture: { extraction: badExtraction } }), /Paper W123 failed at extractPaper: Duplicate extracted power row/);
+    const failure = JSON.parse(await readFile(resolve(dir, 'stage-error.json'), 'utf8'));
+    assert.equal(failure.paper_id, 'W123');
+    assert.equal(failure.stage, 'extractPaper');
+  } finally { await rm(dir, { recursive: true }); }
+});
