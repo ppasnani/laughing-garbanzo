@@ -1,10 +1,10 @@
 # HotSpot Studio paper feasibility inventory
 
-This is a first-pass compatibility screen against the current fixed EV6 floorplan, GCC power trace, and HotSpot Studio backend. PDF page numbers count from the first PDF page. It does not assert that a paper is irreproducible with an expanded simulator, and it does not establish whether every numeric input is published. Figures and tables need manual review before an exact replication claim.
+This is the original first-pass compatibility screen against Studio's bundled fixed EV6 floorplan and GCC power trace. It predates custom 2D steady runs and has not been reassessed against them; `unsupported_current_backend` records the decision at the time of screening. PDF page numbers count from the first PDF page. It does not assert that a paper is irreproducible with an expanded simulator, and it does not establish whether every numeric input is published. Figures and tables need manual review before an exact replication claim.
 
-**Result:** 0 exact matches, 1 adapted pilot candidate, 21 unsupported with the current backend, and 9 source PDFs unavailable.
+**Original screen result:** 0 exact matches, 1 adapted pilot candidate, 21 unsupported for that bundled workflow, and 9 source PDFs unavailable.
 
-| Paper | PDF evidence | Current decision | Needed for faithful replication |
+| Paper | PDF evidence | Original decision | Needed for faithful replication |
 |---|---|---|---|
 | [ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators](../chip_thermal_management_papers/2026_W7167828524_ThermoDSE_A_Thermal_Aware_and_Comprehensive_Design_Space_Exploration_for_Ch.pdf) | pp. 1, 4: Chiplet DNN accelerator design-space exploration | `unsupported_current_backend` | chiplet floorplans, accelerator power/workloads, optimization loop |
 | [MFIT : Multi-FIdelity Thermal Modeling for 2.5D and 3D Multi-Chiplet Architectures](../chip_thermal_management_papers/2025_W4413989692_MFIT_Multi_FIdelity_Thermal_Modeling_for_2_5D_and_3D_Multi_Chiplet_Architec.pdf) | pp. 1, 15: Multi-fidelity 2.5D and 3D chiplet thermal models | `unsupported_current_backend` | chiplet geometry, material stack, comparison models |

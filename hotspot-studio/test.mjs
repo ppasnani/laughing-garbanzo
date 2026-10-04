@@ -2,6 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {parse,serialize,validate,fields,native,display} from './dist/model.mjs';
+import {canonicalExperiment,validateCustom} from './dist/custom.mjs';
 const baseline=readFileSync(new URL('./dist/example.config',import.meta.url),'utf8');
 test('round trip preserves original config and comments',()=>assert.equal(serialize(baseline,{}),baseline));
 test('unit conversions export real SI values',()=>{for(const [key,value,expected] of [['ambient',45,318.15],['t_chip',150,.00015],['sampling_intvl',10,.01]]){const f=fields.find(x=>x[0]===key);assert.equal(Number(native(value,f)),expected);assert.ok(Math.abs(display(expected,f)-value)<1e-9);}});
@@ -11,3 +12,15 @@ test('grid rules depend on selected build',()=>{const config='-model_type grid\n
 test('incompatible cooling options are blocked',()=>assert.ok(validate('-model_type grid\n-model_secondary 1\n-use_microfluidic_cooling 1','on').some(i=>i.level==='error')));
 test('duplicates, blank values and NaN blocked',()=>{for(const text of ['-ambient 300\n-ambient 310','-ambient ','-ambient NaN'])assert.ok(validate(text).some(i=>i.level==='error'));});
 test('material override warns and original property survives',()=>{const text='-material_chip silicon\n-k_chip 100';assert.ok(validate(text).some(i=>i.level==='warning'));assert.equal(parse(text).values.k_chip,'100');});
+test('custom editor builds canonical paired input and checks geometry',()=>{
+  const rows=[{name:'core0',x_m:'0',y_m:'0',width_m:'0.005',height_m:'0.005',watts:'8'},
+              {name:'core1',x_m:'0.005',y_m:'0',width_m:'0.005',height_m:'0.005',watts:'6'}];
+  const experiment=canonicalExperiment(rows);
+  assert.equal(validateCustom(experiment),null);
+  assert.deepEqual(experiment.power_w,{core0:8,core1:6});
+  experiment.floorplan[1].x_m=.004;
+  assert.match(validateCustom(experiment).message,/overlaps/);
+  experiment.floorplan[1].x_m=.005;
+  delete experiment.power_w.core1;
+  assert.match(validateCustom(experiment).message,/Missing: core1/);
+});

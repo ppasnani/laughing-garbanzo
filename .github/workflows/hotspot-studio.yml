@@ -1,0 +1,21 @@
+name: HotSpot Studio
+
+on:
+  pull_request:
+    paths:
+      - 'hotspot-studio/**'
+      - 'HotSpot/**'
+      - '.github/workflows/hotspot-studio.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build HotSpot without SuperLU
+        run: bash hotspot-studio/setup.sh
+      - name: Test browser model and editor data
+        run: node --test hotspot-studio/test.mjs
+      - name: Test backend and real solver runs
+        run: PYTHONDONTWRITEBYTECODE=1 python3 hotspot-studio/test_server.py
