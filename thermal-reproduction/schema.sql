@@ -115,3 +115,43 @@ LEFT JOIN simulation s ON s.id = (
     SELECT sim.id FROM simulation sim WHERE sim.workflow_run_id = w.id
     ORDER BY sim.started_at DESC, sim.id DESC LIMIT 1
 );
+
+-- The 2D audit has a different decision vocabulary from the original bundled screen.
+-- Keep its evidence and artifacts separately so existing pilot databases remain readable.
+CREATE TABLE IF NOT EXISTS snapshot_screening_run (
+    id TEXT PRIMARY KEY,
+    paper_id TEXT NOT NULL REFERENCES paper(id),
+    decision TEXT NOT NULL CHECK (decision IN
+        ('candidate_2d_snapshot', 'conditional_2d_snapshot', 'illustrative_2d_only',
+         'not_2d_applicable', 'source_unavailable')),
+    studio_run_id TEXT,
+    status TEXT NOT NULL,
+    pdf_sha256 TEXT NOT NULL,
+    manifest_sha256 TEXT,
+    graph_sha256 TEXT NOT NULL,
+    evidence_sha256 TEXT,
+    input_sha256 TEXT,
+    independently_verified INTEGER NOT NULL CHECK (independently_verified IN (0, 1)),
+    record_json TEXT NOT NULL CHECK (json_valid(record_json)),
+    created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS snapshot_screening_paper_time
+    ON snapshot_screening_run(paper_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS snapshot_screening_artifact (
+    screening_run_id TEXT NOT NULL REFERENCES snapshot_screening_run(id) ON DELETE CASCADE,
+    kind TEXT NOT NULL,
+    storage_path TEXT NOT NULL,
+    sha256 TEXT NOT NULL,
+    byte_count INTEGER NOT NULL CHECK (byte_count > 0),
+    PRIMARY KEY (screening_run_id, kind)
+);
+
+CREATE VIEW IF NOT EXISTS app_2d_screening_summary AS
+SELECT p.id AS paper_id, p.title, r.decision, r.status, r.studio_run_id,
+       r.independently_verified, r.input_sha256, r.created_at
+FROM paper p
+LEFT JOIN snapshot_screening_run r ON r.id = (
+    SELECT x.id FROM snapshot_screening_run x WHERE x.paper_id = p.id
+    ORDER BY x.created_at DESC, x.id DESC LIMIT 1
+);

@@ -1,4 +1,4 @@
-"""Load the feasibility screen and one pilot result into an app-readable SQLite DB."""
+"""Load the original bundled screen and pilot or a custom 2D audit into SQLite."""
 
 import argparse
 import csv
@@ -90,6 +90,67 @@ def load_pilot(conn, manifest_file):
     return run_id
 
 
+def load_2d_screening(conn, manifest_file):
+    manifest_file = manifest_file.resolve()
+    if not manifest_file.is_relative_to(HERE):
+        raise ValueError("2D screening manifest must be inside thermal-reproduction")
+    manifest = json.loads(manifest_file.read_text())
+    if manifest.get("run_type") != "custom":
+        raise ValueError("Expected a custom 2D screening manifest")
+    folder = manifest_file.parent
+    paper_id = manifest["paper_id"]
+    feasibility = manifest["feasibility"]
+    simulation = manifest["simulation"]
+    decision = feasibility["decision"]
+    if simulation["status"] != "skipped" and (
+        decision != "candidate_2d_snapshot" or not feasibility["simulation_allowed"]
+    ):
+        raise ValueError("2D simulation bypassed the screening gate")
+    if simulation["status"] == "completed" and not simulation.get("input_sha256"):
+        raise ValueError("Completed 2D simulation has no Studio input hash")
+    record_id = f"2d:{paper_id}:{folder.name}"
+    conn.execute("""INSERT INTO snapshot_screening_run(
+        id,paper_id,decision,studio_run_id,status,pdf_sha256,manifest_sha256,
+        graph_sha256,evidence_sha256,input_sha256,independently_verified,record_json,created_at)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+        decision=excluded.decision,studio_run_id=excluded.studio_run_id,
+        status=excluded.status,evidence_sha256=excluded.evidence_sha256,
+        input_sha256=excluded.input_sha256,independently_verified=excluded.independently_verified,
+        record_json=excluded.record_json""",
+        (record_id, paper_id, decision, simulation.get("studio_run_id"),
+         simulation["status"], manifest["pdf_sha256"], manifest.get("manifest_sha256"),
+         manifest["graph_sha256"], feasibility.get("evidence_sha256"),
+         simulation.get("input_sha256"), int(feasibility["independently_verified"]),
+         json.dumps(manifest), manifest["generated_at"]))
+    paths = {"config": folder / "submitted.config"}
+    if simulation["status"] != "skipped":
+        paths.update({"result_json": folder / "studio-result.json",
+                      "run_log": folder / "solver.log"})
+    paths.update({kind: folder / kind for kind in simulation.get("artifacts", {})})
+    sensitivity = simulation.get("sensitivity", {}).get("run", {})
+    paths.update({f"sensitivity/{kind}": folder / "sensitivity" / kind
+                  for kind in sensitivity.get("artifacts", {})})
+    for kind, path in paths.items():
+        data = path.read_bytes()
+        if not data and kind != "run_log":
+            raise ValueError(f"Empty artifact: {path}")
+        advertised = (sensitivity.get("artifacts", {}).get(kind.split("/", 1)[1])
+                      if kind.startswith("sensitivity/") else
+                      simulation.get("artifacts", {}).get(kind))
+        if advertised and (advertised["sha256"] != digest(data) or
+                           advertised["bytes"] != len(data)):
+            raise ValueError(f"Artifact integrity mismatch: {path}")
+        if not data:
+            continue
+        conn.execute("""INSERT INTO snapshot_screening_artifact(
+            screening_run_id,kind,storage_path,sha256,byte_count)
+            VALUES(?,?,?,?,?) ON CONFLICT(screening_run_id,kind) DO UPDATE SET
+            storage_path=excluded.storage_path,sha256=excluded.sha256,
+            byte_count=excluded.byte_count""",
+            (record_id, kind, str(path.relative_to(HERE)), digest(data), len(data)))
+    return simulation.get("studio_run_id")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--db", type=Path, default=HERE / "pilot-output/pilot.db")
@@ -101,7 +162,11 @@ def main():
     conn.executescript((HERE / "schema.sql").read_text())
     with conn:
         count = load_inventory(conn)
-        run_id = load_pilot(conn, args.manifest) if args.manifest else None
+        run_id = None
+        if args.manifest:
+            manifest = json.loads(args.manifest.read_text())
+            run_id = (load_2d_screening(conn, args.manifest) if
+                      manifest.get("run_type") == "custom" else load_pilot(conn, args.manifest))
     summary = conn.execute("SELECT COUNT(*),SUM(source_status='downloaded') FROM paper").fetchone()
     print(json.dumps({"database": str(args.db), "papers": summary[0], "downloaded": summary[1],
                       "pilot_studio_run_id": run_id}))

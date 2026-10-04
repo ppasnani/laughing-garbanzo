@@ -42,7 +42,9 @@ from pathlib import Path
 manifest_path=Path(sys.argv[1])
 manifest=json.loads(manifest_path.read_text())
 assert manifest['assessment']['verdict']=='adapted_only'
-assert manifest['feasibility']['exact_replication_allowed'] is False
+assert manifest['feasibility']['scientific_gate_pass'] is False
+assert manifest['adversarial']['approved'] is False
+assert manifest['assessment']['comparison_valid'] is False
 for name,meta in manifest['simulation']['artifacts'].items():
     data=(manifest_path.parent/name).read_bytes()
     assert len(data)==meta['bytes'] and hashlib.sha256(data).hexdigest()==meta['sha256']
