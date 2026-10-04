@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import { runGraphInFile } from '@ironclad/rivet-node';
-import { anthropicJson, execute, parseCsv, runStudio, normalizeExtraction,
-  EXTRACTION_SCHEMA } from '../pilot.mjs';
+import { anthropicJson, anthropicExtraction, execute, parseCsv, runStudio, normalizeExtraction,
+  EXTRACTION_SCHEMA, EXTRACTION_ENVELOPE_SCHEMA } from '../pilot.mjs';
 import { reviewDigest, reviewFeasibility, sha256, validateExperiment } from '../screening.mjs';
 
 const config = await readFile(resolve('../hotspot-studio/dist/example.config'), 'utf8');
@@ -113,6 +113,25 @@ test('Anthropic call carries the Rivet prompt and rejects truncated output', asy
   await assert.rejects(anthropicJson({ system: 'test', user: 'test', schema: {},
     apiKey: 'test-key', fetchImpl: async () => new Response(JSON.stringify({
       stop_reason: 'max_tokens', content: [{ type: 'text', text: '{}' }] })) }), /max_tokens/);
+});
+
+test('live extraction uses a compact grammar while retaining the full evidence contract', async () => {
+  const result = await anthropicExtraction({ system: 'Extract cited evidence', packet,
+    apiKey: 'test-key',
+      fetchImpl: async (_url, options) => {
+        const request = JSON.parse(options.body);
+        assert.deepEqual(request.output_config.format.schema, EXTRACTION_ENVELOPE_SCHEMA);
+        assert.match(request.system, /Extract cited evidence/);
+        assert.deepEqual(JSON.parse(request.messages[0].content).extraction_schema, EXTRACTION_SCHEMA);
+        return new Response(JSON.stringify({ stop_reason: 'end_turn', content: [
+          { type: 'text', text: JSON.stringify({ extraction_json: JSON.stringify({
+            ...extraction, experiment: { kind: 'custom_2d_steady', floorplan: experiment.floorplan,
+              power_rows: [{ name: 'core0', watts: 8 }, { name: 'core1', watts: 6 }] },
+          }) }) },
+        ] }));
+      } });
+  assert.equal(result.paper_id, 'W123');
+  assert.equal(result.evidence.length, extraction.evidence.length);
 });
 
 test('Rivet graph executes extraction, adversarial review, gate, run, and assessment in order', async () => {
