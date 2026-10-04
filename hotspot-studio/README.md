@@ -17,19 +17,37 @@ In the Ports tab, forward port 8000, keep its visibility Private, and click Open
 
 ## Run flow
 
-1. Edit or import a configuration. Apply any raw source edits.
+1. Edit or import a configuration. Apply any raw source edits, then select **Bundled EV6/GCC** or **Custom 2D steady**. For a custom run, enter named block rectangles and watts, or paste/import the paired experiment JSON. Review the floorplan preview.
 2. Click **Save configuration & run**.
 3. Studio validates server-side and snapshots the configuration and bundled experiment inputs into `hotspot-studio/runs/<id>/`.
-4. HotSpot computes steady-state EV6/gcc temperatures, then runs the gcc power trace from those temperatures. The two phases share a 60-second timeout.
+4. Bundled runs compute steady-state EV6/gcc temperatures, then run the gcc power trace from those temperatures. Custom runs compute one steady-state phase from a single per-block power row. The 60-second limit applies to the entire run.
 5. Read node temperatures in °C and the solver log. Reopen earlier runs using Saved runs. Download their original configurations, `gcc.steady`, and `gcc.ttrace`.
 
-The `gcc.steady` file contains native Kelvin temperatures; `gcc.ttrace` contains the transient temperature trace initialized from `gcc.steady`. `result.json` includes Kelvin and Celsius, timestamp, status, logs, and available artifact URLs. Package nodes are included and labelled using HotSpot's original names. `submitted.config` preserves the original source; `tuned.config` is its canonicalized execution form. Only one simulation runs at a time; storage is limited to 100 run folders. Archive old folders to free capacity. Interrupted runs are marked after restart. Older runs with `result.steady` expose it as a `gcc.steady` download; they have no `gcc.ttrace` until rerun.
+The `gcc.steady` file contains native Kelvin temperatures; `gcc.ttrace` contains the transient temperature trace initialized from `gcc.steady`. Custom runs produce `temperatures.steady` and, in grid mode, `temperatures.grid.steady`. `result.json` includes Kelvin and Celsius, timestamp, status, logs, run type, and available artifact URLs. Package nodes are included and labelled using HotSpot's original names. `submitted.config` preserves the original source; `tuned.config` is its canonicalized execution form. Only one simulation runs at a time; storage is limited to 100 run folders. Archive old folders to free capacity. Interrupted runs are marked after restart. Older runs with `result.steady` expose it as a `gcc.steady` download; they have no `gcc.ttrace` until rerun.
 
-The run API returns `artifacts` entries for files available to download. Use `GET /api/runs/<id>/artifacts/gcc.steady` and `GET /api/runs/<id>/artifacts/gcc.ttrace`; missing or incomplete artifacts return 404. A paper workflow should save the run ID and artifact URLs with each eligible paper, and copy the files to durable storage before archiving run folders. These endpoints use the same private Codespace access boundary as Studio.
+The run API returns `artifacts` entries for files available to download, each with byte size and SHA-256. Use the URLs in the manifest; missing or incomplete outputs return 404. A paper workflow should save the run ID, `experiment.input_sha256`, and artifact URLs with each eligible paper, and copy the files to durable storage before archiving run folders. These endpoints use the same private Codespace access boundary as Studio.
 
 ## Supported experiments
 
-This release runs the bundled example1 floorplan, power trace, materials and package settings. It supports block mode and power-of-two grid dimensions up to 128. It does not accept arbitrary executable commands, external input paths, custom floorplan uploads, multi-layer or microfluidic experiments, or uncalibrated leakage models. Unknown configuration fields are preserved in editor exports but rejected by the backend. Runtime output destinations are assigned by the backend. A transient trace from the bundled gcc power input does not by itself reproduce a paper's transient experiment.
+The bundled example1 run retains its floorplan, power trace, materials, and package settings. A custom 2D steady run accepts 1–128 named rectangles in metres and one matching watts value per block. It supports block mode and power-of-two grid dimensions up to 128, with `model_secondary=0`. The backend assigns all input and output filenames, and uses the bundled `example.materials` and `package.config` for both run types. It rejects arbitrary commands, external input paths, layer files, microfluidic cooling, and uncalibrated leakage models. Unknown configuration fields are preserved in editor exports but rejected by the backend.
+
+For API clients, send the same `POST /api/runs` request with the `X-Studio-Token` from `/api/status`:
+
+```json
+{
+  "config": "<complete HotSpot configuration text>",
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [
+      {"name": "core0", "x_m": 0, "y_m": 0, "width_m": 0.005, "height_m": 0.005},
+      {"name": "core1", "x_m": 0.005, "y_m": 0, "width_m": 0.005, "height_m": 0.005}
+    ],
+    "power_w": {"core0": 8, "core1": 6}
+  }
+}
+```
+
+Omit `experiment` for the original bundled run. Custom results include a summary with block count, total watts, model type, bundled assumptions, and a deterministic input SHA-256. The submitted paired input is saved as `submitted.experiment.json`; generated solver inputs are `input.flp` and `input.ptrace`. A custom run does not run the transient phase. The custom model is a single-layer thermal approximation; gaps between blocks and missing paper-specific package or material parameters need explicit interpretation in research comparisons.
 
 The editor's validation checks configuration structure and selected constraints, not physical accuracy. Backend validation applies additional run constraints. The build is without SuperLU; use powers of two for grid mode. Simulation settings may fail inside HotSpot; the resulting error log is shown and saved.
 
@@ -54,3 +72,4 @@ PYTHONDONTWRITEBYTECODE=1 python3 hotspot-studio/test_server.py
 ```
 
 Backend tests include a real simulation when a built executable is available. Upstream source/example licensing is included in HOTSPOT-LICENSE and the bundled HotSpot LICENSE. Source: https://github.com/uvahotspot/HotSpot.
+Pull requests also run these tests on Ubuntu after building HotSpot without SuperLU, so the legacy, custom block, power-direction, and grid integration checks exercise the real solver.
