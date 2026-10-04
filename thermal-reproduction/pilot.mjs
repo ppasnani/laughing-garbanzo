@@ -41,6 +41,9 @@ export const EXTRACTION_SCHEMA = object({
   physical_mismatches: array(object({ reason: string, essential: { type: 'boolean' } })),
   studio_assumptions: array(string), missing_inputs: array(string),
 });
+// Anthropic's strict grammar compiler rejects the full evidence schema. Keep the
+// detailed contract in the prompt and constrain only the small transport envelope.
+export const EXTRACTION_ENVELOPE_SCHEMA = object({ extraction_json: string });
 export const ADVERSARIAL_SCHEMA = object({
   approved: { type: 'boolean' },
   checklist: object(Object.fromEntries(CHECKS.map(key => [key, object({
@@ -152,6 +155,22 @@ export async function anthropicJson({ system, user, schema, apiKey = process.env
   return JSON.parse(blocks[0].text);
 }
 
+export async function anthropicExtraction({ system, packet, apiKey, fetchImpl = fetch }) {
+  const envelope = await anthropicJson({ system: system + '\nReturn a JSON serialization of the extraction object in extraction_json. Follow the provided extraction schema exactly; use empty arrays and empty strings for unknown non-nullable fields, and null only where the schema permits it.',
+    user: JSON.stringify({ paper_packet: packet, extraction_schema: EXTRACTION_SCHEMA }),
+    schema: EXTRACTION_ENVELOPE_SCHEMA, apiKey, fetchImpl });
+  let extraction;
+  try { extraction = JSON.parse(envelope.extraction_json); }
+  catch { throw Error('Anthropic extraction_json is not valid JSON'); }
+  if (!extraction || typeof extraction !== 'object' || Array.isArray(extraction) ||
+      extraction.paper_id !== packet.paper_id || !Array.isArray(extraction.evidence) ||
+      !Array.isArray(extraction.experiment?.floorplan) ||
+      !Array.isArray(extraction.experiment?.power_rows)) {
+    throw Error('Anthropic extraction_json is missing required evidence or experiment fields');
+  }
+  return extraction;
+}
+
 export async function runStudio({ baseUrl, config, experiment, outputDir, fetchImpl = fetch }) {
   const origin = baseUrl.replace(/\/$/, '');
   const custom = experiment?.kind === 'custom_2d_steady';
@@ -250,8 +269,7 @@ export async function execute({ row, packet, config, outputDir, runType, allowAd
     extractPaper: async (_context, input, systemPrompt) => {
       if (!systemPrompt?.trim()) throw Error('Extraction instructions are empty');
       const source = reusedAudit?.extraction ?? fixture?.extraction ??
-        await anthropicJson({ system: systemPrompt, user: JSON.stringify(input),
-          schema: EXTRACTION_SCHEMA, fetchImpl });
+        await anthropicExtraction({ system: systemPrompt, packet: input, fetchImpl });
       const result = normalizeExtraction(source);
       return save('extraction', result);
     },
