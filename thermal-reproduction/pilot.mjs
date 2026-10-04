@@ -246,7 +246,7 @@ export async function execute({ row, packet, config, outputDir, runType, allowAd
     await jsonFile(join(outputDir, name + '.json'), value);
     return { type: 'object', value };
   };
-  const externalFunctions = {
+  const stageFunctions = {
     extractPaper: async (_context, input, systemPrompt) => {
       if (!systemPrompt?.trim()) throw Error('Extraction instructions are empty');
       const source = reusedAudit?.extraction ?? fixture?.extraction ??
@@ -335,8 +335,26 @@ export async function execute({ row, packet, config, outputDir, runType, allowAd
       return save('assessment', result);
     },
   };
-  const output = await runGraphInFile(graph, { graph: 'Paper pilot',
-    inputs: { paper_packet: { type: 'object', value: packet } }, externalFunctions });
+  let stageFailure;
+  const externalFunctions = Object.fromEntries(Object.entries(stageFunctions).map(([stage, fn]) =>
+    [stage, async (...args) => {
+      try { return await fn(...args); }
+      catch (error) {
+        const apiKey = process.env.ANTHROPIC_API_KEY;
+        const message = String(error?.message || error).replaceAll(apiKey || '\0', '[redacted]').slice(0, 2000);
+        stageFailure = { paper_id: packet.paper_id, stage, message };
+        await jsonFile(join(outputDir, 'stage-error.json'), stageFailure);
+        throw error;
+      }
+    }]));
+  let output;
+  try {
+    output = await runGraphInFile(graph, { graph: 'Paper pilot',
+      inputs: { paper_packet: { type: 'object', value: packet } }, externalFunctions });
+  } catch (error) {
+    if (stageFailure) throw new Error(`Paper ${stageFailure.paper_id} failed at ${stageFailure.stage}: ${stageFailure.message} (see ${join(outputDir, 'stage-error.json')})`, { cause: error });
+    throw error;
+  }
   const manifest = { paper_id: row.openalex_id, paper_title: row.title,
     manifest_status: row.status, source_url: row.source_url,
     manifest_sha256: packet.manifest_sha256, pdf_sha256: packet.pdf_sha256,
