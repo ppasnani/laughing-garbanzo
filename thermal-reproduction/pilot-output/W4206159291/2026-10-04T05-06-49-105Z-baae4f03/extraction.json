@@ -1,0 +1,412 @@
+{
+  "paper_id": "W4206159291",
+  "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 2,
+    "figure_or_table": "Fig. 1 (a) and (b); Fig. 3; Fig. 4",
+    "description": "Dynamic thermal simulation of Alpha EV6 processor CPU with three power sources located at functional units A, B, and C on the device layer. Uniform power pulses with period of 3.333 microseconds (representing average over 10k cycles at 3 GHz) applied to each functional unit. Simulation duration 3 milliseconds. Temperature computed at device layer and along x and y directional profiles through hot spots.",
+    "architecture": "Alpha EV6 processor with floorplan dimensions and 3D structure shown in Fig. 1. Device layer with three functional units (A, B, C) where power sources are applied. Substrate layer. Mesh resolution 129×129×7 elements.",
+    "workload": "Three dynamic power sources with uniform power pulses at 3.333 microsecond period representing average over 10k cycles at 3 GHz clock frequency applied at functional units A, B, and C on device layer.",
+    "operating_point": "Ambient temperature 0°C (Robin boundary condition at substrate bottom). Adiabatic boundary conditions on chip surfaces except substrate bottom. Simulation time horizon 3 milliseconds. Temperature measured as degrees above ambient.",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "FEniCS (finite element method)",
+    "optimizer": "",
+    "controller": "",
+    "benchmark": "Alpha EV6 processor CPU thermal simulation"
+  },
+  "thermal_observable": {
+    "value": null,
+    "unit": "degrees Celsius above ambient",
+    "location": "device layer at functional unit C (hot spot) and along x and y directional profiles through hot spots B and C",
+    "aggregation": "dynamic temperature evolution over 3 millisecond simulation period; spatial temperature distributions at t=3ms",
+    "pdf_page": 3
+  },
+  "physical_mismatches": [
+    {
+      "reason": "No explicit thermal management controller specified in the paper; POD model is purely predictive without active thermal control",
+      "essential": false
+    },
+    {
+      "reason": "Boundary conditions simplified to adiabatic surfaces except substrate bottom with Robin condition; real CPU cooling systems (heat sinks, fans) not modeled",
+      "essential": true
+    },
+    {
+      "reason": "Power source model uses simplified uniform pulses at functional units; actual CPU power dissipation varies dynamically with instruction execution and microarchitectural state",
+      "essential": true
+    },
+    {
+      "reason": "3D structure mesh coarse in vertical direction (7 elements); may not resolve detailed layer-to-layer thermal behavior in realistic multi-layer dies",
+      "essential": false
+    },
+    {
+      "reason": "No frequency or voltage scaling dynamics; constant 3 GHz assumed",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "POD modes generated from FEniCS DNS data are sufficient to capture thermal behavior for any power source distribution within the parametric variation space",
+    "Adiabatic boundary conditions on chip surfaces adequately represent actual thermal environment",
+    "Robin boundary condition with 0°C ambient temperature at substrate bottom is representative of operating conditions",
+    "Thermal properties (density, specific heat, thermal conductivity) are spatially uniform and temperature-independent",
+    "Linear heat conduction equation accurately models all thermal transport in the CPU structure"
+  ],
+  "missing_inputs": [
+    "Explicit thermal property values (density, specific heat, thermal conductivity) for CPU materials",
+    "Exact power dissipation values in watts for functional units A, B, and C",
+    "Heat transfer coefficient and ambient temperature for Robin boundary condition at substrate",
+    "FEniCS simulation input files, mesh files, or parameter specifications",
+    "POD basis function data or snapshot data used to generate modes",
+    "Comparison metrics or error quantification between POD and FEniCS results",
+    "Hardware platform or computational environment specifications for validation",
+    "Experimental validation data or measured CPU thermal data for benchmarking"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "architecture",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Fig. 1 (a) and (b): Floorplan of the CPU chip (Alpha EV6 processor) with dimensions and its 3D structure",
+      "provenance": "Paper figure caption and text description of Alpha EV6 processor selected for thermal simulation study",
+      "uncertainty": null
+    },
+    {
+      "field": "mesh_resolution_x",
+      "block_name": null,
+      "source_value": 129,
+      "source_unit": "elements",
+      "conversion_factor": null,
+      "normalized_value": 129,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Thermal simulation of the CPU structure with meshes of 129×129×7'",
+      "provenance": "FEniCS finite element simulation setup for thermal data collection",
+      "uncertainty": null
+    },
+    {
+      "field": "mesh_resolution_y",
+      "block_name": null,
+      "source_value": 129,
+      "source_unit": "elements",
+      "conversion_factor": null,
+      "normalized_value": 129,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Thermal simulation of the CPU structure with meshes of 129×129×7'",
+      "provenance": "FEniCS finite element simulation setup for thermal data collection",
+      "uncertainty": null
+    },
+    {
+      "field": "mesh_resolution_z",
+      "block_name": null,
+      "source_value": 7,
+      "source_unit": "elements",
+      "conversion_factor": null,
+      "normalized_value": 7,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Thermal simulation of the CPU structure with meshes of 129×129×7'",
+      "provenance": "FEniCS finite element simulation setup for thermal data collection",
+      "uncertainty": null
+    },
+    {
+      "field": "power_period",
+      "block_name": "Functional Unit A",
+      "source_value": 3.333,
+      "source_unit": "microseconds",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000003333,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Each power source with a period of 3.333μs represents an average, over 10k cycles at 3 GHz'",
+      "provenance": "Dynamic thermal simulation specification for functional units A, B, and C with uniform power pulses",
+      "uncertainty": null
+    },
+    {
+      "field": "power_period",
+      "block_name": "Functional Unit B",
+      "source_value": 3.333,
+      "source_unit": "microseconds",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000003333,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Each power source with a period of 3.333μs represents an average, over 10k cycles at 3 GHz'",
+      "provenance": "Dynamic thermal simulation specification for functional units A, B, and C with uniform power pulses",
+      "uncertainty": null
+    },
+    {
+      "field": "power_period",
+      "block_name": "Functional Unit C",
+      "source_value": 3.333,
+      "source_unit": "microseconds",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000003333,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Each power source with a period of 3.333μs represents an average, over 10k cycles at 3 GHz'",
+      "provenance": "Dynamic thermal simulation specification for functional units A, B, and C with uniform power pulses",
+      "uncertainty": null
+    },
+    {
+      "field": "clock_frequency",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 3000000000,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Each power source with a period of 3.333μs represents an average, over 10k cycles at 3 GHz'",
+      "provenance": "Operating frequency for thermal data generation averaging 10k cycles",
+      "uncertainty": null
+    },
+    {
+      "field": "simulation_duration",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "milliseconds",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.003,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Thermal simulation of the CPU structure with meshes of 129×129×7 is performed in FEniCS for 3ms'",
+      "provenance": "Total duration of dynamic thermal simulation for Alpha EV6 processor",
+      "uncertainty": null
+    },
+    {
+      "field": "boundary_condition_type_ambient_surface",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Adiabatic boundary conditions are applied to the surfaces of the chip except for the bottom of its substrate where the Robin boundary condition is used'",
+      "provenance": "Thermal simulation boundary conditions specification",
+      "uncertainty": null
+    },
+    {
+      "field": "ambient_temperature",
+      "block_name": null,
+      "source_value": 0,
+      "source_unit": "degrees Celsius",
+      "conversion_factor": null,
+      "normalized_value": 0,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'ambient temperature taken as 0℃'",
+      "provenance": "Robin boundary condition specification at substrate bottom surface",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_location",
+      "block_name": "Functional Unit C",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Fig. 4(a) caption and Section IV: 'The dynamic temperature evolution in the functional unit C (see Fig. 1)'",
+      "provenance": "Primary hot spot location for dynamic temperature measurement in thermal simulation results",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_value_at_final_time",
+      "block_name": "Functional Unit C",
+      "source_value": null,
+      "source_unit": "degrees Celsius above ambient",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Fig. 4(a): Dynamic temperature at the hot spot, in the Functional unit C",
+      "provenance": "Temperature evolution over 3 millisecond simulation computed from FEniCS DNS and compared to POD models with 1, 3, and 5 modes",
+      "uncertainty": "Qualitative visual comparison shown in figure; POD with 5 modes indistinguishable from FEniCS; 3-mode POD provides good agreement"
+    },
+    {
+      "field": "pod_eigenvalue_ratio_mode1_to_mode3",
+      "block_name": null,
+      "source_value": 10000,
+      "source_unit": "ratio (dimensionless)",
+      "conversion_factor": null,
+      "normalized_value": 10000,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.B: 'eigenvalue decreases by 4 orders of magnitude from the first POD mode to the 3rd mode'",
+      "provenance": "POD mode importance spectrum analysis from collected FEniCS thermal data",
+      "uncertainty": null
+    },
+    {
+      "field": "pod_eigenvalue_ratio_mode1_to_mode5",
+      "block_name": null,
+      "source_value": 1000000,
+      "source_unit": "ratio (dimensionless)",
+      "conversion_factor": null,
+      "normalized_value": 1000000,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section III.B: 'nearly 6 orders to the 5th mode'",
+      "provenance": "POD eigenvalue spectrum characteristic showing rapid decay enabling reduced-order model",
+      "uncertainty": null
+    },
+    {
+      "field": "degrees_of_freedom_reduction_ratio",
+      "block_name": null,
+      "source_value": 10000,
+      "source_unit": "ratio (dimensionless)",
+      "conversion_factor": null,
+      "normalized_value": 10000,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section V Conclusion: 'This amounts to a reduction of numerical DoF by more than 4 orders of magnitude'",
+      "provenance": "Comparison of POD model (5 modes) versus FEniCS direct numerical simulation DoF count",
+      "uncertainty": "Conservative lower bound; 'more than 4 orders' indicates minimum 10,000x reduction"
+    },
+    {
+      "field": "pod_modes_for_good_accuracy",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "modes",
+      "conversion_factor": null,
+      "normalized_value": 3,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section IV: 'the inclusion of 3 modes in the POD approach offers a good agreement with the FEniCS result'",
+      "provenance": "POD model validation comparing temperature profiles and dynamic evolution to FEniCS reference",
+      "uncertainty": null
+    },
+    {
+      "field": "pod_modes_for_excellent_accuracy",
+      "block_name": null,
+      "source_value": 5,
+      "source_unit": "modes",
+      "conversion_factor": null,
+      "normalized_value": 5,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section IV: 'Results from these 2 approaches are indistinguishable when 5 modes are included'",
+      "provenance": "POD model validation showing results indistinguishable from FEniCS with 5 modes",
+      "uncertainty": null
+    },
+    {
+      "field": "pod_eigenvalue_flatness_threshold",
+      "block_name": null,
+      "source_value": 17,
+      "source_unit": "mode number",
+      "conversion_factor": null,
+      "normalized_value": 17,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section III.B: 'The eigenvalue curve becomes nearly flat beyond the 17th mode due to the machine precision'",
+      "provenance": "POD eigenvalue spectrum analysis showing numerical precision limit",
+      "uncertainty": null
+    },
+    {
+      "field": "numerical_solver",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.A: 'Dynamic thermal simulations of the selected CPU are performed from a finite element simulator FEniCS'",
+      "provenance": "Reference to open-source computational platform for DNS thermal data collection",
+      "uncertainty": null
+    },
+    {
+      "field": "reduced_order_method",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Abstract: 'A previously developed thermal simulation technique based on model order reduction is applied to the simulation of a CPU'",
+      "provenance": "Core methodology: proper orthogonal decomposition (POD) with Galerkin projection",
+      "uncertainty": null
+    },
+    {
+      "field": "temperature_measurement_aggregation",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Fig. 4: '(a) Dynamic temperature at the hot spot; (b) temperature distribution in x-direction at t=3ms; (c) temperature distribution in y-direction at t=3ms'",
+      "provenance": "Three types of thermal observables: temporal evolution at hot spot and spatial profiles at final time through multiple hot spots",
+      "uncertainty": null
+    },
+    {
+      "field": "data_driven_learning_process",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Section I: 'the approach is able to offer a thermal prediction with the efficiency of the RC thermal model and the accuracy of the DNS... approach is applied to the thermal simulation of a selected CPU at the architecture level'",
+      "provenance": "Problem formulation: POD modes generated from solution data of DNSs accounting for spatial/temporal power source and boundary condition variations",
+      "uncertainty": null
+    },
+    {
+      "field": "snapshot_method_application",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section III.B: 'Once the thermal data are collected from the FEniCS simulation of the CPU, the method of snapshots is applied to solve (2) for POD modes and eigenvalues'",
+      "provenance": "Computational technique for efficient POD mode generation from collected thermal data snapshots",
+      "uncertainty": null
+    },
+    {
+      "field": "fenics_platform_reference",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Section I: 'DNSs are performed in an open-source computational platform known as FEniCS [19]'",
+      "provenance": "Reference [19]: https://fenicsproject.org/",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_reference_benchmark",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Reference [22]: http://lava.cs.virginia.edu/HotSpot/",
+      "provenance": "HotSpot thermal simulation tool reference for comparison context",
+      "uncertainty": null
+    }
+  ]
+}

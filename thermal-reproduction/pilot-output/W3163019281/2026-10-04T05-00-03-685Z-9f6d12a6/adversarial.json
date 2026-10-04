@@ -1,0 +1,192 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "PACT simulation flow documented in Fig. 3 and Section III. Paper describes compact thermal modeling using thermal RC networks, SPICE-based netlist generation, hypergraph partitioning via Zoltan library, and parallel solving via OpenMPI. Methods verified against related thermal simulators (HotSpot, 3D-ICE, COMSOL, MTA)."
+    },
+    "code": {
+      "status": "missing",
+      "note": "GitHub repository URL (https://github.com/peaclab/PACT) provided but inaccessible for verification; no code excerpts or detailed implementation details extractable from PDF. Unable to verify actual thermal netlist generation code, solver integration specifics, or OpenROAD interface implementation."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Critical parameter values missing or underdetermined: (1) Liquid cooling validation uses unspecified coolant inlet temperature as ΔT reference (Fig. 14); (2) Nusselt number, hydraulic diameter, and coolant thermal conductivity for microchannels not provided—Equation (5) uses these parameters but exact values unknown; (3) Material properties (thermal resistivity Rλ, specific heat cp) for each of 33-layer monolithic 3-D stack not specified; (4) Heat sink geometry and air convection HTC values used in experiments not quantitatively stated; (5) Zoltan library partitioning strategy and load balancing parameters not detailed; (6) OpenROAD interface power extraction threshold and gate mapping algorithm not specified."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "Multiple configuration contradictions and ambiguities: (1) Synthetic power trace generation (±15% perturbation from steady-state) contradicts claim of using 'full industrial designs' with realistic transient behavior; (2) Medium-cost heat sink model duplicates HotSpot's 12-node approach but exact node connectivity and thermal parameter assignment not fully specified; (3) Liquid cooling experiments use 1000×5 highly non-uniform grid which differs fundamentally from 256×256 uniform grids used elsewhere—compatibility of mixed grid strategies not addressed; (4) Fixed air convection HTC heat sink specification incomplete; (5) Heterogeneous material layer handling via 'thermal resistance and capacitance matrices' described in text but mathematical formulation not provided; (6) OpenSTA power extraction lacks dynamic power capability, forcing synthetic traces—contradicts 'industrial design' validation claim."
+    },
+    "data": {
+      "status": "contradicted",
+      "note": "Multiple data concerns undermine reproducibility: (1) Intel SCC power profiles from prior work [20] not provided; 33-layer monolithic 3-D IC design [44] not provided; (2) OpenROAD benchmark designs (Table IX) listed by name only—DEF files, gate layouts, and extracted power maps not included in paper assets; (3) COMSOL reference thermal profiles used for validation not provided; (4) Liquid cooling validation against 3D-ICE uses proprietary chip stack geometry (Fig. 13) without detailed parametrization; (5) PNoC simulation framework uses external workload traces (HPCCG, UHPC, NAS-PB) with 'detailed model, architecture, policy' referenced to prior work [17], [49] but not reproduced in this paper; (6) MTA comparison uses 'default mesh' with 639,920 DOF—not reproducible from paper description alone; (7) All transient power traces synthetic or extracted from other tools; (8) No raw experimental logs or simulation output files provided."
+    }
+  },
+  "findings": [
+    {
+      "field": "liquid_cooling_coolant_inlet_temperature",
+      "reason": "Figure 14 defines ΔT as 'temperature difference between the temperature of the current step and the coolant inlet temperature' but the actual inlet temperature value is never specified in the paper. This is essential for interpreting absolute temperatures in Fig. 14, yet only relative differences are shown. Reproducibility requires this baseline value.",
+      "locator": "Section IV-C, Figure 14 caption, and equation (6) context"
+    },
+    {
+      "field": "liquid_cooling_nusselt_number_and_hydraulic_diameter",
+      "reason": "Equation (5) uses Nusselt number (Nu) and hydraulic diameter (dh) to compute hf,vertical and hf,side, but paper provides no actual values or correlation equations for Nu as a function of microchannel geometry or flow properties. Table VII lists 'grid resolution 1000×5' but channel dimensions, wall thickness, and fluid properties are absent. Without these, the liquid cooling HTC calculation cannot be independently verified.",
+      "locator": "Section III-C, Equation (5), and Table VII"
+    },
+    {
+      "field": "material_properties_monolithic_3d_stack",
+      "reason": "Monolithic 3-D IC validation (Section IV-A, Table III) specifies a 33-layer stack but provides no per-layer material properties (thermal resistivity Rλ, specific heat cp, thickness t, or material type). Equations (1)-(4) require these values for every layer, yet only aggregate 'chip' properties are implicitly assumed in results summary.",
+      "locator": "Section IV-A, Table III, and Section III-C Equations (1)-(4)"
+    },
+    {
+      "field": "heat_sink_air_convection_htc_values",
+      "reason": "Paper states medium-cost heat sink model requires 'size, thickness, air convection HTC' (Section III-A step 2) and mentions 'same medium-cost heat sink in both HotSpot and PACT' for experiments, but nowhere reports the numerical HTC value used. Section III-C mentions 'air convection resistivity' but gives no W/m²K values. This prevents verification of boundary condition accuracy.",
+      "locator": "Section III-A, Section III-C, and Table VIII"
+    },
+    {
+      "field": "hetereogeneous_material_layer_formulation",
+      "reason": "Section III-C states: 'For heterogeneous material nodes in a layer, PACT directly modifies the thermal resistance and thermal capacitance of the corresponding heterogeneous nodes and creates thermal resistance and capacitance matrices to generate the thermal netlist.' No explicit matrix formulation or code is provided. The statement 'directly modifies' and 'creates matrices' is vague—the actual mathematical procedure cannot be reproduced.",
+      "locator": "Section III-C, paragraph 2"
+    },
+    {
+      "field": "openroad_power_extraction_threshold_and_mapping",
+      "reason": "Section III-E describes using OpenSTA to extract 'power values for every single instance' and computing 'power per grid node by identifying the gates that belong to each single grid node based on their coordinates.' The algorithm for gate-to-grid assignment is not specified: does it use bounding box, center-of-mass, area-weighted averaging? Does it filter gates below a power threshold? These details affect grid power map accuracy.",
+      "locator": "Section III-E and Figure 9"
+    },
+    {
+      "field": "synthetic_power_trace_perturbation_inconsistency",
+      "reason": "Section IV-D states: 'Since OpenSTA lacks dynamic power traces, we utilize the steady-state power profiles from OpenROAD and randomly apply ±15% additional power values for each standard cell to create synthetic transient power traces.' This contradicts the claim to validate against 'full industrial designs with realistic transient behavior.' Random perturbation does not capture actual workload power dynamics (temporal correlation, peak power during phase transitions, etc.). The choice of ±15% is unexplained.",
+      "locator": "Section IV-D, paragraph discussing synthetic power traces"
+    },
+    {
+      "field": "uniform_vs_nonuniform_grid_contradiction",
+      "reason": "Standard-cell level validation uses uniform 256×256, 512×512, 1024×1024 grids (Section IV-D, Fig. 15), but liquid cooling validation uses 1000×5 highly non-uniform grid to model microchannel direction (Section IV-C, Table VII). Paper does not address whether the PACT thermal netlist generation code handles non-uniform grids correctly or if special procedures were applied. This is a critical difference in configuration.",
+      "locator": "Table VII (1000×5 grid) vs. Table VIII (256×256 uniform grids)"
+    },
+    {
+      "field": "zoltan_hypergraph_partitioning_strategy_unspecified",
+      "reason": "Section III-A mentions: 'PACT utilizes hypergraph partitioning via the Zoltan library [40] and subdivides and distributes the thermal netlist to the available processors. The Zoltan library provides an effective load balancer and seeks to minimize the message passing overhead among processors.' No specific partitioning strategy (edge cut, node cut, multilevel), imbalance tolerance, or optimization objectives are stated. Reproducibility of parallel speedup requires these configuration details.",
+      "locator": "Section III-A, step 5"
+    },
+    {
+      "field": "fixed_air_convection_htc_heat_sink_incomplete_specification",
+      "reason": "Section III-C states: 'PACT replaces the heat spreader and heat sink with a dummy layer and connects it to the ground with a vertical thermal resistance calculated using the fixed air convection HTC.' No information provided on how HTC is determined, which experiments use this heat sink model versus the medium-cost model, or what HTC values were assigned. The boundary condition for cooling simulations is thus under-specified.",
+      "locator": "Section III-C, paragraph 1 (Heat Sink subsection)"
+    },
+    {
+      "field": "pnoc_mrrg_temperature_impact_on_laser_power_undocumented",
+      "reason": "Section III-D and Section IV-B describe a PNoC simulation framework where 'MRRG temperatures directly determine the heat power' (Section IV-B text). However, the actual feedback mechanism (how temperature changes laser power and reconfigures the PNoC wavelength selection) is referenced to prior work [17], [49] but not documented in this paper. PACT's role in this closed-loop simulation is ambiguous.",
+      "locator": "Section III-D and Section IV-B PNoC section"
+    },
+    {
+      "field": "monolithic_3d_layer_thickness_not_provided",
+      "reason": "Table III lists experimental setup for '33-layer monolithic 3-D IC' but does not provide per-layer thickness values. The paper mentions 'ultrathin layers (thickness < 1 μm)' in Section IV-A as a challenge for HotSpot, implying some layers are sub-micrometer, but no layer-by-layer thickness specification is given. This prevents thermal model validation.",
+      "locator": "Table III and Section IV-A"
+    },
+    {
+      "field": "openroad_benchmark_set_reproducibility_barrier",
+      "reason": "Table IX lists 9 industrial designs from OpenROAD by name (Sparc, PicoSoC, etc.) with statistics (area, utilization, standard cell count) but does not provide the actual DEF files, liberty files (.lib, .lef), or extracted power maps. The paper states 'users can directly utilize this interface to create standard-cell level power maps' (Section III-E) but does not release the data used in validation. Without DEF files and power maps, independent reproducibility is impossible.",
+      "locator": "Table IX and Section III-E"
+    },
+    {
+      "field": "comsol_reference_thermal_profiles_not_provided",
+      "reason": "PACT validation against COMSOL (Section IV-D, Figures 16-18) uses COMSOL as ground truth for accuracy comparison, reporting 2.77% max steady-state and 3.28% max transient error. However, the actual COMSOL simulation setup (mesh size, solver settings, time step, boundary conditions) and the grid temperature output files are not provided. Readers cannot independently verify the 'ground truth' or audit the error calculation method.",
+      "locator": "Section IV-D and Figures 16, 18"
+    },
+    {
+      "field": "liquid_cooling_3dice_comparison_chip_stack_geometry_missing",
+      "reason": "Figure 13(a) shows 'Front view of the chip stack' for liquid cooling validation but provides no quantitative layer thicknesses, channel dimensions, or material specifications. The caption states 'grid resolution to 1000×5' (Table VII) implying 1000 channels, but channel pitch, width, height, and fin geometry are not specified. Reproducing the 3D-ICE comparison requires these geometric parameters.",
+      "locator": "Figure 13 and Table VII"
+    },
+    {
+      "field": "pnoc_mcpat_sniper_integration_underdocumented",
+      "reason": "Section IV-B states PACT replaces HotSpot in a framework using McPAT and Sniper, but the integration details are sparse: how are McPAT power outputs converted to PACT power inputs? What time-stepping synchronization is used? How are temperature-dependent leakage power feedbacks handled? These details are 'adopted from recent work [17]' but not reproduced here, limiting reproducibility of full-system results (Table VI).",
+      "locator": "Section III-D, Section IV-B, and Figure 8"
+    },
+    {
+      "field": "step_response_synthetic_workload_vs_realistic_dynamic_power",
+      "reason": "Section IV-D specifies: 'We create a step response for each MPSoC and compare the grid temperature results against COMSOL and HotSpot.' A step response (abrupt power change from 0 to full power) is an idealized benchmark that does not represent realistic workload behavior. Combined with synthetic ±15% perturbations for other transient tests, the paper lacks validation against actual dynamic power traces from benchmarks like SPEC CPU or mobile applications.",
+      "locator": "Section IV-D transient validation paragraph"
+    },
+    {
+      "field": "mta_comparison_mesh_degrees_of_freedom_not_reconciled",
+      "reason": "Section IV-E states: 'We select the default mesh provided by MTA, which results in 639,920 degrees of freedom' and 'set the grid resolution in PACT to 256 × 256' (65,536 nodes). These are vastly different mesh densities, and the paper does not justify why this 'ensures a fair comparison.' Different discretization densities could explain simulation time differences independent of solver quality. The comparison is not controlled for mesh resolution.",
+      "locator": "Section IV-E comparison setup"
+    },
+    {
+      "field": "xyce_spice_engine_numerical_solver_settings_not_provided",
+      "reason": "Section IV states: 'we use Xyce 6.12 with OpenMPI 3.1.4 as our SPICE engine.' No Xyce solver options, convergence tolerances (ABSTOL, RELTOL), or transient time-stepping parameters are specified. SPICE solver accuracy and speed depend critically on these settings, yet they are not documented, making simulation results not fully reproducible.",
+      "locator": "Section IV experimental setup"
+    },
+    {
+      "field": "grid_resolution_adequacy_criterion_circular_reasoning",
+      "reason": "Section IV-D states: 'Based on the MPSoCs we used in the experiments, a grid resolution of equal or higher than 256 × 256 should be used to simulate the standard cell designs.' This is a post-hoc observation rather than a principled criterion. The paper does not derive a minimum grid resolution based on standard cell size, thermal diffusion length, or feature size. The 256×256 threshold appears arbitrary.",
+      "locator": "Section IV-D 'utilization' discussion"
+    },
+    {
+      "field": "thermal_capacitance_equation_material_specific_heat_ambiguity",
+      "reason": "Equation (4) defines C = cp·w·l·t where cp is labeled 'specific heat capacity (J/m³K).' Standard specific heat is typically in J/kg·K, not J/m³·K. If cp is volumetric (J/m³·K), then its numerical value depends on density ρ (units become J/m³·K = ρ·cp_mass where ρ in kg/m³). Paper does not clarify whether material density is folded into cp or if cp is truly volumetric. This creates ambiguity in the thermal model.",
+      "locator": "Section III-B, Equation (4), and footnote defining cp"
+    },
+    {
+      "field": "microchannel_virtual_temperature_node_placement_ambiguous",
+      "reason": "Section III-C states: 'users also need to define the liquid grid type (e.g., virtual temperature node is placed at the center of the grid node and not at the bottom of the grid node).' This parenthetical comment indicates variability in node placement but provides no guidance on which placement is correct or how it affects results. The statement 'virtual temperature node' is non-standard terminology; clarity is lacking.",
+      "locator": "Section III-C, Liquid Cooling via Microchannels subsection"
+    },
+    {
+      "field": "accuracy_error_calculation_methodology_not_detailed",
+      "reason": "Section IV-D defines error as: 'The error is calculated with respect to COMSOL by dividing the grid temperature difference (◦C) by the maximum on-chip temperature reported by COMSOL.' This is a relative error definition (ΔT / T_max), but whether this is computed per-grid and then averaged, or computed on aggregate statistics, is unclear. The formula for combining errors across multiple grids is not provided. Without this detail, the 2.77% figure cannot be independently verified.",
+      "locator": "Section IV-D, Figure 16 caption and text"
+    },
+    {
+      "field": "speedup_calculation_does_not_account_for_preprocessing_overhead",
+      "reason": "Table IV and Figure 17 report 'simulation time' speedups, but Section IV-D explicitly states: 'PACT's total running time is dominated by the hypergraph partition and solver running time. The thermal netlist generation time is negligible.' If preprocessing (netlist generation + hypergraph partitioning) times are included in 'total simulation time,' then speedup depends on partition overhead and does not purely reflect solver efficiency. The breakdown of time components is not provided for each experiment.",
+      "locator": "Section IV-D discussion and Table IV, Figure 17"
+    },
+    {
+      "field": "standard_cell_level_thermal_map_colorscale_not_quantified",
+      "reason": "Figure 15 shows 'PACT's thermal maps for the MPSoCs from OpenROAD' with a colorscale but the colorscale legend (°C per color) is not provided in the figure or caption. Without quantitative color-to-temperature mapping, the visual temperature profiles cannot be independently interpreted or compared to tabular results.",
+      "locator": "Figure 15"
+    },
+    {
+      "field": "sampling_interval_and_total_steps_inconsistency_in_liquid_cooling",
+      "reason": "Section IV-C describes liquid cooling validation setup but does not specify the sampling interval (time step size) or total simulation time. Figure 14 shows transient temperature curves but the time axis scale is not labeled. The paper states 'transient simulation results' but the time discretization used in the simulation and shown in plots is undocumented.",
+      "locator": "Section IV-C liquid cooling validation and Figure 14"
+    },
+    {
+      "field": "pnoc_application_workload_configuration_missing",
+      "reason": "Section IV-B lists workloads (HPCCG, UHPC, NAS-PB) with thread counts and 10% performance constraint, but does not document: thread-to-core mapping, cache sizes, frequency settings, or memory access patterns. Table V summary is incomplete. The PNoC power and temperature profile depends on these microarchitectural details, which are deferred to prior work [17], [49].",
+      "locator": "Table V and Section IV-B PNoC validation"
+    },
+    {
+      "field": "monolithic_3d_chip_power_profile_selection_criteria_not_justified",
+      "reason": "Section IV-A states: 'For our simulations, we select the power profile that results in the highest thermal gradient and chip temperature of the SCC-based chip, to extract the most interesting thermal profile.' 'Most interesting' is subjective. Selecting extreme-case power profiles biases speedup and accuracy results toward worst-case scenarios and does not represent typical operation. The criterion for power profile selection should be principled (e.g., representative of workload distribution or design specifications).",
+      "locator": "Section IV-A SCC-based chip experimental setup"
+    },
+    {
+      "field": "pact_transient_solver_comparison_gaps",
+      "reason": "Table II lists available solvers (KLU, SuperLU, AztecOO, TRAP, Gear, Trapezoidal, Backward Euler) but does not provide a detailed accuracy-speed Pareto frontier or numerical stability comparison for typical thermal problems. The paper qualitatively states TRAP is 'hybrid' and suitable for ultrathin layers but does not provide quantitative convergence plots or step-size behavior comparisons.",
+      "locator": "Table II and Section III-F"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "checked_assets": [
+    "https://github.com/peaclab/PACT",
+    "https://github.com/The-OpenROAD-Project/OpenSTA"
+  ]
+}

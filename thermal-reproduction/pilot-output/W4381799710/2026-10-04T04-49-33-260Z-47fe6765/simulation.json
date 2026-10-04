@@ -1,0 +1,5 @@
+{
+  "status": "skipped",
+  "reason": "Core0 needs finite power from 0 to 10000 W; Core1 needs finite power from 0 to 10000 W; Core2 needs finite power from 0 to 10000 W; Core3 needs finite power from 0 to 10000 W; Floorplan and power names differ",
+  "artifacts": {}
+}

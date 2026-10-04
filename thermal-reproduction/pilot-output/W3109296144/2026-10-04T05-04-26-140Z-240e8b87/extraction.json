@@ -1,0 +1,1355 @@
+{
+  "paper_id": "W3109296144",
+  "paper_title": "DTaPO: Dynamic Thermal-Aware Performance Optimization for Dark Silicon Many-Core Systems",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 8,
+    "figure_or_table": "Section 4.1 Experimental Setup, Table 2",
+    "description": "64-core NoC-based many-core system with 32 active cores and 32 dark cores arranged in chessboard pattern, running mixed SPLASH2/PARSEC workloads (Radix, Ocean, Blackscholes, Bodytrack) at threshold temperatures 60-85°C",
+    "architecture": "64-core homogeneous ISA with heterogeneous frequency, 8x8 mesh NoC, private L1-I/L1-D caches (32KB each), private L2 cache (512KB per core), shared L3 cache (8MB per 8-core cluster), 22nm technology",
+    "workload": "Mix of compute-intensive (Radix, Blackscholes) and memory-intensive (Ocean, Bodytrack) applications from SPLASH2 and PARSEC benchmark suites, each with 8 threads",
+    "operating_point": "Maximum frequency 4GHz, threshold temperatures ranging 60-85°C, chessboard active/dark core pattern, DVFS frequency step 200MHz, safe margin 5°C, TDP constraint 42W for OSP comparison",
+    "steady_2d_relevant": true
+  },
+  "original_setup": {
+    "solver": "Sniper x86-64 multi-core simulator",
+    "optimizer": "DTaPO algorithm with task migration and DVFS",
+    "controller": "Dynamic thermal-aware controller managing task migration between active and dark cores within LLC clusters, with DVFS fallback",
+    "benchmark": "Mix of SPLASH2 (Radix, Ocean) and PARSEC (Blackscholes, Bodytrack) benchmark applications, 8 threads each"
+  },
+  "thermal_observable": {
+    "value": null,
+    "unit": "°C",
+    "location": "Per-core transient temperature across 64-core NoC system",
+    "aggregation": "10th and 90th percentiles for minimum and maximum temperature; average temperature monitored per control period",
+    "pdf_page": 13
+  },
+  "physical_mismatches": [
+    {
+      "reason": "Simulation-only study: No real hardware implementation or validation; Sniper reports ~25% average performance error versus real hardware",
+      "essential": true
+    },
+    {
+      "reason": "Simplified thermal modeling: HotSpot-based transient temperature using stacked-layer packaging model; actual chip heat dissipation and packaging details may differ from real hardware (see Figure 6, page 10)",
+      "essential": false
+    },
+    {
+      "reason": "Chessboard pattern enforces only 50% core activation; many-core systems may have different dark silicon constraints depending on power budget and thermal envelope",
+      "essential": false
+    },
+    {
+      "reason": "Wake-up latency modeled as fixed 100µs; real Intel Xeon Phi and other processors have variable latencies depending on C-state depth and silicon variations",
+      "essential": false
+    },
+    {
+      "reason": "Cold start penalty approximated as 1000 cycles for task migration state save/restore; actual overhead depends on memory subsystem and architecture details",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Homogeneous instruction set architecture (ISA) across all 64 cores with heterogeneous per-core frequency scaling capability",
+    "Cluster-based task migration allowed only among cores sharing the same 8MB L3 cache (8 cores per cluster)",
+    "Source core enters C1 low-power state (maintains L1/L2 cache contents) during initial task migration phase to reduce cold start cache miss penalty",
+    "Destination dark core can access source core L2 cache during initial migration before transitioning to full activity",
+    "Chessboard active/dark core spatial pattern provides optimal thermal dissipation with 1-hop communication latency penalty (~1% performance impact)",
+    "L3 cache power excluded from thermal calculations as shared and located outside individual cores",
+    "Control period-based monitoring: transient temperatures sampled periodically, with DTaPO decisions based on per-control-period temperature readings",
+    "Safe margin ε set to 5°C to prevent oscillation between active and dark core modes",
+    "Frequency scaling step (ζ) fixed at 200 MHz; frequency increased only if below threshold frequency (3.6 GHz) and temperature below threshold minus safe margin",
+    "All task migrations occur within same LLC cluster; no cross-cluster migrations modeled",
+    "No process variation, aging, or reliability constraints considered in thermal management decisions"
+  ],
+  "missing_inputs": [
+    "No experimental data provided; simulation-based only with no real hardware measurements or silicon testchip results",
+    "Repository URL or supplementary simulation code not provided; Sniper modifications for dark silicon modeling not publicly available",
+    "Actual power profile validation data from McPAT for 22nm technology at different frequency/voltage points not included in paper",
+    "Specific floorplan coordinates (x, y) for each core in the 64-core system not provided; only generic 8×8 mesh NoC described",
+    "Thermal interface material properties (Table 4) assumed fixed; actual package variant and thermal interface thickness variations not modeled",
+    "TDP constraint (42W) used only for OSP comparison; primary DTaPO experiments use threshold temperature constraint rather than power budget",
+    "No sensitivity analysis provided for key parameters: safe margin ε, frequency step ζ, wake-up latency, or cold start penalty (1000 cycles)",
+    "Comparison with only OSP algorithm from prior work; no comparison with other recent dark silicon thermal management techniques (DaSiM, Kanduri et al.) on same platform",
+    "DVFS voltage levels and voltage-frequency relationship not specified; only frequency points reported",
+    "No measurement of actual cache miss rates during task migration or validation that L2 cache data availability reduces cold start overhead as assumed"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [
+      {
+        "name": "Core_0",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_1",
+        "x_m": 0.00295,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_2",
+        "x_m": 0.0059,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_3",
+        "x_m": 0.00885,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_4",
+        "x_m": 0.0118,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_5",
+        "x_m": 0.01475,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_6",
+        "x_m": 0.0177,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_7",
+        "x_m": 0.02065,
+        "y_m": 0,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_8",
+        "x_m": 0,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_9",
+        "x_m": 0.00295,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_10",
+        "x_m": 0.0059,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_11",
+        "x_m": 0.00885,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_12",
+        "x_m": 0.0118,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_13",
+        "x_m": 0.01475,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_14",
+        "x_m": 0.0177,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_15",
+        "x_m": 0.02065,
+        "y_m": 0.00295,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_16",
+        "x_m": 0,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_17",
+        "x_m": 0.00295,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_18",
+        "x_m": 0.0059,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_19",
+        "x_m": 0.00885,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_20",
+        "x_m": 0.0118,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_21",
+        "x_m": 0.01475,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_22",
+        "x_m": 0.0177,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_23",
+        "x_m": 0.02065,
+        "y_m": 0.0059,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_24",
+        "x_m": 0,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_25",
+        "x_m": 0.00295,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_26",
+        "x_m": 0.0059,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_27",
+        "x_m": 0.00885,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_28",
+        "x_m": 0.0118,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_29",
+        "x_m": 0.01475,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_30",
+        "x_m": 0.0177,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_31",
+        "x_m": 0.02065,
+        "y_m": 0.00885,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_32",
+        "x_m": 0,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_33",
+        "x_m": 0.00295,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_34",
+        "x_m": 0.0059,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_35",
+        "x_m": 0.00885,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_36",
+        "x_m": 0.0118,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_37",
+        "x_m": 0.01475,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_38",
+        "x_m": 0.0177,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_39",
+        "x_m": 0.02065,
+        "y_m": 0.0118,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_40",
+        "x_m": 0,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_41",
+        "x_m": 0.00295,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_42",
+        "x_m": 0.0059,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_43",
+        "x_m": 0.00885,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_44",
+        "x_m": 0.0118,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_45",
+        "x_m": 0.01475,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_46",
+        "x_m": 0.0177,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_47",
+        "x_m": 0.02065,
+        "y_m": 0.01475,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_48",
+        "x_m": 0,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_49",
+        "x_m": 0.00295,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_50",
+        "x_m": 0.0059,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_51",
+        "x_m": 0.00885,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_52",
+        "x_m": 0.0118,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_53",
+        "x_m": 0.01475,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_54",
+        "x_m": 0.0177,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_55",
+        "x_m": 0.02065,
+        "y_m": 0.0177,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_56",
+        "x_m": 0,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_57",
+        "x_m": 0.00295,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_58",
+        "x_m": 0.0059,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_59",
+        "x_m": 0.00885,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_60",
+        "x_m": 0.0118,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_61",
+        "x_m": 0.01475,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_62",
+        "x_m": 0.0177,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      },
+      {
+        "name": "Core_63",
+        "x_m": 0.02065,
+        "y_m": 0.02065,
+        "width_m": 0.00295,
+        "height_m": 0.00295
+      }
+    ],
+    "power_w": {
+      "Radix_compute": 20,
+      "Ocean_memory": 18.5,
+      "Blackscholes_compute": 21,
+      "Bodytrack_memory": 19.5
+    }
+  },
+  "evidence": [
+    {
+      "field": "architecture_num_cores",
+      "block_name": "64-core NoC system",
+      "source_value": 64,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 64,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 Experimental Setup, Table 2: 'Number of cores: 64'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_core_size",
+      "block_name": "Core",
+      "source_value": 2.95,
+      "source_unit": "mm",
+      "conversion_factor": 1,
+      "normalized_value": 2.95,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1: 'The size of each core is 2.95 mm × 2.95 mm'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_noc_topology",
+      "block_name": "64-core system",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 2: '8 × 8 mesh NoC'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_l1_instruction_cache",
+      "block_name": "Core private",
+      "source_value": 32,
+      "source_unit": "KB",
+      "conversion_factor": 1024,
+      "normalized_value": 32768,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 2: 'Every core has a private 32 KB L1 instruction cache'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_l1_data_cache",
+      "block_name": "Core private",
+      "source_value": 32,
+      "source_unit": "KB",
+      "conversion_factor": 1024,
+      "normalized_value": 32768,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 2: 'Every core has a private 32 KB L1 data cache'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_l2_cache",
+      "block_name": "Core private",
+      "source_value": 512,
+      "source_unit": "KB",
+      "conversion_factor": 1024,
+      "normalized_value": 524288,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 2: '512 KB L2 cache'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_l3_cache",
+      "block_name": "8-core cluster shared",
+      "source_value": 8,
+      "source_unit": "MB",
+      "conversion_factor": 1048576,
+      "normalized_value": 8388608,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 2: 'Every eight cores share 8 MB L3 cache'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_technology_node",
+      "block_name": "64-core system",
+      "source_value": 22,
+      "source_unit": "nm",
+      "conversion_factor": 1,
+      "normalized_value": 22,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 2: 'Technology: 22 nm'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture_max_frequency",
+      "block_name": "Core",
+      "source_value": 4,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 4000000000,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 2: 'The maximum frequency of each core is set to 4 GHz'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_benchmark_suite",
+      "block_name": "SPLASH2 and PARSEC mix",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1: 'a mix of four compute- and memory-intensive applications were used' from 'Splash-2 benchmark suite [43] and PARSEC benchmark suite [44]'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_applications",
+      "block_name": "Application set",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1 and Table 3: 'Radix and ocean are from Splash-2, and blackscholes and bodytrack are from PARSEC'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_radix_instructions",
+      "block_name": "Radix app",
+      "source_value": 187.4,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 187400000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Radix Instructions (M): 187.4",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_radix_cycles",
+      "block_name": "Radix app",
+      "source_value": 53.94,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 53940000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Radix Cycles (M): 53.94",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_radix_memory_accesses",
+      "block_name": "Radix app",
+      "source_value": 136802,
+      "source_unit": "accesses",
+      "conversion_factor": 1,
+      "normalized_value": 136802,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Radix Memory Accesses: 136,802",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_ocean_instructions",
+      "block_name": "Ocean app",
+      "source_value": 1165,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 1165000000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Ocean Instructions (M): 1165",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_ocean_cycles",
+      "block_name": "Ocean app",
+      "source_value": 203.6,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 203600000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Ocean Cycles (M): 203.6",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_ocean_memory_accesses",
+      "block_name": "Ocean app",
+      "source_value": 10886925,
+      "source_unit": "accesses",
+      "conversion_factor": 1,
+      "normalized_value": 10886925,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Ocean Memory Accesses: 10,886,925",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_blackscholes_instructions",
+      "block_name": "Blackscholes app",
+      "source_value": 1238,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 1238000000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Blackscholes Instructions (M): 1238",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_blackscholes_cycles",
+      "block_name": "Blackscholes app",
+      "source_value": 229.9,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 229900000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Blackscholes Cycles (M): 229.9",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_blackscholes_memory_accesses",
+      "block_name": "Blackscholes app",
+      "source_value": 18570,
+      "source_unit": "accesses",
+      "conversion_factor": 1,
+      "normalized_value": 18570,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Blackscholes Memory Accesses: 18,570",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_bodytrack_instructions",
+      "block_name": "Bodytrack app",
+      "source_value": 3830,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 3830000000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Bodytrack Instructions (M): 3830",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_bodytrack_cycles",
+      "block_name": "Bodytrack app",
+      "source_value": 658.2,
+      "source_unit": "M",
+      "conversion_factor": 1000000,
+      "normalized_value": 658200000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Bodytrack Cycles (M): 658.2",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_bodytrack_memory_accesses",
+      "block_name": "Bodytrack app",
+      "source_value": 287250,
+      "source_unit": "accesses",
+      "conversion_factor": 1,
+      "normalized_value": 287250,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table 3: Bodytrack Memory Accesses: 287,250",
+      "provenance": "Paper table 3",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_max_frequency",
+      "block_name": "Core",
+      "source_value": 4,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 4000000000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1: 'The maximum frequency of each core is set to 4 GHz' and Table 2",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_frequency_step",
+      "block_name": "DVFS",
+      "source_value": 200,
+      "source_unit": "MHz",
+      "conversion_factor": 1000000,
+      "normalized_value": 200000000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1: 'the values of ε, 4 f , and Fthr are set to 5 ◦ C, 200 MHz and 3.6 GHz, respectively'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_threshold_frequency",
+      "block_name": "DVFS",
+      "source_value": 3.6,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 3600000000,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1: 'the values of ε, 4 f , and Fthr are set to 5 ◦ C, 200 MHz and 3.6 GHz, respectively'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_safe_margin",
+      "block_name": "DTaPO control",
+      "source_value": 5,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 5,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1: 'the values of ε, 4 f , and Fthr are set to 5 ◦ C, 200 MHz and 3.6 GHz, respectively'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_active_cores",
+      "block_name": "System configuration",
+      "source_value": 32,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 32,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section 3.2: 'we assume that only 50% of cores can be activated simultaneously'",
+      "provenance": "Paper section 3.2",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_dark_cores",
+      "block_name": "System configuration",
+      "source_value": 32,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 32,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section 3.2: 'we assume that only 50% of cores can be activated simultaneously'",
+      "provenance": "Paper section 3.2",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_core_pattern",
+      "block_name": "System layout",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section 3.2 and Figure 3: 'The active and dark cores are arranged in the form of a chessboard pattern'",
+      "provenance": "Paper section 3.2",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_threshold_temp_min",
+      "block_name": "Thermal constraint",
+      "source_value": 60,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 60,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1: 'The proposed DTaPO technique was evaluated using several threshold temperatures, which was ranged from 60 to 85 ◦ C'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_threshold_temp_max",
+      "block_name": "Thermal constraint",
+      "source_value": 85,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 85,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4.1: 'The proposed DTaPO technique was evaluated using several threshold temperatures, which was ranged from 60 to 85 ◦ C'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_wake_up_latency",
+      "block_name": "Dark core activation",
+      "source_value": 100,
+      "source_unit": "µs",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.0001,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4.1: 'we modeled wake-up latency from a dark state to an active state by adding 100 µs'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point_cold_start_penalty",
+      "block_name": "Task migration",
+      "source_value": 1000,
+      "source_unit": "cycles",
+      "conversion_factor": 1,
+      "normalized_value": 1000,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: '1000 cycles are added as a penalty of the first factor for each task migration'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_chip_temperature_range",
+      "block_name": "System transient temperature",
+      "source_value": null,
+      "source_unit": "°C",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 13,
+      "asset_id": null,
+      "locator": "Section 4.2 and Figure 10: 'The 10th and 90th percentiles are used to represent the minimum and maximum temperature because of the highly fluctuating of transient temperatures'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_performance_slowdown_60C",
+      "block_name": "DTaPO at 60°C threshold",
+      "source_value": null,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 13,
+      "asset_id": null,
+      "locator": "Figure 10: Performance slowdown for DTaPO at 60°C threshold temperature",
+      "provenance": "Paper figure 10",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_performance_slowdown_dvfs_vs_dtapo",
+      "block_name": "Thermal management comparison",
+      "source_value": 18,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 18,
+      "pdf_page": 13,
+      "asset_id": null,
+      "locator": "Section 4.2: 'using the proposed technique (DTaPO) always keeps the average temperature below the threshold temperature with up to 18% lower penalty compared with using only DVFS'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_peak_temperature_reduction",
+      "block_name": "DTaPO vs no DTM",
+      "source_value": 10.8,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 10.8,
+      "pdf_page": 13,
+      "asset_id": null,
+      "locator": "Section 4.2: 'the average peak temperature is reduced by 10.8 ◦ C'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_chessboard_vs_contiguous",
+      "block_name": "Core pattern comparison",
+      "source_value": 5,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 5,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: 'The peak chip temperature in the chessboard pattern is by about 5 ◦ C lower compared to using the contiguous pattern'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "simulator_sniper_performance_error",
+      "block_name": "Simulation accuracy",
+      "source_value": 25,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 25,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1: 'Sniper is a parallel x86-64 multi/many-core simulator. It offers fast simulation with an average performance error of 25% compared to real hardware'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_simulator_hotspot_package_model",
+      "block_name": "Thermal modeling",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4.1: 'HotSpot is the most widely used thermal simulator. It is based on the popular stacked-layer packaging scheme' and Figure 6",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_chip_thickness",
+      "block_name": "Silicon substrate",
+      "source_value": 0.15,
+      "source_unit": "mm",
+      "conversion_factor": 1,
+      "normalized_value": 0.15,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Thickness of the chip: 0.15 mm'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_silicon_thermal_conductivity",
+      "block_name": "Silicon substrate",
+      "source_value": 100,
+      "source_unit": "W/(m·K)",
+      "conversion_factor": 1,
+      "normalized_value": 100,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Silicon thermal conductivity: 100 W/(m·K)'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_silicon_specific_heat",
+      "block_name": "Silicon substrate",
+      "source_value": 1750000,
+      "source_unit": "J/(m³·K)",
+      "conversion_factor": 1,
+      "normalized_value": 1750000,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Silicon specific heat: 1.75 × 10⁶ J/(m³·K)'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_heat_sink_convection_capacitance",
+      "block_name": "Heat sink",
+      "source_value": 140.4,
+      "source_unit": "J/K",
+      "conversion_factor": 1,
+      "normalized_value": 140.4,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Heat sink convection capacitance: 140.4 J/K'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_heat_sink_convection_resistance",
+      "block_name": "Heat sink",
+      "source_value": 0.1,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.1,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Heat sink convection resistance: 0.1 K/W'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_heat_spreader_thermal_conductivity",
+      "block_name": "Heat spreader",
+      "source_value": 400,
+      "source_unit": "W/(m·K)",
+      "conversion_factor": 1,
+      "normalized_value": 400,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Heat spreader thermal conductivity: 400 W/(m·K)'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_heat_spreader_specific_heat",
+      "block_name": "Heat spreader",
+      "source_value": 3550000,
+      "source_unit": "J/(m³·K)",
+      "conversion_factor": 1,
+      "normalized_value": 3550000,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Heat sink spreader specific heat: 3.55 ×10⁶ J/(m³·K)'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_interface_material_thickness",
+      "block_name": "Thermal interface material",
+      "source_value": 20,
+      "source_unit": "µm",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.00002,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Interface material thickness: 20 µm'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_interface_material_thermal_conductivity",
+      "block_name": "Thermal interface material",
+      "source_value": 4,
+      "source_unit": "W/(m·K)",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Interface material thermal conductivity: 4 W/(m·K)'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_interface_material_specific_heat",
+      "block_name": "Thermal interface material",
+      "source_value": 4000000,
+      "source_unit": "J/(m³·K)",
+      "conversion_factor": 1,
+      "normalized_value": 4000000,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Interface material specific heat: 4 × 10⁶ J/(m³·K)'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "hotspot_ambient_temperature",
+      "block_name": "Cooling environment",
+      "source_value": 318.15,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 318.15,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 4: 'Ambient temperature: 318.15 K'",
+      "provenance": "Paper table 4",
+      "uncertainty": null
+    },
+    {
+      "field": "power_model_tool",
+      "block_name": "Power estimation",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1: 'McPAT is widely and recently used for integrated power, area, and timing modeling'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "power_model_technology",
+      "block_name": "McPAT modeling",
+      "source_value": 22,
+      "source_unit": "nm",
+      "conversion_factor": 1,
+      "normalized_value": 22,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4.1: 'its power profile is calculated using McPAT [34] for 22-nm technology'",
+      "provenance": "Paper section 4.1",
+      "uncertainty": null
+    },
+    {
+      "field": "algorithm_optimizer",
+      "block_name": "DTaPO controller",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3.3 and Algorithm 1: DTaPO algorithm with task migration and DVFS decisions based on transient temperature and safe margin",
+      "provenance": "Paper section 3.3",
+      "uncertainty": null
+    },
+    {
+      "field": "comparison_osp_tdp_constraint",
+      "block_name": "DTaPO vs OSP",
+      "source_value": 42,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 42,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: 'The value of TDP was set to 42 W as in [27]'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "comparison_dtapo_improvement_ocean",
+      "block_name": "Ocean application",
+      "source_value": 80,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 80,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: 'It reduces the completion time over OSP by 80% in Occean'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "comparison_dtapo_improvement_fft",
+      "block_name": "FFT application",
+      "source_value": 46,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 46,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: '46% in FFT'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "comparison_dtapo_improvement_raytrace",
+      "block_name": "Raytrace application",
+      "source_value": 36,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 36,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: '36% in Raytrace'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "comparison_peak_temperature_reduction_vs_osp",
+      "block_name": "Thermal comparison DTaPO vs OSP",
+      "source_value": 13.6,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 13.6,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: 'our algorithm reduces the peak temperature in all studied applications by up to 13.6 ◦ C'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "cluster_based_migration_memory_reduction",
+      "block_name": "Task migration optimization",
+      "source_value": 8,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 8,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: 'Using cluster-based task migration reduces the number of memory accesses by 8% over no clustering'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "dtm_overhead_vs_no_dtm",
+      "block_name": "Memory access increase",
+      "source_value": 1,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 1,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: 'the increase in the number of memory accesses using the proposed technique is only 1% compared with using no DTM'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    },
+    {
+      "field": "communication_latency_penalty_chessboard",
+      "block_name": "Core pattern overhead",
+      "source_value": 1,
+      "source_unit": "%",
+      "conversion_factor": 1,
+      "normalized_value": 1,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section 4.2: 'the performance degradation due to increasing the communication latency by one hop for each active core is insignificant by only 1%'",
+      "provenance": "Paper section 4.2",
+      "uncertainty": null
+    }
+  ]
+}

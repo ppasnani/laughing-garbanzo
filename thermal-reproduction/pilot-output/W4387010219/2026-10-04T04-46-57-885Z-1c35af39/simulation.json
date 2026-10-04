@@ -1,0 +1,5 @@
+{
+  "status": "skipped",
+  "reason": "Memory_Die needs finite power from 0 to 10000 W; Logic_Die needs finite power from 0 to 10000 W; BEOL_Stack needs finite power from 0 to 10000 W; TIM needs finite power from 0 to 10000 W; Heat_Spreader needs finite power from 0 to 10000 W; Heatsink needs finite power from 0 to 10000 W; Floorplan and power names differ; BEOL_Stack overlaps Logic_Die",
+  "artifacts": {}
+}

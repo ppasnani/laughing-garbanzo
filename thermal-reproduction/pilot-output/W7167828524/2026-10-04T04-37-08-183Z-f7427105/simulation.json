@@ -1,0 +1,5 @@
+{
+  "status": "skipped",
+  "reason": "Computing_Chiplet_1 needs finite power from 0 to 10000 W; Computing_Chiplet_2 needs finite power from 0 to 10000 W; IO_Chiplet needs finite power from 0 to 10000 W; Interposer needs finite power from 0 to 10000 W; Floorplan and power names differ; Interposer overlaps Computing_Chiplet_1; Interposer overlaps Computing_Chiplet_2; Interposer overlaps IO_Chiplet",
+  "artifacts": {}
+}

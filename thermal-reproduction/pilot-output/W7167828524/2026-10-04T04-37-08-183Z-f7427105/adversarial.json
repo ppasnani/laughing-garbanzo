@@ -1,0 +1,124 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Fine-grained µtask-level task orchestration based on graph-level DAG scheduling and thermal-aware greedy mapping strategy clearly described in Section IV.B with Algorithm details. HotSpot 6.0 thermal simulation confirmed at Section IV.C.4, page 4. TED+SCBO optimization framework specified with Algorithms 1 and 2 on pages 8-9. Multi-level modeling integrates chiplet-level and core-level parameters as claimed."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code repository, source code, or reproducible implementation linked in paper, references, or supplementary materials. DeepScaleTool [42] citation provided but tool is external. BoTorch [45] and Gymnasium [44] are standard libraries but specific SCBO and RL implementation details not provided as standalone code. Thermal floorplan generation scripts and HotSpot configuration files not included."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Critical parameter inconsistency: Architecture described as '5×4 NPU cores, 1×2 chiplets' in Table IV 'Ours' design, but this implies 10 cores per chiplet (20/2=10), not compatible with typical 2D chiplet layouts. Systolic array dimensions 208×112 are non-standard and exceed typical PE counts without detailed synthesis justification. Trust region threshold th=16 (Section V.E) used for convergence, but Section V.C states 'threshold of SCBO in ThermoDSE is fixed at 16' without prior definition in Algorithm 2. SCBO hyperparameter settings (Matérn kernel scaling, GP initial sampling, CMPS batch size) not fully specified."
+    },
+    "config": {
+      "status": "verified",
+      "note": "Design constraints clearly stated: 75°C peak temperature, 300mm² interposer area (Section V.A, page 9). DRAM configuration: 4-channel, 4GB, 128GB/s bandwidth confirmed. Energy/area parameters for D2D (1.17pJ/bit, 81Kµm²/25Gb/s), NoC (0.6pJ/bit), DRAM (8pJ/bit) all cited from references or prior works. Yield model parameters d=0.08, α=10 from Chiplet-actuary [2]. Process node 14nm scaled from 28nm using DeepScaleTool [42]. Operating frequency 1.8GHz and ambient 45°C with 0.4K/W convection resistance documented."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Benchmark models (ResNet-50, GoogLeNet, MobileNetv2, YOLOv2, U-Net, BERT-Small) specifications in Table III provided (batch size, data volumes, GOPS, sparsity) but actual model files, trained weights, or layer-by-layer DAG specifications not provided as supplementary assets. Power traces for individual DNN networks not independently validated. Thermal simulation outputs (HotSpot power maps, temperature distributions) only shown as aggregated results in Table IV and Figure 10(b); detailed per-core power and temperature maps not disclosed. No raw experimental data or trace files available for reproduction."
+    }
+  },
+  "findings": [
+    {
+      "field": "architecture_chiplet_configuration",
+      "reason": "5×4 NPU cores partitioned into 1×2 chiplets mathematically inconsistent: 20 cores ÷ 2 chiplets = 10 cores/chiplet average, but 1×2 partition typically implies 2 separate dies, not a balanced 2×2 core array layout. Figure 1(a) shows mesh-based NoC within chiplet, suggesting rectangular core arrangement. Actual core placement (5×4 to 1×2 mapping) not geometrically justified.",
+      "locator": "Table IV row 'Ours', Section V.D page 10"
+    },
+    {
+      "field": "thermal_validation_against_silicon",
+      "reason": "Paper reports only HotSpot 6.0 steady-state simulation results. No validation against actual silicon thermal measurements, silicon data from Simba prototype, or transient thermal behavior during multi-DNN workload transitions. Peak temperature of 74.8°C is simulated; real silicon may exhibit different hotspot locations, TIM interface thermal resistance variations, or die-to-interposer contact issues.",
+      "locator": "Section IV.C.4 page 4, Table IV page 10"
+    },
+    {
+      "field": "systolic_array_dimensions_non_standard",
+      "reason": "208×112 systolic array is atypical and not justified by prior art or standard PE grid sizes. Simba reference uses 64×16, prior works typically use 64×64 or 128×128. No synthesis results, area/power justification, or PE utilization analysis provided for the chosen 208×112 configuration. Equation 12 utilization factors assume standard padding but actual implementation complexity not addressed.",
+      "locator": "Table IV row 'Ours' page 10, Section IV.C.1 Equations 12-15 page 6"
+    },
+    {
+      "field": "fine_grained_modeling_not_independently_validated",
+      "reason": "Comparison against Chiplet-Gym (B4) shows 53% and 73% energy/delay errors, but ThermoDSE's fine-grained model is not validated against independent simulators, silicon data, or published benchmarks. Errors claimed for Chiplet-Gym may reflect differences in modeling approach rather than ThermoDSE accuracy. No cross-validation with other full-system simulators (e.g., gem5, Sniper) provided.",
+      "locator": "Section V.D page 10, Table IV page 10"
+    },
+    {
+      "field": "thermal_aware_task_mapping_strategy_unvalidated",
+      "reason": "Greedy-based thermal-aware mapping (high-power tasks to corner cores) described in Section IV.B page 5 but no quantitative thermal impact analysis or comparison against alternatives (e.g., simulated annealing for task placement, centralized cooling). No ablation study isolating the thermal-aware mapping contribution to final EDYP cost reduction.",
+      "locator": "Section IV.B page 5"
+    },
+    {
+      "field": "yield_model_spatial_correlation_ignored",
+      "reason": "Negative Binomial yield model (Equation 22) uses scalar defect density d=0.08 and clustering parameter α=10, but does not account for spatial correlation of defects or chiplet-specific failure modes. Real yield variations across die and interposer not captured. Model validation against actual manufacturing data not provided.",
+      "locator": "Section IV.C.3 Equation 22 page 7, Section V.A page 9"
+    },
+    {
+      "field": "d2d_interconnect_bandwidth_choice_unjustified",
+      "reason": "Final design uses 240GB/s inter-chiplet NoC/NoP bandwidth (Table IV 'Ours'), but sensitivity analysis or justification for this value not provided. Figure 8 exhaustive search shows 256GB/s slightly better (page 11), yet 240GB/s chosen without cost/complexity trade-off analysis. NoP bandwidth scaling (equation in Section IV.C.2) assumes linear relationship not verified.",
+      "locator": "Table IV page 10, Section V.E Figure 8 page 11"
+    },
+    {
+      "field": "multi_dnn_workload_execution_model_simplified",
+      "reason": "AR/VR workload executed sequentially (page 3, Section II.B), but actual mobile/edge AR/VR systems may overlap computation/communication or use dynamic voltage scaling during network transitions. DVFS dismissed as unsuitable (page 3) but no quantitative comparison of thermal margin vs. DVFS benefit provided. Total delay computed as sum of individual network delays, not accounting for possible pipeline parallelism across frames.",
+      "locator": "Section II.B page 3, Section V.D page 10"
+    },
+    {
+      "field": "scbo_convergence_threshold_sensitivity_underexplored",
+      "reason": "Section V.E Figure 9 shows th=4 converges in 156 iterations (EDYP ~160) vs. th=16 in 725 iterations (EDYP ~132), but trade-off between iteration budget and solution quality not formally characterized. No convergence proof or bound on suboptimality provided. Trust region dynamics (Equation 27) lack theoretical justification for chiplet DSE problem structure.",
+      "locator": "Section V.E page 11, Figure 9"
+    },
+    {
+      "field": "process_technology_scaling_not_validated",
+      "reason": "Results scaled from 28nm TSMC synthesis to 14nm using external DeepScaleTool [42]. Scaling factors for area, energy, and thermal properties not explicitly provided or validated. Modern node scaling may have different characteristics (e.g., power density, interconnect dominance) that affect conclusions.",
+      "locator": "Section V.A page 9"
+    },
+    {
+      "field": "benchmark_diversity_limited_to_ar_vr",
+      "reason": "Evaluation focuses exclusively on AR/VR multi-DNN workload. No evaluation on other edge/mobile scenarios (autonomous vehicles, medical imaging, NLP inference on mobile). Generalizability of design conclusions to other workload mixes not demonstrated. Thermal characteristics highly workload-dependent; conclusions may not transfer.",
+      "locator": "Section II.B page 3, Table III page 9, Section V.C page 9"
+    },
+    {
+      "field": "inter_chiplet_communication_energy_not_itemized",
+      "reason": "Table IV compares designs but does not break down D2D/NoP energy contribution separately. For 'Ours' design with 240GB/s NoP, quantitative D2D energy cost hidden within total energy figure. Claim that fewer chiplets reduce D2D energy (page 10) not independently verified.",
+      "locator": "Section V.D page 10, Table IV page 10"
+    },
+    {
+      "field": "ambient_temperature_and_cooling_assumption_restricted",
+      "reason": "Fixed ambient 45°C and 0.4K/W convection resistance (page 9) represent restricted cooling for embedded devices. Desktop/data-center scenarios would have lower convection resistance (0.1-0.2K/W). Thermal conclusions not applicable to other deployment contexts. Sensitivity to cooling capability not analyzed.",
+      "locator": "Section V.A page 9"
+    },
+    {
+      "field": "hotspot_floorplan_not_disclosed",
+      "reason": "HotSpot 6.0 simulation requires detailed floorplan with component placement and thermal properties (Figure 6 cross-section shown, but component-level coordinates not provided). Reproducibility of thermal results impossible without exact floorplan file and layer stackup. TIM and heat spreader properties assumed from TESA [12] but specific thermal resistances not listed.",
+      "locator": "Section IV.C.4 page 7, Figure 6 page 7"
+    },
+    {
+      "field": "exhaustive_search_baseline_incomplete",
+      "reason": "Figure 8 shows exhaustive scan of '~440K neighboring design points', but design space has ~1 billion configurations (page 8). Exhaustive search validation only covers neighborhood of optimal design, not global optimality guarantee. U-shaped curve observed but no formal proof of convexity or unimodality in EDYP objective.",
+      "locator": "Section V.E page 11, Figure 8"
+    },
+    {
+      "field": "rl_baseline_implementation_details_missing",
+      "reason": "RL baseline uses Gymnasium framework with PPO, MLP networks [10,64,64,810] and [10,64,64,1] (page 10), but hyperparameters (learning rate, entropy coefficient, number of environment steps per update) not specified. Reward function 'refined' to include constraints (page 10) but exact penalty formulation not shown. RL results may be suboptimal due to poor hyperparameter choices rather than algorithmic limitation.",
+      "locator": "Section V.C page 9-10, Table V page 11"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "checked_assets": []
+}

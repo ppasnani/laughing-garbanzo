@@ -1,0 +1,149 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "Paper claims 2.5D steady-state thermal analysis with passive interposer, but ignores secondary cooling path (substrate and PCB), 3D heat spreading through C4 pillars, and transient thermal effects during workload transitions. These omissions contradict the claim of 'worst-case temperature' prediction accuracy. Section 2.3 explicitly states adiabatic lateral boundary conditions and only primary TIM-spreader-heatsink path, which is a significant simplification for a system with TSVs and substrate coupling."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code repository, executable, or supplementary materials disclosed. Paper references PyTorch and Optuna for implementation but provides no link, archive, or reproducible artifacts. Compact thermal model parameters (l_x,i, l_y,i, A, a, B) are fitted via MSE loss (Eq. 13) but fitted values not tabulated or released. MILP formulations (Eq. 18, 25) solved by Gurobi but no model files, input scripts, or solver configurations provided. Hyperparameter optimization via Bayesian method documented but specific lr_pos, lr_ang, λ_dens,0, λ_therm,0 values for Case 3 not disclosed."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Compact thermal model fitted with '2N + 3 parameters' (Eq. 12) for N=8 chiplets = 19 parameters total, but Section 3.2 states fitting is 'easy to converge and exhibits little dependence on initial parameters' without validation of parameter sensitivity or uniqueness. Length normalization factors l_x,i and l_y,i claimed to 'capture effects of heterogeneous conductivities' but quasi-homogeneous approximation (Eq. 6) ignores actual material layering (silicon, epoxy, RDL, microbump). Fitting parameter 'a' in z-direction integral (Eq. 8) range [0, t_i] not constrained during optimization; convergence criteria not specified. Projection function parameter η (Eq. 21) controls orientation softness but value for Case 3 not provided, making angle projection strength unverifiable."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "Thermal configuration inherits properties from [6, 36] without reproduction: interposer thickness, RDL geometry, microbump array pitch in underfill, epoxy conductivity, TIM thickness and conductivity, heat spreader and heatsink material properties. Section 2.3 cites only heatsink convective resistance (0.1 K/W fixed for all cases) and ambient (45°C), but material properties essential for compact model fitting (Eq. 13) are not disclosed. Chiplet power densities stated as range '2×10⁵ to 3×10⁶ W/m²' but individual chiplet powers for Case 3 not enumerated; worst-case workload power distribution map not provided, contradicting reproducibility of steady-state 'worst-case' thermal results."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Benchmark Case 3 lacks detailed floorplan data: chiplet dimensions (length, width, height, thickness) listed only as 'CPU 9×8mm, DRAM 9×9mm' in Figure 5 caption but exact placement coordinates, orientations, and all 8 chiplet dimensions not tabulated. Chiplet power values per block not disclosed; only density range given. Microbump map and D2D link connectivity (which Tx/Rx pairs connect which chiplets) inferred from UCIe standard but not explicitly provided for Case 3. No intermediate placement results (initialization MILP solution, post-optimization pre-legalization layout) shown; only final legalized result in Figure 5(e) visualized. Training dataset of '5 random legalized placement layouts' for compact model not released; test set of '10 layouts' used for Table 5 validation also not provided. HotSpot temperature maps (ground truth) used for fitting not disclosed. Parameter fitting history and convergence traces absent."
+    }
+  },
+  "findings": [
+    {
+      "field": "quasi_homogeneous_approximation",
+      "reason": "Equation (6) simplifies 3D heterogeneous PDE ∇·(κ(r)∇T(r))=-P(r) to Laplacian ∇²T(r)=-P(r)/κ(r) with quasi-homogeneous κ, ignoring material interfaces. Section 3.2 acknowledges 'heterogeneous material interface' error but claims two length normalization factors l_x,i and l_y,i 'capture the effects'—this is insufficient for piecewise-constant κ across silicon/epoxy/RDL/underfill layers. Error map (Figure 4, right) shows concentration at chiplet edges and interposer boundary, contradicting claim of accurate worst-case thermal prediction.",
+      "locator": "Section 3.2, Eq. (6); Section 2.3 acknowledgement 'ignoring heterogeneous material interface'; Figure 4 caption states error 'originates from our infinite space approximation' and 'quasi-homogeneous approximation.'"
+    },
+    {
+      "field": "finite_space_correction_omitted",
+      "reason": "Compact thermal model (Eq. 7-12) derived for infinite space using Green's function 4π||r-r'||⁻¹. Section 3.2 states 'infinite space assumption is valid since the size of the interposer is much larger than that of chiplets,' but then acknowledges boundary error at interposer edge (Figure 4). Proposed mirror method correction cited from [55] but explicitly not implemented ('at the cost of higher computational overhead'), leaving systematic underprediction of temperature near interposer edges for Case 3.",
+      "locator": "Section 3.2, paragraph 'We introduce an auxiliary variable u by...'; Section 4.2 Figure 4 caption: 'the boundary of the interposer, originating from our infinite space approximation.'"
+    },
+    {
+      "field": "z_direction_approximation",
+      "reason": "Integral ∫₀^t_i dz' exp(-u²(z-z')²) approximated as t_i·exp(-u²a²) with fitting parameter a∈[0, t_i] (Section 3.2, after Eq. 8). This is a crude lumped approximation: chiplet thickness contribution should scale with erf-based profile matching x,y integrals (Eq. 9), but z-integral collapsed to single exponential. Fitting parameter a not constrained during model training (Eq. 13), allowing arbitrary a values that may not represent actual thickness effects; sensitivity analysis absent.",
+      "locator": "Section 3.2, sentence 'considering that the thickness of chiplets are much smaller than the scale in the x and y directions, we approximate it to be t_i·e^(-u²a²), where a is a fitting parameter ranging between 0 and t_i.'"
+    },
+    {
+      "field": "secondary_cooling_path_ignored",
+      "reason": "Section 2.3 explicitly states 'adiabatic boundary condition is imposed on each lateral surface, ignoring intricate mechanisms and the secondary path of substrate and PCB.' Figure 1 shows organic substrate and C4 pillars, but thermal model (Eq. 1-12) accounts only for primary path (TIM-spreader-heatsink). For 2.5D-IC, substrate coupling can contribute 5-15% of total heat dissipation depending on thickness and conductivity; ignoring it contradicts claim of 'worst-case temperature' accuracy. Paper does not quantify impact of secondary path omission.",
+      "locator": "Section 2.3, sentence 'adiabatic boundary condition is imposed on each lateral surface, ignoring intricate mechanisms and the secondary path of substrate and PCB.'"
+    },
+    {
+      "field": "transient_thermal_effects_omitted",
+      "reason": "Analysis assumes steady-state with 'worst-case constant power distribution' (Section 2.3). No transient thermal modeling or workload switching effects considered. For large-scale 2.5D-ICs with 8+ chiplets, thermal time constant on order of seconds; actual workloads undergo frequent power phase transitions. Temperature overshoot during workload ramp can exceed steady-state by 10-20°C; omission contradicts 'worst-case' claim and limits practical applicability to static benchmarks only.",
+      "locator": "Section 2.3, sentence 'In this work, we focus on the steady-state temperature profiles under worst-case power distribution.'"
+    },
+    {
+      "field": "power_distribution_not_disclosed",
+      "reason": "Case 3 worst-case workload power map not provided. Section 4.1 states chiplet power densities range '2×10⁵ to 3×10⁶ W/m²' but does not enumerate individual chiplet power values or power density per unit area. Without power map, placement result (Table 6: Tmax=92.3°C) cannot be independently verified or reproduced. Claim that 'thermal penalty R[T] is calculated by trained compact thermal model' (Section 3.4) depends on accurate worst-case power assignment, which is not disclosed.",
+      "locator": "Section 4.1, sentence 'The power densities of the chiplets range from 2 × 10⁵ W m⁻² to 3 × 10⁶ W m⁻²' and Table 3 Case 3 row which lists only chiplet count, net count, and whitespace."
+    },
+    {
+      "field": "material_properties_inherited_not_disclosed",
+      "reason": "Section 2.1 states 'We inherit the properties (such as layer thickness, materials, dimensions of bumps, and TSVs) from [6, 36]' without listing actual values. Thermal conductivity κ, density ρ, specific heat c for silicon, epoxy, RDL, TIM, spreader, heatsink are critical inputs to Eq. (1) and compact model fitting (Eq. 13) but not reproduced in paper. HotSpot 6.0 golden simulator configuration (material files, grid resolution 64×64) not provided. Reproducibility blocked by reference to external papers and undisclosed HotSpot input files.",
+      "locator": "Section 2.1, sentence 'We inherit the properties (such as layer thickness, materials, dimensions of bumps, and TSVs) from [6, 36].' and Section 2.3 'Among them, we choose the HotSpot 6.0 [40] as the golden simulator, and the resolution of thermal grids g is 64 × 64.'"
+    },
+    {
+      "field": "thermal_threshold_and_penalty_exponent_not_disclosed",
+      "reason": "Objective function (Eq. 3) defines temperature penalty R[T] with threshold T_th and exponent γ. Section 2.4 states 'A γ greater than 1 makes the penalty grow at an increasing rate' but specific values for Case 3 not provided. Sensitivity of results (Table 6: Tmax=92.3°C, TWL=142.42m) to choice of T_th and γ unknown; no ablation study. Hyperparameter optimization via Bayesian method (Section 3.4) implicitly optimizes these values but Optuna search space bounds and selected values not disclosed, preventing parameter reproducibility.",
+      "locator": "Eq. (3) definition and Section 2.4 statement 'where threshold temperature T_th and positive integer γ controls the strength of penalty.'"
+    },
+    {
+      "field": "learning_rates_and_hyperparameters_not_disclosed",
+      "reason": "Section 3.4 states 'we treat them separately and use two learning rates lr_pos and lr_ang in step 8' of Algorithm 1 (CGD method). Paper cites 'dynamic step size α_k calculated in a heuristic manner following Chen et al. [49]' but specific lr_pos and lr_ang values for Case 3 not provided. Multipliers λ_dens,init and λ_therm,init are 'initialized according to the strength of the gradients' via formulas in Section 3.4, but numerical values not tabulated. Hyperparameter optimization via Optuna stated in Section 3.5 to 'optimize the hyper-parameters through Bayesian optimization' but search space and final parameter set not disclosed. Reproducibility of CGD convergence blocked.",
+      "locator": "Section 3.4, sentence 'In light of the significant differences between positional and angular variables, we treat them separately and use two learning rates lr_pos and lr_ang in step 8.'"
+    },
+    {
+      "field": "initial_placement_milp_solver_details_missing",
+      "reason": "Section 3.3 formulates initialization MILP (Eq. 18) solved by Gurobi [54] but solver tolerances, time limits, and gap settings not disclosed. Legalization MILP (Eq. 25) also solved by Gurobi with 100-second time limit (Section 3.5) but optimality gap not specified. For large instances, Gurobi gap tolerance affects solution quality; Case 3 with 8 chiplets and 4 binary variables per pair is solvable exactly, but paper does not confirm optimality. Intermediate MILP solutions and solver logs not provided.",
+      "locator": "Section 3.3, statement 'To conclude, the initial placement is obtained by solving the MILP' and Section 3.5 'if the time limit of 100 seconds is reached, and optimize the displacement only.'"
+    },
+    {
+      "field": "projection_function_parameter_eta_not_disclosed",
+      "reason": "Equation (21) defines orientation projection function B_z(θ_k, θ_i) with controlling parameter η. This parameter determines softness of discrete angle projection during CGD optimization (Section 3.4). For Case 3, η value not provided, making angle projection behavior unspecified. Paper states 'Unlike direct subtraction (θ_i - θ_k)/360 in [27, 45], which can not accurately calculate precise angular difference (such as between 350° and 0°), we calculate angular deviation using Δθ_i^k' but does not justify specific η choice or show sensitivity. Reproducibility of orientation convergence blocked.",
+      "locator": "Eq. (21) and Section 3.4 paragraph 'Instead of the direct subtraction (θ_i − θ_k)/360 in [27, 45]...'"
+    },
+    {
+      "field": "benchmark_case3_chiplet_dimensions_incomplete",
+      "reason": "Case 3 floorplan shown in Figure 5 with visual layout, but exact chiplet positions (x_i, y_i), dimensions (w_i, h_i, t_i), and orientations (θ_i) not tabulated. Figure 5(e) caption states 'The dimensions of a single CPU and DRAM measure 9 × 8mm² and 9 × 9mm²' but does not list thickness or all 8 chiplet identities (GPU, HBM_1, HBM_2 not dimensioned). Interposer whitespace 0.6 (Table 3) implies total chiplet area ~0.924 mm² but individual block layout not enumerated. Reproduction of placement from coordinates impossible without tabulated floorplan.",
+      "locator": "Figure 5 caption and Section 4.1 statement 'The first five cases consist of high-performance computing systems composed of CPU, GPU, HBM, and DRAM.'"
+    },
+    {
+      "field": "microbump_connectivity_map_not_provided",
+      "reason": "Section 2.2 and Figure 2 illustrate D2D bump map with Tx/Rx pins for ×32 module (25μm pitch, 32 lanes) but actual chiplet-to-chiplet connectivity (which pairs of chiplets linked by which D2D modules) for Case 3 not specified. Figure 5 shows physical layout but D2D link routing not visualized. Wirelength calculation (Eq. 2) sums distances between microbumps on connected nets but bump assignment to nets not provided. Without connectivity map, placement result cannot be independently evaluated for wirelength.",
+      "locator": "Section 2.2 description and Table 3 Case 3 row listing '8448 nets' but no net-to-chiplet mapping provided."
+    },
+    {
+      "field": "training_dataset_and_ground_truth_not_released",
+      "reason": "Section 3.2 states 'we first generate several legalized placement results (5-10 layouts are enough according to experiments) and simulate the ground truth temperature map T_label with the thermal simulator HotSpot.' For Case 3, training dataset consists of 5 random layouts evaluated by HotSpot 6.0 (64×64 grid). These HotSpot results are not released; test set of 10 layouts also not provided. Compact model validation (Table 5, Case 3: MAE=1.25°C, MAPE=3.27%, Correlation=0.992) is based on undisclosed test set, preventing independent verification of model accuracy. Fitted parameters β (Eq. 13) not tabulated.",
+      "locator": "Section 3.2, sentence 'we first generate several legalized placement results (5-10 layouts are enough according to experiments) and simulate the ground truth temperature map T_label with the thermal simulator HotSpot.'"
+    },
+    {
+      "field": "runtime_breakdown_interpretation_ambiguity",
+      "reason": "Figure 7 shows runtime breakdown for Case 3 (6 minutes total): 'Data.', 'Train.', 'Init.', 'Opt.', 'Leg.' components. Chart indicates ~60-70% spent on compact model training, but exact timings not tabulated. Section 4.3.4 states 'majority of the time, ranging from ∼60% to ∼80%, is spent on constructing the compact thermal model' and 'This expenditure is acceptable in practice if multiple optimization iterations are required' but does not justify why single model reuse justifies large training cost vs. direct HotSpot simulation for 8 chiplets (HotSpot Case 3: 18s per evaluation, compact model: 6.8ms per evaluation; 2575× speedup). Trade-off between one-time training cost and iterative evaluations not quantitatively justified.",
+      "locator": "Section 4.3.4 and Figure 7 caption describing time breakdown."
+    },
+    {
+      "field": "pareto_frontier_legalization_impact_unquantified",
+      "reason": "Figure 6 shows Pareto fronts for Case 3 and 9 with ATPlace2.5D vs. TAP-2.5D, but Figure 6(a) labeled 'Case 3 Pareto front' does not indicate whether points represent pre-legalization (Eq. 5 optimization) or post-legalization (Eq. 25 MILP) solutions. Legalization stage (Section 3.5) re-optimizes displacement and wirelength, potentially shifting solutions off Pareto curve. Paper claims 'solutions that balance wirelength and temperature effectively' but impact of legalization on Pareto frontier quality not analyzed. Do legalized solutions remain on frontier? How much do (Tmax, TWL) degrade after legalization?",
+      "locator": "Figure 6 caption and Section 4.3.3 statement 'The Pareto front delineates a collection of superior results that balance wirelength and temperature effectively.'"
+    },
+    {
+      "field": "comparison_to_rl_based_methods_incomplete",
+      "reason": "Section 4.3 acknowledges RL-based methods [9, 10] but states 'RL-based methods like [9, 10] are not compared since the executable files are not yet available after contacting the authors. And according to the paper, their performance is expected to be slightly better than that of TAP-2.5D.' Avoids experimental comparison; relies on second-hand claim from [9, 10]. For large-scale 2.5D-ICs (>60 chiplets), RL methods may exhibit different scalability than TAP-2.5D. Absence of RL comparison limits evidence for ATPlace2.5D superiority on high-count cases.",
+      "locator": "Section 4.3, sentence 'RL-based methods like [9, 10] are not compared since the executable files are not yet available after contacting the authors.'"
+    },
+    {
+      "field": "whitespace_ratio_definition_ambiguous",
+      "reason": "Table 3 lists 'Whitespace/%' for each case (Case 3: 0.6) but definition not explicit. Typically whitespace ratio = (interposer area - total chiplet area) / interposer area. For Case 3: interposer 39×39 mm = 1521 mm²; whitespace 0.6 implies chiplet area = 1521×(1-0.6) = 608.4 mm². But individual chiplet dimensions in Figure 5 sum differently (CPU 9×8=72, DRAM 9×9=81 mm² each, total 72+81+81+81+60+60+60+60 ≠ 608 mm² even accounting for all 8 blocks). Definition of whitespace ratio not clarified; possibly includes RDL/microbump area as 'used' space, but this is not stated.",
+      "locator": "Table 3 column 'Whitespace/%' and Section 4.1 sentence 'a whitespace ratio within the range of 0.35 to 0.65.'"
+    },
+    {
+      "field": "ucie_standard_version_not_cited",
+      "reason": "Section 2.2 states 'we utilize the Universal Chiplet Interconnect Express (UCIe) standard for die-to-die (D2D) interconnect' and Table 4 lists 'Standard (×16)' and 'Advanced (×32)' modules with bump pitches 100μm and 25μm. UCIe specifications (e.g., v1.0 released 2022) define standard configurations, but paper does not cite specific UCIe document version or table reference. Bump pitch 25μm for ×32 and 100μm for ×16 match UCIe spec but version not confirmed. Reproducibility of D2D interface assumptions requires explicit UCIe version citation.",
+      "locator": "Section 2.2, sentence 'For demonstration purposes, we utilize the Universal Chiplet Interconnect Express (UCIe) standard' and reference [29] which is cited as survey paper, not standard document."
+    },
+    {
+      "field": "case3_thermal_result_magnitude_check",
+      "reason": "Table 6 Case 3 ATPlace2.5D result: Tmax=92.3°C with power densities up to 3×10⁶ W/m². Compact model MAE=1.25°C for Case 3 (Table 5); HotSpot result unknown but assumed within ±1.25°C of predicted value. Heatsink convective resistance 0.1 K/W implies ΔT_sink = 0.1×P_total. If Case 3 total power ~1000W (rough estimate), ΔT_sink~100K, ambient 45°C implies heatsink bottom ~145°C. But Tmax is chiplet surface temperature 92.3°C, which is cooler than heatsink bottom by ~50K. This requires large transverse thermal resistance in spreader/TIM, but layer thicknesses not disclosed. Magnitude plausible but unverifiable without material properties.",
+      "locator": "Table 6, Case 3, Tmax=92.3°C row; Table 5, Case 3, MAE=1.25°C; Section 2.3 heatsink resistance 0.1K/W."
+    },
+    {
+      "field": "speedup_calculation_inconsistency",
+      "reason": "Abstract claims '23× acceleration' vs. TAP-2.5D. Table 6 Avg. row shows ATPlace2.5D 1× (1 min avg), TAP-2.5D 23× (23 min avg), confirming 23× speedup. But Table 5 shows compact thermal model 2575× faster than HotSpot (avg 22s vs 8.5ms). Runtime breakdown (Figure 7) indicates ~60-70% of 6 min case3 time is model training (roughly 3.6 min), optimization ~2-3 min. So per-optimization evaluation is compact model ~6.8ms vs HotSpot ~18s (2.6× not 2575×). The 2575× speedup is amortized over many evaluations; single evaluation speedup much lower. Speedup claim conflates dataset generation, model training, and inference phases.",
+      "locator": "Abstract '23× acceleration', Table 6 Avg. row showing 23×, Table 5 Avg. row showing 2575× HotSpot speedup, Figure 7 runtime breakdown."
+    },
+    {
+      "field": "case3_reproducibility_verdict",
+      "reason": "Case 3 thermal-aware placement (Table 6: ATPlace2.5D Tmax=92.3°C, TWL=142.42m, RT=6min) extraction claims are contradicted by missing inputs: (1) chiplet dimensions and power values not enumerated; (2) microbump connectivity map not provided; (3) material properties inherited from [6,36] without reproduction; (4) thermal threshold T_th, penalty exponent γ, learning rates lr_pos/lr_ang, projection parameter η, target density t_max not disclosed; (5) fitted compact model parameters {A, a, B, l_x,i, l_y,i} not tabulated; (6) HotSpot configuration files and training dataset not released; (7) MILP solver tolerances and optimality gaps not specified; (8) quasi-homogeneous and infinite-space approximations acknowledged as sources of error; (9) secondary cooling path and transient effects explicitly omitted. Independent reproduction impossible.",
+      "locator": "Across Sections 2.1-3.5 and Tables 3-6, Figures 4-7."
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,88 @@
+{
+  "paper_id": "W4206159291",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Explicit thermal property values (density, specific heat, thermal conductivity) for CPU materials",
+    "Exact power dissipation values in watts for functional units A, B, and C",
+    "Heat transfer coefficient and ambient temperature for Robin boundary condition at substrate",
+    "FEniCS simulation input files, mesh files, or parameter specifications",
+    "POD basis function data or snapshot data used to generate modes",
+    "Comparison metrics or error quantification between POD and FEniCS results",
+    "Hardware platform or computational environment specifications for validation",
+    "Experimental validation data or measured CPU thermal data for benchmarking",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "No explicit thermal management controller specified in the paper; POD model is purely predictive without active thermal control",
+      "essential": false
+    },
+    {
+      "reason": "Boundary conditions simplified to adiabatic surfaces except substrate bottom with Robin condition; real CPU cooling systems (heat sinks, fans) not modeled",
+      "essential": true
+    },
+    {
+      "reason": "Power source model uses simplified uniform pulses at functional units; actual CPU power dissipation varies dynamically with instruction execution and microarchitectural state",
+      "essential": true
+    },
+    {
+      "reason": "3D structure mesh coarse in vertical direction (7 elements); may not resolve detailed layer-to-layer thermal behavior in realistic multi-layer dies",
+      "essential": false
+    },
+    {
+      "reason": "No frequency or voltage scaling dynamics; constant 3 GHz assumed",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "POD modes generated from FEniCS DNS data are sufficient to capture thermal behavior for any power source distribution within the parametric variation space",
+    "Adiabatic boundary conditions on chip surfaces adequately represent actual thermal environment",
+    "Robin boundary condition with 0°C ambient temperature at substrate bottom is representative of operating conditions",
+    "Thermal properties (density, specific heat, thermal conductivity) are spatially uniform and temperature-independent",
+    "Linear heat conduction equation accurately models all thermal transport in the CPU structure"
+  ],
+  "evidence_sha256": "b0a0b9d8b3f206cdc238845f7c8e31fe1bc6ec2e616300de8b7fd5a8d06afe1a",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

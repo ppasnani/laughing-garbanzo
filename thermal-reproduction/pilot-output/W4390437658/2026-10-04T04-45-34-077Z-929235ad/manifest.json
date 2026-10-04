@@ -1,0 +1,677 @@
+{
+  "paper_id": "W4390437658",
+  "paper_title": "RLPlanner: Reinforcement Learning based Floorplanning for Chiplets with Fast Thermal Analysis",
+  "manifest_status": "downloaded",
+  "source_url": "https://arxiv.org/pdf/2312.16895",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "965c0d8955bba981f3938dd02cda06a3fc9242d73b002bd3d3cd01e3ae417c7e",
+  "pdf_pages": 2,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-04T04:46:56.398Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-haiku-4-5-20251001",
+  "extraction": {
+    "paper_id": "W4390437658",
+    "paper_title": "RLPlanner: Reinforcement Learning based Floorplanning for Chiplets with Fast Thermal Analysis",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 2,
+      "figure_or_table": "TABLE I",
+      "description": "Multi-GPU System benchmark from reference [4]: RLPlanner floorplanning optimization comparing wirelength, maximum temperature, and runtime against TAP-2.5D baseline with HotSpot thermal solver",
+      "architecture": "Chiplet-based multi-GPU system with 2.5D integration and interposer",
+      "workload": "Multi-GPU System [4]",
+      "operating_point": "Maximum operating temperature: 91.15 °C (RLPlanner) vs 91.68 °C (TAP-2.5D with HotSpot)",
+      "steady_2d_relevant": true
+    },
+    "original_setup": {
+      "solver": "HotSpot (open-source thermal simulator) [9] with comparison to fast thermal model",
+      "optimizer": "Proximal Policy Optimization (PPO) [7] with Random Network Distillation (RND) [8] bonus for exploration",
+      "controller": "Reinforcement Learning agent with shared CNN feature encoding, policy network, and value network for sequential chiplet placement",
+      "benchmark": "Multi-GPU System [4] - three open-source benchmarks plus five synthetic systems"
+    },
+    "thermal_observable": {
+      "value": 91.15,
+      "unit": "°C",
+      "location": "Maximum operating temperature across chiplet system",
+      "aggregation": "Peak temperature in steady-state thermal evaluation",
+      "pdf_page": 2
+    },
+    "physical_mismatches": [
+      {
+        "reason": "Fast thermal model simplifies full HotSpot thermal resistance network to linear time-invariant (LTI) system; characterizes mutual-thermal resistance via 1D table rather than full 3D transient simulation",
+        "essential": false
+      },
+      {
+        "reason": "Paper does not provide complete 3D geometry, chiplet dimensions (x_m, y_m, width_m, height_m), or individual chiplet power breakdowns for Multi-GPU System benchmark - references external source [4] without reproducing layout details",
+        "essential": true
+      },
+      {
+        "reason": "Thermal analysis performed in steady-state via self-thermal and mutual-thermal resistance tables; no transient thermal dynamics or temporal controller feedback mechanisms described",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "Chiplet system modeled as 2.5D integration with interposer and microbump connections",
+      "Maximum temperature serves as primary thermal constraint in reward function with temperature limitation T0 and sigmoid penalty scaling",
+      "Reward function combines wirelength W and temperature T as: R = −λ × W − µ × (max(T − T0, 0))^α / (1 + e^(−(T − T0))) where λ, µ, T0, α are hyperparameters",
+      "Fast thermal model replaces HotSpot by pre-computing self-thermal resistance table from single HotSpot run per design and characterizing mutual-thermal resistance versus distance in 1D lookup",
+      "RND exploration bonus applied during RL training to encourage novel state discovery",
+      "Sequential chiplet placement with action masking for infeasible positions",
+      "Microbump assignments optimized for minimum total wirelength post-placement before thermal evaluation"
+    ],
+    "missing_inputs": [
+      "Complete floorplan geometry and chiplet dimensions for Multi-GPU System benchmark (x_m, y_m, width_m, height_m for each chiplet)",
+      "Individual chiplet power values and power distribution (watts per chiplet) for Multi-GPU System - reference [4] not provided in packet",
+      "Interposer thermal properties (thickness, material, conductivity)",
+      "Detailed thermal boundary conditions (ambient temperature, heat sink model, cooling solution specifications)",
+      "Complete hyperparameter values for reward function (λ, µ, T0, α)",
+      "RL training hyperparameters (learning rate, network architecture details, training epochs specification, PPO clip range)",
+      "GitHub repository URL mentioned ('More details can be found at the github') is incomplete and not accessible from paper packet",
+      "Validation dataset details beyond '2,000 synthetic chiplet systems' mentioned in Section III.A",
+      "Reference [4] (TAP-2.5D paper) containing Multi-GPU System benchmark definition not included in packet"
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "thermal_observable_value",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": 91.15,
+        "source_unit": "°C",
+        "conversion_factor": null,
+        "normalized_value": 91.15,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, RLPlanner row, Temperature column",
+        "provenance": "Paper TABLE I experimental results for Multi-GPU System benchmark from reference [4]",
+        "uncertainty": "±0.25 K (0.25 °C) mean absolute error from fast thermal model validation in TABLE II"
+      },
+      {
+        "field": "baseline_temperature",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": 91.68,
+        "source_unit": "°C",
+        "conversion_factor": null,
+        "normalized_value": 91.68,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, TAP-2.5D(HotSpot) row, Temperature column",
+        "provenance": "Paper TABLE I experimental results baseline comparison with HotSpot thermal solver",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_model_mae",
+        "block_name": null,
+        "source_value": 0.2523,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 0.2523,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE II, MAE row, Fast Thermal Model column",
+        "provenance": "Validation dataset of 2,000 synthetic chiplet systems comparing fast thermal model against HotSpot ground truth",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_model_rmse",
+        "block_name": null,
+        "source_value": 0.4162,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 0.4162,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE II, RMSE row, Fast Thermal Model column",
+        "provenance": "Validation dataset of 2,000 synthetic chiplet systems comparing fast thermal model against HotSpot",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_speedup_factor",
+        "block_name": null,
+        "source_value": 127,
+        "source_unit": "times",
+        "conversion_factor": null,
+        "normalized_value": 127,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE II, Speed row, showing 0.1012 s vs 12.8976 s inference time with (127×) notation",
+        "provenance": "Fast thermal model vs HotSpot computational performance comparison on validation dataset",
+        "uncertainty": null
+      },
+      {
+        "field": "runtime_rlplanner",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": 20910,
+        "source_unit": "s",
+        "conversion_factor": null,
+        "normalized_value": 20910,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, RLPlanner row, Runtime column",
+        "provenance": "Paper experimental results for RLPlanner training time on Multi-GPU System benchmark",
+        "uncertainty": null
+      },
+      {
+        "field": "runtime_tap2d_hotspot",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": 35211,
+        "source_unit": "s",
+        "conversion_factor": null,
+        "normalized_value": 35211,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, TAP-2.5D(HotSpot) row, Runtime column",
+        "provenance": "Paper experimental results for TAP-2.5D baseline with HotSpot on Multi-GPU System benchmark",
+        "uncertainty": null
+      },
+      {
+        "field": "wirelength_rlplanner",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": 97742,
+        "source_unit": "mm",
+        "conversion_factor": null,
+        "normalized_value": 97742,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, RLPlanner row, Wirelength column",
+        "provenance": "Paper experimental results for RLPlanner floorplanning optimization on Multi-GPU System",
+        "uncertainty": null
+      },
+      {
+        "field": "wirelength_tap2d_hotspot",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": 124639,
+        "source_unit": "mm",
+        "conversion_factor": null,
+        "normalized_value": 124639,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, TAP-2.5D(HotSpot) row, Wirelength column",
+        "provenance": "Paper experimental results for TAP-2.5D baseline on Multi-GPU System",
+        "uncertainty": null
+      },
+      {
+        "field": "reward_rlplanner",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": -37.1263,
+        "source_unit": "dimensionless",
+        "conversion_factor": null,
+        "normalized_value": -37.1263,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, RLPlanner row, Reward column",
+        "provenance": "Combined optimization objective R = −λ × W − µ × (max(T − T0, 0))^α / (1 + e^(−(T − T0))) per paper methodology Section II.C",
+        "uncertainty": null
+      },
+      {
+        "field": "reward_tap2d_hotspot",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": -42.4572,
+        "source_unit": "dimensionless",
+        "conversion_factor": null,
+        "normalized_value": -42.4572,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE I, TAP-2.5D(HotSpot) row, Reward column",
+        "provenance": "Paper experimental results baseline reward comparison for Multi-GPU System",
+        "uncertainty": null
+      },
+      {
+        "field": "average_improvement_vs_tap2d_hotspot",
+        "block_name": null,
+        "source_value": 20.28,
+        "source_unit": "%",
+        "conversion_factor": null,
+        "normalized_value": 20.28,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Page 2 text: 'RLPlanner with RND achieves an average improvement of 20.28% in optimization goals compared to TAP-2.5D with HotSpot'",
+        "provenance": "Summary of experimental results across all eight benchmark cases (three open-source plus five synthetic systems)",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_model_mse",
+        "block_name": null,
+        "source_value": 0.1732,
+        "source_unit": "K²",
+        "conversion_factor": null,
+        "normalized_value": 0.1732,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE II, MSE row, Fast Thermal Model column",
+        "provenance": "Validation on 2,000 synthetic chiplet systems dataset",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_model_mape",
+        "block_name": null,
+        "source_value": 0.0726,
+        "source_unit": "%",
+        "conversion_factor": null,
+        "normalized_value": 0.0726,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "TABLE II, MAPE row, Fast Thermal Model column",
+        "provenance": "Mean absolute percentage error of fast thermal model against HotSpot ground truth",
+        "uncertainty": null
+      },
+      {
+        "field": "architecture_type",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Paper title and Section II.A: 'Chiplet-based systems' with '2.5D integration'",
+        "provenance": "Paper abstract and methodology description",
+        "uncertainty": null
+      },
+      {
+        "field": "solver_primary",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "reference_9",
+        "locator": "Section II.C: 'Traditional thermal analysis simulator HotSpot [9]' and methodology description of self-thermal and mutual-thermal resistance network",
+        "provenance": "Paper methodology Section II.C and references [9] W. Huang et al. HotSpot thermal modeling tool",
+        "uncertainty": null
+      },
+      {
+        "field": "optimizer_rl_algorithm",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "reference_7",
+        "locator": "Section II.B: 'We employ the proximal policy optimization (PPO) [7]' with reference to proximal policy optimization algorithms",
+        "provenance": "Paper Section II.B RL agent architecture description",
+        "uncertainty": null
+      },
+      {
+        "field": "exploration_bonus",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "reference_8",
+        "locator": "Section II.B: 'we employ a random network distillation (RND) [8] bonus to encourage the agent to explore novel states'",
+        "provenance": "Paper RL methodology; reference [8] Y. Burda et al. Exploration by random network distillation",
+        "uncertainty": null
+      },
+      {
+        "field": "benchmark_system_1",
+        "block_name": "Multi-GPU System [4]",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "reference_4",
+        "locator": "TABLE I heading and text: 'Multi-GPU System [4]' evaluated across three metrics",
+        "provenance": "Paper experimental validation; reference [4] Y. Ma et al. TAP-2.5D chiplet placement methodology paper",
+        "uncertainty": "Complete benchmark specification not provided in packet; external reference required"
+      },
+      {
+        "field": "benchmark_system_2",
+        "block_name": "CPU-DRAM System [5]",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "reference_5",
+        "locator": "TABLE I heading: 'CPU-DRAM System [5]'",
+        "provenance": "Paper experimental benchmarks; reference [5] A. Kannan et al. interposer-based disintegration of multi-core processors",
+        "uncertainty": "Complete benchmark specification not provided in packet; external reference required"
+      },
+      {
+        "field": "benchmark_system_3",
+        "block_name": "Ascend 910 System [6]",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "reference_6",
+        "locator": "TABLE I heading: 'Ascend 910 System [6]'",
+        "provenance": "Paper experimental benchmarks; reference [6] Huawei Ascend 910 AI training accelerator",
+        "uncertainty": "Complete benchmark specification not provided in packet; external reference required"
+      },
+      {
+        "field": "validation_dataset_size",
+        "block_name": null,
+        "source_value": 2000,
+        "source_unit": "synthetic chiplet systems",
+        "conversion_factor": null,
+        "normalized_value": 2000,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section III.A: 'A dataset comprising 2,000 synthetic chiplet systems are used to conduct thorough comparisons'",
+        "provenance": "Paper experimental validation methodology for fast thermal model",
+        "uncertainty": null
+      },
+      {
+        "field": "temperature_limitation_hyperparameter",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "°C",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section II.C reward function: 'T0 is the temperature limitation'",
+        "provenance": "Paper reward calculation methodology; specific value not provided in packet",
+        "uncertainty": "Hyperparameter value not specified in paper"
+      },
+      {
+        "field": "reward_weighting_lambda",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section II.C: 'λ and µ are the weights'",
+        "provenance": "Paper reward function definition",
+        "uncertainty": "Specific weighting values not provided in paper"
+      },
+      {
+        "field": "reward_weighting_mu",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section II.C: 'λ and µ are the weights'",
+        "provenance": "Paper reward function definition",
+        "uncertainty": "Specific weighting values not provided in paper"
+      },
+      {
+        "field": "gradient_smoothing_alpha",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section II.C: 'α is a hyperparameter to avoid gradient non-smoothness at T = T0'",
+        "provenance": "Paper reward function definition",
+        "uncertainty": "Hyperparameter value not specified in paper"
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "missing",
+        "note": "Paper describes reinforcement learning-based floorplanning with PPO [7] and RND [8] exploration bonus, but critical methodological details are missing: (1) Complete RL training procedure including episode structure, state space definition, action space constraints, network architectures (CNN feature encoding layer specifications), training hyperparameters (learning rate, batch size, clip range); (2) Fast thermal model derivation lacks mathematical rigor—claims 'linear and time-invariant (LTI) system' approximation of thermal resistance network but provides no transfer function, impulse response validation, or stability analysis; (3) Self-thermal resistance table generation procedure incompletely described—how is single HotSpot run per design configuration chosen? What power density map is used? (4) Mutual-thermal resistance 1D lookup characterization versus distance lacks physical justification and validation methodology; (5) Microbump assignment algorithm references [4] without reproducing methodology; (6) No ablation studies isolating contribution of fast thermal model, RND bonus, or reward function components"
+      },
+      "code": {
+        "status": "missing",
+        "note": "GitHub repository mentioned ('More details can be found at the github') but URL is incomplete and inaccessible from packet. Without code access: (1) Cannot verify RL network architecture (CNN layer dimensions, kernel sizes, stride, pooling specifications); (2) Cannot reproduce thermal model implementation or validate LTI system assumptions; (3) Cannot verify action masking mechanism for infeasible chiplet placements; (4) Cannot confirm reward function implementation matches mathematical formula R = −λ × W − µ × (max(T−T₀,0))^α / (1+e^(−(T−T₀))); (5) Cannot verify PPO and RND integration; (6) Cannot validate synthetic dataset generation procedures or train/validation splits"
+      },
+      "parameters": {
+        "status": "contradicted",
+        "note": "Extraction identifies critical hyperparameter values as missing from paper: (1) Reward weighting parameters λ and µ—stated as 'weights' in Section II.C but no values provided, yet TABLE I and III report specific reward scores requiring these values; (2) Temperature limitation T₀—used in reward function but value unspecified despite being essential for thermal constraint tuning; (3) Gradient smoothing parameter α—controls penalty scaling at T=T₀ but value absent; (4) RL training hyperparameters (learning rate, network architecture specifics, batch size, number of epochs mentioned as '600 epochs' in TABLE I footnote but no formal specification); (5) PPO hyperparameters (clip range, entropy coefficient, value function coefficient) not stated; (6) RND bonus coefficient unspecified; (7) Fast thermal model assumes 2D self-thermal resistance table from HotSpot—resolution (grid spacing), interpolation method not documented; (8) Mutual-thermal resistance 1D table spacing and interpolation scheme not defined. Paper states results achieved with unspecified parameter tuning, making reproducibility impossible"
+      },
+      "config": {
+        "status": "contradicted",
+        "note": "Benchmark configuration claims contradicted by missing essential details: (1) Multi-GPU System [4], CPU-DRAM System [5], Ascend 910 System [6]—all three benchmark definitions reference external papers [4], [5], [6] not included in packet; paper does not reproduce chiplet count, dimensions (x_m, y_m, width_m, height_m), or layout constraints; (2) Five synthetic systems mentioned in Section III.B but not detailed in packet—'synthetic systems' architecture, power distributions, and thermal boundary conditions undefined; (3) Interposer thermal properties (thickness, material, thermal conductivity, heat sink model) not specified despite being critical for 2.5D thermal analysis; (4) Ambient temperature and cooling solution specifications missing; (5) Microbump assignment algorithm configuration references [4] without local reproduction; (6) Action masking mechanism for infeasible placements not formally defined—what constitutes infeasibility? (7) Sequential placement order policy undefined—how are chiplet ordering priorities determined?"
+      },
+      "data": {
+        "status": "missing",
+        "note": "Essential data for reproduction unavailable: (1) Multi-GPU System benchmark—complete floorplan geometry (chiplet coordinates, dimensions) for reference [4] not provided; individual chiplet power values (watts per chiplet) unspecified; interconnect pin locations and connectivity graphs missing; (2) CPU-DRAM and Ascend 910 benchmarks—same omissions apply; (3) Five synthetic systems dataset not documented—generation parameters, power distributions, thermal boundary conditions absent; (4) Validation dataset of '2,000 synthetic chiplet systems' described in Section III.A but not provided; no train/test split documentation; (5) HotSpot thermal models (node graphs, boundary conditions) generated for self-thermal resistance tables not archived; (6) No dataset link or supplementary material repository accessible from packet; (7) TABLE II thermal model validation uses 'Ground Truth' from HotSpot but actual HotSpot configuration files, thermal models, or mesh parameters not supplied; (8) Reward function optimization trajectories and convergence data not presented; (9) Individual run results across epochs not shown—only final aggregated statistics in TABLES I and III provided"
+      }
+    },
+    "findings": [
+      {
+        "field": "github_repository_url",
+        "reason": "Paper states 'More details can be found at the github' in Section II.C but provides incomplete, inaccessible URL; code availability cannot be verified from packet alone, blocking reproducibility of RL agent, fast thermal model implementation, and experimental setup",
+        "locator": "Page 2, Section II.C, paragraph following thermal model description"
+      },
+      {
+        "field": "hyperparameter_values",
+        "reason": "Critical hyperparameter values (λ, µ, T₀, α in reward function; PPO clip range, learning rate, network architecture specifics; RND bonus coefficient) are absent from paper text despite being mathematically essential for reward calculation. TABLE I reports specific reward scores requiring these parameters, indicating they exist but remain undocumented.",
+        "locator": "Page 2, Section II.C; reward function formula and footnote to TABLE I mentioning '600 epochs' without formal specification"
+      },
+      {
+        "field": "benchmark_specification_external_dependencies",
+        "reason": "All three open-source benchmarks (Multi-GPU System [4], CPU-DRAM System [5], Ascend 910 System [6]) reference external papers not included in packet. Paper does not reproduce chiplet geometry, power distributions, or layout constraints locally. References [4], [5], [6] are essential but unavailable for verification.",
+        "locator": "Page 2, TABLE I column headings; Section III.B text mentioning 'three open-source benchmarks'"
+      },
+      {
+        "field": "synthetic_systems_undefined",
+        "reason": "Five synthetic systems evaluated in TABLE III are not documented—generation procedure, chiplet configurations, power maps, thermal boundary conditions, and interconnect topologies are unspecified. Description 'five synthetic systems' is too vague for reproduction.",
+        "locator": "Page 2, Section III.B and TABLE III"
+      },
+      {
+        "field": "fast_thermal_model_lti_assumption_unvalidated",
+        "reason": "Paper claims fast thermal model simplifies thermal resistance network to 'linear and time-invariant (LTI) system' but provides no mathematical derivation, transfer function, stability proof, or validation against dynamic transient behavior. Self-thermal resistance table generation from single HotSpot run lacks justification for why single-point characterization suffices. Mutual-thermal resistance 1D table versus distance lacks physical basis.",
+        "locator": "Page 2, Section II.C, paragraph on 'physical-informed fast thermal model'"
+      },
+      {
+        "field": "validation_dataset_not_provided",
+        "reason": "Section III.A states '2,000 synthetic chiplet systems' used for thermal model validation in TABLE II but dataset is not supplied. No train/test split documentation, generation methodology, or access link provided. Reported MAE of ±0.25 K cannot be independently verified without raw data.",
+        "locator": "Page 2, Section III.A; TABLE II caption mentioning '2,000 synthetic chiplet systems'"
+      },
+      {
+        "field": "runtime_comparison_ambiguity",
+        "reason": "TABLE I footnote states TAP-2.5D with fast thermal model 'takes a similar amount of time as training RLPlanner for 600 epochs' but does not specify total wall-clock time for TAP-2.5D with fast thermal model separately. Runtime fairness comparison between methods unclear—RLPlanner runtime (e.g., 20910 s for Multi-GPU) represents 600-epoch training, but TAP-2.5D comparison point is conflated.",
+        "locator": "Page 2, TABLE I footnote"
+      },
+      {
+        "field": "thermal_model_mae_precision_vs_experimental_claim",
+        "reason": "TABLE II reports fast thermal model MAE of 0.2523 K (rounded to ±0.25 K in paper text). However, TABLE I results for Multi-GPU System show RLPlanner temperature of 91.15 °C with claimed MAE ±0.25 K, implying ground-truth uncertainty band of [90.90, 91.40] °C overlaps with baseline TAP-2.5D(HotSpot) value of 91.68 °C. Statistical significance of 0.53 °C improvement (91.68 - 91.15) is within claimed error margin, undermining claimed superiority.",
+        "locator": "Page 2, TABLE I and TABLE II; text claiming '20.28% improvement'"
+      },
+      {
+        "field": "reward_function_scaling_undefined",
+        "reason": "Reward function formula uses dimensionless wirelength W (97742 mm) and temperature T (91.15 °C) with unspecified scaling weights λ and µ to produce reward score of -37.1263. Without λ and µ values, the relative contribution of wirelength versus temperature optimization is unclear. TABLE III shows reward variation across cases (Case1: -5.8288 to -10.0058) but scaling basis undefined.",
+        "locator": "Page 2, Section II.C, reward formula line"
+      },
+      {
+        "field": "rl_agent_architecture_incomplete",
+        "reason": "Section II.B states 'policy network and the value network share the same feature encoding CNN layers and two separate fully connected layers' but does not specify CNN depth, filter counts, kernel sizes, stride, pooling, or fully connected layer dimensions. Cannot reproduce network architecture.",
+        "locator": "Page 2, Section II.B, RL agent architecture paragraph"
+      },
+      {
+        "field": "steady_state_vs_transient_mode_unclear",
+        "reason": "Fast thermal model uses self-thermal and mutual-thermal resistance tables suggesting steady-state analysis, but paper does not explicitly confirm whether 2D steady-state temperature is appropriate or if 3D transient dynamics are needed for chiplet-based systems. Physical mismatches note indicates 'no transient thermal dynamics' but this is not explicitly validated against application requirements.",
+        "locator": "Page 2, Section II.C; methodology description of self-thermal and mutual-thermal resistance characterization"
+      },
+      {
+        "field": "tap_2d_baseline_fast_thermal_variant_performance",
+        "reason": "TABLE I shows TAP-2.5D with fast thermal model achieves reward -41.3358 (Multi-GPU), worse than TAP-2.5D with HotSpot (-42.4572), despite being same algorithm. This performance reversal suggests fast thermal model error (MAE ±0.25 K) introduces biased optimization; however, paper does not address why swapping thermal solvers degrades TAP-2.5D performance or whether same hyperparameters were used.",
+        "locator": "Page 2, TABLE I, Multi-GPU System columns"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W4390437658",
+    "decision": "illustrative_2d_only",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Complete floorplan geometry and chiplet dimensions for Multi-GPU System benchmark (x_m, y_m, width_m, height_m for each chiplet)",
+      "Individual chiplet power values and power distribution (watts per chiplet) for Multi-GPU System - reference [4] not provided in packet",
+      "Interposer thermal properties (thickness, material, conductivity)",
+      "Detailed thermal boundary conditions (ambient temperature, heat sink model, cooling solution specifications)",
+      "Complete hyperparameter values for reward function (λ, µ, T0, α)",
+      "RL training hyperparameters (learning rate, network architecture details, training epochs specification, PPO clip range)",
+      "GitHub repository URL mentioned ('More details can be found at the github') is incomplete and not accessible from paper packet",
+      "Validation dataset details beyond '2,000 synthetic chiplet systems' mentioned in Section III.A",
+      "Reference [4] (TAP-2.5D paper) containing Multi-GPU System benchmark definition not included in packet",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "Fast thermal model simplifies full HotSpot thermal resistance network to linear time-invariant (LTI) system; characterizes mutual-thermal resistance via 1D table rather than full 3D transient simulation",
+        "essential": false
+      },
+      {
+        "reason": "Paper does not provide complete 3D geometry, chiplet dimensions (x_m, y_m, width_m, height_m), or individual chiplet power breakdowns for Multi-GPU System benchmark - references external source [4] without reproducing layout details",
+        "essential": true
+      },
+      {
+        "reason": "Thermal analysis performed in steady-state via self-thermal and mutual-thermal resistance tables; no transient thermal dynamics or temporal controller feedback mechanisms described",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "Chiplet system modeled as 2.5D integration with interposer and microbump connections",
+      "Maximum temperature serves as primary thermal constraint in reward function with temperature limitation T0 and sigmoid penalty scaling",
+      "Reward function combines wirelength W and temperature T as: R = −λ × W − µ × (max(T − T0, 0))^α / (1 + e^(−(T − T0))) where λ, µ, T0, α are hyperparameters",
+      "Fast thermal model replaces HotSpot by pre-computing self-thermal resistance table from single HotSpot run per design and characterizing mutual-thermal resistance versus distance in 1D lookup",
+      "RND exploration bonus applied during RL training to encourage novel state discovery",
+      "Sequential chiplet placement with action masking for infeasible positions",
+      "Microbump assignments optimized for minimum total wirelength post-placement before thermal evaluation"
+    ],
+    "evidence_sha256": "c914e1f16b75f31942eb88f95bb7a4616ff48389728e3d9b3ff26133f80dbaf7",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "illustrative_2d_only",
+    "comparison_valid": false,
+    "summary": "Paper W4390437658 (RLPlanner) describes a reinforcement learning-based chiplet floorplanning optimization using PPO with RND exploration and a fast thermal model approximating HotSpot. The scenario references a Multi-GPU System benchmark [4] from TABLE I reporting maximum temperature 91.15 °C (RLPlanner) versus 91.68 °C (TAP-2.5D baseline), with 20.28% average improvement across eight benchmarks. The experiment kind is declared as custom_2d_steady but lacks required inputs: floorplan geometry (empty block list), chiplet power distribution (empty power_w object), individual chiplet dimensions (x_m, y_m, width_m, height_m), boundary conditions, and complete hyperparameters (λ, µ, T0, α). The fast thermal model validation (TABLE II) shows MAE 0.2523 K and 127× speedup versus HotSpot, but external reference [4] defining the Multi-GPU System benchmark is not provided in the packet. All 26 evidence items lack valid page pinning or asset locators, preventing independent verification. The deterministic gate failed on input validation: no blocks and no power_w dictionary supplied. Feasibility verdict is illustrative_2d_only; Studio simulation is blocked.",
+    "limitations": [
+      "Input gate rejected: custom_2d_steady experiment requires 1–128 chiplet blocks with power_w object; extraction provided empty floorplan and null power distribution",
+      "Scientific gate rejected: no independently verified cited thermal observable in a pinned asset with matching page number and locator; all 26 evidence entries lack valid asset_id or complete page reference",
+      "Complete Multi-GPU System benchmark geometry and power map inaccessible: reference [4] (TAP-2.5D paper) not included; chiplet dimensions, power breakdown, and interposer thermal properties not reproduced in paper packet",
+      "Hyperparameter values unspecified: reward function weights (λ, µ, T0, α) and RL training parameters (learning rate, PPO clip range, training epochs, network architecture) not provided; GitHub repository URL incomplete and inaccessible",
+      "Thermal model approximation mismatch: fast model uses 1D mutual-thermal resistance lookup versus HotSpot's 3D transient network; validation on 2,000 synthetic systems does not guarantee Multi-GPU System fidelity given absence of actual benchmark geometry",
+      "Steady-state vs. transient regime not explicitly confirmed: paper describes self-thermal and mutual-thermal resistance tables but does not specify whether Multi-GPU System evaluation includes transient dynamics or temporal feedback control",
+      "Boundary condition and cooling solution not defined: ambient temperature, heat sink model, and microbump thermal contact resistance not specified; affects absolute temperature comparisons",
+      "No traced floorplan or power profile for Multi-GPU System: only aggregated TABLE I results provided; cannot decompose temperature contributions to individual chiplets or validate spatial thermal gradients",
+      "Adversarial review status unresolved: extraction notes 'Adversarial methods/code/parameters/config/data checks unresolved' and 'Adversarial reviewer did not approve all extracted claims'; claims may require challenge resolution",
+      "Comparison_valid flag set false: simulation skipped due to missing block and power_w inputs; qualitative sensitivity discussion only; no numerical replication of 91.15 °C or other TABLE I values attempted",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Complete floorplan geometry and chiplet dimensions for Multi-GPU System benchmark (x_m, y_m, width_m, height_m for each chiplet)",
+      "Individual chiplet power values and power distribution (watts per chiplet) for Multi-GPU System - reference [4] not provided in packet",
+      "Interposer thermal properties (thickness, material, conductivity)",
+      "Detailed thermal boundary conditions (ambient temperature, heat sink model, cooling solution specifications)",
+      "Complete hyperparameter values for reward function (λ, µ, T0, α)",
+      "RL training hyperparameters (learning rate, network architecture details, training epochs specification, PPO clip range)",
+      "GitHub repository URL mentioned ('More details can be found at the github') is incomplete and not accessible from paper packet",
+      "Validation dataset details beyond '2,000 synthetic chiplet systems' mentioned in Section III.A",
+      "Reference [4] (TAP-2.5D paper) containing Multi-GPU System benchmark definition not included in packet",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "Chiplet system modeled as 2.5D integration with interposer and microbump connections",
+      "Maximum temperature serves as primary thermal constraint in reward function with temperature limitation T0 and sigmoid penalty scaling",
+      "Reward function combines wirelength W and temperature T as: R = −λ × W − µ × (max(T − T0, 0))^α / (1 + e^(−(T − T0))) where λ, µ, T0, α are hyperparameters",
+      "Fast thermal model replaces HotSpot by pre-computing self-thermal resistance table from single HotSpot run per design and characterizing mutual-thermal resistance versus distance in 1D lookup",
+      "RND exploration bonus applied during RL training to encourage novel state discovery",
+      "Sequential chiplet placement with action masking for infeasible positions",
+      "Microbump assignments optimized for minimum total wirelength post-placement before thermal evaluation"
+    ]
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "missing",
+      "note": "Cool-3D methods describe a framework integration approach without explicit validation methodology. No comparison baseline provided (e.g., against HotSpot 6.0, CoMeT, or silicon measurements). Case studies present design space exploration results but lack rigorous verification of accuracy claims against reference implementations or real 3D IC data. The paper claims 'accurately capture thermal behaviors' (page 12) but provides only simulation-to-simulation comparisons with no ground truth validation."
+    },
+    "code": {
+      "status": "missing",
+      "note": "GitHub repository https://github.com/iCAS-SJTU/Cool-3D cited as 'in the process of being released' (page 1, footnote 1 and page 13). No pinned version, commit hash, or reproducible artifact provided. McPAT refactoring (initialization/simulation decoupling) described qualitatively (page 6) but no patch, diff, or source code excerpt supplied. Floorplan designer and microfluidic cooling strategy generator implementation not available as standalone tools or documented modules. YAML parser and XML template specifications referenced but source not linked."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Table VI baseline specifies 3-layer stack with cores at bottom; Case Study I (page 10) contradicts this by testing case1b with cores at top as 'most significant temperature reduction'. Heat map Figure 9 shows cores at bottom with max 395.52K, but Figure 12 case1b shows cores at top with max 392.27K—same configuration label 'case1b' but different layer order assertions between text description (page 10 'core layer positioned at the top') and Table VI (baseline 'bottom layer cores 0-3'). McPAT parameter mapping details (page 5-6) mention 'adaptive parameter translation framework' but provide no parameter list, equivalence rules, or validation against CoMeT [13] or prior gem5-to-McPAT parsers [40]-[42]."
+    },
+    "config": {
+      "status": "missing",
+      "note": "HotSpot 7.0 configuration not specified: thermal material properties (conductivity, density, specific heat), heatsink boundary conditions (external heat transfer coefficient), die thickness, TSV parameters, and microfluidic coolant flow rate all absent. CACTI-3DD configuration undefined: bank dimensions, relative placement within floorplan, DDR timing parameters. Gem5 simulation parameters beyond Table VI not documented (e.g., branch predictor size, memory latency, fetch/decode width). No HotSpot input file example, CACTI configuration template, or gem5 configuration script provided in paper or supplementary materials."
+    },
+    "data": {
+      "status": "contradicted",
+      "note": "Figure 8 shows elapsed time and instruction counts for Splash2 benchmarks, but numerical values are not provided—only bar chart visualization. Runtime claim of '28 minutes average, 2.4 hours maximum' (page 9) cannot be verified against underlying data. Case Studies I-III (Figures 10-13) present temperature distributions across all benchmarks but do not tabulate numerical results; figure legends show 'Temperature (K)' on y-axis with no scale labels in some cases. Figure 9 heat maps label maximum temperatures (395.52K, 392.83K, 390.57K) for fft benchmark only; extension to other benchmarks claimed but raw numerical thermal traces not supplied. Splash2 benchmark specification incomplete: exact executable versions, input data sizes, and benchmark invocation scripts not provided. Transient thermal capability mentioned (page 8) but only steady-state results shown; time-dependent power traces and thermal evolution data absent."
+    }
+  },
+  "findings": [
+    {
+      "field": "code_availability",
+      "reason": "GitHub repository cited as 'in the process of being released' without pinned version or working link verification; McPAT modifications and custom tools (floorplan designer, cooling strategy generator) not independently available",
+      "locator": "Page 1 footnote, Page 13 Section V and Acknowledgment"
+    },
+    {
+      "field": "baseline_configuration_inconsistency",
+      "reason": "Table VI specifies baseline with cores at bottom layer; Case Study I describes case1b with cores at top as improved configuration; however, Figure 9 baseline uses cores at bottom (395.52K max) while Figure 12 case1b shows different heat map labels suggesting layer reordering, creating ambiguity about whether case1b is same experiment or new configuration",
+      "locator": "Table VI vs. Section IV-C Case Study I (page 10) vs. Figures 9 and 12"
+    },
+    {
+      "field": "thermal_solver_dimension_claimed_as_3d_but_1d_implementation",
+      "reason": "Section II-C states HotSpot 7.0 'solve[s] one-dimensional steady-state heat conduction problems' yet paper title and abstract claim '3D thermal' modeling; 1D vertical heat diffusion in stacked dies is not equivalent to full 3D transient thermal simulation with lateral gradients and temporal dynamics",
+      "locator": "Section II-C page 4 and Abstract page 1"
+    },
+    {
+      "field": "microfluidic_cooling_abstraction_not_explicit_physics",
+      "reason": "Section III-C claims HotSpot 7.0 microfluidic cooling support provides 'intuitive user input interface for setting microfluidic cooling channel layers, allowing for a compact yet effective abstraction of complex microfluidic cooling configurations'; however, this is channel-layer abstraction, not detailed fluid-structure interaction or computational fluid dynamics; coolant inlet/outlet placement and flow physics not fully modeled",
+      "locator": "Section III-C page 6-7 and Figure 5"
+    },
+    {
+      "field": "parameter_translation_framework_not_fully_specified",
+      "reason": "Page 5-6 describe 'adaptive parameter translation framework' to map gem5 outputs to McPAT inputs, addressing issues with prior scripts [40]-[42] (version incompatibility, incomplete parameter mapping, poor error resilience), but no example parameter mapping, validation results, or error handling specifics provided",
+      "locator": "Section III-B page 5-6"
+    },
+    {
+      "field": "missing_hyperparameter_sensitivity_analysis",
+      "reason": "Case studies modify single dimensions (stacking order in I, cooling pattern in II, L2 cache size in III) but do not systematically explore parameter interactions, robustness to input variations, or sensitivity of results to HotSpot 7.0 configuration choices (e.g., heatsink conductance, material properties)",
+      "locator": "Section IV Case Studies I-III pages 10-12"
+    },
+    {
+      "field": "no_validation_against_reference_or_silicon",
+      "reason": "Paper claims to 'accurately capture thermal behaviors' but all results are simulation-only; no comparison with HotSpot 6.0 historical results, CoMeT [13] parallel runs, 3D-ICE [23] cross-validation, or silicon thermal measurements from published 3DIC chips (e.g., Intel Foveros, AMD 3D V-Cache)",
+      "locator": "Section IV page 9 and Figure 9-13; Section V Conclusions page 12"
+    },
+    {
+      "field": "splash2_benchmark_setup_incomplete",
+      "reason": "Section IV-A states 'run all benchmarks with their default problem size' but does not specify exact Splash2 version, executable paths, input dataset sources, or reproduction script; no reference to Splash2 source repository commit hash",
+      "locator": "Section IV-A page 9"
+    },
+    {
+      "field": "steady_state_vs_transient_mismatch",
+      "reason": "Section III-B mentions 'transient simulation process' and page 8 discusses 'extension capable process', yet all experimental results (Figures 8-13) show only steady-state thermal endpoints without temporal evolution, power trace time series, or thermal time-constant data",
+      "locator": "Section III-B page 6 vs. Section IV-B page 9 and Figures 9-13"
+    },
+    {
+      "field": "floorplan_designer_not_validated",
+      "reason": "Section III-C describes three floorplan generation modes (default templates, McPAT-based auto-generation, GUI manual design) but no validation that generated floorplans match actual McPAT area estimates or thermal simulation expectations; GUI tool not provided for independent testing",
+      "locator": "Section III-C page 6-7"
+    },
+    {
+      "field": "memory_power_calculation_via_cacti_3dd_lacks_specifics",
+      "reason": "Section III-B states CACTI-3DD integrated for 3D memory power but does not specify CACTI-3DD version, configuration parameters (bank geometry, DDR timing, voltage), or how 3D stacking effects (via resistance, intertier cooling) are incorporated into power model",
+      "locator": "Section III-B page 6"
+    },
+    {
+      "field": "extension_interface_example_missing",
+      "reason": "Section III-E describes YAML-based parameter translation rules and XML templates for customized module power calculation, but no example YAML configuration or XML template provided; reproducibility of non-parameterizable customization cannot be verified",
+      "locator": "Section III-E page 7-8"
+    },
+    {
+      "field": "figure_8_values_not_tabulated",
+      "reason": "Figure 8 shows elapsed time breakdown (gem5, cacti, mcpat, hotspot) and instruction counts across Splash2 suite, but numerical values are extracted only visually from bars; no accompanying data table provided for verification or replication",
+      "locator": "Figure 8 page 9"
+    },
+    {
+      "field": "case_study_temperatures_not_tabulated",
+      "reason": "Figures 10, 11, 13 present temperature distributions across benchmarks as line plots but do not provide numerical data table; maximum, minimum, and average temperatures for each case and benchmark not explicitly listed",
+      "locator": "Figures 10-13 pages 10-12"
+    },
+    {
+      "field": "microarchitectural_parameter_space_limited",
+      "reason": "Table VI specifies 8-issue out-of-order O3 core, 2-way L1, shared L2 only; no exploration of other architectural features (BTB size, RAS depth, prefetcher configuration, memory bus width, network-on-chip topology) that may affect thermal profile; baseline may not be representative of diverse 3DIC design space",
+      "locator": "Table VI page 9 and Section IV-A page 9"
+    },
+    {
+      "field": "cooling_strategy_generator_not_independently_validated",
+      "reason": "Section III-C claims microfluidic cooling strategy generator automates channel placement and validates against simulation resolution, but no algorithm, pseudo-code, or validation metric provided; claims of 'verified cooling patterns' (page 7) lack empirical support from prior work [32], [44]",
+      "locator": "Section III-C page 7"
+    },
+    {
+      "field": "1d_solver_assumption_for_3dic_vertical_heat_spreading",
+      "reason": "HotSpot 7.0 1D steady-state solution assumes vertical heat conduction dominates, but 3DICs with multiple active layers (cores, memory) may exhibit significant lateral thermal gradients and cross-layer coupling; 1D model may underestimate peak temperatures in non-vertically-aligned hotspots",
+      "locator": "Section II-C page 4"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "checked_assets": []
+}

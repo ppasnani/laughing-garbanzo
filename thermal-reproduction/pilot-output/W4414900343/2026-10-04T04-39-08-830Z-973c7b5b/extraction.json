@@ -1,0 +1,1522 @@
+{
+  "paper_id": "W4414900343",
+  "paper_title": "Cool-3D: An End-to-End Thermal-Aware Framework for Early-Phase Design Space Exploration of Microfluidic-Cooled 3DICs",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 9,
+    "figure_or_table": "Table VI, Figure 8, Figure 9",
+    "description": "Baseline 3DIC design with 4 cores, shared L2 cache, and 3-layer stacking (core layer bottom, two memory layers above) running Splash2 benchmark suite with steady-state thermal analysis",
+    "architecture": "gem5 O3 4-core out-of-order processor, 2GHz, 8-issue; L1 I/D cache 2-way 4KB/8KB; L2 shared 2MB; Memory 8GB 32 banks",
+    "workload": "Splash2 benchmark suite (fft, lu_c, lu_nonc, ocean_c, ocean_nonc, radiosity, raytrace, water_n, water_sp, cholesky, barnes, fmm, ocean_cont, ocean_nonc) with default problem size",
+    "operating_point": "Steady-state thermal simulation at 2GHz clock frequency; baseline without active microfluidic cooling, passive heatsink only; gem5 default configuration",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "HotSpot 7.0",
+    "optimizer": "gem5 event-driven simulator with manual design space configuration",
+    "controller": "No active thermal controller (passive heatsink baseline)",
+    "benchmark": "Splash2 benchmark suite (fft, lu_c, lu_nonc, ocean_c, ocean_nonc, radiosity, raytrace, water_n, water_sp, cholesky, barnes, fmm, ocean_cont, ocean_nonc) with default problem size"
+  },
+  "thermal_observable": {
+    "value": 395.52,
+    "unit": "K",
+    "location": "Bottom layer core0 (hottest spot in baseline chip)",
+    "aggregation": "Steady-state maximum temperature across 3-layer stack",
+    "pdf_page": 10
+  },
+  "physical_mismatches": [
+    {
+      "reason": "3DIC stacking topology (3 layers: cores bottom, memory middle and top) differs from single-die thermal models; vertical heat coupling between layers not directly comparable to 2D assumptions",
+      "essential": true
+    },
+    {
+      "reason": "Microfluidic cooling model (HotSpot 7.0 support) is abstracted channel-layer representation, not explicit microchannel geometry or detailed fluid dynamics",
+      "essential": false
+    },
+    {
+      "reason": "McPAT power estimates are architecture-level and do not include gate-level switching transients or parasitic power from TSVs and interposer routing",
+      "essential": false
+    },
+    {
+      "reason": "Gem5 steady-state simulation does not capture transient thermal response or dynamic power variability across instruction phases",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Cool-3D assumes gem5 performance traces accurately reflect switching activity for architecture class specified (O3 8-issue out-of-order)",
+    "McPAT parameter translation from gem5 outputs assumes compatible microarchitecture parameter space; manual YAML rules required for non-standard modules",
+    "HotSpot 7.0 floorplan and stacking configuration assume uniform die dimensions and orthogonal layer placement without rotation or irregular shapes",
+    "Microfluidic cooling strategy generator assumes vertical channel alignment or 90-degree bent patterns; custom microchannel geometries require manual HotSpot input file editing",
+    "Baseline passive heatsink thermal boundary condition (external heat sink conductance) is not explicitly specified in paper; default HotSpot 7.0 values inferred",
+    "Memory power calculated via CACTI-3DD assumes standard DDR memory specifications and does not model 3D DRAM-specific effects (e.g., via resistance)",
+    "Splash2 benchmarks are representative of target workload; no dynamic frequency scaling or power gating is modeled",
+    "Thermal steady-state assumption ignores transient effects and long-term thermal gradients that may arise during varied execution phases"
+  ],
+  "missing_inputs": [
+    "GitHub repository URL (https://github.com/iCAS-SJTU/Cool-3D) referenced as 'in the process of being released' (page 1) but asset not provided; code availability, exact version, and pinned dependencies unknown",
+    "Detailed HotSpot 7.0 configuration parameters (thermal material properties, heatsink conductance values, boundary conditions) not specified in paper; only standard microfluidic cooling layer model cited",
+    "McPAT enhancement modifications (decoupling initialization and simulation phases, power trace output format) described qualitatively but no patch, version tag, or source repository provided",
+    "Floorplan designer and microfluidic cooling strategy generator implementation details, input/output file formats, and validation against reference designs not available as standalone tools or documentation",
+    "Splash2 benchmark suite executable paths, input data sizes, and script to automate benchmark execution across gem5 not included in paper",
+    "CACTI-3DD configuration and memory bank placement algorithm (number of banks, dimensions, relative positioning within floorplan) not explicitly documented",
+    "Transient thermal simulation capability mentioned for case studies but only steady-state results (Figures 9-13) presented; transient power traces and time-dependent temperature data not provided",
+    "Validation against real 3DIC chips or silicon measurements absent; all results are simulation-only predictions without ground truth"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [
+      {
+        "name": "C0_IC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_DC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_FPIW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_SQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_IW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_Other",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_RBB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_LQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_BTB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_REN",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_MMU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_ROB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_BP",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_FPU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_ID",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_FPRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_CALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_IB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_IRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C0_IALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_IC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_DC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_FPIW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_SQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_IW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_Other",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_RBB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_LQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_BTB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_REN",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_MMU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_ROB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_BP",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_FPU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_ID",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_FPRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_CALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_IB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_IRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C1_IALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_IC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_DC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_FPIW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_SQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_IW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_Other",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_RBB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_LQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_BTB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_REN",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_MMU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_ROB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_BP",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_FPU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_ID",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_FPRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_CALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_IB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_IRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C2_IALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_IC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_DC",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_FPIW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_SQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_IW",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_Other",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_RBB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_LQ",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_BTB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_REN",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_MMU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_ROB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_BP",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_FPU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_ID",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_FPRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_CALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_IB",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_IRF",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "C3_IALU",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "L2_shared",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_0",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_1",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_2",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_3",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_4",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_5",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_6",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_7",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_8",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_9",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_10",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_11",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_12",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_13",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_14",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_15",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_16",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_17",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_18",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_19",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_20",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_21",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_22",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_23",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_24",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_25",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_26",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_27",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_28",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_29",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_30",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      },
+      {
+        "name": "B_31",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0,
+        "height_m": 0
+      }
+    ],
+    "power_w": {
+      "C0_total": 0,
+      "C1_total": 0,
+      "C2_total": 0,
+      "C3_total": 0,
+      "L2_shared": 0,
+      "Memory_banks": 0
+    }
+  },
+  "evidence": [
+    {
+      "field": "architecture_isa",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI",
+      "provenance": "Cool-3D baseline configuration for Splash2 experiments",
+      "uncertainty": null
+    },
+    {
+      "field": "cpu_cores",
+      "block_name": null,
+      "source_value": 4,
+      "source_unit": "count",
+      "conversion_factor": null,
+      "normalized_value": 4,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters row 'Core Model'",
+      "provenance": "Baseline chip configuration for case studies",
+      "uncertainty": null
+    },
+    {
+      "field": "cpu_frequency",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 2000000000,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters row 'Core Model'",
+      "provenance": "Baseline chip configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "cpu_issue_width",
+      "block_name": null,
+      "source_value": 8,
+      "source_unit": "instructions/cycle",
+      "conversion_factor": null,
+      "normalized_value": 8,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters 'Core Model: 8-issue'",
+      "provenance": "O3 out-of-order processor configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "cpu_out_of_order",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters 'Core Model: out-of-order'",
+      "provenance": "Baseline architecture type",
+      "uncertainty": null
+    },
+    {
+      "field": "l1_icache_size",
+      "block_name": null,
+      "source_value": 4,
+      "source_unit": "KB",
+      "conversion_factor": 1024,
+      "normalized_value": 4096,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters row 'L1 I/D Cache'",
+      "provenance": "Baseline configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "l1_icache_associativity",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "way",
+      "conversion_factor": null,
+      "normalized_value": 2,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters 'L1 I/D Cache: 2-way set associative'",
+      "provenance": "Baseline cache configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "l1_dcache_size",
+      "block_name": null,
+      "source_value": 8,
+      "source_unit": "KB",
+      "conversion_factor": 1024,
+      "normalized_value": 8192,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters row 'L1 I/D Cache'",
+      "provenance": "Baseline configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "l1_dcache_associativity",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "way",
+      "conversion_factor": null,
+      "normalized_value": 2,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters 'L1 I/D Cache: 2-way set associative'",
+      "provenance": "Baseline cache configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "l2_cache_size",
+      "block_name": "L2_shared",
+      "source_value": 2,
+      "source_unit": "MB",
+      "conversion_factor": 1048576,
+      "normalized_value": 2097152,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters row 'L2 Cache'",
+      "provenance": "Baseline shared L2 cache configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "l2_cache_associativity",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters 'L2 Cache: shared'",
+      "provenance": "Baseline configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "memory_size",
+      "block_name": null,
+      "source_value": 8,
+      "source_unit": "GB",
+      "conversion_factor": 1073741824,
+      "normalized_value": 8589934592,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters row 'Memory'",
+      "provenance": "Baseline DRAM configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "memory_banks",
+      "block_name": null,
+      "source_value": 32,
+      "source_unit": "count",
+      "conversion_factor": null,
+      "normalized_value": 32,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters 'Memory: 32 banks'",
+      "provenance": "Baseline memory organization",
+      "uncertainty": null
+    },
+    {
+      "field": "memory_banks_per_rank",
+      "block_name": null,
+      "source_value": 8,
+      "source_unit": "banks",
+      "conversion_factor": null,
+      "normalized_value": 8,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Model Parameters 'Memory: 8 banks per rank'",
+      "provenance": "Baseline memory rank configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "3dic_layers",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "count",
+      "conversion_factor": null,
+      "normalized_value": 3,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, 3D Related Parameters '3 layers'",
+      "provenance": "Baseline 3DIC stacking configuration",
+      "uncertainty": null
+    },
+    {
+      "field": "3dic_layer_order",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, 3D Related Parameters: 'bottom layer cores 0-3', 'middle layer memory banks 0-15', 'top layer memory banks 16-31'",
+      "provenance": "Baseline stacking order for baseline case",
+      "uncertainty": null
+    },
+    {
+      "field": "cooling_type",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, 3D Related Parameters row 'Cooling'",
+      "provenance": "Baseline without active microfluidic cooling",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_max_temperature_baseline",
+      "block_name": "C0",
+      "source_value": 395.52,
+      "source_unit": "K",
+      "conversion_factor": null,
+      "normalized_value": 395.52,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 9, bottom layer heat map label 'Maximum Temperature = 395.52'",
+      "provenance": "Splash2-fft steady-state thermal simulation result on baseline 3-layer stack",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_max_temperature_baseline_middle_layer",
+      "block_name": null,
+      "source_value": 392.83,
+      "source_unit": "K",
+      "conversion_factor": null,
+      "normalized_value": 392.83,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 9, middle layer heat map label 'Maximum Temperature = 392.83'",
+      "provenance": "Splash2-fft steady-state simulation, memory bank layer 1",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_max_temperature_baseline_top_layer",
+      "block_name": null,
+      "source_value": 390.57,
+      "source_unit": "K",
+      "conversion_factor": null,
+      "normalized_value": 390.57,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 9, top layer heat map label 'Maximum Temperature = 390.57'",
+      "provenance": "Splash2-fft steady-state simulation, memory bank layer 2",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_suite",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section IV-A 'we use the Splash2 benchmark suite [45], [46], which is a commonly used testing program suite'",
+      "provenance": "Cool-3D experimental setup for baseline and case studies",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_problem_size",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section IV-A 'run all benchmarks with their default problem size'",
+      "provenance": "Splash2 benchmark execution parameters",
+      "uncertainty": null
+    },
+    {
+      "field": "benchmark_fft_instructions",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": "instructions",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Figure 8, grey dashed line marking total simulated instructions for 'fft' benchmark",
+      "provenance": "Cool-3D gem5 simulation output",
+      "uncertainty": "Values readable from figure but not numerically specified in text"
+    },
+    {
+      "field": "performance_model",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section II-A, Table III, Figure 3 back-end 'gem5'",
+      "provenance": "Selected simulator for performance modeling in Cool-3D framework",
+      "uncertainty": null
+    },
+    {
+      "field": "power_model",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section II-B, Table IV, Figure 3 back-end 'McPAT'",
+      "provenance": "Selected simulator for power modeling in Cool-3D framework",
+      "uncertainty": null
+    },
+    {
+      "field": "memory_power_model",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section III-B 'CACTI-3DD [25] as an additional step in the power estimation process'",
+      "provenance": "Cool-3D memory power calculator component",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_model",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section II-C, Table V, Figure 3 back-end 'HotSpot 7.0'",
+      "provenance": "Selected simulator for thermal modeling with microfluidic cooling support",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_solver_dimension",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "D",
+      "conversion_factor": null,
+      "normalized_value": 1,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section II-C 'HotSpot...leverages the analogy between electrical circuits and heat conduction to efficiently solve one-dimensional steady-state heat conduction problems'",
+      "provenance": "HotSpot 7.0 thermal solution methodology",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_simulation_type",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section IV-B 'runs fully automatically...generates...thermal results' and Figure 9 'steady-state simulation'",
+      "provenance": "Baseline analysis thermal simulation approach",
+      "uncertainty": null
+    },
+    {
+      "field": "case1a_stacking_order",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section IV-C Case Study I 'case1a: memory layer - core layer - memory layer'",
+      "provenance": "Design space exploration variant 1",
+      "uncertainty": null
+    },
+    {
+      "field": "case1b_stacking_order",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section IV-C Case Study I 'case1b: memory layer - memory layer - core layer'",
+      "provenance": "Design space exploration variant 2 with cores at top",
+      "uncertainty": null
+    },
+    {
+      "field": "case1b_max_temperature",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": "K",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 10 'case1b' temperature distribution across benchmarks",
+      "provenance": "Temperature reduction from optimal stacking order",
+      "uncertainty": "Values readable from figure but specific numbers depend on benchmark"
+    },
+    {
+      "field": "case2a_cooling_pattern",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Section IV-D Case Study II 'case2a: microfluidic cooling with vertically aligned pattern applied'",
+      "provenance": "Microfluidic cooling strategy variant 1",
+      "uncertainty": null
+    },
+    {
+      "field": "case2b_cooling_pattern",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Section IV-D Case Study II 'case2b: microfluidic cooling with 90-degree bent microchannels applied'",
+      "provenance": "Microfluidic cooling strategy variant 2",
+      "uncertainty": null
+    },
+    {
+      "field": "case2a_max_temperature",
+      "block_name": null,
+      "source_value": 306.69,
+      "source_unit": "K",
+      "conversion_factor": null,
+      "normalized_value": 306.69,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Figure 12, middle row 'case2a Maximum Temperature = 306.69'",
+      "provenance": "Steady-state thermal result with vertically aligned microfluidic cooling (fft benchmark)",
+      "uncertainty": null
+    },
+    {
+      "field": "case2b_max_temperature",
+      "block_name": null,
+      "source_value": 306.03,
+      "source_unit": "K",
+      "conversion_factor": null,
+      "normalized_value": 306.03,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Figure 12, bottom row 'case2b Maximum Temperature = 306.03'",
+      "provenance": "Steady-state thermal result with 90-degree bent microfluidic cooling (fft benchmark)",
+      "uncertainty": null
+    },
+    {
+      "field": "case3a_l2_cache_size",
+      "block_name": "L2_shared",
+      "source_value": 4,
+      "source_unit": "MB",
+      "conversion_factor": 1048576,
+      "normalized_value": 4194304,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section IV-E Case Study III 'shared L2 cache capacity scaled to 4MB based on case2b'",
+      "provenance": "Microarchitectural variation case3a",
+      "uncertainty": null
+    },
+    {
+      "field": "case3b_l2_cache_size",
+      "block_name": "L2_shared",
+      "source_value": 1,
+      "source_unit": "MB",
+      "conversion_factor": 1048576,
+      "normalized_value": 1048576,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section IV-E Case Study III 'shared L2 cache capacity scaled to 1MB based on case2b'",
+      "provenance": "Microarchitectural variation case3b",
+      "uncertainty": null
+    },
+    {
+      "field": "floorplan_designer_modes",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "count",
+      "conversion_factor": null,
+      "normalized_value": 3,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section III-C 'floorplan designer in Cool-3D has three modes'",
+      "provenance": "Cool-3D floorplan generation tool",
+      "uncertainty": null
+    },
+    {
+      "field": "microchannel_pattern_vertical_support",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section III-C, Figure 5(a) 'vertically aligned pattern'",
+      "provenance": "Microfluidic cooling pattern support in Cool-3D",
+      "uncertainty": null
+    },
+    {
+      "field": "microchannel_pattern_bent_support",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section III-C, Figure 5(b) '90-degree bent pattern with two pairs of inlets and outlets'",
+      "provenance": "Advanced microfluidic cooling pattern support in Cool-3D",
+      "uncertainty": null
+    },
+    {
+      "field": "tool_runtime_average",
+      "block_name": null,
+      "source_value": 28,
+      "source_unit": "minutes",
+      "conversion_factor": 60,
+      "normalized_value": 1680,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section IV-B 'the end-to-end runtime for the entire flow across all benchmarks in default problem size is approximately 28 minutes'",
+      "provenance": "Cool-3D performance benchmark (Splash2 full suite)",
+      "uncertainty": null
+    },
+    {
+      "field": "tool_runtime_maximum",
+      "block_name": null,
+      "source_value": 2.4,
+      "source_unit": "hours",
+      "conversion_factor": 3600,
+      "normalized_value": 8640,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section IV-B 'with the longest runtime reaching 2.4 hours'",
+      "provenance": "Cool-3D maximum single-benchmark runtime",
+      "uncertainty": null
+    },
+    {
+      "field": "mcpat_refactoring_initialization_decoupling",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section III-B 'we refactored McPAT to decouple the initialization and power simulation phases'",
+      "provenance": "Cool-3D framework enhancement to McPAT",
+      "uncertainty": "Implementation details not provided; qualitative description only"
+    },
+    {
+      "field": "extension_interface_input_format",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section III-E 'Architects can define translation rules for customized modules using a simple YAML configuration file'",
+      "provenance": "Cool-3D non-parameterizable customization mechanism",
+      "uncertainty": null
+    },
+    {
+      "field": "extension_interface_template_format",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section III-E 'extension interface composes of an XML input template and a power calculation template'",
+      "provenance": "Cool-3D McPAT extension interface specification",
+      "uncertainty": null
+    },
+    {
+      "field": "github_repository_url",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Page 1 footnote 'The GitHub link is available on https://github.com/iCAS-SJTU/Cool-3D' and Section V 'The source code of this work is in the process of being released'",
+      "provenance": "Paper reference to open-source repository",
+      "uncertainty": "Repository status described as 'in the process of being released'; code availability, versions, and dependencies not confirmed"
+    },
+    {
+      "field": "institutional_affiliation",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Author affiliations: 'University of Michigan – Shanghai Jiao Tong University Joint Institute'",
+      "provenance": "Paper authorship and development location",
+      "uncertainty": null
+    },
+    {
+      "field": "funding_source_nsfc",
+      "block_name": null,
+      "source_value": 62201340,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Acknowledgment 'National Science Foundation of China under Grant No. 62201340'",
+      "provenance": "Research funding attribution",
+      "uncertainty": null
+    },
+    {
+      "field": "funding_source_src_crisp",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Acknowledgment 'Semiconductor Research Corporation (SRC) JUMP Center for Research on Intelligent Storage and Procesing-in-memory (CRISP)'",
+      "provenance": "Research funding attribution",
+      "uncertainty": null
+    }
+  ]
+}

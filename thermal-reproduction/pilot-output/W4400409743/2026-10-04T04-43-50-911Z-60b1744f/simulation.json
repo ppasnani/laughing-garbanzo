@@ -1,0 +1,5 @@
+{
+  "status": "skipped",
+  "reason": "Cabinet needs finite power from 0 to 10000 W; Heat_Sink_Base needs finite power from 0 to 10000 W; Chip_Heat_Source needs finite power from 0 to 10000 W; Floorplan and power names differ; Heat_Sink_Base overlaps Cabinet; Chip_Heat_Source overlaps Cabinet; Chip_Heat_Source overlaps Heat_Sink_Base; Floorplan exceeds s_spreader",
+  "artifacts": {}
+}
