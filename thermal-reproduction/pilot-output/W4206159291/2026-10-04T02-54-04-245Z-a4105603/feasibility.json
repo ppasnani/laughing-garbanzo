@@ -1,0 +1,17 @@
+{
+  "paper_id": "W4206159291",
+  "decision": "adapted_only",
+  "exact_replication_allowed": false,
+  "adapted_demo_allowed": true,
+  "extraction_complete": true,
+  "missing_evidence_fields": [],
+  "reason": "The paper uses an Alpha EV6 but its 3D FEniCS/POD experiment and pulsed power are different from the fixed EV6/GCC HotSpot run.",
+  "current_backend": "EV6 floorplan, GCC power trace, HotSpot block/grid; steady and seeded transient outputs",
+  "comparison_valid": false,
+  "required_for_exact_replication": [
+    "paper 3D geometry",
+    "paper pulsed power",
+    "paper boundary conditions",
+    "FEniCS/POD implementation"
+  ]
+}

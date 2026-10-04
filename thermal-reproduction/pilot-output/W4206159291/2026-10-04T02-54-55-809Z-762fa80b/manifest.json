@@ -1,0 +1,777 @@
+{
+  "paper_id": "W4206159291",
+  "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+  "pdf_path": "/workspaces/laughing-garbanzo/chip_thermal_management_papers/2020_W4206159291_Thermal_Simulation_of_a_CPU_Based_on_Model_Order_Reduction.pdf",
+  "pdf_sha256": "65ba02859190c22cc57b4b25e6510c5913c840b1bc5c5d6f36a3be37e7ac9fd9",
+  "graph_sha256": "fad4715ccac77f338a8cbb21e5aa882819b3592b2ed902955d35037ec3804686",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-haiku-4-5-20251001",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-04T02:55:12.962Z",
+  "extraction": {
+    "paper_id": "W4206159291",
+    "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+    "evidence": [
+      {
+        "field": "processor",
+        "value": "Alpha EV6 processor",
+        "pdf_page": 2
+      },
+      {
+        "field": "thermal_method",
+        "value": "Proper Orthogonal Decomposition (POD) with Galerkin projection method",
+        "pdf_page": 1
+      },
+      {
+        "field": "geometry",
+        "value": "CPU chip with 3D structure, device layer with functional units A, B, and C",
+        "pdf_page": 2
+      },
+      {
+        "field": "mesh",
+        "value": "129×129×7 mesh elements",
+        "pdf_page": 2
+      },
+      {
+        "field": "power",
+        "value": "Three uniform power pulses applied at functional units A, B, and C with period of 3.333μs representing average over 10k cycles at 3 GHz",
+        "pdf_page": 2
+      },
+      {
+        "field": "boundary",
+        "value": "Adiabatic boundary conditions applied to chip surfaces except bottom substrate where Robin boundary condition used with ambient temperature of 0°C",
+        "pdf_page": 2
+      },
+      {
+        "field": "reported_result",
+        "value": "POD model with 3 modes provides good accuracy compared to FEniCS simulation; with 5 modes achieves excellent agreement with FEniCS; reduction in degrees of freedom by more than 4 orders of magnitude",
+        "pdf_page": 3
+      }
+    ],
+    "missing_for_exact_replication": [
+      "Specific thermal conductivity values",
+      "Specific heat capacity values",
+      "Material density values",
+      "Exact power density values at each functional unit",
+      "Detailed dimensions of the CPU chip",
+      "Complete layer-by-layer material composition",
+      "Ambient temperature during actual testing conditions (only simulation ambient given as 0°C)",
+      "Convection coefficients or heat transfer parameters at boundaries"
+    ]
+  },
+  "feasibility": {
+    "paper_id": "W4206159291",
+    "decision": "adapted_only",
+    "exact_replication_allowed": false,
+    "adapted_demo_allowed": true,
+    "extraction_complete": true,
+    "missing_evidence_fields": [],
+    "reason": "The paper uses an Alpha EV6 but its 3D FEniCS/POD experiment and pulsed power are different from the fixed EV6/GCC HotSpot run.",
+    "current_backend": "EV6 floorplan, GCC power trace, HotSpot block/grid; steady and seeded transient outputs",
+    "comparison_valid": false,
+    "required_for_exact_replication": [
+      "paper 3D geometry",
+      "paper pulsed power",
+      "paper boundary conditions",
+      "FEniCS/POD implementation"
+    ]
+  },
+  "simulation": {
+    "status": "completed",
+    "studio_run_id": "ad394b71fc7a45a992f0530ec0416e77",
+    "rows": [
+      {
+        "name": "L2_left",
+        "kelvin": 324.35,
+        "celsius": 51.2
+      },
+      {
+        "name": "L2",
+        "kelvin": 323.85,
+        "celsius": 50.7
+      },
+      {
+        "name": "L2_right",
+        "kelvin": 324.69,
+        "celsius": 51.54
+      },
+      {
+        "name": "Icache",
+        "kelvin": 330.84,
+        "celsius": 57.69
+      },
+      {
+        "name": "Dcache",
+        "kelvin": 335.27,
+        "celsius": 62.12
+      },
+      {
+        "name": "Bpred_0",
+        "kelvin": 333.16,
+        "celsius": 60.01
+      },
+      {
+        "name": "Bpred_1",
+        "kelvin": 333.6,
+        "celsius": 60.45
+      },
+      {
+        "name": "Bpred_2",
+        "kelvin": 333.43,
+        "celsius": 60.28
+      },
+      {
+        "name": "DTB_0",
+        "kelvin": 328.92,
+        "celsius": 55.77
+      },
+      {
+        "name": "DTB_1",
+        "kelvin": 328.81,
+        "celsius": 55.66
+      },
+      {
+        "name": "DTB_2",
+        "kelvin": 328.48,
+        "celsius": 55.33
+      },
+      {
+        "name": "FPAdd_0",
+        "kelvin": 329.13,
+        "celsius": 55.98
+      },
+      {
+        "name": "FPAdd_1",
+        "kelvin": 329.43,
+        "celsius": 56.28
+      },
+      {
+        "name": "FPReg_0",
+        "kelvin": 328.86,
+        "celsius": 55.71
+      },
+      {
+        "name": "FPReg_1",
+        "kelvin": 329.07,
+        "celsius": 55.92
+      },
+      {
+        "name": "FPReg_2",
+        "kelvin": 329.3,
+        "celsius": 56.15
+      },
+      {
+        "name": "FPReg_3",
+        "kelvin": 329.23,
+        "celsius": 56.08
+      },
+      {
+        "name": "FPMul_0",
+        "kelvin": 327.8,
+        "celsius": 54.65
+      },
+      {
+        "name": "FPMul_1",
+        "kelvin": 328.23,
+        "celsius": 55.08
+      },
+      {
+        "name": "FPMap_0",
+        "kelvin": 325.52,
+        "celsius": 52.37
+      },
+      {
+        "name": "FPMap_1",
+        "kelvin": 326.08,
+        "celsius": 52.93
+      },
+      {
+        "name": "IntMap",
+        "kelvin": 329.09,
+        "celsius": 55.94
+      },
+      {
+        "name": "IntQ",
+        "kelvin": 328.59,
+        "celsius": 55.44
+      },
+      {
+        "name": "IntReg_0",
+        "kelvin": 342.43,
+        "celsius": 69.28
+      },
+      {
+        "name": "IntReg_1",
+        "kelvin": 343.01,
+        "celsius": 69.86
+      },
+      {
+        "name": "IntExec",
+        "kelvin": 334.95,
+        "celsius": 61.8
+      },
+      {
+        "name": "FPQ",
+        "kelvin": 327.96,
+        "celsius": 54.81
+      },
+      {
+        "name": "LdStQ",
+        "kelvin": 336.58,
+        "celsius": 63.43
+      },
+      {
+        "name": "ITB_0",
+        "kelvin": 330.04,
+        "celsius": 56.89
+      },
+      {
+        "name": "ITB_1",
+        "kelvin": 330.64,
+        "celsius": 57.49
+      },
+      {
+        "name": "iface_L2_left",
+        "kelvin": 324.3,
+        "celsius": 51.15
+      },
+      {
+        "name": "iface_L2",
+        "kelvin": 323.81,
+        "celsius": 50.66
+      },
+      {
+        "name": "iface_L2_right",
+        "kelvin": 324.64,
+        "celsius": 51.49
+      },
+      {
+        "name": "iface_Icache",
+        "kelvin": 330.07,
+        "celsius": 56.92
+      },
+      {
+        "name": "iface_Dcache",
+        "kelvin": 333.87,
+        "celsius": 60.72
+      },
+      {
+        "name": "iface_Bpred_0",
+        "kelvin": 331.92,
+        "celsius": 58.77
+      },
+      {
+        "name": "iface_Bpred_1",
+        "kelvin": 332.33,
+        "celsius": 59.18
+      },
+      {
+        "name": "iface_Bpred_2",
+        "kelvin": 332.23,
+        "celsius": 59.08
+      },
+      {
+        "name": "iface_DTB_0",
+        "kelvin": 328.56,
+        "celsius": 55.41
+      },
+      {
+        "name": "iface_DTB_1",
+        "kelvin": 328.49,
+        "celsius": 55.34
+      },
+      {
+        "name": "iface_DTB_2",
+        "kelvin": 328.17,
+        "celsius": 55.02
+      },
+      {
+        "name": "iface_FPAdd_0",
+        "kelvin": 328.56,
+        "celsius": 55.41
+      },
+      {
+        "name": "iface_FPAdd_1",
+        "kelvin": 328.86,
+        "celsius": 55.71
+      },
+      {
+        "name": "iface_FPReg_0",
+        "kelvin": 328.27,
+        "celsius": 55.12
+      },
+      {
+        "name": "iface_FPReg_1",
+        "kelvin": 328.46,
+        "celsius": 55.31
+      },
+      {
+        "name": "iface_FPReg_2",
+        "kelvin": 328.69,
+        "celsius": 55.54
+      },
+      {
+        "name": "iface_FPReg_3",
+        "kelvin": 328.65,
+        "celsius": 55.5
+      },
+      {
+        "name": "iface_FPMul_0",
+        "kelvin": 327.35,
+        "celsius": 54.2
+      },
+      {
+        "name": "iface_FPMul_1",
+        "kelvin": 327.76,
+        "celsius": 54.61
+      },
+      {
+        "name": "iface_FPMap_0",
+        "kelvin": 325.4,
+        "celsius": 52.25
+      },
+      {
+        "name": "iface_FPMap_1",
+        "kelvin": 325.91,
+        "celsius": 52.76
+      },
+      {
+        "name": "iface_IntMap",
+        "kelvin": 328.49,
+        "celsius": 55.34
+      },
+      {
+        "name": "iface_IntQ",
+        "kelvin": 328.17,
+        "celsius": 55.02
+      },
+      {
+        "name": "iface_IntReg_0",
+        "kelvin": 339.56,
+        "celsius": 66.41
+      },
+      {
+        "name": "iface_IntReg_1",
+        "kelvin": 340.04,
+        "celsius": 66.89
+      },
+      {
+        "name": "iface_IntExec",
+        "kelvin": 333.55,
+        "celsius": 60.4
+      },
+      {
+        "name": "iface_FPQ",
+        "kelvin": 327.68,
+        "celsius": 54.53
+      },
+      {
+        "name": "iface_LdStQ",
+        "kelvin": 334.85,
+        "celsius": 61.7
+      },
+      {
+        "name": "iface_ITB_0",
+        "kelvin": 329.46,
+        "celsius": 56.31
+      },
+      {
+        "name": "iface_ITB_1",
+        "kelvin": 329.98,
+        "celsius": 56.83
+      },
+      {
+        "name": "hsp_L2_left",
+        "kelvin": 324.11,
+        "celsius": 50.96
+      },
+      {
+        "name": "hsp_L2",
+        "kelvin": 323.64,
+        "celsius": 50.49
+      },
+      {
+        "name": "hsp_L2_right",
+        "kelvin": 324.41,
+        "celsius": 51.26
+      },
+      {
+        "name": "hsp_Icache",
+        "kelvin": 326.72,
+        "celsius": 53.57
+      },
+      {
+        "name": "hsp_Dcache",
+        "kelvin": 327.82,
+        "celsius": 54.67
+      },
+      {
+        "name": "hsp_Bpred_0",
+        "kelvin": 326.53,
+        "celsius": 53.38
+      },
+      {
+        "name": "hsp_Bpred_1",
+        "kelvin": 326.82,
+        "celsius": 53.67
+      },
+      {
+        "name": "hsp_Bpred_2",
+        "kelvin": 327.02,
+        "celsius": 53.87
+      },
+      {
+        "name": "hsp_DTB_0",
+        "kelvin": 327.04,
+        "celsius": 53.89
+      },
+      {
+        "name": "hsp_DTB_1",
+        "kelvin": 327.1,
+        "celsius": 53.95
+      },
+      {
+        "name": "hsp_DTB_2",
+        "kelvin": 326.8,
+        "celsius": 53.65
+      },
+      {
+        "name": "hsp_FPAdd_0",
+        "kelvin": 326.05,
+        "celsius": 52.9
+      },
+      {
+        "name": "hsp_FPAdd_1",
+        "kelvin": 326.38,
+        "celsius": 53.23
+      },
+      {
+        "name": "hsp_FPReg_0",
+        "kelvin": 325.7,
+        "celsius": 52.55
+      },
+      {
+        "name": "hsp_FPReg_1",
+        "kelvin": 325.82,
+        "celsius": 52.67
+      },
+      {
+        "name": "hsp_FPReg_2",
+        "kelvin": 326.05,
+        "celsius": 52.9
+      },
+      {
+        "name": "hsp_FPReg_3",
+        "kelvin": 326.15,
+        "celsius": 53
+      },
+      {
+        "name": "hsp_FPMul_0",
+        "kelvin": 325.4,
+        "celsius": 52.25
+      },
+      {
+        "name": "hsp_FPMul_1",
+        "kelvin": 325.74,
+        "celsius": 52.59
+      },
+      {
+        "name": "hsp_FPMap_0",
+        "kelvin": 324.85,
+        "celsius": 51.7
+      },
+      {
+        "name": "hsp_FPMap_1",
+        "kelvin": 325.17,
+        "celsius": 52.02
+      },
+      {
+        "name": "hsp_IntMap",
+        "kelvin": 325.91,
+        "celsius": 52.76
+      },
+      {
+        "name": "hsp_IntQ",
+        "kelvin": 326.32,
+        "celsius": 53.17
+      },
+      {
+        "name": "hsp_IntReg_0",
+        "kelvin": 327.16,
+        "celsius": 54.01
+      },
+      {
+        "name": "hsp_IntReg_1",
+        "kelvin": 327.15,
+        "celsius": 54
+      },
+      {
+        "name": "hsp_IntExec",
+        "kelvin": 327.44,
+        "celsius": 54.29
+      },
+      {
+        "name": "hsp_FPQ",
+        "kelvin": 326.47,
+        "celsius": 53.32
+      },
+      {
+        "name": "hsp_LdStQ",
+        "kelvin": 327.32,
+        "celsius": 54.17
+      },
+      {
+        "name": "hsp_ITB_0",
+        "kelvin": 326.97,
+        "celsius": 53.82
+      },
+      {
+        "name": "hsp_ITB_1",
+        "kelvin": 327.13,
+        "celsius": 53.98
+      },
+      {
+        "name": "hsink_L2_left",
+        "kelvin": 323.97,
+        "celsius": 50.82
+      },
+      {
+        "name": "hsink_L2",
+        "kelvin": 323.56,
+        "celsius": 50.41
+      },
+      {
+        "name": "hsink_L2_right",
+        "kelvin": 324.22,
+        "celsius": 51.07
+      },
+      {
+        "name": "hsink_Icache",
+        "kelvin": 325.31,
+        "celsius": 52.16
+      },
+      {
+        "name": "hsink_Dcache",
+        "kelvin": 325.64,
+        "celsius": 52.49
+      },
+      {
+        "name": "hsink_Bpred_0",
+        "kelvin": 325.07,
+        "celsius": 51.92
+      },
+      {
+        "name": "hsink_Bpred_1",
+        "kelvin": 325.23,
+        "celsius": 52.08
+      },
+      {
+        "name": "hsink_Bpred_2",
+        "kelvin": 325.44,
+        "celsius": 52.29
+      },
+      {
+        "name": "hsink_DTB_0",
+        "kelvin": 325.55,
+        "celsius": 52.4
+      },
+      {
+        "name": "hsink_DTB_1",
+        "kelvin": 325.58,
+        "celsius": 52.43
+      },
+      {
+        "name": "hsink_DTB_2",
+        "kelvin": 325.37,
+        "celsius": 52.22
+      },
+      {
+        "name": "hsink_FPAdd_0",
+        "kelvin": 324.95,
+        "celsius": 51.8
+      },
+      {
+        "name": "hsink_FPAdd_1",
+        "kelvin": 325.17,
+        "celsius": 52.02
+      },
+      {
+        "name": "hsink_FPReg_0",
+        "kelvin": 324.79,
+        "celsius": 51.64
+      },
+      {
+        "name": "hsink_FPReg_1",
+        "kelvin": 324.86,
+        "celsius": 51.71
+      },
+      {
+        "name": "hsink_FPReg_2",
+        "kelvin": 325.01,
+        "celsius": 51.86
+      },
+      {
+        "name": "hsink_FPReg_3",
+        "kelvin": 325.08,
+        "celsius": 51.93
+      },
+      {
+        "name": "hsink_FPMul_0",
+        "kelvin": 324.67,
+        "celsius": 51.52
+      },
+      {
+        "name": "hsink_FPMul_1",
+        "kelvin": 324.88,
+        "celsius": 51.73
+      },
+      {
+        "name": "hsink_FPMap_0",
+        "kelvin": 324.43,
+        "celsius": 51.28
+      },
+      {
+        "name": "hsink_FPMap_1",
+        "kelvin": 324.61,
+        "celsius": 51.46
+      },
+      {
+        "name": "hsink_IntMap",
+        "kelvin": 324.92,
+        "celsius": 51.77
+      },
+      {
+        "name": "hsink_IntQ",
+        "kelvin": 325.05,
+        "celsius": 51.9
+      },
+      {
+        "name": "hsink_IntReg_0",
+        "kelvin": 324.83,
+        "celsius": 51.68
+      },
+      {
+        "name": "hsink_IntReg_1",
+        "kelvin": 324.74,
+        "celsius": 51.59
+      },
+      {
+        "name": "hsink_IntExec",
+        "kelvin": 325.32,
+        "celsius": 52.17
+      },
+      {
+        "name": "hsink_FPQ",
+        "kelvin": 325.29,
+        "celsius": 52.14
+      },
+      {
+        "name": "hsink_LdStQ",
+        "kelvin": 325.38,
+        "celsius": 52.23
+      },
+      {
+        "name": "hsink_ITB_0",
+        "kelvin": 325.46,
+        "celsius": 52.31
+      },
+      {
+        "name": "hsink_ITB_1",
+        "kelvin": 325.48,
+        "celsius": 52.33
+      },
+      {
+        "name": "inode_0",
+        "kelvin": 322.66,
+        "celsius": 49.51
+      },
+      {
+        "name": "inode_1",
+        "kelvin": 322.8,
+        "celsius": 49.65
+      },
+      {
+        "name": "inode_2",
+        "kelvin": 323.98,
+        "celsius": 50.83
+      },
+      {
+        "name": "inode_3",
+        "kelvin": 322.36,
+        "celsius": 49.21
+      },
+      {
+        "name": "inode_4",
+        "kelvin": 322.65,
+        "celsius": 49.5
+      },
+      {
+        "name": "inode_5",
+        "kelvin": 322.78,
+        "celsius": 49.63
+      },
+      {
+        "name": "inode_6",
+        "kelvin": 323.93,
+        "celsius": 50.78
+      },
+      {
+        "name": "inode_7",
+        "kelvin": 322.34,
+        "celsius": 49.19
+      },
+      {
+        "name": "inode_8",
+        "kelvin": 321.85,
+        "celsius": 48.7
+      },
+      {
+        "name": "inode_9",
+        "kelvin": 321.96,
+        "celsius": 48.81
+      },
+      {
+        "name": "inode_10",
+        "kelvin": 322.91,
+        "celsius": 49.76
+      },
+      {
+        "name": "inode_11",
+        "kelvin": 321.6,
+        "celsius": 48.45
+      }
+    ],
+    "config_sha256": "6fb68dc9ed6344470f8a311624b85c62cd119d6ba8b84d80025f680999e0e0c1",
+    "artifacts": {
+      "gcc.steady": {
+        "path": "gcc.steady",
+        "bytes": 2366,
+        "sha256": "1a5b1b8a12a4d76d9784b6e862253d70687dd043eb6c7adf79e0aa22ab001b13",
+        "studio_url": "/api/runs/ad394b71fc7a45a992f0530ec0416e77/artifacts/gcc.steady"
+      },
+      "gcc.ttrace": {
+        "path": "gcc.ttrace",
+        "bytes": 21216,
+        "sha256": "cef6bbf88a6cff5a4a6ec00bf0223c78da1f61167ff13a89e9b22449b86cd7f9",
+        "studio_url": "/api/runs/ad394b71fc7a45a992f0530ec0416e77/artifacts/gcc.ttrace"
+      }
+    },
+    "comparison_valid": false
+  },
+  "assessment": {
+    "verdict": "adapted_only",
+    "comparison_valid": false,
+    "summary": "This is an adapted simulation using EV6 processor with GCC power trace in HotSpot, not a reproduction of the paper's Proper Orthogonal Decomposition (POD) study. The paper presents a 3D finite element model (FEniCS) with Galerkin projection using pulsed power at three functional units (A, B, C) on a 129×129×7 mesh, achieving model reduction by >4 orders of magnitude. The current simulation uses HotSpot's steady-state and transient thermal analysis on an EV6 floorplan with fixed power trace, producing block-level and grid-level temperatures. While both concern CPU thermal simulation, they employ fundamentally different methodologies (POD/FEniCS vs. HotSpot RC network), different workload patterns (pulsed vs. GCC trace), and different thermal modeling assumptions. No numerical correspondence should be expected between POD reduced-order results and HotSpot block temperatures.",
+    "limitations": [
+      "No 3D geometry or mesh matching the paper's structure",
+      "Power input is a GCC benchmark trace, not the pulsed 3.333μs period used in the paper",
+      "HotSpot uses lumped RC thermal network, not FEniCS 3D PDE solver",
+      "No POD or Galerkin projection implemented; steady-state and basic transient analysis only",
+      "Boundary conditions differ: HotSpot uses fixed ambient, paper specifies Robin conditions with 0°C ambient",
+      "Thermal material properties (conductivity, density, heat capacity) not validated against paper values",
+      "Paper reports model reduction comparison (3 vs. 5 POD modes vs. FEniCS reference); this run outputs absolute temperatures without reduction metrics",
+      "Different processor architectures at functional unit level: HotSpot floorplan blocks versus paper's idealized A, B, C functional units"
+    ]
+  }
+}

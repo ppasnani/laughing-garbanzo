@@ -1,0 +1,51 @@
+{
+  "paper_id": "W4206159291",
+  "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+  "evidence": [
+    {
+      "field": "processor",
+      "value": "Alpha EV6 processor",
+      "pdf_page": 2
+    },
+    {
+      "field": "thermal_method",
+      "value": "Proper Orthogonal Decomposition (POD) with Galerkin projection method",
+      "pdf_page": 1
+    },
+    {
+      "field": "geometry",
+      "value": "CPU chip with 3D structure, device layer with functional units A, B, and C",
+      "pdf_page": 2
+    },
+    {
+      "field": "mesh",
+      "value": "129×129×7 mesh elements",
+      "pdf_page": 2
+    },
+    {
+      "field": "power",
+      "value": "Three uniform power pulses applied at functional units A, B, and C with period of 3.333μs representing average over 10k cycles at 3 GHz",
+      "pdf_page": 2
+    },
+    {
+      "field": "boundary",
+      "value": "Adiabatic boundary conditions applied to chip surfaces except bottom substrate where Robin boundary condition used with ambient temperature of 0°C",
+      "pdf_page": 2
+    },
+    {
+      "field": "reported_result",
+      "value": "POD model with 3 modes provides good accuracy compared to FEniCS simulation; with 5 modes achieves excellent agreement with FEniCS; reduction in degrees of freedom by more than 4 orders of magnitude",
+      "pdf_page": 3
+    }
+  ],
+  "missing_for_exact_replication": [
+    "Specific thermal conductivity values",
+    "Specific heat capacity values",
+    "Material density values",
+    "Exact power density values at each functional unit",
+    "Detailed dimensions of the CPU chip",
+    "Complete layer-by-layer material composition",
+    "Ambient temperature during actual testing conditions (only simulation ambient given as 0°C)",
+    "Convection coefficients or heat transfer parameters at boundaries"
+  ]
+}
