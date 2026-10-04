@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "pilot": "node pilot.mjs",
+    "batch": "bash batch.sh",
     "test": "node --test test/*.test.mjs && python3 -m unittest discover -s test -p test_import.py"
   },
   "dependencies": {

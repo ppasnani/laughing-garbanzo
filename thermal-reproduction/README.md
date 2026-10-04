@@ -68,6 +68,17 @@ Use the same `--assets-file` on both runs if linked assets were supplied. Reuse 
 
 The live LLM path uses Anthropic Messages structured JSON output and defaults to `claude-haiku-4-5-20251001`; set `ANTHROPIC_MODEL` to use another supported model. The model emits named `power_rows`, which the runner converts to Studio's `power_w` map after rejecting duplicate names. A completed live LLM call has not been tested with a user API key in this checkout.
 
+## Run every downloaded paper
+
+With Studio running and `ANTHROPIC_API_KEY` set as above, run:
+
+```sh
+cd thermal-reproduction
+npm run batch
+```
+
+`batch.sh` reads `../chip_thermal_management_papers/download_manifest.csv` with a CSV parser and calls the existing custom pilot once for each downloaded paper. The PDFs are read from that same directory. Unavailable rows are printed and skipped. The pilot's input and scientific-verdict gates decide whether Studio runs; each paper's evidence and result are saved under `pilot-output/<paper-id>/<attempt>/`. A failed paper is reported while the loop continues, and the script exits nonzero if any paper fails. This batch does not fetch paper-linked code or data; provide those to individual runs with `--assets-file` when needed.
+
 ## Bundled EV6/GCC regression demo
 
 The original paper `W4206159291` uses 3D FEniCS/POD and pulsed power. The bundled HotSpot run is an **adapted artifact-pipeline demo**, with no valid numerical paper comparison:
