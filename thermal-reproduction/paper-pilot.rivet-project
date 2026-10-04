@@ -10,7 +10,7 @@ data:
       metadata:
         id: paper-pilot
         name: Paper pilot
-        description: Paper extraction, adversarial verification, 2D gate, Studio run, conservative assessment.
+        description: Paper extraction, adversarial verification, verdict and input gates, conditional Studio run, conservative assessment.
       nodes:
         '[paper-input]:graphInput "Paper Packet"':
           data:
@@ -93,19 +93,19 @@ data:
             useFunctionNameInput: false
             useErrorOutput: false
           outgoingConnections:
-            - result->"Review 2D feasibility" review/arguments
+            - result->"Review 2D suitability verdict" review/arguments
             - result->"Adversarial review" adversarial-output/value
           visualData: 1300/200/250/7
-        '[review]:externalCall "Review 2D feasibility"':
+        '[review]:externalCall "Review 2D suitability verdict"':
           data:
             functionName: reviewFeasibility
             useFunctionNameInput: false
             useErrorOutput: false
           outgoingConnections:
-            - result->"Run HotSpot" simulate/arguments
+            - result->"Run Studio if verdict passes" simulate/arguments
             - result->"Feasibility" feasibility-output/value
           visualData: 1650/200/250/8
-        '[simulate]:externalCall "Run HotSpot"':
+        '[simulate]:externalCall "Run Studio if verdict passes"':
           data:
             functionName: runHotspot
             useFunctionNameInput: false
@@ -122,7 +122,10 @@ data:
               A bundled EV6/GCC run is only an adapted demonstration. Compare numerical values only
               when the same physical location, aggregation, regime, and boundary assumptions match;
               otherwise discuss qualitative sensitivity and enumerate mismatches. The deterministic
-              gate controls the final verdict and comparison_valid flag, so do not claim exact replication.
+              gate uses the feasibility verdict and Studio input validity. Candidate, conditional,
+              illustrative, and adapted verdicts may run; not_2d_applicable and source_unavailable
+              do not. The gate controls the final verdict and comparison_valid flag, so do not claim
+              exact replication.
             normalizeLineEndings: true
           outgoingConnections:
             - output->"Assessment arguments" assessment-arguments/input2

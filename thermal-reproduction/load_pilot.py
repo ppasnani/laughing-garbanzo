@@ -102,8 +102,11 @@ def load_2d_screening(conn, manifest_file):
     feasibility = manifest["feasibility"]
     simulation = manifest["simulation"]
     decision = feasibility["decision"]
+    suitable = decision in ("candidate_2d_snapshot", "illustrative_2d_only", "adapted_only") or (
+        isinstance(decision, str) and decision.startswith("conditional")
+    )
     if simulation["status"] != "skipped" and (
-        decision != "candidate_2d_snapshot" or not feasibility["simulation_allowed"]
+        not suitable or not feasibility["simulation_allowed"] or not feasibility["input_gate_pass"]
     ):
         raise ValueError("2D simulation bypassed the screening gate")
     if simulation["status"] == "completed" and not simulation.get("input_sha256"):
