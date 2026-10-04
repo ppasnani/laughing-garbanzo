@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paper Inbox · Thermal Reproduction</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <div><strong>Periodic Labs</strong><small>Thermal reproduction / paper inbox</small></div>
+      </div>
+      <div class="top-actions">
+        <span class="live-label"><i></i>Live results</span>
+        <button id="refresh" type="button" title="Refresh results now">↻ <span>Refresh</span></button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar" id="sidebar" aria-label="Papers">
+        <div class="sidebar-heading">
+          <p class="eyebrow">RESEARCH QUEUE</p>
+          <div class="heading-row"><h1>Papers</h1><span id="paper-count" class="count">—</span></div>
+          <p class="sidebar-description">Browse the manifest and its latest pilot results.</p>
+        </div>
+        <label class="search" for="paper-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg>
+          <input id="paper-search" type="search" autocomplete="off" placeholder="Search papers…">
+          <kbd>/</kbd>
+        </label>
+        <div class="list-meta"><span id="filter-count">Loading papers</span><span>Newest first</span></div>
+        <nav id="paper-list" class="paper-list" aria-label="Paper list"></nav>
+        <div class="sidebar-footer"><span id="last-updated">Checking for results…</span></div>
+      </aside>
+
+      <main class="detail" id="detail" aria-live="polite">
+        <div class="empty-state"><div class="empty-icon" aria-hidden="true">▦</div><h2>Select a paper</h2><p>Choose a paper from the inbox to inspect its latest assessment and simulation.</p></div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
