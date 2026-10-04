@@ -1,60 +1,98 @@
-# Thermal paper feasibility and pilot
+# Thermal paper screening and pilot
 
-## What this pilot proves
+## What this workflow does
 
-[`feasibility_inventory.md`](feasibility_inventory.md) records the original screen of all 31 manifest entries against Studio's bundled EV6/GCC experiment. The local collection has 22 PDFs; nine are unavailable. That screen found no exact match to the bundled case; it has not been repeated for Studio's custom 2D steady runs. The one-paper pilot uses the Alpha EV6 paper (`W4206159291`) as an **adapted** demonstration. The paper uses a 3D FEniCS/POD model and localized pulsed power (PDF p. 2); the pilot runs Studio's EV6/GCC HotSpot case. Its database comparison is explicitly invalid for a numerical paper-result match.
+`paper-pilot.rivet-project` is an editable Rivet graph for one paper at a time. It:
 
-The editable Rivet project is `paper-pilot.rivet-project`. Its stages are paper extraction (LLM), feasibility review (deterministic), HotSpot API run, and result assessment (LLM). The two LLM system prompts are editable Text nodes named **Extraction instructions** and **Assessment instructions**. The live path makes two LLM calls. `--mock-llm` substitutes a checked, page-cited fixture and makes no LLM calls; it still runs HotSpot through the API and downloads both artifacts.
+1. Extracts a **single, named paper scenario** and a page or pinned asset locator for each method, code, parameter, configuration, data, geometry, power, and thermal-result claim.
+2. Sends that extraction and the original paper packet to a separate **adversarial agent**. The agent checks methods, code, parameters, config, and data independently and records contradictions.
+3. Applies deterministic Studio input limits and scientific-fit checks. A human second reader must review every critical PDF page and linked asset against the exact evidence hash before a custom run is allowed.
+4. Submits a verified `custom_2d_steady` experiment, or the legacy bundled EV6/GCC demo, to Studio. It retrieves the saved configuration, run status, solver log, named Kelvin/°C rows, generated input files, and temperature files. A custom result also gets a second run with one block's power changed to check temperature direction. Each downloaded artifact is checked against Studio's byte count and SHA-256.
+5. Produces a conservative assessment. The output never marks a numerical paper comparison valid automatically.
 
-The extraction prompt and JSON schema use canonical evidence field names. Feasibility records any omitted core fields in `missing_evidence_fields` and sets `extraction_complete` accordingly. Missing extraction evidence never turns the adapted demonstration into a valid paper-result comparison; the assessment also lists the omission for review.
+The versioned [2D screening protocol](2D_SNAPSHOT_SCREENING_PROTOCOL.md) is the rubric. It is a procedure, not a completed audit. The [new inventory](screening_inventory.md) freezes all 31 manifest rows and verifies the 22 local PDF headers, sizes, hashes, and page counts. Nine rows are `source_unavailable`; the 22 PDFs are **pending source-complete review**, so the five-label totals are not final and there are no claimed 2D candidates yet. The [old inventory](feasibility_inventory.md) remains the historical EV6/GCC screen.
 
-## Edit the workflow in Rivet
+## Rivet graph and prompts
 
-Install the [Rivet desktop app](https://rivet.ironcladapp.com/docs/getting-started/installation) on your computer. Editing the graph locally does not run HotSpot. In Rivet, choose **File → Open Project** (Cmd+O on macOS) and select this `paper-pilot.rivet-project` file. Open **Paper pilot**, click either instructions node to edit the LLM prompt, or rearrange the stage nodes, then save with Cmd+S.
+Open `paper-pilot.rivet-project` in Rivet Desktop using **File → Open Project**. The editable Text nodes are **Extraction instructions**, **Adversarial verification instructions**, and **Assessment instructions**. Keep the external function names and graph outputs aligned with `pilot.mjs`. Rivet's Run button needs a remote debugger to execute these external functions; use the Node runner in a Codespace.
 
-The graph's four **External Call** nodes use functions in `pilot.mjs`. Their function names (`extractPaper`, `reviewFeasibility`, `runHotspot`, `assessResult`) and the four graph output IDs must stay aligned with that runner. Rivet's own **Run** button cannot execute those functions without a remote debugger; run the saved graph from the Codespace instead. Upload the edited `paper-pilot.rivet-project` file into `thermal-reproduction-deployment/thermal-reproduction/`, replacing the copy there, then run `bash thermal-reproduction/test-pilot.sh` from `thermal-reproduction-deployment`. The fixture test verifies graph wiring and performs a real HotSpot run; it does not test new prompt wording against an LLM. For that, use the live LLM command below.
+PDF and asset content is passed as untrusted research data. The adversarial reviewer is a distinct LLM call and cannot supply the human second-reader signoff. The deterministic gate ignores any optimistic verdict from the assessment prompt.
 
-If you update an existing Codespace deployment, the initial `unzip -n` command below **keeps** the old graph and runner. Keep a backup of any graph you edited in Rivet, then replace `paper-pilot.rivet-project` and `pilot.mjs` from the updated ZIP (or upload those two files in VS Code). Run `npm test` inside `thermal-reproduction-deployment/thermal-reproduction` before a live LLM call. The graph test checks that both instruction nodes reach their external functions.
+## Screen a paper
 
-## Simplest Codespace test
+In a Codespace with the repository, install dependencies and Poppler:
 
-Upload `Thermal-Reproduction-Codespaces.zip` to the Codespace. In one terminal:
-
-```bash
-unzip -n Thermal-Reproduction-Codespaces.zip
-cd thermal-reproduction-deployment
-bash hotspot-studio/start.sh
+```sh
+cd thermal-reproduction
+npm ci
+sudo apt-get update && sudo apt-get install -y poppler-utils
+npm test
 ```
 
-Keep that terminal open. In a second Codespace terminal:
+Run the first screen for a downloaded manifest entry:
 
-```bash
-cd thermal-reproduction-deployment
-bash thermal-reproduction/test-pilot.sh
-```
-
-The script installs Rivet and `pdftotext` if needed, runs the tests, performs one real HotSpot simulation using the fixture, verifies `gcc.steady` and `gcc.ttrace` hashes, and loads the result into `thermal-reproduction/pilot-output/pilot.db`. It prints the output folder and file paths. Forward port 8000 as **Private** if you also want to view Studio in the browser.
-
-To run the live LLM path after the fixture test, enter your Anthropic key in a Codespace terminal without putting it in shell history:
-
-```bash
+```sh
 read -rsp 'Anthropic API key: ' ANTHROPIC_API_KEY
 echo
 export ANTHROPIC_API_KEY
-cd thermal-reproduction
-npm run pilot -- --allow-adapted
+npm run pilot -- --run-type custom --paper-id W4361199658
 ```
 
-The runner calls Anthropic's Messages API with `output_config.format` JSON schemas for both LLM stages. It defaults to `claude-haiku-4-5-20251001`; set `ANTHROPIC_MODEL` to use another supported model. Do not put keys in the Rivet graph or saved results. The live Anthropic path has not been exercised without a configured API key.
+The first pass writes `pilot-output/<paper-id>/<attempt>/manifest.json`, `extraction.json`, `adversarial.json`, and `feasibility.json`. Without an independent review record, Studio is skipped and a candidate label cannot be confirmed. Inspect the cited PDF pages, figures, linked resources, units, scenario consistency, and physical mismatches. Fix any extraction or adversarial errors by running the audit again. Do not sign an incomplete record.
 
-## App data model
+If the paper links code, data, or supplements, download and pin them first. Pass a local `--assets-file` JSON array; each item has `id`, `kind`, `paper_page`, `original_url`, `final_url`, `version` (commit/tag/release), `path` (relative to the manifest file), `sha256`, and `locator`. The runner verifies the local hash and includes the text in both LLM calls. Use a cited excerpt of at most 200 KB per asset; keep the original file and its hash in your evidence archive. The workflow does not execute downloaded code or silently fetch a repository's latest version. Missing linked resources remain blocking facts.
 
-`schema.sql` defines papers, experiments, page-cited evidence, versioned workflow runs, LLM calls, simulations, downloadable artifacts, and metric comparisons. `app_paper_summary` gives the app one row per paper experiment with its latest workflow and simulation status. The app should serve files from `artifact.storage_path` after checking the requesting user's access and verifying the path stays within its configured artifact root. A batch worker should copy Studio artifacts to durable storage before deleting old Studio run folders.
+After a second reader has checked every critical page and asset, write a review file:
 
-The pilot importer is repeatable:
-
-```bash
-python3 thermal-reproduction/load_pilot.py --manifest thermal-reproduction/pilot-output/W4206159291/<run-folder>/manifest.json
+```json
+{
+  "reviewer": "Name of second reader",
+  "completed_at": "2026-10-03T12:00:00Z",
+  "evidence_sha256": "<feasibility.evidence_sha256 from the first attempt>",
+  "approved": true,
+  "reviewed_pdf_pages": [1, 3, 5],
+  "reviewed_assets": [],
+  "corrections": []
+}
 ```
 
-The current worker runs one experiment at a time, which matches Studio's single-simulation lock. For a batch run, process each downloaded paper independently, checkpoint each stage, and key attempts by PDF hash, graph hash, experiment specification, and model settings. Skip unsupported and missing-source papers; do not retry validation errors. Retry temporary API failures and preserve partial evidence/results for review.
+Start Studio in another terminal with `bash hotspot-studio/start.sh`. Reuse the **same** extraction and adversarial output so the signoff hash stays valid:
+
+```sh
+npm run pilot -- --run-type custom --paper-id W4361199658 \
+  --reuse-audit pilot-output/W4361199658/<first-attempt>/manifest.json \
+  --review-file /path/to/second-reader-review.json
+```
+
+Use the same `--assets-file` on both runs if linked assets were supplied. Reuse checks the PDF and asset hashes. Pass `--config-file /path/to/config` to use reviewed settings; the default is Studio's bundled example config in block mode. For grid mode, set `model_type grid` and power-of-two grid rows and columns in that file. The backend may still reject an unsupported config or solver failure; the saved Studio result and log record that outcome. For a completed block run, expect `submitted.experiment.json`, `input.flp`, `input.ptrace`, and `temperatures.steady`. Grid mode additionally requires `temperatures.grid.steady`. Custom runs have no `gcc.ttrace`.
+
+The live LLM path uses Anthropic Messages structured JSON output and defaults to `claude-haiku-4-5-20251001`; set `ANTHROPIC_MODEL` to use another supported model. The model emits named `power_rows`, which the runner converts to Studio's `power_w` map after rejecting duplicate names. A completed live LLM call has not been tested with a user API key in this checkout.
+
+## Bundled EV6/GCC regression demo
+
+The original paper `W4206159291` uses 3D FEniCS/POD and pulsed power. The bundled HotSpot run is an **adapted artifact-pipeline demo**, with no valid numerical paper comparison:
+
+```sh
+bash thermal-reproduction/test-pilot.sh
+```
+
+This runs graph/unit tests, then a real Studio simulation using a page-cited fixture and downloads `gcc.steady` and `gcc.ttrace`. It imports the attempt into `pilot-output/pilot.db`. The first screen remains `adapted_only`.
+
+## Inventory and app data
+
+Regenerate the source snapshot after completing paper screens:
+
+```sh
+python3 thermal-reproduction/screen_inventory.py
+```
+
+The script needs `pdfinfo` or `pypdf` for page counts. It retains all manifest rows in order, records unavailable-source reasons, takes the latest independently reviewed custom attempt for the current manifest, rubric, and PDF hashes, and reports confirmed and conditional papers by name. While any downloaded row is pending, `counts_final` is false. Never add pending or unavailable papers to a candidate count.
+
+Import one custom attempt into the SQLite app model:
+
+```sh
+python3 thermal-reproduction/load_pilot.py \
+  --manifest thermal-reproduction/pilot-output/<paper-id>/<attempt>/manifest.json
+```
+
+`snapshot_screening_run` stores the full extraction, adversarial review, gate, human review, Studio response, and hashes. `snapshot_screening_artifact` stores checked file paths, byte counts, and hashes; `app_2d_screening_summary` shows the latest attempt per paper. Existing `app_paper_summary` still describes the older bundled screen. A service exposing artifact paths must enforce user access and stay within the configured artifact root.
