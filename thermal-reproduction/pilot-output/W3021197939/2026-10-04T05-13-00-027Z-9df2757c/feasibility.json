@@ -1,0 +1,90 @@
+{
+  "paper_id": "W3021197939",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "Evidence 26 lacks a valid page or pinned asset locator",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "Evidence 28 lacks a valid page or pinned asset locator",
+    "Evidence 29 lacks a valid page or pinned asset locator",
+    "Evidence 30 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Exact mesh dimensions (nx, ny, nz grid points) and timestep refinement (nt values) for Figure 6 transient simulation not provided",
+    "Detailed material thermal conductivity and heat capacity values for die, epad, mold, board, and lead/pin materials not tabulated in paper",
+    "Die thickness value for Figure 6 scenario not explicitly stated (paper mentions 100, 280, 375, 580 µm options for eLQFPs but does not specify which was used)",
+    "Heat source power profile details beyond power step; no clock frequency, dynamic power scaling, or realistic IC workload model documented",
+    "TRIC source code, executable, or supplementary material repository not linked in paper; Figure 2 shows DTM meshes but no CAD or mesh files provided",
+    "Ambient temperature explicitly stated as 20°C only in Section 4.3 context; not universally specified for all scenarios",
+    "JEDEC standard reference (JESD51-12) cited but full boundary condition specification details not reproduced in paper",
+    "FloTHERM v12.2 setup and mesh parameters for comparison runs not detailed; mesh style differences mentioned as cause of ~3% discrepancy but specific mesh counts and refinement criteria not disclosed",
+    "Adversarial code check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "TRIC is a compact thermal model extraction tool, not a direct thermal simulation of actual packaged devices; relies on simplified Manhattan geometry pDTMs with aggregate properties (e.g., weighted-average lead thermal conductivity) rather than explicit die, lead, and mold geometry",
+      "essential": true
+    },
+    {
+      "reason": "Boundary conditions are idealized per JEDEC standards (e.g., extremely high heat transfer coefficient on bottom surface for ϑJCbottom) rather than realistic thermal interface materials or mounting conditions",
+      "essential": true
+    },
+    {
+      "reason": "No transient heat generation profile data provided for the eTQFP scenario; Figure 6 uses artificial power step input (1 W step at t=0) not representative of actual semiconductor operation",
+      "essential": false
+    },
+    {
+      "reason": "Multi-source analysis (Section 4.4) considers only static layouts with fixed heat source positions; does not model dynamic power distribution or thermal coupling feedback during transient operation",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Purely conductive heat transfer (no convection or radiation explicitly modeled within package); convection implicit in boundary conditions",
+    "Board modeled as single finely-meshed parallelepiped with adjusted thermal conductivity to represent aggregate metal traces and vias",
+    "Pins and leads represented as single rectangular parallelepiped with weighted-average thermal conductivity (not detailed geometry)",
+    "Die attach material properties assumed constant; glue type selectable but properties not explicitly documented",
+    "Steady-state and transient solutions derived from linear thermal resistance/capacitance network via projection onto reduced basis",
+    "Intrinsic package symmetry exploited: only quarter-structure meshed with adiabatic boundary conditions on symmetry planes",
+    "Non-Manhattan variations (e.g., pLQFP die position shift with thickness change, multi-source die layouts) handled via geometric coordinate transformation and projection basis adaptation",
+    "Mesh convergence: discretization chosen to achieve ≤0.1% inaccuracy based on prior convergence study (reference [11])"
+  ],
+  "evidence_sha256": "1cfa419418a95592fad3db0f6c1c90a558899d2c3bda429f607cd70f50fba085",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

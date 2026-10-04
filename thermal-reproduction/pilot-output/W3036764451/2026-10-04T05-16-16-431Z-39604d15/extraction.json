@@ -1,0 +1,986 @@
+{
+  "paper_id": "W3036764451",
+  "paper_title": "Thermal-Cycling-aware Dynamic Reliability Management in Many-Core System-on-Chip",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 2,
+    "figure_or_table": "Figure 2 and Figure 3; Motivating Example and Experimental Setup Section V",
+    "description": "8×8 many-core NoC-based system executing multi-threaded PARSEC benchmarks with applications entering and leaving the system at runtime. Thermal cycling awareness evaluated across mapping, scheduling, and DPM units. System uses per-core temperature sensors and Coffin-Mason thermal cycling reliability model.",
+    "architecture": "8×8 mesh-based NoC many-core, Niagara2 cores, squared floorplan, 109mm² chip area, 16nm technology, private L1 cache per core, distributed shared L2 cache, four memory controllers, global controller with feedback loop for mapping, scheduling, and DPM. Per-core temperature sensors, per-system power sensor, DVFS and PCPG tunable per core.",
+    "workload": "Multi-threaded PARSEC benchmark suite, randomly selected applications entering system at runtime, 25 application executions for main simulation. Memory-intensive and compute-intensive application types characterized for memory affinity profiling.",
+    "operating_point": "Thermal Design Power (TDP) of 90W. Steady-state condition: δT = 20°C, TMax = 70°C, ∆T = 1 hour, m = 10 cycles, baseline MTTFTC = 10 years. Control periods: long-term 1–2 hours (mapping), short-term milliseconds (scheduling), DPM feedback loop with PID controller. Temperature sampling period approximately 1 second.",
+    "steady_2d_relevant": true
+  },
+  "original_setup": {
+    "solver": "Noculator NOC-based many-core simulator based on Intel PIN binary instrumentation",
+    "optimizer": "MOC multi-objective power management with PID controller extended with thermal cycling metric (avgAmplitude × maxT)",
+    "controller": "Global controller with Reliability Analysis unit, Reliability-aware Mapping unit, Reliability-aware Thread Scheduling unit, and Reliability-aware DPM unit; rainflow counting algorithm for thermal cycle extraction; low-pass filter for temperature trace processing",
+    "benchmark": "Multi-threaded PARSEC benchmark suite; 25 application executions randomly selected from repository; applications enter and leave system at runtime"
+  },
+  "thermal_observable": {
+    "value": 10,
+    "unit": "years",
+    "location": "per-core MTTF computed across 8×8 many-core system",
+    "aggregation": "minimum MTTF, average MTTF, and standard deviation of core MTTF values reported in Fig. 5 and Fig. 6",
+    "pdf_page": 5
+  },
+  "physical_mismatches": [
+    {
+      "reason": "Simulator-based evaluation using Noculator with synthetic PARSEC workloads rather than silicon measurements; no experimental validation on actual hardware",
+      "essential": false
+    },
+    {
+      "reason": "Thermal cycling reliability model parameters (EaTC, b, Tth, k, ATC) empirically fitted to achieve MTTFTC = 10 years under assumed steady-state conditions (δT=20°C, TMax=70°C, ∆T=1 hour, m=10); no independent validation of Coffin-Mason equation accuracy for this technology node",
+      "essential": true
+    },
+    {
+      "reason": "Per-core temperature sensors modeled in simulation via Hotspot thermal model; actual sensor accuracy, resolution, and sampling jitter not characterized",
+      "essential": false
+    },
+    {
+      "reason": "DVFS and PCPG tuning actuators implemented in simulation without accounting for transition delays, energy costs, or voltage regulator dynamics",
+      "essential": false
+    },
+    {
+      "reason": "Global controller architecture assumes centralized decision making with feedback; scalability and communication latency for large many-core systems not addressed",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    " architectural configuration assumes 8×8 mesh-based NoC with Niagara2 cores, 109mm² chip area in 16nm technology, and 90W TDP from McPAT and Lumos; floorplan is squared without specification of core placement details or thermal via distribution",
+    "Workload composition: multi-threaded PARSEC applications randomly selected and issued at runtime; application mix, arrival rates, thread counts, and execution durations are not fully specified; only 25 application executions simulated",
+    "Thermal model: Hotspot steady-state thermal simulator integrated; assumes homogeneous silicon properties, uniform heat spreader, and no transient thermal effects beyond the 1-second temperature sampling window",
+    "Reliability model: Coffin-Mason equation (Eq. 1) with fixed parameters (EaTC=0.42eV, b=2.35, Tth=1°C, k=8.62×10⁻⁵eV/K, ATC fitted); rainflow counting and Miner's rule applied to extract and aggregate thermal cycles from low-pass filtered temperature traces",
+    "Control periods: long-term mapping decisions over 1–2 hours; short-term scheduling over milliseconds; DPM PID controller sampling at power sensor frequency; no interaction or timing conflicts between controllers specified",
+    "Performance target: nominal baseline scheduling and mapping from [5], [8], [14] without reliability enhancement; proposed approach compared against MOC [14] and reliability-aware mapping from [2]; no explicit performance constraints or SLA targets stated",
+    "Power constraint: TDP of 90W enforced by MOC DPM unit; no per-core power limits or dark silicon models specified beyond TDP",
+    "Memory system: four memory controllers, distributed L2 cache, per-core private L1; memory contention and interference not explicitly modeled in reliability decisions",
+    "Baseline profiling: memory affinity metrics (hits and misses) pre-profiled at design time per application type; no dynamic profiling or online adaptation of affinity models"
+  ],
+  "missing_inputs": [
+    "Complete PARSEC benchmark trace files or execution profiles used for workload generation; reproduction requires access to identical random application selection sequence",
+    "Exact floorplan coordinates and thermal via layout for the 8×8 many-core; only squared floorplan and 109mm² area specified",
+    "Detailed Hotspot thermal model configuration file (layer stack, material properties, die thickness, package parameters, ambient temperature)",
+    "McPAT and Lumos model configurations for power and physical scaling parameters in 16nm technology; source files or configuration dumps not provided",
+    "Complete algorithm pseudo-code and implementation details for the low-pass filter (cutoff frequency, filter order) and rainflow counting algorithm parameters",
+    "Detailed mapping and scheduling policy decision logs from the 25-application simulation run; only aggregate statistics (MIN, STD, AVG MTTF) in Fig. 5 and Fig. 6 reported",
+    "Per-core temperature traces and thermal cycle extraction results (peak, valley, amplitude, frequency) for baseline and proposed approach; needed to validate rainflow algorithm correctness",
+    "Validation of MTTFTC = 10 years steady-state assumption; independent measurement or cross-reference to Coffin-Mason parameters from silicon characterization data not provided",
+    "Source code or detailed implementation of Noculator simulator modifications for thermal cycling metrics and reliability-aware units; only algorithmic descriptions (Algorithms 1–3) provided",
+    "Specification of ready queue scheduling discipline (FIFO, priority), thread context switch overhead, and scheduling epoch duration for the reliability-aware scheduler"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [
+      {
+        "name": "Core_0_0",
+        "x_m": 0,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_0_1",
+        "x_m": 0.01364,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_0_2",
+        "x_m": 0.02728,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_0_3",
+        "x_m": 0.04092,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_0_4",
+        "x_m": 0.05456,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_0_5",
+        "x_m": 0.0682,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_0_6",
+        "x_m": 0.08184,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_0_7",
+        "x_m": 0.09548,
+        "y_m": 0,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_0",
+        "x_m": 0,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_1",
+        "x_m": 0.01364,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_2",
+        "x_m": 0.02728,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_3",
+        "x_m": 0.04092,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_4",
+        "x_m": 0.05456,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_5",
+        "x_m": 0.0682,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_6",
+        "x_m": 0.08184,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_1_7",
+        "x_m": 0.09548,
+        "y_m": 0.01364,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_0",
+        "x_m": 0,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_1",
+        "x_m": 0.01364,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_2",
+        "x_m": 0.02728,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_3",
+        "x_m": 0.04092,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_4",
+        "x_m": 0.05456,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_5",
+        "x_m": 0.0682,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_6",
+        "x_m": 0.08184,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_2_7",
+        "x_m": 0.09548,
+        "y_m": 0.02728,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_0",
+        "x_m": 0,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_1",
+        "x_m": 0.01364,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_2",
+        "x_m": 0.02728,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_3",
+        "x_m": 0.04092,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_4",
+        "x_m": 0.05456,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_5",
+        "x_m": 0.0682,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_6",
+        "x_m": 0.08184,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_3_7",
+        "x_m": 0.09548,
+        "y_m": 0.04092,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_0",
+        "x_m": 0,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_1",
+        "x_m": 0.01364,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_2",
+        "x_m": 0.02728,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_3",
+        "x_m": 0.04092,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_4",
+        "x_m": 0.05456,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_5",
+        "x_m": 0.0682,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_6",
+        "x_m": 0.08184,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_4_7",
+        "x_m": 0.09548,
+        "y_m": 0.05456,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_0",
+        "x_m": 0,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_1",
+        "x_m": 0.01364,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_2",
+        "x_m": 0.02728,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_3",
+        "x_m": 0.04092,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_4",
+        "x_m": 0.05456,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_5",
+        "x_m": 0.0682,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_6",
+        "x_m": 0.08184,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_5_7",
+        "x_m": 0.09548,
+        "y_m": 0.0682,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_0",
+        "x_m": 0,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_1",
+        "x_m": 0.01364,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_2",
+        "x_m": 0.02728,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_3",
+        "x_m": 0.04092,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_4",
+        "x_m": 0.05456,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_5",
+        "x_m": 0.0682,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_6",
+        "x_m": 0.08184,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_6_7",
+        "x_m": 0.09548,
+        "y_m": 0.08184,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_0",
+        "x_m": 0,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_1",
+        "x_m": 0.01364,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_2",
+        "x_m": 0.02728,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_3",
+        "x_m": 0.04092,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_4",
+        "x_m": 0.05456,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_5",
+        "x_m": 0.0682,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_6",
+        "x_m": 0.08184,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      },
+      {
+        "name": "Core_7_7",
+        "x_m": 0.09548,
+        "y_m": 0.09548,
+        "width_m": 0.01364,
+        "height_m": 0.01364
+      }
+    ],
+    "power_w": {
+      "Chip_Total_TDP": 90
+    }
+  },
+  "evidence": [
+    {
+      "field": "Chip Area",
+      "block_name": null,
+      "source_value": 109,
+      "source_unit": "mm²",
+      "conversion_factor": null,
+      "normalized_value": 109,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, first paragraph",
+      "provenance": "Paper directly states chip area specification for 8×8 many-core architecture",
+      "uncertainty": null
+    },
+    {
+      "field": "Technology Node",
+      "block_name": null,
+      "source_value": 16,
+      "source_unit": "nm",
+      "conversion_factor": null,
+      "normalized_value": 16,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, first paragraph",
+      "provenance": "Paper directly specifies 16nm technology node for the characterized architecture",
+      "uncertainty": null
+    },
+    {
+      "field": "Total Chip Power (TDP)",
+      "block_name": "Chip_Total_TDP",
+      "source_value": 90,
+      "source_unit": "W",
+      "conversion_factor": null,
+      "normalized_value": 90,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, first paragraph",
+      "provenance": "Paper states TDP of 90W for the 8×8 architecture",
+      "uncertainty": null
+    },
+    {
+      "field": "Mesh Dimension",
+      "block_name": null,
+      "source_value": 8,
+      "source_unit": "cores per side",
+      "conversion_factor": null,
+      "normalized_value": 8,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section II, Background and Motivation, paragraph introducing system architecture and motivating example",
+      "provenance": "Figure 1 caption and text state 8×8 many-core mesh architecture; motivating example assumes 8×8 platform",
+      "uncertainty": null
+    },
+    {
+      "field": "Core Count",
+      "block_name": null,
+      "source_value": 64,
+      "source_unit": "cores",
+      "conversion_factor": null,
+      "normalized_value": 64,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results; floorplan mesh 8×8",
+      "provenance": "Derived from 8×8 mesh topology specification (8 × 8 = 64 cores)",
+      "uncertainty": null
+    },
+    {
+      "field": "Floorplan Type",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, first paragraph",
+      "provenance": "Paper states: 'characterized a realistic 8×8 architecture with a squared floorplan'",
+      "uncertainty": null
+    },
+    {
+      "field": "Thermal Design Power per Core",
+      "block_name": null,
+      "source_value": 1.40625,
+      "source_unit": "W",
+      "conversion_factor": null,
+      "normalized_value": 1.40625,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results",
+      "provenance": "Calculated as TDP (90W) divided by core count (64 cores); 90/64 = 1.40625 W per core average",
+      "uncertainty": "Uniform distribution assumption; actual per-core power depends on application mapping and DVFS state"
+    },
+    {
+      "field": "Thermal Cycling Activation Energy",
+      "block_name": null,
+      "source_value": 0.42,
+      "source_unit": "eV",
+      "conversion_factor": null,
+      "normalized_value": 0.42,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, paragraph describing thermal cycling model parameters",
+      "provenance": "Paper directly specifies EaTC = 0.42eV as Coffin-Mason model parameter",
+      "uncertainty": null
+    },
+    {
+      "field": "Coffin-Mason Exponent",
+      "block_name": null,
+      "source_value": 2.35,
+      "source_unit": "unitless",
+      "conversion_factor": null,
+      "normalized_value": 2.35,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, thermal cycling parameters",
+      "provenance": "Paper states b = 2.35 as Coffin-Mason exponent constant",
+      "uncertainty": null
+    },
+    {
+      "field": "Threshold Temperature for Inelastic Deformation",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "°C",
+      "conversion_factor": null,
+      "normalized_value": 1,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, Coffin-Mason equation parameters",
+      "provenance": "Paper specifies Tth = 1°C",
+      "uncertainty": null
+    },
+    {
+      "field": "Boltzmann Constant in eV/K",
+      "block_name": null,
+      "source_value": 0.0000862,
+      "source_unit": "eV/K",
+      "conversion_factor": null,
+      "normalized_value": 0.0000862,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, thermal cycling model setup",
+      "provenance": "Paper states k = 8.62 · 10⁻⁵ eV/K",
+      "uncertainty": null
+    },
+    {
+      "field": "Thermal Cycle Amplitude (Steady State)",
+      "block_name": null,
+      "source_value": 20,
+      "source_unit": "°C",
+      "conversion_factor": null,
+      "normalized_value": 20,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, parameter specification for MTTFTC baseline calculation",
+      "provenance": "Paper specifies δT = 20°C for steady-state conditions",
+      "uncertainty": null
+    },
+    {
+      "field": "Maximum Temperature (Steady State)",
+      "block_name": null,
+      "source_value": 70,
+      "source_unit": "°C",
+      "conversion_factor": null,
+      "normalized_value": 70,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, steady-state thermal cycling parameters",
+      "provenance": "Paper states TMax = 70°C as maximum temperature during steady-state cycle",
+      "uncertainty": null
+    },
+    {
+      "field": "Characteristic Run Duration",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "hour",
+      "conversion_factor": null,
+      "normalized_value": 1,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, reliability model parameter specification",
+      "provenance": "Paper specifies ∆T = 1 hour as overall duration of characteristic run",
+      "uncertainty": null
+    },
+    {
+      "field": "Number of Thermal Cycles in Characteristic Run",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "cycles",
+      "conversion_factor": null,
+      "normalized_value": 10,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, thermal cycling model parameters",
+      "provenance": "Paper states m = 10 cycles for steady-state baseline MTTFTC calculation",
+      "uncertainty": null
+    },
+    {
+      "field": "Baseline MTTFTC (Steady State)",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "years",
+      "conversion_factor": null,
+      "normalized_value": 10,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, first paragraph describing steady-state condition",
+      "provenance": "Paper specifies: 'we fitted ATC to have a MTTFTC = 10 years in a steady state condition with δT = 20°C, TMax = 70°C, ∆T = 1 hour and m = 10'",
+      "uncertainty": null
+    },
+    {
+      "field": "Temperature Sampling Period",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "second",
+      "conversion_factor": null,
+      "normalized_value": 1,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section IV, Reliability Analysis unit, parameter description",
+      "provenance": "Paper states: 'temperature measures of each core in the system, gathered from the available sensors with a fixed sampling period (approximately 1 second)'",
+      "uncertainty": "Approximate; paper says 'approximately 1 second'"
+    },
+    {
+      "field": "Long-Term Control Period",
+      "block_name": null,
+      "source_value": 1.5,
+      "source_unit": "hour",
+      "conversion_factor": null,
+      "normalized_value": 1.5,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section IV, Reliability Analysis unit, Algorithm 1 description",
+      "provenance": "Paper states: 'With a given long-term control period (lasting 1-2 hours)'",
+      "uncertainty": "Range given as 1-2 hours; nominal value taken as 1.5 hours (midpoint)"
+    },
+    {
+      "field": "Short-Term Control Period (Scheduling)",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": "millisecond",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section IV, Reliability-aware Thread Scheduling unit, Algorithm 3 description",
+      "provenance": "Paper states: 'the unit is awoken with a short-term control period (few milliseconds as in a common operating system)'",
+      "uncertainty": "Specified as 'few milliseconds' without exact value"
+    },
+    {
+      "field": "Simulation Duration (Application Executions)",
+      "block_name": null,
+      "source_value": 25,
+      "source_unit": "applications",
+      "conversion_factor": null,
+      "normalized_value": 25,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, setup description",
+      "provenance": "Paper states: 'The simulation is lasted until completing 25 application executions randomly selected from the PARSEC multi-threaded suite'",
+      "uncertainty": null
+    },
+    {
+      "field": "Core Count per Core Model",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "Niagara2 processor",
+      "conversion_factor": null,
+      "normalized_value": 1,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, first paragraph describing core model",
+      "provenance": "Paper states: 'Each core is modeled as a Niagara2 processor with SPARC Instruction Set Architecture'",
+      "uncertainty": null
+    },
+    {
+      "field": "Memory Banks",
+      "block_name": null,
+      "source_value": 4,
+      "source_unit": "banks",
+      "conversion_factor": null,
+      "normalized_value": 4,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, architecture configuration",
+      "provenance": "Paper specifies: 'The system has four memory banks each of them connected to the NOC through a separate memory controller'",
+      "uncertainty": null
+    },
+    {
+      "field": "MTTFTC Improvement - Minimum vs Baseline",
+      "block_name": null,
+      "source_value": 54,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 54,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, Fig. 6 analysis and text summary",
+      "provenance": "Paper states: 'the proposed approach improves the minimum MTTF of the core in the system by 54% ... w.r.t. the nominal baseline'",
+      "uncertainty": null
+    },
+    {
+      "field": "MTTFTC Improvement - Average vs Baseline",
+      "block_name": null,
+      "source_value": 40,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 40,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, results summary paragraph",
+      "provenance": "Paper states: 'improves ... average MTTF by 40% ... w.r.t. the nominal baseline'",
+      "uncertainty": null
+    },
+    {
+      "field": "MTTFTC Improvement - Standard Deviation vs Baseline",
+      "block_name": null,
+      "source_value": 55,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 55,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, results discussion",
+      "provenance": "Paper states: 'comparison of standard deviation shows that the proposed approach is able to better balance the MTTF than the state-of-the-art ones by 55% ... improvement of standard deviation, respectively'",
+      "uncertainty": null
+    },
+    {
+      "field": "MTTFTC Improvement - Minimum vs MOC",
+      "block_name": null,
+      "source_value": 51,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 51,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, results comparison",
+      "provenance": "Paper states: 'improves the minimum MTTF of the core in the system by 54%, 51%, and 39% ... w.r.t. ... MOC'",
+      "uncertainty": null
+    },
+    {
+      "field": "MTTFTC Improvement - Average vs MOC",
+      "block_name": null,
+      "source_value": 21,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 21,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, statistical comparison",
+      "provenance": "Paper states: 'average MTTF by 40%, 21%, and 20% w.r.t. ... MOC'",
+      "uncertainty": null
+    },
+    {
+      "field": "MTTFTC Improvement - Minimum vs Reliability-Aware Mapping",
+      "block_name": null,
+      "source_value": 39,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 39,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, final results",
+      "provenance": "Paper states: 'improves the minimum MTTF of the core in the system by 54%, 51%, and 39% ... w.r.t. ... reliability-aware mapping'",
+      "uncertainty": null
+    },
+    {
+      "field": "MTTFTC Improvement - Average vs Reliability-Aware Mapping",
+      "block_name": null,
+      "source_value": 20,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 20,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, comparative results",
+      "provenance": "Paper states: 'average MTTF by 40%, 21%, and 20% w.r.t. ... reliability-aware mapping, respectively'",
+      "uncertainty": null
+    },
+    {
+      "field": "Lifetime Improvement Claim in Abstract",
+      "block_name": null,
+      "source_value": 39,
+      "source_unit": "%",
+      "conversion_factor": null,
+      "normalized_value": 39,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Abstract, second paragraph",
+      "provenance": "Paper abstract states: 'the approach achieves 54% longer lifetime than the reliability-agnostic counterpart and 39% than the state-of-the-art techniques'",
+      "uncertainty": "State-of-the-art techniques referenced include MOC and reliability-aware mapping; 39% vs reliability-aware mapping aligns with detailed results"
+    },
+    {
+      "field": "Simulator Platform",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, simulation environment setup",
+      "provenance": "Paper states: 'experimentally evaluated the proposed approach in a simulation environment by using Noculator [5], a shared-memory NoC-based many-core simulator based on Intel PIN binary instrumentation tool'",
+      "uncertainty": null
+    },
+    {
+      "field": "Thermal Model Tool",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, power and thermal modeling setup",
+      "provenance": "Paper states: 'for the steady-state thermal model Hotspot [18] has been integrated in the simulator'",
+      "uncertainty": null
+    },
+    {
+      "field": "Power Model Tool",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, simulator configuration",
+      "provenance": "Paper states: 'Physical scaling parameters and other characteristics such as power modeling ... were gathered from McPAT and Lumos [20]'",
+      "uncertainty": null
+    },
+    {
+      "field": "Workload Benchmark Suite",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, workload description",
+      "provenance": "Paper states: 'The workload executed by the system is composed of multi-threaded PARSEC benchmarks that are randomly selected via a repository and issued into the system in runtime'",
+      "uncertainty": "Random selection implies non-deterministic application sequence"
+    },
+    {
+      "field": "Microarchitecture ISA",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, Experimental Results, core model specification",
+      "provenance": "Paper specifies: 'Each core is modeled as a Niagara2 processor with SPARC Instruction Set Architecture'",
+      "uncertainty": null
+    }
+  ]
+}

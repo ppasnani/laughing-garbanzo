@@ -1,0 +1,149 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Paper describes transient thermal measurement (TDIM) and static two-point methods with simulation validation. Simulation uses FloTHERM CFD tool; experimental TDIM follows JEDEC JESD51-14 standard. Methods are explicitly stated and differentiated."
+    },
+    "code": {
+      "status": "not_applicable",
+      "note": "This is a thermal measurement and standards review paper. No computational code, algorithms, or simulation source code is provided or claimed. FloTHERM tool [19] is referenced but not disclosed."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Critical discrepancies identified: (1) Simulation assumes uniform 100 W heat distribution on die surface (Section 3, page 4), but Section 7 page 19 states 'series resistance of real semiconductor devices has a positive temperature coefficient at the high IH current. This effect repels the current threads towards cooler portions.' This directly contradicts the uniform distribution assumption. (2) Cold plate HTC modeled as constant 3000 W/m²K (page 4), but Section 7 page 22 acknowledges 'realistic estimation...approximately 3000–6000 W/m²K' and shows Figure 19 with HTC varying 100–100000+ W/m²K, proving the constant-HTC assumption is oversimplified. (3) TIM thermal conductivity held constant (0.2, 1, 4 W/mK) per Table A1, but pressure-dependent deformation and contact quality effects are acknowledged as critical measurement variables (Section 5, page 16; Table 2 shows 51.7% variation in measured RthJC from case preparation alone)."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "Configuration specification incomplete and inconsistent: (1) Monitoring points Ch0–Ch4 defined nominally (Section 3, page 5), but Figure 5 shows bell-shaped temperature distribution with peak-to-edge variation of ~15 K across the 11.2 mm die at case surface, meaning exact monitor point location is unspecified and highly sensitive. (2) 50 µm TIM layer stated (page 4), but no specification of contact pressure, surface roughness, or deformation during transient thermal cycling. (3) Aluminum base plate geometry shown in Figure A1 but exact dimensions of cold plate not given; Figure A2 truncates view, preventing full geometry verification. (4) Simulation boundary condition for cold plate is constant HTC, but real fixtures (Table 2 lowHTC vs. highHTC) produce 35.7% RthJC difference (0.42 vs 0.57 K/W), demonstrating the HTC assumption critically affects results."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Experimental validation data absent: (1) No measured transient temperature curves from actual FloTHERM simulation runs provided; Section 3 shows only conceptual descriptions of monitoring points and expected bell-curve temperature distributions but no actual digitized simulation output matching Figure 4 time series data to verify 0.5 s external-point delay or transient time constants of 140 s / 50 s / 30 s. (2) Real measurement data for the HUF75639G3 MOSFET case study (Section 8, Table 2, Table 3) shows only mean and SD of thermocouple measurements and TDIM results, with no raw measurement traces, calibration curves, or uncertainty budgets. (3) Infineon study (Reference [22], Table 3) is cited but not fully available in packet; FE simulation constants case RthJC = 0.304 K/W is used as reference without derivation or validation against independent simulation. (4) Figure 12 shows VCE calibration of IGBT but is from Section 4 (actual device testing), not Section 3 simulation; no calibration curve shown for simulation study. (5) Structure function divergence threshold selection (ε = 0.05 to 2 J/K, 40:1 ratio) stated as producing RthJC range 0.17–0.19 K/W (Figure 10), but quantitative threshold selection procedure for actual measurements is deferred to standard [13] without explicit implementation details for case study."
+    }
+  },
+  "findings": [
+    {
+      "field": "scenario_mismatch_2D_vs_3D",
+      "reason": "Section 3 simulation treats heat spreading as quasi-1D path through sandwich layers (DBC, TIM, base, cold plate) with 1D temperature monitoring at points Ch0–Ch4. However, Figure 5 explicitly shows bell-shaped 2D temperature distribution across the case_bottom/TIM_top interface during steady-state (spatial extent ~15–45 mm on x-axis). This contradicts treating the junction-to-case path as 1D. The paper later acknowledges (page 15, Section 4.1.6) that 'lateral displacement of the probe' causes large measurement errors and '3 mm ≈ 27% of chip width' displacement is realistic. This means the simulation geometry is effectively 2D at case surface but treated as 1D in RthJC metric derivation.",
+      "locator": "Section 3 page 4 (simulation setup) vs. Figure 5 (steady-state spatial distribution) vs. Section 4.1.6 page 15 (lateral displacement error analysis)"
+    },
+    {
+      "field": "assumption_unverified_heat_distribution",
+      "reason": "Simulation text (page 4) states '100 W power step (heating), uniformly distributed on the die surface.' However, Section 7 page 19 explicitly states: 'Simulations assuming homogeneous power distribution on the chip allege that a bell-shaped temperature distribution...develops on the surface. However, the series resistance of real semiconductor devices has a positive temperature coefficient at the high IH current. This effect repels the current threads towards cooler portions of the semiconductor block and equalizes the temperature distribution to an extent.' This directly contradicts the uniform distribution assumption used in simulation. The paper acknowledges the assumption is non-physical (page 22: reference [22] 'Schweitzer, D. The junction-to-case thermal resistance: a boundary condition dependent thermal metric') but does not quantify error introduced.",
+      "locator": "Page 4 (uniform power assumption) contradicted by page 19 (non-uniform current redistribution at high current levels)"
+    },
+    {
+      "field": "parameter_constant_HTC_oversimplified",
+      "reason": "Section 3 models cold plate with 'constant heat transfer coefficient (HTC) of 3000 W/m²K' (page 4). However: (1) Section 7 page 22 states 'A realistic estimation of the heat transfer coefficient of a cold plate is approximately 3000–6000 W/m²K', acknowledging ±100% uncertainty. (2) Figure 19 plots measured RthJC vs. fictive HTC ranging from ~100 to 1,000,000+ W/m²K, showing measured values track with HTC. (3) Section 4.1.6 (page 15) lists 'Reproducibility of the test environment' as a major error source: 'different materials and geometries of the cold plate used, other formations of the liquid flow, various surface roughness and planarity levels.' (4) Table 2 data: lowHTC fixture yields RthJC = 0.42 K/W (as-received) vs. highHTC = 0.57 K/W (35.7% difference) despite identical device samples, proving fixture HTC dominates measured value. Constant-HTC modeling cannot capture this variability.",
+      "locator": "Page 4 (constant 3000 W/m²K assumption) vs. page 22 (3000–6000 W/m²K range acknowledged) vs. Figure 19 (HTC sensitivity plot) vs. Table 2 (35.7% fixture-dependent variation)"
+    },
+    {
+      "field": "data_TIM_conductivity_pressure_dependent",
+      "reason": "Appendix Table A1 specifies thermal grease with constant conductivity values (0.2, 1, 4 W/mK), marked as estimated (*). However, Section 4.1.6 (page 15) states: 'The type of the probe influences the measured value [26]' and 'The force with which the probe is pressed against the device case will also be different.' Section 3 simulation uses fixed TIM thickness (50 µm, page 4) and constant conductivity, but Table 2 experimental results show case surface preparation (flattening/polishing) changes measured RthJC by 30.9% on lowHTC fixture (0.42 → 0.29 K/W), directly indicating TIM contact behavior is pressure- and surface-finish-dependent. Simulation does not model pressure-dependent TIM deformation or contact conductance, yet Table 2 demonstrates these effects cause larger scatter than TIM material property variation itself.",
+      "locator": "Appendix Table A1 (constant TIM properties) vs. Section 4.1.6 page 15 (pressure and surface effects acknowledged) vs. Table 2 (30.9% variation from case surface preparation)"
+    },
+    {
+      "field": "evidence_missing_simulation_output",
+      "reason": "Section 3 claims FloTHERM simulation of thermal transients but provides no actual simulated data traces, mesh statistics, solver settings, or numerical validation. Figure 4 is presented as 'Simulated temperature change' at 50 W with three TIM conductivities, but: (1) No indication of mesh resolution (coarse vs. fine), convergence criteria, or time-stepping scheme. (2) No quantitative comparison to analytical heat-diffusion solutions. (3) No uncertainty bounds or mesh-refinement study. (4) Transient time constants claimed (140 s, 50 s, 30 s for 0.2, 1, 4 W/mK TIM respectively) cannot be independently verified without full simulation output. (5) References [19] (FloTHERM tool) is cited but tool manual/validation not accessible in packet.",
+      "locator": "Section 3 pages 4–6 (simulation experiment description) with Figures 4–10 but no numerical output tables, mesh diagrams, or solver validation"
+    },
+    {
+      "field": "case_study_reference_not_fully_provided",
+      "reason": "Section 8 Case Study cites Infineon study (Reference [22]: 'Schweitzer, D. The junction-to-case thermal resistance: a boundary condition dependent thermal metric...2010') as primary evidence for comparison of RthJC measurement methods. Table 3 presents FE simulation, thermocouple measurements on apparatus I and II, and TDIM measurements purportedly from this reference. However: (1) Reference [22] is not included in the packet for independent verification. (2) FE simulation details (mesh, solver, boundary conditions) for 'floating case temperature' and 'constant case temperature' simulations are not disclosed. (3) Thermocouple measurement conditions (fixture design, probe type, calibration procedure, cold plate HTC) are not specified. (4) Table 3 references ΔRthJC1 (deviation from floating case at HTC=∞) and ΔRthJC2 (deviation from apparatus I thermocouple baseline), but actual measurement traces are absent. Conclusions about '34%–83% higher than predicted by simulation' (page 23) rest on unverified reference data.",
+      "locator": "Section 8 page 20–22 (Case Study), Table 3, referencing Reference [22] which is not included in packet"
+    },
+    {
+      "field": "TDIM_threshold_epsilon_arbitrary",
+      "reason": "Paper emphasizes TDIM method advantages (Section 7.2, page 20: 'repeatability of the structure functions is much better') but Figure 10 and associated text (page 10) show that selecting ε threshold 'between 0.05 J/K and 2 J/K, being of a ratio of 40, we can state that the RthJC junction to case thermal resistance is between 0.17 K/W and 0.19 K/W.' This 40:1 range in threshold produces only ±5.6% RthJC variation, which seems small, but the paper does not explain: (1) How ε threshold is selected for unknown devices without reference structure functions. (2) Whether software implementation (reference [13], JEDEC JESD51-14) provides automatic threshold selection or requires manual tuning. (3) Figure 18b shows HUF75639G3 case study with Cth divergence points marked at 0.3 J/K and 0.56 J/K but text only quotes Cth = 0.36 J/K; selection rationale not provided. (4) Page 20 states 'software distributed with the present standard prescribes actual thresholds only for small packages of discrete devices' and 'for characterizing larger modules...realistic ε threshold is a few tens of millijoule/kelvin,' indicating threshold is device-dependent and not objectively defined.",
+      "locator": "Figure 10 page 10 (ε threshold 40:1 range) vs. Figure 18b page 21 (Cth selection) vs. page 20 (threshold selection for large modules undefined)"
+    },
+    {
+      "field": "physical_assumption_bell_curve_contradicts_uniform",
+      "reason": "Section 3 assumes 'uniformly distributed' 100 W heat (page 4), yet Figure 5 caption explicitly labels the steady-state case_bottom/TIM_top interface as showing 'bell-shaped temperature distribution' with peak ~70°C at chip center and ~50°C at edges (3 mm lateral distance). Section 7 page 19 acknowledges: 'Simulations assuming homogeneous power distribution...allege that a bell-shaped temperature distribution...develops.' This is a contradiction: if power is uniform, why is temperature non-uniform? The paper implicitly invokes thermal spreading, but does not model the actual source of non-uniformity (series resistance temperature coefficient, current redistribution). Consequently, the simulation reproduces observed non-uniform temperature profiles but cannot predict their magnitude under transient conditions when current distribution is actively changing.",
+      "locator": "Page 4 (uniform power distribution) vs. Figure 5 (bell-shaped temperature distribution) vs. page 19 (explanation of current-redistribution non-uniformity)"
+    },
+    {
+      "field": "reproducibility_two_point_measurements_poor",
+      "reason": "Table 2 documents two-point thermocouple RthJC measurements on HUF75639G3 samples. Results by fixture: lowHTC as-received 0.42±0.022 K/W (SD 5.3%), highHTC as-received 0.57±0.049 K/W (SD 8.7%), lowHTC polished 0.29±0.011 K/W (SD 3.9%), highHTC polished 0.38±0.008 K/W (SD 2.1%). Inter-fixture spread: 0.42 vs. 0.57 K/W (35.7% difference). Inter-lab spread per Table 3: thermocouple apparatus I 0.35–0.38 K/W vs. apparatus II 0.42–0.48 K/W (ΔRthJC2 up to +26% when apparatus II is higher). Paper acknowledges (page 23): 'the reproducibility of the values from thermocouple measurements at different laboratories was poor.' However, the case study does not clearly state whether apparatus I and II are at different physical locations or the same lab with different equipment. Figure 19 shows reproducibility gap between thermocouple (scatter ~0.35–0.48 K/W) and TDIM (tight cluster 0.26–0.29 K/W), confirming poor two-point method reproducibility, but the underlying cause (probe contact resistance, TIM penetration, case surface temperature definition) is diagnosed but not quantified.",
+      "locator": "Table 2 (fixture-dependent variation) vs. Table 3 (inter-apparatus variation) vs. page 23 (poor reproducibility acknowledged) vs. Figure 19 (visual comparison of scatter)"
+    },
+    {
+      "field": "TDIM_method_assembly_destroyed",
+      "reason": "Section 2 page 4 describes differential measurement principle: 'This differential principle offers a lot of advantages. The temperature is measured at a single point of the system...with this solution all offset problems at measurement and calibration cancel out.' However, TDIM measurement (Section 3 and 7) requires 'two measurements' at different boundary conditions (dry and wet cold plate interfaces per Figure 10 caption and standard [13]). Section 7.2 page 20 states: 'The reproducibility is something that cannot be interpreted for the whole length of structure functions. The method is based on completely destroying the measurement arrangement between the dry and the wet step, lifting the sample, changing the surface quality or using another cold plate.' This means: (1) Sample must be removed and remounted between measurements (assembly destroyed and rebuilt). (2) This process reintroduces contact resistance variability, TIM wetting variability, and surface contamination risk. (3) Paper does not quantify additional uncertainty from sample remounting relative to internal structure-function repeatability. Table 2 shows ±2.1% SD for polished samples on single fixture, but TDIM reproducibility across two separate mounts is only quoted as ±3% (differences 0.26–0.29 K/W in Table 3), suggesting remounting does not significantly degrade TDIM method despite assembly destruction.",
+      "locator": "Section 7.2 page 20 (assembly destruction requirement acknowledged) vs. Table 3 TDIM rows (0.26–0.29 K/W repeatability despite remounting)"
+    },
+    {
+      "field": "FE_reference_value_unvalidated",
+      "reason": "Table 3 uses FE simulation with 'constant case temperature BC' at RthJC = 0.304 K/W as reference baseline for comparing thermocouple and TDIM measurements (columns ΔRthJC1). However: (1) FE simulation is performed by Infineon and presented in Reference [22], not independently validated in this packet. (2) Section 7 page 22 states 'A realistic estimation...approximately 3000–6000 W/m²K,' implying FE constant-case boundary condition (HTC=3000–6000 range) should be verified against actual cold-plate specifications. (3) 'Constant case temperature BC' implies isothermal case surface, which contradicts bell-shaped distribution of Figure 5 and acknowledged reality of non-uniform case temperature (Section 4.1.6: 'The actual location found by the external probe can differ in repeated measurements'). (4) FE floating case (HTC=∞) at 0.262 K/W serves as lower bound, but measured thermocouple values (0.35–0.48 K/W) span 34%–83% above constant-case 0.304 K/W. Paper attributes this to probe contact errors, but does not quantify whether constant-case FE assumption itself is flawed (e.g., whether internal heat spreading model differs from reality).",
+      "locator": "Table 3 (FE reference value 0.304 K/W) vs. page 22 (HTC range 3000–6000 W/m²K acknowledged as realistic) vs. Section 4.1.6 (non-uniform case temperature distribution) vs. page 23 (thermocouple measurements 34%–83% higher than FE)"
+    },
+    {
+      "field": "monitoring_point_placement_uncertainty_unquantified",
+      "reason": "Section 3 defines monitoring points Ch0–Ch4 (page 5) at nominal locations (e.g., Ch1 'center on the top of the TIM'). However: (1) Figure 5 shows bell-shaped distribution spanning 15 mm horizontally with ~20 K peak-to-edge variation at steady-state. (2) Ch3 and Ch4 represent 3 mm displacement ('about half of the chip size') and text states 'as it mostly happens at such measurements.' (3) Text (page 5) acknowledges this: 'about half of the chip size, as it mostly happens at such measurements,' treating ±3 mm lateral error as typical practice. (4) Yet simulation output in Figures 4 and 6 aggregates all curves without explicitly showing how much temperature variation across the ~25 mm case measurement zone (center ±12.5 mm) affects calculated RthJC values. (5) Figure 5 mark for Ch3 shown on plot, indicating ~5 K difference from Ch1 at 3 mm displacement, but RthJC sensitivity to this displacement is not quantified (e.g., what RthJC value results if thermocouple is placed at Ch3 instead of Ch1?). This missing analysis leaves the 'worst-case' placement error for RthJC measurement unspecified.",
+      "locator": "Section 3 page 5 (Ch0–Ch4 definitions) vs. Figure 5 (spatial temperature distribution) vs. page 5 acknowledgment of 3 mm displacement as typical but error not quantified in RthJC terms"
+    },
+    {
+      "field": "transient_settling_times_not_validated",
+      "reason": "Figure 4 caption states 'steady state was approximately reached at 140 s, 50 s, and 30 s at for the interface layers of 0.2 W/mK, 1 W/mK, and 4 W/mK thermal conductivity, respectively.' These values are presented as simulation predictions but: (1) No quantitative criterion for 'steady state' is specified (e.g., temperature change <0.1 K/s, <1% per minute). (2) Figure 4a shows temperature still slowly rising at 100 s (T ~50 K at t=100 s, T ~70 K at t=140 s), indicating continued transient evolution. (3) External points (Ch1–Ch4) show 0.5 s delay (page 6) and slower rise, but asymptotic behavior not clearly shown (Figure 4 cuts off at log t=100 s). (4) Settling time scaling with TIM conductivity is not derived or validated; if purely diffusive (τ ~ thickness²/α), settling time should scale as TIM conductivity⁻¹, but observed scaling is 140:50:30 ≈ 4.7:1.7:1, differing from expected 4.0:1:1 ratio for 0.2:1:4 W/mK. Discrepancy not explained. (5) Real measurement in Figure 13 shows voltage transient lasting ~50 µs, much shorter than 0.5 s external-point delay, suggesting simulation and real device transient response may differ in character.",
+      "locator": "Figure 4 page 6 (settling time values) vs. page 6 (0.5 s delay for external points) vs. page 13 Figure 13 (50 µs electric transient in real IGBT) — scaling and settling criterion not specified"
+    },
+    {
+      "field": "case_surface_temperature_definition_ambiguous",
+      "reason": "Paper repeatedly emphasizes difficulty of measuring 'case temperature' TC. Section 2 (page 4) states: 'However, the measurement of a \"case temperature\" is far from being unambiguous, as presented in References [2–6] and in Sections 3 and 5 below.' Section 4.1.6 (page 15) lists sources: (a) 'thermal contact resistance between the case surface and probe tip can be quite large, especially since the contact area in the case of a spherical probe is just a point;' (b) 'heat flow from the tip through the thermocouple...diminishes the probe tip temperature;' (c) 'temperature drop inside the alloy joint of the thermocouple, since the thermocouple does not measure the temperature at its tip but at the point where the two wires...separate.' (d) Section 7 (page 19) adds: 'The hole drilled for the probe distorts the shape of heat spreading.' Yet Figure 3 and Table A2 show no provision for modeling probe effects in simulation; Ch1, Ch2, Ch3, Ch4 are 'temperature monitor points' without realistic representation of thermocouple thermal mass, insulation, heat-draw-off, or contact-area geometry. Consequently, Section 3 simulation of RthJC (Figures 6a–c, 0.13–0.45 K/W range) does not account for these physical probe effects, making direct comparison to measured RthJC values (Table 2: 0.29–0.57 K/W) problematic. Paper acknowledges (page 8): 'With real thermocouples...the measured thermal resistance can be well 100% larger than the ideal value obtained in a simulation.'",
+      "locator": "Section 2 page 4 (ambiguity stated) vs. Section 4.1.6 page 15 (five sources of case-temperature error listed) vs. Section 3 simulation (no probe physics included) vs. page 8 (100% error in real vs. simulated RthJC)"
+    },
+    {
+      "field": "Rth@Cth_metric_not_standard",
+      "reason": "Section 8 (page 21) proposes new metric 'Rth@Cth' defined as 'reading out Rth@Cth at fixed Cth yields a relevant measure on the scatter of the production quality in type tests.' This metric is not defined in any cited standard (JEDEC JESD51-14 [13], IEC 60747, ECPE AQG324). Figure 18b shows HUF75639G3 example with Cth = 0.36 J/K yielding Rth@Cth ≈ 0.292 K/W. However: (1) Choice of Cth = 0.36 J/K is validated by back-of-envelope calculation (page 21: 'copper tab...volume...1.2/3 J/K = 0.4 J/K, fitting well the reading'), but this assumes truncated-pyramid heat spreading; for devices with different geometries or multi-chip modules, Cth value would differ. (2) Metric is presented as alternative to divergence-point RthJC but lacks statistical validation across device population. (3) No comparison of Rth@Cth to established RthJC values in Table 3 (Infineon study uses divergence point RthJC = 0.28–0.29 K/W TDIM; Rth@Cth metric not mentioned). (4) Proposal is labeled as 'still unnamed' (page 21), indicating it is a new contribution not yet adopted by standards bodies. Until validation on multiple device types and formalization in standards, Rth@Cth cannot be considered a reproducible metric.",
+      "locator": "Section 8 page 20–21 (Rth@Cth proposal) vs. Figure 18b (example) vs. Table 3 (no Rth@Cth comparison) vs. page 21 ('still unnamed')"
+    },
+    {
+      "field": "round_robin_Delphi4LED_cited_not_detailed",
+      "reason": "Section 8 (page 23) cites Delphi4LED round-robin testing (Reference [27]): 'A large round robin test involving several types of power LED devices was carried out in the European Delphi4LED project [27]. It included the measurement of the optical and thermal parameters of the same LED samples at five different European research and academic institutions... The reproducibility of the measured thermal resistance values was surprisingly good, within 1%–2% [27].' However: (1) Reference [27] 'D2.1-Report on Round-Robin Testing of LEDs' is listed as a web link (https://delphi4led.org/pydio/public/2f72dd) but full report is not included in packet; only citation is available. (2) Delphi4LED tests are for LED devices, not power semiconductor packages studied in main case study (HUF75639G3 MOSFET, IGBT). (3) Paper does not explain why LED thermal testing would have ±1–2% reproducibility while MOSFET two-point measurements show ±26% inter-lab variation (Table 3, Section 8). (4) Reference [27] claims 'surprisingly good' but paper does not discuss whether Delphi4LED used TDIM or two-point methods, controlled fixture design, or other factors explaining order-of-magnitude difference from Table 3. Without access to full report, claimed ±1–2% reproducibility cannot be independently verified or explained.",
+      "locator": "Page 23 (Delphi4LED round-robin cited) vs. Reference [27] (link provided but report not in packet) vs. Table 3 (26% variation for semiconductor devices) — comparison and reconciliation not provided"
+    },
+    {
+      "field": "accuracy_15_percent_TDIM_claimed_but_not_derived",
+      "reason": "Section 8 (page 23) states: 'Based on the experience of several hundred measurements and on comparisons with simulations, it is estimated that the accuracy of the TDIM method is approximately 15% (see error bars in Figure 19).' However: (1) '15% accuracy' is not derived from first principles; it is an empirical claim based on 'experience of several hundred measurements' not detailed in this paper. (2) Figure 19 shows error bars on TDIM measurements but numerical values and derivation are not provided; only visual impression of ~0.26–0.29 K/W cluster with implied ±15% bound is given. (3) Section 7.2 (page 20) states TDIM 'accuracy is inherited by the structure functions calculated from the Zth curves' and 'Theoretical considerations [1] hint that the calculation process can add a further 5% uncertainty,' but this 5% is qualified as 'hint' not a rigorous bound. (4) Zth curves themselves are claimed to have '3% repeatability' (page 20, based on calibration measurement), but cascade of errors (calibration 3% + structure-function processing 5% = 8% nominal, not 15%) is not explained. (5) Sources of TDIM uncertainty (Section 7.2 page 20): 'noise in the Zth measurement, the influence of the thermal interface on the separation point, and the finite resolution of the structure function' are listed but not quantified individually or combined via error budget.",
+      "locator": "Page 23 (15% TDIM accuracy claim) vs. Section 7.2 page 20 (5% processing uncertainty 'hint' + 3% calibration repeatability) vs. Figure 19 (error bars shown but not numerically defined) — error derivation missing"
+    },
+    {
+      "field": "electric_transient_extrapolation_not_applied",
+      "reason": "Section 4.1.1 (page 13) describes 'Electric Transient' problem: 'Power devices typically have a long electric transient when switching among different current levels. In Figures 13 and 14, we have no direct information on the temperature until 50 µs...There exist extrapolation techniques to restore the missing thermal signal...given in Reference [13] as a square root of time function: ΔTJ(t) = ΔP/A·ktherm·√t. However, the use of Equation (8) for IGBTs which are not surface heated is at least doubtful.' (1) Section 4.1.1 identifies the 50 µs gap in real transient measurements (Figure 13 shows VCE transient) but paper does not specify whether extrapolation is applied to actual measurements in Section 4 (IGBT real test) or Section 8 (MOSFET case study). (2) Equation (8) sqrt(t) extrapolation is acknowledged as 'doubtful' for IGBTs with top metallization, but no alternative method is proposed or validated. (3) Figure 14 temperature change starts at t=1e-5 s (10 µs) but Figure 13 voltage transient lasts ~50 µs, indicating data gap not explicitly addressed in temperature plot. (4) Consequence: early-time thermal impedance values in Zth curves (Figures 15, 6–9 for simulation) may not be accurately represented in real measurements, affecting structure-function calculations at low thermal resistance/short time scales.",
+      "locator": "Section 4.1.1 page 13 (electric transient identified as unresolved) vs. Figures 13–15 (50 µs gap in real IGBT measurement) vs. page 13 (sqrt(t) extrapolation deemed doubtful for IGBTs)"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,5 @@
+{
+  "status": "skipped",
+  "reason": "Core_0 needs finite power from 0 to 10000 W; Core_1 needs finite power from 0 to 10000 W; Core_2 needs finite power from 0 to 10000 W; Core_3 needs finite power from 0 to 10000 W; Cache_Zone_0_L1 needs finite power from 0 to 10000 W; Cache_Zone_1_L1 needs finite power from 0 to 10000 W; Cache_Zone_2_L1 needs finite power from 0 to 10000 W; Cache_Zone_3_L1 needs finite power from 0 to 10000 W; Floorplan and power names differ; Cache_Zone_0_L1 overlaps Core_0; Cache_Zone_1_L1 overlaps Core_1; Cache_Zone_2_L1 overlaps Core_2; Cache_Zone_3_L1 overlaps Core_3",
+  "artifacts": {}
+}

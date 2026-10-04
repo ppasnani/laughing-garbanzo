@@ -1,0 +1,116 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The paper presents spectral graph sparsification and multilevel iterative refinement methods for vectorless thermal integrity verification. Core methods are: (1) Spectral sparsification of 3D thermal grids preserving low-frequency graph signals (Section II.A, Algorithm 1); (2) iterative edge weight scaling to match low-frequency thermal responses (Algorithm 1, lines 1-16); (3) spectral solution refinement via weighted Jacobi iteration (Section II.B, Algorithm 2); (4) multilevel verification framework with AMG-based constraint mapping (Section II.C, Algorithm 3). All three main algorithms are described with pseudocode and mathematical foundations (Equations 5-10 derive the spectral decomposition and error analysis)."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No source code, repositories, or supplementary materials are provided. The paper states 'The proposed multilevel vectorless thermal integrity verification method has been implemented in MATLAB and C++' (page 5) but provides no link, archive reference, or downloadable package. Reference [10] (Gurobi LP solver) and [1] (CHOLMOD Cholesky solver) are external tools, not project code. Algorithm pseudocode is presented but not executable implementation."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Critical parameter values are missing or underspecified: (1) Sensitivity threshold εth and scaling factor β in Algorithm 3 are referenced but no numerical values given; (2) error tolerance ε in Algorithm 1 is parameterized but not quantified; (3) number of partitions k for graph partitioning (Algorithm 1, line 2) is unspecified; (4) weight factor γ and iteration count Nmax in Algorithm 2 are inputs but not provided for experiments; (5) ambient thermal conductance gmin is described as 'small value' (page 3) without numerical definition. Table II reports errors of 1-5% but does not indicate which parameter settings produced which results."
+    },
+    "config": {
+      "status": "verified",
+      "note": "Experimental configuration is documented: (1) Computing platform: 64-bit RHEL 6.0, 2.67GHz 12-core CPU, 48GB DRAM, single CPU core used (page 5); (2) LP solver: Gurobi [10]; (3) Matrix factorization: CHOLMOD Cholesky [1]; (4) Implementation languages: MATLAB and C++ (page 5); (5) Two-level multilevel scheme used for results (Table II header); (6) Test cases T1-T7 span 25K to 2.0M thermal grid nodes with 2.5K to 200K power sources (Table II). Two benchmark designs specified in Table I (Processor A: 28W, 195mm², 4 metal/11 material layers; Processor B: 50W, 302mm², 6 metal/15 material layers)."
+    },
+    "data": {
+      "status": "contradicted",
+      "note": "Experimental data is partially available but lacks critical context and reproducibility markers: (1) Table I provides processor specifications but no 3D thermal grid geometry files, mesh coordinates, or material property details are referenced; (2) Table II reports runtimes and errors but does not map test cases T1-T7 explicitly to Processor A or B; (3) Heat transfer coefficients for package (2.0×10³ W/m²K) and heat sink (3.3×10³ W/m²K) are given but no thermal conductivity values for 11 or 15 material layers are disclosed; (4) Figures 3 and 4 show worst-case temperature distributions but no numerical temperature values, absolute ranges, or node identities are labeled; (5) Power constraint bounds (bL, bU, BL, BU in Eq. 3) used in LP formulations are never numerically specified; (6) Figure 5 plots total verification time vs. matrix non-zeros but lacks axis labels and data point annotations."
+    }
+  },
+  "findings": [
+    {
+      "field": "code_availability",
+      "reason": "Paper claims implementation in MATLAB and C++ but provides no repository URL, archive identifier, or supplementary code package. Without executable code, Algorithm 1, 2, and 3 cannot be independently verified or reproduced.",
+      "locator": "Page 5, Section III: 'The proposed multilevel vectorless thermal integrity verification method has been implemented in MATLAB and C++.' No link or DOI provided."
+    },
+    {
+      "field": "parameter_quantification",
+      "reason": "Critical algorithm parameters (sensitivity threshold εth, scaling factor β, error tolerance ε, partition count k, Jacobi weight γ, iteration count Nmax, ambient thermal conductance gmin) are referenced in pseudocode and text but no numerical values are given for the experiments. This prevents algorithm reproducibility.",
+      "locator": "Algorithm 1 (ε undefined), Algorithm 3 (εth, β undefined), Algorithm 2 (γ, Nmax undefined), Section II.A (gmin described as 'small' without value)."
+    },
+    {
+      "field": "thermal_grid_geometry",
+      "reason": "Processor A and B specifications (Table I) provide high-level counts (metal/material layers) but no 3D geometry files, mesh coordinates, die dimensions, or layer thicknesses are disclosed. The actual thermal grid structure cannot be reconstructed.",
+      "locator": "Table I, page 5: Lists only counts of metal layers (4, 6) and material layers (11, 15) without spatial or conductivity details."
+    },
+    {
+      "field": "power_constraint_specification",
+      "reason": "The linear program (Eq. 2, 11) solves under local and global constraints (bL, bU, BL, BU in Eq. 3), but the numerical bounds used for experiments are never provided. Without these, the worst-case optimization direction and feasible region cannot be verified.",
+      "locator": "Section A, Eq. (3) defines constraints generically; Table II provides no constraint values for any test case."
+    },
+    {
+      "field": "temperature_output_labels",
+      "reason": "Figures 3 and 4 display worst-case temperature heatmaps (three methods each) but provide no absolute temperature values, color scale, legend, or reference node temperatures. Thermal gradient distributions are not visualized despite being listed as a paper objective.",
+      "locator": "Figures 3 and 4 (page 6): Heatmaps lack numerical annotations, axis labels, and temperature scale legends."
+    },
+    {
+      "field": "test_case_to_processor_mapping",
+      "reason": "Table II lists test cases T1-T7 with grid sizes and error percentages, but does not explicitly state whether each test case corresponds to Processor A, B, or a synthetic grid. T1-T7 appear to span larger sizes than either processor's specified design.",
+      "locator": "Table II header and Section III introduction do not map test cases T1-T7 to specific processor designs."
+    },
+    {
+      "field": "material_properties_missing",
+      "reason": "Paper mentions 11 and 15 material layers for Processors A and B (Table I) and references equivalent heat transfer coefficients for package and heat sink, but provides no thermal conductivity values, specific heat, or density data for individual layers.",
+      "locator": "Table I, page 5: Lists material layer counts but not conductivity, specific heat, or density values for any layer."
+    },
+    {
+      "field": "figure_5_annotation",
+      "reason": "Figure 5 (page 6) plots total verification time against 'Number of non-zeros in the matrices' (x-axis) up to 14×10⁶, but does not label individual data points, show which test cases correspond to which points, or provide numerical coordinates. The nearly-linear scaling claim cannot be verified without detailed coordinates.",
+      "locator": "Figure 5 title and axis: No data point labels, test case identifiers, or numerical table provided."
+    },
+    {
+      "field": "spectral_similarity_metric",
+      "reason": "Table II reports σ² (relative condition number / spectral similarity) ranging from 1,435 to 3,073, but the significance of these values and their relationship to solution error Err(%) is not explained. The basis for claiming 'good spectral approximation quality' is not quantitatively justified.",
+      "locator": "Table II, column σ²: Values listed without interpretation or success criteria."
+    },
+    {
+      "field": "jacobi_convergence_criterion",
+      "reason": "Algorithm 2 (Solution Refinement) specifies iteration count Nmax as an input but provides no guidance on selection, convergence criterion, or actual Nmax values used in experiments. Refinement effectiveness cannot be assessed without knowing iteration details.",
+      "locator": "Algorithm 2 (page 3) and Section II.B: Nmax is an unspecified input parameter; no convergence tolerance or actual values reported in Table II."
+    },
+    {
+      "field": "vectorless_constraint_validation",
+      "reason": "The paper claims to perform 'vectorless' verification under power density constraints, but does not validate that the chosen constraint bounds (bL, bU, BL, BU) are realistic or derived from actual workload statistics. Worst-case results depend critically on constraint feasibility.",
+      "locator": "Section A and Table II: Constraint definition is generic; Table II shows results but not constraint bounds used."
+    },
+    {
+      "field": "amg_operator_details",
+      "reason": "Algorithm 3 references AMG restriction and prolongation operators (RhH, RhH) for multilevel constraint and solution mapping, but does not specify which AMG library or construction method (e.g., classical AMG, adaptive AMG) is used. Reproducibility of the multilevel hierarchy is unclear.",
+      "locator": "Section II.C (page 4): References 'AMG's restriction operator RhH' and 'AMG prolongation operator RhH' without naming the specific AMG implementation or construction rules."
+    },
+    {
+      "field": "low_degree_node_elimination",
+      "reason": "Figure 1 (Multilevel Verification Flowchart, page 4) includes a 'Low-Degree Node Elimination' step and 'Node Aggregation' step, but these procedures are never defined in the text or pseudocode. Their computational cost and approximation impact are not quantified.",
+      "locator": "Figure 1 (page 4): Flowchart boxes for 'Low-Degree Node Elimination' and 'Node Aggregation' appear but are not described in Section II.C or Algorithm 3."
+    },
+    {
+      "field": "steady_state_only",
+      "reason": "The paper solves steady-state thermal analysis (Tx=b with no time derivatives) and does not address transient thermal dynamics, temporal power variations, or temperature-dependent material properties. The claim of 'vectorless integrity verification' for dynamic workloads is not supported.",
+      "locator": "Page 1, Eq. (1): Linear steady-state thermal equation Tx=b with no time dimension. No transient analysis discussed."
+    },
+    {
+      "field": "high_frequency_error_filtering",
+      "reason": "Equation (10) derives that solution error Δx is composed of high-frequency eigenvector components, and Algorithm 2 uses Jacobi iteration as a 'low-pass' filter. However, no spectral filter transfer function is specified and no verification that Jacobi iteration achieves the intended filtering is provided.",
+      "locator": "Section II.B (page 3), Eq. (10): Error decomposition is theoretical; Algorithm 2's filtering effectiveness is not numerically validated against the spectral error model."
+    },
+    {
+      "field": "adjacent_processor_design_details",
+      "reason": "Table I labels designs as 'Processor A' and 'Processor B' but provides no references to actual published processor datasheets, die photos, or thermal models. Design origin and authenticity cannot be verified.",
+      "locator": "Table I (page 5): Design identifiers are generic; no datasheet, die revision, or public reference provided."
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,116 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "TRIC uses model-order reduction (MOR) via projection-based Algorithms 1–3 with multigrid iterative solver in complex frequency domain. Parametric detailed thermal models (pDTMs) with rectangular parallelepiped mesh (Manhattan geometry) and non-Manhattan transformations are handled. Convergence criterion of 0.1% inaccuracy is documented in Section 2. Methods match abstract claim of 'novel projection-based approach.'"
+    },
+    "code": {
+      "status": "missing",
+      "note": "No source code repository, executable binary, or supplementary material link provided. Figure 2 shows example DTM meshes but no mesh files, CAD models, or code accessible. Graphical user interface mentioned but not publicly available. Reproducibility requires access to TRIC software not supplied in paper or assets."
+    },
+    "parameters": {
+      "status": "verified",
+      "note": "Package parameters clearly enumerated in Section 2: eTQFP body sizes 10×10 mm², epad sizes 6×6 mm², die sizes 2×2 to 5×5 mm² for Figure 6. eTQFP body thickness 1 mm (eTQFP variant). Power step 1 W applied at t=0 stated in caption. Ambient temperature 20°C confirmed in Section 4.3. Figure 6 shows four die sizes with legend labels 2×2, 3×3, 4×4, 5×5 mm²."
+    },
+    "config": {
+      "status": "verified",
+      "note": "JEDEC thermal metrics configuration (ϑJA, ΨJB, ΨJCtop, ϑJB, ϑJCtop, ϑJCbottom) for four standard ambients per Section 2. Boundary conditions idealized per JEDEC standards. Board modeled as single finely-meshed parallelepiped with aggregate thermal conductivity. Leads represented as weighted-average parallelepiped. Symmetry exploitation: quarter-structure meshed with adiabatic BCs on symmetry planes (Section 4). Configuration consistent across all reported scenarios."
+    },
+    "data": {
+      "status": "contradicted",
+      "note": "Figure 6 provides transient thermal impedance ZTHJA curves but digitized values are plot-based estimates (±0.5 K/W resolution). Exact grid dimensions (nx, ny, nz, nt), timestep refinement, and numerical convergence tolerances for Figure 6 simulation not provided. Material thermal conductivity and heat capacity values for die, epad, mold, and board not tabulated. Die thickness for Figure 6 scenario not explicitly stated (paper lists 100, 280, 375, 580 µm options for eLQFPs but does not specify which was used for Figure 6). Numerical data in paper is summary/validation results; raw simulation input data and mesh parameters unavailable."
+    }
+  },
+  "findings": [
+    {
+      "field": "die_thickness_for_figure_6",
+      "reason": "Paper Section 3 describes eTQFP variant with body thickness 1 mm but lists four available die thicknesses (100, 280, 375, 580 µm). Figure 6 caption and Section 4.2 do not state which thickness was used for the 10×10 mm² eTQFP with 6×6 mm² epad in the transient thermal impedance simulation.",
+      "locator": "Section 2 (page 3) lists die thickness options; Figure 6 caption (page 8) does not specify which was used."
+    },
+    {
+      "field": "material_properties_not_provided",
+      "reason": "Section 2 states board is modeled with 'adjusted thermal conductivity' and leads with 'weighted averaging procedure' but exact thermal conductivity (W/m·K) and heat capacity (J/kg·K) values are not tabulated. Without these, the pDTM geometry and physics cannot be reconstructed.",
+      "locator": "Section 2 (page 3): 'thermal conductivity of which was determined through a weighted averaging procedure' (no values given)."
+    },
+    {
+      "field": "mesh_parameters_not_disclosed",
+      "reason": "Section 4 mentions 'typical number of 2 × 10⁶ grid points' for CPU time estimate but Figure 6 scenario does not report actual (nx, ny, nz, nt) discretization. Convergence study referenced as [11] but no convergence data for Figure 6 case provided.",
+      "locator": "Section 4.3 (page 10): 'typical number of 2 × 10⁶ grid points' is generic; Figure 6-specific mesh count unknown."
+    },
+    {
+      "field": "ambient_temperature_not_universal",
+      "reason": "Ambient temperature 20°C stated in Section 4.3 for static temperature map comparison (Figure 11) but not explicitly confirmed for Figure 6 transient scenario. JEDEC ambient definitions vary by metric (ϑJA vs. ϑJCtop vs. ϑJCbottom) and may use different reference temperatures.",
+      "locator": "Section 4.3 (page 10), Figure 11 caption: 'Tamb = 20 °C'. Figure 6 (page 8) caption and Section 4.2 do not specify ambient temperature."
+    },
+    {
+      "field": "flotherm_comparison_mesh_details_missing",
+      "reason": "Section 4.3 states FloTHERM agreement within 3% but attributes discrepancy to 'different mesh styles.' No FloTHERM mesh dimensions (nx_FV, ny_FV, nz_FV) or refinement strategy disclosed, preventing mesh sensitivity or discretization equivalence assessment.",
+      "locator": "Section 4.3 (page 10): 'discrepancy (typically <2%, the maximum value being around 3%) was mainly attributed to the different mesh styles of the simulators.'"
+    },
+    {
+      "field": "power_profile_artificial",
+      "reason": "Figure 6 uses instantaneous power step (1 W at t=0) which is not representative of actual semiconductor workload. Section 4.5 demonstrates ABS power profile capability but Figure 6 scenario uses only step input, limiting realism.",
+      "locator": "Section 4.2 (page 8): 'thermal responses of chosen packages can be obtained...to a power step.' Figure 6 caption and Section 4.2 confirm 1 W step."
+    },
+    {
+      "field": "multi_source_static_layout_only",
+      "reason": "Multi-source analysis (Section 4.4, Figure 13) demonstrates four static heat source layouts with fixed positions. Section 4.5 uses eight fixed HSs for ABS profile. No dynamic heat source relocation or thermal-driven power redistribution modeled during transient operation.",
+      "locator": "Section 4.4 (page 12), Table 1: four layouts with fixed HS positions. Figure 14a shows fixed eight HSs."
+    },
+    {
+      "field": "tric_software_not_accessible",
+      "reason": "Paper presents TRIC as an automatic tool with graphical user interface but does not provide repository URL, downloadable binary, or supplementary data link. Reproducibility requires access to TRIC executable which is proprietary and not publicly released.",
+      "locator": "Section 1 (page 2) and Section 2 (page 3): mentions 'graphical user interface' and 'developed by the authors' but no public repository or release information provided."
+    },
+    {
+      "field": "figure_6_digitization_uncertainty",
+      "reason": "Thermal impedance values from Figure 6 were digitized from plot (visual reading of curves). Estimated uncertainty ±0.5 K/W is significant relative to small die size differences (5×5 mm² shows ~5 K/W steady-state, 2×2 mm² shows ~10 K/W; 100% relative difference but only 0.5 K/W absolute uncertainty on each).",
+      "locator": "Figure 6 (page 8): curves must be read visually; no numerical table provided."
+    },
+    {
+      "field": "convergence_study_reference_external",
+      "reason": "Section 2 references prior convergence study from [11] (TRAC paper) establishing 0.1% discretization inaccuracy criterion. Figure 6 scenario may use different geometry or finer mesh than [11] convergence study, but applicability to this specific case not verified in present paper.",
+      "locator": "Section 2 (page 3): 'As mentioned in [11], a preliminary convergence analysis...the discretization leading to about 0.1% inaccuracy was chosen.'"
+    },
+    {
+      "field": "junction_definition_implicit",
+      "reason": "JEDEC metric ϑJA is 'junction-to-ambient thermal resistance' but paper does not define which die location represents the junction (die center, maximum temperature point, area-weighted average, or specified probing location). Figure 2 shows 'temperature probes' (black circles) but their exact coordinates relative to die boundaries not specified.",
+      "locator": "Section 2 (page 3) and Figure 2 caption (page 4): 'black circles represent the temperature probes needed to determine the thermal metrics' but coordinates not given."
+    },
+    {
+      "field": "board_model_aggregate_oversimplification",
+      "reason": "Section 2 states board modeled as 'single finely-meshed parallelepiped with thermal conductivity adjusted to account for aggregate effect of metal traces and vias.' This lumped representation may not capture actual PCB layer stack or via thermal vias, limiting model fidelity for applications where board thermal path is critical.",
+      "locator": "Section 2 (page 3): 'board over which the package is mounted is modeled with a single finely-meshed parallelepiped with a thermal conductivity adjusted.'"
+    },
+    {
+      "field": "glue_type_selectable_but_no_property_table",
+      "reason": "Section 2 states 'Various types of glue for die attach can be selected' but no table of glue types with thermal conductivity or thickness values provided. Die attach material strongly influences transient thermal response at short times (<1 ms).",
+      "locator": "Section 2 (page 3): 'Various types of glue for die attach can be selected' without property details."
+    },
+    {
+      "field": "time_range_interpretation",
+      "reason": "Figure 6 shows time axis from 10⁻⁵ to 10³ seconds (logarithmic scale). At t=10⁻⁵ s, thermal impedance ~25 K/W for 2×2 mm² die. At t=1 s, curves show rapid decay. Physical interpretation of initial transient (t<1 ms) is unclear: this may reflect numerical initialization artifacts rather than real die thermal inertia if mesh timestep is not sufficiently fine.",
+      "locator": "Figure 6 (page 8): time axis spans 10⁻⁵ to 10³ s; initial transient behavior not explained."
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "checked_assets": []
+}

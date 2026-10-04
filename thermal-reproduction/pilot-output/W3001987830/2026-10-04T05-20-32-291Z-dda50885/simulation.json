@@ -1,0 +1,5 @@
+{
+  "status": "skipped",
+  "reason": "Invalid block 0; Invalid block 1; Invalid block 2; Invalid block 3; Invalid block 4; Invalid block 5; Invalid block 6; Invalid block 7; Floorplan and power names differ; Thermal interface material (TIM) overlaps Aluminum base plate; Floorplan exceeds s_spreader; Floorplan exceeds s_sink",
+  "artifacts": {}
+}
