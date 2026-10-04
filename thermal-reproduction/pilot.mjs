@@ -41,9 +41,16 @@ export const EXTRACTION_SCHEMA = object({
   physical_mismatches: array(object({ reason: string, essential: { type: 'boolean' } })),
   studio_assumptions: array(string), missing_inputs: array(string),
 });
-// Anthropic's strict grammar compiler rejects the full evidence schema. Keep the
-// detailed contract in the prompt and constrain only the small transport envelope.
-export const EXTRACTION_ENVELOPE_SCHEMA = object({ extraction_json: string });
+// Anthropic rejects the full extraction grammar. Compile each section separately
+// so the API still enforces JSON and field types without a JSON-in-a-string wrapper.
+export const EXTRACTION_SECTION_SCHEMAS = Object.fromEntries(Object.entries({
+  identity: ['paper_id', 'paper_title', 'artifact_search_status', 'linked_assets', 'scenario'],
+  setup: ['original_setup', 'thermal_observable', 'physical_mismatches',
+    'studio_assumptions', 'missing_inputs'],
+  experiment: ['experiment'],
+  evidence: ['evidence'],
+}).map(([name, keys]) => [name, object(Object.fromEntries(
+  keys.map(key => [key, EXTRACTION_SCHEMA.properties[key]])))]));
 export const ADVERSARIAL_SCHEMA = object({
   approved: { type: 'boolean' },
   checklist: object(Object.fromEntries(CHECKS.map(key => [key, object({
@@ -156,18 +163,25 @@ export async function anthropicJson({ system, user, schema, apiKey = process.env
 }
 
 export async function anthropicExtraction({ system, packet, apiKey, fetchImpl = fetch }) {
-  const envelope = await anthropicJson({ system: system + '\nReturn a JSON serialization of the extraction object in extraction_json. Follow the provided extraction schema exactly; use empty arrays and empty strings for unknown non-nullable fields, and null only where the schema permits it.',
-    user: JSON.stringify({ paper_packet: packet, extraction_schema: EXTRACTION_SCHEMA }),
-    schema: EXTRACTION_ENVELOPE_SCHEMA, apiKey, fetchImpl });
-  let extraction;
-  try { extraction = JSON.parse(envelope.extraction_json); }
-  catch { throw Error('Anthropic extraction_json is not valid JSON'); }
-  if (!extraction || typeof extraction !== 'object' || Array.isArray(extraction) ||
-      extraction.paper_id !== packet.paper_id || !Array.isArray(extraction.evidence) ||
-      !Array.isArray(extraction.experiment?.floorplan) ||
-      !Array.isArray(extraction.experiment?.power_rows)) {
-    throw Error('Anthropic extraction_json is missing required evidence or experiment fields');
+  const extraction = {};
+  for (const [section, schema] of Object.entries(EXTRACTION_SECTION_SCHEMAS)) {
+    let result;
+    try {
+      result = await anthropicJson({
+        system: system + `\nExtract only the ${section} section. Use the selected published scenario consistently across sections. Do not invent missing inputs or evidence. Use empty arrays and empty strings for unknown non-nullable fields, and null only where the schema permits it.`,
+        user: JSON.stringify({ paper_packet: packet, previous_sections: extraction }),
+        schema, apiKey, fetchImpl,
+      });
+    } catch (error) {
+      throw new Error(`Extraction ${section} section: ${error.message}`, { cause: error });
+    }
+    if (!result || typeof result !== 'object' || Array.isArray(result) ||
+        Object.keys(schema.properties).some(key => !Object.hasOwn(result, key))) {
+      throw Error(`Anthropic ${section} section is missing required fields`);
+    }
+    Object.assign(extraction, result);
   }
+  if (extraction.paper_id !== packet.paper_id) throw Error('Anthropic extraction paper ID differs from packet');
   return extraction;
 }
 
