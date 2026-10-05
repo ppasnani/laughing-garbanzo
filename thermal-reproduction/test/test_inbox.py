@@ -52,6 +52,7 @@ class PaperInboxTest(unittest.TestCase):
         self.assertEqual(detail["status"], "failed")
         self.assertIsNone(detail["assessment"])
         self.assertEqual(detail["linked_assets"], [])
+        self.assertEqual(detail["extracted_linked_assets"], [])
         self.assertEqual(detail["error"]["stage"], "extractPaper")
         (newest / "stage-error.json").unlink()
         processing = inbox.paper_detail("W1")
@@ -91,13 +92,55 @@ class PaperInboxTest(unittest.TestCase):
         status, body, _ = self.request("GET", "/api/papers/W1")
         self.assertEqual(status, 200)
         self.assertEqual(json.loads(body)["linked_assets"], assets)
+        self.assertEqual(json.loads(body)["extracted_linked_assets"], [{"id": "extracted-only"}])
+        self.assertEqual(json.loads(body)["extracted_linked_assets_source"], "manifest.json · extraction")
         newer = folder.parent / "2026-01-05-new"
         newer.mkdir()
         (newer / "manifest.json").write_text(json.dumps({
             "linked_assets": [], "extraction": {"linked_assets": assets}}))
         self.assertEqual(inbox.paper_detail("W1")["linked_assets"], [])
+        self.assertEqual(inbox.paper_detail("W1")["extracted_linked_assets"], assets)
         (newer / "manifest.json").write_text("{}")
         self.assertEqual(inbox.paper_detail("W1")["linked_assets"], [])
+        self.assertEqual(inbox.paper_detail("W1")["extracted_linked_assets"], [])
+
+    def test_extraction_file_links_appear_even_when_manifest_assets_are_empty(self):
+        folder = self.input_folder()
+        links = [
+            {"id": "cool3d_github_repo", "url": "https://github.com/iCAS-SJTU/Cool-3D",
+             "kind": "code_repository", "paper_page": 1},
+            {"id": "cool3d_github_repo_conclusion", "url": "https://github.com/iCAS-SJTU/Cool-3D",
+             "kind": "code_repository", "paper_page": 13},
+            {"id": "splash2_benchmark_repo", "url": "https://github.com/liuyix/splash2benchmark",
+             "kind": "benchmark_source_code", "paper_page": 14}]
+        (folder / "manifest.json").write_text(json.dumps({
+            "linked_assets": [], "extraction": {"linked_assets": [{"id": "embedded-copy"}]}}))
+        extraction = folder / "extraction.json"
+        extraction.write_text(json.dumps({"linked_assets": links}))
+        status, body, _ = self.request("GET", "/api/papers/W1")
+        detail = json.loads(body)
+        self.assertEqual(status, 200)
+        self.assertEqual(detail["linked_assets"], [])
+        self.assertEqual(detail["extracted_linked_assets"], links)
+        self.assertEqual(detail["extracted_linked_assets_source"], "extraction.json")
+        extraction.write_text('{"linked_assets": []}')
+        self.assertEqual(inbox.paper_detail("W1")["extracted_linked_assets"], [])
+        extraction.write_text('{"linked_assets":')  # An extraction write may still be in progress.
+        self.assertEqual(inbox.paper_detail("W1")["extracted_linked_assets"], [{"id": "embedded-copy"}])
+
+    def test_extracted_links_survive_failure_and_processing_but_never_use_older_attempts(self):
+        folder = self.input_folder()
+        links = [{"id": "code", "url": "https://example.org/code"}]
+        (folder / "extraction.json").write_text(json.dumps({"linked_assets": links}))
+        (folder / "manifest.json").unlink()
+        self.assertEqual(inbox.paper_detail("W1")["status"], "processing")
+        self.assertEqual(inbox.paper_detail("W1")["extracted_linked_assets"], links)
+        (folder / "stage-error.json").write_text('{"stage": "assessPaper", "message": "Failed"}')
+        self.assertEqual(inbox.paper_detail("W1")["status"], "failed")
+        self.assertEqual(inbox.paper_detail("W1")["extracted_linked_assets"], links)
+        newer = folder.parent / "2026-01-05-new"
+        newer.mkdir()
+        self.assertEqual(inbox.paper_detail("W1")["extracted_linked_assets"], [])
 
     def input_folder(self):
         folder = self.output / "W1" / "2026-01-04-custom"

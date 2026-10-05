@@ -54,15 +54,23 @@ function Quiet({ title, message }) {
   return <Callout className="quiet-card" title={title}>{message}</Callout>;
 }
 
-export function LinkedAssets({ assets = [] }) {
-  if (Array.isArray(assets) && assets.length === 0) {
-    return <Section title="Linked assets" note="Latest manifest">
+export function LinkedAssets({ assets = [], extractedAssets = [], extractionSource = 'extraction.json' }) {
+  const present = value => Array.isArray(value) ? value.length > 0 : value != null;
+  if (!present(assets) && !present(extractedAssets)) {
+    return <Section title="Linked assets" note="Latest attempt">
       <Quiet title="No linked assets recorded" message="No linked assets are recorded for this paper's latest result." />
     </Section>;
   }
+  return <>
+    {present(extractedAssets) && <AssetList assets={extractedAssets} title="Links found in paper" source={extractionSource} />}
+    {present(assets) && <AssetList assets={assets} title="Saved asset metadata" source="manifest.json" />}
+  </>;
+}
+
+function AssetList({ assets, title, source }) {
   const entries = Array.isArray(assets) ? assets : [assets];
   const display = value => typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-  return <Section title="Linked assets" note="Latest manifest">
+  return <Section title={title} note={source}>
     <div className="linked-assets">
       {entries.map((asset, index) => <Card className="linked-asset" key={index}>
         <h3>Asset {index + 1}</h3>
@@ -182,7 +190,8 @@ function Detail({ paper, loading, error, onBack, onCompare }) {
         ? 'The latest assessment contains no limitation entries.' : 'An assessment has not been saved yet.'} />}
     </Section>
       </>} />
-      <Tab id="linked-assets" title="Linked assets" panel={<LinkedAssets assets={paper.linked_assets} />} />
+      <Tab id="linked-assets" title="Linked assets" panel={<LinkedAssets assets={paper.linked_assets}
+        extractedAssets={paper.extracted_linked_assets} extractionSource={paper.extracted_linked_assets_source} />} />
     </Tabs>
     <div className="detail-footer">OpenAlex ID {paper.id} · Citation count from the local manifest · Latest attempt only</div>
   </div>;

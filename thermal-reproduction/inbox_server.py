@@ -147,6 +147,22 @@ def latest_attempt(paper_id):
     return folder, "processing", None
 
 
+def extracted_asset_links(folder, manifest):
+    # The extraction records discovered URLs; manifest.linked_assets records supplied files.
+    path = folder / "extraction.json"
+    try:
+        stat = path.stat()
+        extraction = read_manifest(str(path), stat.st_mtime_ns, stat.st_size)
+        if isinstance(extraction, dict):
+            return extraction.get("linked_assets", []), "extraction.json"
+    except (OSError, json.JSONDecodeError):
+        pass
+    extraction = manifest.get("extraction") if isinstance(manifest, dict) else None
+    if isinstance(extraction, dict):
+        return extraction.get("linked_assets", []), "manifest.json · extraction"
+    return [], None
+
+
 def paper_state(row):
     attempt = latest_attempt(row["openalex_id"])
     if attempt:
@@ -241,7 +257,9 @@ def paper_detail(paper_id):
               "paper_url": row["source_url"] or row["doi"] or f"https://openalex.org/{paper_id}",
               "source_status": row["status"], "source_note": row["notes"],
               "status": "waiting", "assessment": None, "feasibility": None,
-              "results": None, "limitations": [], "linked_assets": [], "inputs": {"files": []}}
+              "results": None, "limitations": [], "linked_assets": [],
+              "extracted_linked_assets": [], "extracted_linked_assets_source": None,
+              "inputs": {"files": []}}
     attempt = latest_attempt(paper_id)
     if not attempt:
         detail["status"] = "source_unavailable" if row["status"] == "unavailable" else "waiting"
@@ -249,6 +267,7 @@ def paper_detail(paper_id):
     folder, state, data = attempt
     detail["attempt"] = folder.name
     detail["inputs"] = input_metadata(paper_id, folder)
+    detail["extracted_linked_assets"], detail["extracted_linked_assets_source"] = extracted_asset_links(folder, data)
     if state == "failed":
         detail["status"] = "failed"
         detail["error"] = {"stage": data.get("stage"), "message": data.get("message")}
