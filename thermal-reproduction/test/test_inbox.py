@@ -38,6 +38,7 @@ class PaperInboxTest(unittest.TestCase):
         old.mkdir(parents=True)
         (old / "manifest.json").write_text(json.dumps({
             "simulation": {"status": "completed"},
+            "linked_assets": [{"id": "older-asset", "original_url": "https://example.org/old"}],
             "assessment": {"verdict": "candidate_2d_snapshot"}}))
         newest = self.output / "W1" / "2026-01-03-new"
         newest.mkdir()
@@ -50,6 +51,7 @@ class PaperInboxTest(unittest.TestCase):
         detail = inbox.paper_detail("W1")
         self.assertEqual(detail["status"], "failed")
         self.assertIsNone(detail["assessment"])
+        self.assertEqual(detail["linked_assets"], [])
         self.assertEqual(detail["error"]["stage"], "extractPaper")
         (newest / "stage-error.json").unlink()
         processing = inbox.paper_detail("W1")
@@ -76,6 +78,26 @@ class PaperInboxTest(unittest.TestCase):
         self.assertEqual(detail["results"]["rows"][0]["power_w"], 8)
         self.assertIn("core0", inbox.visualization("W1"))
         self.assertIsNone(inbox.paper_detail("W999"))
+
+    def test_linked_assets_are_the_top_level_value_from_the_latest_manifest(self):
+        folder = self.input_folder()
+        assets = [{"id": "source-code", "kind": "code", "paper_page": 5,
+                   "original_url": "https://example.org/code", "final_url": "https://example.org/release",
+                   "sha256": "saved-hash", "bytes": 42, "locator": "Methods", "version": "v1"}]
+        manifest = {"simulation": {"status": "skipped"}, "linked_assets": assets,
+                    "extraction": {"linked_assets": [{"id": "extracted-only"}]}}
+        path = folder / "manifest.json"
+        path.write_text(json.dumps(manifest))
+        status, body, _ = self.request("GET", "/api/papers/W1")
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body)["linked_assets"], assets)
+        newer = folder.parent / "2026-01-05-new"
+        newer.mkdir()
+        (newer / "manifest.json").write_text(json.dumps({
+            "linked_assets": [], "extraction": {"linked_assets": assets}}))
+        self.assertEqual(inbox.paper_detail("W1")["linked_assets"], [])
+        (newer / "manifest.json").write_text("{}")
+        self.assertEqual(inbox.paper_detail("W1")["linked_assets"], [])
 
     def input_folder(self):
         folder = self.output / "W1" / "2026-01-04-custom"

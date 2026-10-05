@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AnchorButton, Button, Card, Callout, HTMLSelect, HTMLTable, InputGroup, Navbar,
-  NavbarGroup, Spinner, Tag,
+  NavbarGroup, Spinner, Tab, Tabs, Tag,
 } from '@blueprintjs/core';
 import FloorplanComparison from './FloorplanComparison.jsx';
 
@@ -51,6 +51,33 @@ function Section({ title, note, children }) {
 
 function Quiet({ title, message }) {
   return <Callout className="quiet-card" title={title}>{message}</Callout>;
+}
+
+export function LinkedAssets({ assets = [] }) {
+  if (Array.isArray(assets) && assets.length === 0) {
+    return <Section title="Linked assets" note="Latest manifest">
+      <Quiet title="No linked assets recorded" message="No linked assets are recorded for this paper's latest result." />
+    </Section>;
+  }
+  const entries = Array.isArray(assets) ? assets : [assets];
+  const display = value => typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  return <Section title="Linked assets" note="Latest manifest">
+    <div className="linked-assets">
+      {entries.map((asset, index) => <Card className="linked-asset" key={index}>
+        <h3>Asset {index + 1}</h3>
+        {asset && typeof asset === 'object' && !Array.isArray(asset) && Object.keys(asset).length > 0
+          ? <dl>{Object.entries(asset).map(([field, value]) => {
+            const url = typeof value === 'string' ? safeLink(value) : null;
+            return <div className="asset-field" key={field}>
+              <dt>{field}</dt><dd>{url
+                ? <a href={url} target="_blank" rel="noopener noreferrer">{value}</a>
+                : <pre>{display(value)}</pre>}</dd>
+            </div>;
+          })}</dl>
+          : <pre>{display(asset)}</pre>}
+      </Card>)}
+    </div>
+  </Section>;
 }
 
 function Results({ results }) {
@@ -124,6 +151,9 @@ function Detail({ paper, loading, error, onBack, onCompare }) {
       </div>
     </div>
 
+    <Tabs className="paper-tabs" id={`paper-tabs-${paper.id}`} key={`${paper.id}-${paper.attempt}`}
+      defaultSelectedTabId="overview" renderActiveTabPanelOnly>
+      <Tab id="overview" title="Overview" panel={<>
     <Section title="Reproducibility assessment" note="Latest attempt">
       {paper.assessment ? <>
         <div className="assessment-grid">
@@ -150,6 +180,9 @@ function Detail({ paper, loading, error, onBack, onCompare }) {
       </HTMLTable></div> : <Quiet title="No limitations recorded" message={paper.assessment
         ? 'The latest assessment contains no limitation entries.' : 'An assessment has not been saved yet.'} />}
     </Section>
+      </>} />
+      <Tab id="linked-assets" title="Linked assets" panel={<LinkedAssets assets={paper.linked_assets} />} />
+    </Tabs>
     <div className="detail-footer">OpenAlex ID {paper.id} · Citation count from the local manifest · Latest attempt only</div>
   </div>;
 }

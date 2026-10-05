@@ -92,6 +92,8 @@ Open `http://127.0.0.1:8765`. In a Codespace, forward port 8765 and open the for
 
 In a paper's detail pane, **Download inputs** saves a ZIP containing its available `input.flp` and `input.ptrace` files directly from the latest attempt folder. Files under `sensitivity/` are excluded. **Compare my Floorplan** opens a modal where you can upload a HotSpot `.flp` and compare it with that attempt's `input.flp` using `pilot-output/compare_floorplans.py`. The modal shows the comparison diagram and change counts. Uploads are compared in memory and are not saved to the paper folder. These controls are disabled when their required inputs are absent; reload the page if a newer attempt has been saved.
 
+The paper view also has a **Linked assets** tab showing the top-level `linked_assets` value from the latest attempt's `manifest.json`. Each asset displays its saved metadata and clickable HTTP/HTTPS URLs. Empty lists show a "No linked assets recorded" message.
+
 ## Bundled EV6/GCC regression demo
 
 The original paper `W4206159291` uses 3D FEniCS/POD and pulsed power. The bundled HotSpot run is an **adapted artifact-pipeline demo**, with no valid numerical paper comparison:

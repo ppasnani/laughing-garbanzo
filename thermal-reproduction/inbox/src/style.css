@@ -50,6 +50,14 @@ button,input,select{font:inherit}
 .comparison-dialog .bp6-dialog-body{min-height:0}.comparison-description{color:#506775;font-size:13px;line-height:1.5}
 .comparison-summary{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:20px 0 12px;color:#315163}
 .comparison-viewer{display:block;width:100%;height:58vh;min-height:320px;border:1px solid #dce6e8;border-radius:9px;background:white}
+.paper-tabs{margin-top:26px}.paper-tabs>.bp6-tab-list{border-bottom:1px solid #e0e8eb;padding-bottom:8px}
+.paper-tabs .bp6-tab-panel{margin-top:0}.linked-assets{display:grid;gap:14px}
+.linked-asset.bp6-card{border:1px solid #dfe8e9;box-shadow:none;border-radius:9px;background:#fbfdfd}
+.linked-asset h3{margin:0 0 14px;font-size:14px}.linked-asset dl{margin:0}
+.asset-field{display:grid;grid-template-columns:minmax(110px,160px) minmax(0,1fr);gap:16px;padding:9px 0;border-top:1px solid #e5ecee}
+.asset-field dt{color:#718693;font:500 11px 'IBM Plex Mono',monospace;overflow-wrap:anywhere}.asset-field dd{margin:0;min-width:0;font-size:12px;overflow-wrap:anywhere}
+.linked-asset pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.5 'IBM Plex Mono',monospace;color:#395567}
+.linked-asset a{color:#16776d}
 .section{margin-top:34px}.section-header{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-bottom:14px}
 .section h2{font-size:17px;letter-spacing:-.025em;margin:0}.section-header span{font:500 10px 'IBM Plex Mono',monospace;color:#8a9da6;text-transform:uppercase;letter-spacing:.08em}
 .assessment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}

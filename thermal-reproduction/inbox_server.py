@@ -241,7 +241,7 @@ def paper_detail(paper_id):
               "paper_url": row["source_url"] or row["doi"] or f"https://openalex.org/{paper_id}",
               "source_status": row["status"], "source_note": row["notes"],
               "status": "waiting", "assessment": None, "feasibility": None,
-              "results": None, "limitations": [], "inputs": {"files": []}}
+              "results": None, "limitations": [], "linked_assets": [], "inputs": {"files": []}}
     attempt = latest_attempt(paper_id)
     if not attempt:
         detail["status"] = "source_unavailable" if row["status"] == "unavailable" else "waiting"
@@ -256,6 +256,7 @@ def paper_detail(paper_id):
     if state == "processing":
         detail["status"] = "processing"
         return detail
+    detail["linked_assets"] = data.get("linked_assets", [])
     assessment = data.get("assessment", {})
     feasibility = data.get("feasibility", {})
     simulation = data.get("simulation", {})
