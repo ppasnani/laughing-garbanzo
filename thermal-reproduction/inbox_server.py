@@ -4,12 +4,16 @@
 import argparse
 import csv
 import importlib.util
+import io
 import json
 import mimetypes
 import re
 import subprocess
+import sys
 import urllib.error
 import urllib.request
+import zipfile
+from collections import Counter
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -21,10 +25,92 @@ OUTPUT = HERE / "pilot-output"
 STATIC = HERE / "inbox" / "dist"
 EV6_FLOORPLAN = HERE.parent / "HotSpot" / "examples" / "example1" / "ev6.flp"
 PAPER_ID = re.compile(r"W\d+\Z")
+INPUT_FILES = ("input.flp", "input.ptrace")
+MAX_FLOORPLAN_BYTES = 1024 * 1024
+MAX_FLOORPLAN_BLOCKS = 1000
 
 spec = importlib.util.spec_from_file_location("visualize_run", OUTPUT / "visualize_run.py")
 visualize_run = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(visualize_run)
+
+spec = importlib.util.spec_from_file_location("compare_floorplans", OUTPUT / "compare_floorplans.py")
+compare_floorplans = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = compare_floorplans
+spec.loader.exec_module(compare_floorplans)
+
+
+class InputUnavailable(ValueError):
+    pass
+
+
+class AttemptChanged(ValueError):
+    pass
+
+
+def paper_input_folder(paper_id, attempt_name=None):
+    if paper_id not in papers():
+        raise InputUnavailable("Paper not found.")
+    attempt = latest_attempt(paper_id)
+    if not attempt:
+        raise InputUnavailable("This paper has no saved inputs yet.")
+    folder = attempt[0]
+    if attempt_name != folder.name:
+        raise AttemptChanged("A newer attempt is available. Reload the page to use its inputs.")
+    return folder
+
+
+def input_file(folder, name):
+    # Use only files directly in the selected run, never its sensitivity directory.
+    path = folder / name
+    return path if name in INPUT_FILES and path.is_file() and not path.is_symlink() else None
+
+
+def input_metadata(paper_id, folder):
+    files = [name for name in INPUT_FILES if input_file(folder, name)]
+    query = "?attempt=" + quote(folder.name, safe="")
+    return {"files": files,
+            "download_url": f"/api/papers/{paper_id}/inputs{query}" if files else None,
+            "compare_url": f"/api/papers/{paper_id}/compare-floorplan{query}"
+            if "input.flp" in files else None}
+
+
+def download_inputs(paper_id, attempt_name):
+    folder = paper_input_folder(paper_id, attempt_name)
+    paths = [path for name in INPUT_FILES if (path := input_file(folder, name))]
+    if not paths:
+        raise InputUnavailable("This attempt has no saved input.flp or input.ptrace.")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in paths:
+            archive.writestr(path.name, path.read_bytes())
+    return buffer.getvalue()
+
+
+def compare_uploaded_floorplan(paper_id, attempt_name, payload):
+    folder = paper_input_folder(paper_id, attempt_name)
+    base_path = input_file(folder, "input.flp")
+    if not base_path:
+        raise InputUnavailable("This attempt has no saved input.flp to compare.")
+    if not isinstance(payload, dict):
+        raise ValueError("Choose a .flp file to compare.")
+    filename, content = payload.get("filename"), payload.get("content")
+    if not isinstance(filename, str) or not filename.lower().endswith(".flp"):
+        raise ValueError("Choose a floorplan file with the .flp extension.")
+    if not isinstance(content, str) or len(content.encode("utf-8")) > MAX_FLOORPLAN_BYTES:
+        raise ValueError("The uploaded floorplan must be at most 1 MiB.")
+    if base_path.stat().st_size > MAX_FLOORPLAN_BYTES:
+        raise ValueError("The paper floorplan is too large to compare (maximum 1 MiB).")
+    # Parse in memory; the uploaded filename is a display label, never a disk path.
+    filename = filename.replace("\\", "/").rsplit("/", 1)[-1][:200]
+    base = compare_floorplans.parse_floorplan(base_path.read_text(encoding="utf-8"), "input.flp")
+    uploaded = compare_floorplans.parse_floorplan(content, filename)
+    if max(len(base), len(uploaded)) > MAX_FLOORPLAN_BLOCKS:
+        raise ValueError("Floorplans must contain at most 1000 blocks to compare.")
+    changes, mode = compare_floorplans.compare(base, uploaded)
+    return {"mode": mode, "counts": dict(Counter(change["kind"] for change in changes)),
+            "base_blocks": len(base), "uploaded_blocks": len(uploaded),
+            "html": compare_floorplans.render(base, uploaded, changes, mode,
+                                              Path("input.flp"), Path(filename), color_scheme="light")}
 
 
 def papers():
@@ -155,13 +241,14 @@ def paper_detail(paper_id):
               "paper_url": row["source_url"] or row["doi"] or f"https://openalex.org/{paper_id}",
               "source_status": row["status"], "source_note": row["notes"],
               "status": "waiting", "assessment": None, "feasibility": None,
-              "results": None, "limitations": []}
+              "results": None, "limitations": [], "inputs": {"files": []}}
     attempt = latest_attempt(paper_id)
     if not attempt:
         detail["status"] = "source_unavailable" if row["status"] == "unavailable" else "waiting"
         return detail
     folder, state, data = attempt
     detail["attempt"] = folder.name
+    detail["inputs"] = input_metadata(paper_id, folder)
     if state == "failed":
         detail["status"] = "failed"
         detail["error"] = {"stage": data.get("stage"), "message": data.get("message")}
@@ -226,13 +313,15 @@ def visualization(paper_id, attempt_name=None):
 
 
 class Handler(BaseHTTPRequestHandler):
-    def send_body(self, status, body, content_type):
+    def send_body(self, status, body, content_type, headers=None):
         data = body.encode("utf-8") if isinstance(body, str) else body
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
+        for name, value in (headers or {}).items():
+            self.send_header(name, value)
         self.end_headers()
         self.wfile.write(data)
 
@@ -241,6 +330,15 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         if path == "/api/papers":
             return self.send_body(200, json.dumps(paper_list()), "application/json; charset=utf-8")
+        match = re.fullmatch(r"/api/papers/(W\d+)/inputs", path)
+        if match:
+            try:
+                data = download_inputs(match.group(1), parse_qs(parsed.query).get("attempt", [None])[0])
+            except (InputUnavailable, AttemptChanged, OSError) as error:
+                status = 409 if isinstance(error, AttemptChanged) else 404
+                return self.send_body(status, str(error), "text/plain; charset=utf-8")
+            return self.send_body(200, data, "application/zip", {
+                "Content-Disposition": f'attachment; filename="{match.group(1)}-inputs.zip"'})
         match = re.fullmatch(r"/api/papers/(W\d+)(/visualization)?", path)
         if match:
             paper_id = match.group(1)
@@ -260,6 +358,27 @@ class Handler(BaseHTTPRequestHandler):
                 content_type = mimetypes.guess_type(file.name)[0] or "application/octet-stream"
                 return self.send_body(200, file.read_bytes(), content_type)
         self.send_body(404, "Not found", "text/plain; charset=utf-8")
+
+    def do_POST(self):
+        parsed = urlparse(self.path)
+        match = re.fullmatch(r"/api/papers/(W\d+)/compare-floorplan", parsed.path)
+        if not match:
+            return self.send_body(404, "Not found", "text/plain; charset=utf-8")
+        try:
+            if self.headers.get("Content-Type", "").split(";", 1)[0] != "application/json":
+                return self.send_body(415, json.dumps({"error": "Send a .flp file as JSON."}),
+                                      "application/json; charset=utf-8")
+            length = int(self.headers.get("Content-Length", "0"))
+            if not 0 < length <= 2 * MAX_FLOORPLAN_BYTES:
+                return self.send_body(413, json.dumps({"error": "The uploaded floorplan is too large."}),
+                                      "application/json; charset=utf-8")
+            payload = json.loads(self.rfile.read(length))
+            result = compare_uploaded_floorplan(
+                match.group(1), parse_qs(parsed.query).get("attempt", [None])[0], payload)
+        except (OSError, ValueError) as error:
+            status = 409 if isinstance(error, AttemptChanged) else 404 if isinstance(error, InputUnavailable) else 422
+            return self.send_body(status, json.dumps({"error": str(error)}), "application/json; charset=utf-8")
+        return self.send_body(200, json.dumps(result), "application/json; charset=utf-8")
 
 
 def main():

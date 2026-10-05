@@ -44,7 +44,12 @@ button,input,select{font:inherit}
 .metadata{display:flex;flex-wrap:wrap;gap:6px 21px;align-items:baseline;color:#617481;font-size:12px;padding-bottom:25px;border-bottom:1px solid #e5ecee}
 .metadata strong{color:#264252;font-weight:600}.metadata .authors{flex-basis:100%}
 .source-note{color:#98a7ad;font:10px 'IBM Plex Mono',monospace}
-.status-strip{display:flex;align-items:center;gap:9px;padding:17px 0 0;font-size:12px;color:#647c85}
+.status-strip{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:17px 0 0;font-size:12px;color:#647c85}
+.attempt-label{overflow-wrap:anywhere}.input-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
+.comparison-dialog.bp6-dialog{width:min(1100px,calc(100vw - 32px));max-height:calc(100dvh - 48px);margin:24px auto}
+.comparison-dialog .bp6-dialog-body{min-height:0}.comparison-description{color:#506775;font-size:13px;line-height:1.5}
+.comparison-summary{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:20px 0 12px;color:#315163}
+.comparison-viewer{display:block;width:100%;height:58vh;min-height:320px;border:1px solid #dce6e8;border-radius:9px;background:white}
 .section{margin-top:34px}.section-header{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-bottom:14px}
 .section h2{font-size:17px;letter-spacing:-.025em;margin:0}.section-header span{font:500 10px 'IBM Plex Mono',monospace;color:#8a9da6;text-transform:uppercase;letter-spacing:.08em}
 .assessment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}

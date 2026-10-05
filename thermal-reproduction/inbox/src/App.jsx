@@ -3,6 +3,7 @@ import {
   AnchorButton, Button, Card, Callout, HTMLSelect, HTMLTable, InputGroup, Navbar,
   NavbarGroup, Spinner, Tag,
 } from '@blueprintjs/core';
+import FloorplanComparison from './FloorplanComparison.jsx';
 
 const FILTERS = ['All', 'Assessed', 'Queued', 'Processing', 'Simulated', 'No PDF', 'Failed'];
 const STATUS = {
@@ -83,7 +84,7 @@ function Results({ results }) {
   </>;
 }
 
-function Detail({ paper, loading, error, onBack }) {
+function Detail({ paper, loading, error, onBack, onCompare }) {
   if (loading) return <div className="detail-loading"><Spinner size={22} /> Loading latest result…</div>;
   if (error) return <EmptyState title="Unable to load paper" message={error} error />;
   if (!paper) return <EmptyState title="Select a paper" message="Choose a paper from the inbox to inspect its latest assessment and simulation." />;
@@ -109,7 +110,19 @@ function Detail({ paper, loading, error, onBack }) {
         {paper.author_source && <span className="source-note"> · {paper.author_source}</span>}</span>
     </div>
     <div className="status-strip"><Tag intent={statusIntent(paper.status)}>{statusLabel(paper.status)}</Tag>
-      <span>{paper.attempt ? `Latest attempt · ${paper.attempt}` : 'No run recorded yet'}</span></div>
+      <span className="attempt-label">{paper.attempt ? `Latest attempt · ${paper.attempt}` : 'No run recorded yet'}</span>
+      <div className="input-actions">
+        <AnchorButton small outlined icon="download" href={paper.inputs?.download_url}
+          download={`${paper.id}-inputs.zip`} disabled={!paper.inputs?.download_url}
+          title={paper.inputs?.files?.length ? `Download ${paper.inputs.files.join(' and ')} as a ZIP` : 'No saved input files for this attempt'}>
+          Download inputs
+        </AnchorButton>
+        <Button small outlined icon="comparison" onClick={() => onCompare(paper)}
+          disabled={!paper.inputs?.compare_url} title={paper.inputs?.compare_url ? undefined : 'No saved input.flp for this attempt'}>
+          Compare my Floorplan
+        </Button>
+      </div>
+    </div>
 
     <Section title="Reproducibility assessment" note="Latest attempt">
       {paper.assessment ? <>
@@ -152,6 +165,7 @@ export default function App() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState('');
   const [mobileOpen, setMobileOpen] = useState(Boolean(location.hash));
+  const [comparisonPaper, setComparisonPaper] = useState(null);
   const searchRef = useRef(null);
   const detailRef = useRef(null);
 
@@ -248,8 +262,11 @@ export default function App() {
         </nav>
       </aside>
       <main className="detail" ref={detailRef} aria-live="polite">
-        <Detail paper={paper} loading={detailLoading} error={detailError || (listError && !selectedId ? listError : '')} onBack={showList} />
+        <Detail paper={paper} loading={detailLoading} error={detailError || (listError && !selectedId ? listError : '')}
+          onBack={showList} onCompare={setComparisonPaper} />
       </main>
     </div>
+    {comparisonPaper && <FloorplanComparison key={`${comparisonPaper.id}-${comparisonPaper.attempt}`}
+      paper={comparisonPaper} onClose={() => setComparisonPaper(null)} />}
   </div>;
 }
