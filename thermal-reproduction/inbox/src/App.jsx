@@ -4,6 +4,7 @@ import {
   NavbarGroup, Spinner, Tab, Tabs, Tag,
 } from '@blueprintjs/core';
 import FloorplanComparison from './FloorplanComparison.jsx';
+import chipFryLogo from './assets/chip_fry_logo.png';
 
 const FILTERS = ['All', 'Assessed', 'Queued', 'Processing', 'Simulated', 'No PDF', 'Failed'];
 const STATUS = {
@@ -264,7 +265,7 @@ export default function App() {
   return <div className={`shell ${mobileOpen ? 'mobile-detail-open' : ''}`}>
     <Navbar className="topbar">
       <NavbarGroup>
-        <div className="brand-mark" aria-hidden="true"><span /><span /><span /><span /></div>
+        <img className="brand-logo" src={chipFryLogo} alt="" width="64" height="64" />
         <div className="brand"><strong>Chip Fry</strong>
           <small>Reproduce, Replicate and Reuse published results for your own application</small></div>
       </NavbarGroup>
