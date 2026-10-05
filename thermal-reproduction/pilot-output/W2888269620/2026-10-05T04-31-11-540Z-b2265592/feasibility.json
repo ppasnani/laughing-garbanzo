@@ -1,0 +1,64 @@
+{
+  "paper_id": "W2888269620",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No linked code, data, repository or supplementary assets; the packet's artifact search found no links and the assets list is empty.",
+    "Per-block x_m, y_m, width_m, height_m: no floorplan coordinates published for cores, routers or VFI clusters. Only layer sizes are given (Table 2, PDF page 14: 10x10 mm for four layers) and a 4x4x4 grid on PDF page 13.",
+    "Per-block power_rows (name and watts): no per-core, per-router or total chip power values published. McPAT outputs are not reported.",
+    "Absolute per-benchmark temperature values for Figure 15 are only in a bar chart; no tabulated values (would require digitization with uncertainty).",
+    "HotSpot configuration, material properties, layer thicknesses, thermal resistances R_j and R_b, heat-sink and ambient boundary conditions for TSV and M3D stacks.",
+    "Final optimized placements of cores, VFI clusters and multi-tier routers for PTO TSV and PTM M3D, and the alpha and beta cost weights.",
+    "Studio package/material assumptions cannot be tied to the paper; none are recorded. No complete experiment exists, so the floorplan is empty.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper models a 4-tier 3D stack (TSV with BCB bonding layers versus monolithic ILD with MIVs), which a 2D steady-state Studio runner cannot represent, so inter-tier thermal resistance and the TSV/M3D difference are lost.",
+      "essential": true
+    },
+    {
+      "reason": "The M3D versus TSV result depends on vertical thermal resistance (R_j, R_b) and layer material differences extracted from HotSpot. These parameters are not published in the paper, so they cannot be reproduced.",
+      "essential": true
+    },
+    {
+      "reason": "The study is a multi-core NoC (cores, routers, links, VFI clusters) with architecture-level placement optimization. The paper publishes no per-block geometry, coordinates or power values, so no complete floorplan or power table exists.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer is simulated annealing over NoC core, router and link placement with a joint performance-temperature cost, while a Studio thermal runner would use a different or no optimizer. The optimizer is therefore not replicated.",
+      "essential": true
+    },
+    {
+      "reason": "The workload power comes from GEM5/McPAT per benchmark with static VFI voltage-frequency levels. These powers are not published, and no controller or time series is available.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling and heat-sink boundary conditions, package and interposer model are not specified in the paper, though the heat sink location is described qualitatively (high-power VFI clusters near the sink).",
+      "essential": true
+    },
+    {
+      "reason": "No transient behavior, reliability analysis (e.g., NBTI, mentioned only qualitatively) or throttling dynamics are simulated. The paper reports steady-style max/avg/min temperatures with no throttling triggered.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "e67eaafda58201b1f633d23706789aaa260de9bb55fb9be8e357f15fbd915980",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

@@ -1,0 +1,85 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text on PDF pp.10-11 supports the joint cost = alpha*O + beta*T (Eq. 2), the Cong et al. resistive-network temperature model (Eqs. 3-4), and simulated annealing with VFI-constrained swap S'(i,j) and link move L(l), each chosen with probability 0.5. Static VFI (SVFI) is on p.8-9, and HotSpot, GEM5 and McPAT are on p.13. These are method descriptions only. They do not make the setup reproducible, and the extraction adds some unsupported gloss (steady-state, throttling). See the findings."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The paper gives no code, data or repository links, and the supplied assets list is empty. The extraction's artifact search status is checked_no_links. There is nothing to verify, and no implementation is available for the SA optimizer, HotSpot configs or McPAT outputs."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The alpha and beta weights, the R_j and R_b values (p.10), the McPAT powers, per-block geometry and final placements are not published. The published numbers are the Table 1 cluster sizes (each sums to 64) and V/F entries, the Table 2 layer sizes, the 4x4x4 grid, the 110 C limit, 29.1% (avg 20.1%), 16.7/2.9 C, 14 C and 70 C. None of these gives block powers or a floorplan. Table 1 V/F units are inferred as normalized, not stated."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no HotSpot configuration (package, heat-sink and ambient boundary, layer stack, material properties) and no steady-versus-transient specification. The extraction's claim of 'steady-style' temperatures and kind custom_2d_steady is not supported by the paper. The paper's 3D TSV/BCB versus M3D/ILD stack cannot be represented as a 2D reproduction. The empty floorplan and empty power_w are consistent with this absence."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The decisive observable, the per-benchmark Figure 15 bars (PDF p.20), is an image. It was not visually verified because the packet has only pdftotext output and no assets. Only the text values for reduction percentages and max-min differences are available. No per-block coordinates exist and no same-scenario power exists for any floorplan block, so the floorplan is empty. Table 2 'mm2' with 10 x 10 entries is read as mm x mm. That reading is plausible because the per-layer areas 400/200/150/100 scale consistently."
+    }
+  },
+  "findings": [
+    {
+      "field": "thermal_observable (Figure 15 per-benchmark temperatures)",
+      "reason": "The decisive figure is not available in the supplied evidence. The pdftotext extract has no figure content and the assets list is empty. Per-benchmark max/avg/min temperatures and the benchmark producing the 29.1% case were not visually verified, so only the text claims can be checked.",
+      "locator": "PDF p.20, Figure 15; assets: []"
+    },
+    {
+      "field": "thermal_observable.pdf_page",
+      "reason": "The extraction cites pdf_page 20 for the 29.1% value, but the quoted sentence ('up to 29.1% (average 20.1%)') is on PDF p.19 (Section 5.4). Only the figure is on p.20. The page citation is inconsistent with the evidence records, which cite p.19.",
+      "locator": "extraction.thermal_observable.pdf_page vs PDF p.19 Section 5.4"
+    },
+    {
+      "field": "thermal_observable.aggregation",
+      "reason": "The aggregation is described as the maximum over benchmarks of per-benchmark reductions. The paper says only 'up to 29.1% (average 20.1%)'. The identity of the benchmark and whether the metric is a percent of absolute Celsius temperature are not specified. This is inferred, not shown.",
+      "locator": "PDF p.19 Section 5.4; abstract p.1"
+    },
+    {
+      "field": "original_setup.controller (throttling not triggered)",
+      "reason": "The statement that 110 C throttling is not triggered comes from the Figure 10 discussion (no VFI, layer sweep, WATER 107 C). The paper does not state it for the PTO TSV versus PTM M3D scenario of Figure 15. Applying it to the Figure 15 scenario is an unsupported extension.",
+      "locator": "PDF p.17, Section 5.2 last paragraph; PDF p.19-20 Section 5.4"
+    },
+    {
+      "field": "experiment.kind / scenario 'steady-style'",
+      "reason": "The paper never says the HotSpot results are steady-state or transient. The extraction labels the experiment custom_2d_steady and describes 'steady-style' temperatures while also setting steady_2d_relevant=false. That is internally inconsistent, and the steady label is unsupported. The scenario is a 4-tier 3D stack with no stated steady/transient mode.",
+      "locator": "extraction.experiment.kind; PDF pp.10, 13, 19-20"
+    },
+    {
+      "field": "grid_four_layer locator",
+      "reason": "The locator quote 'four-layer 4 x 4 x 4 (=64) grids' is a paraphrase. The paper states 'in two- and four-layer configuration ... 4x8x2 (=64) and 4x4x4 (=64) grids', and the sentence continues from p.13 to p.14. The same section also contains the unexplained typo 'system consisting of 64 x 86 cores' (p.13), which conflicts with 64 cores. The extraction does not flag this.",
+      "locator": "PDF p.13 Section 5.1, PDF p.14 Table 2"
+    },
+    {
+      "field": "missing_inputs (materials and thicknesses)",
+      "reason": "The extraction lists material properties and layer thicknesses as unpublished. The paper does give literature values: BCB 0.29 W/m-K, SiO2 1.38 W/m-K, ILD 100-300 nm, and die thickness 20-80 um for TSV stacks. They come from cited works, not from the authors' HotSpot configuration. The absence claim is overstated, although these values are not a usable stack definition.",
+      "locator": "PDF p.5 Section 2 (Samal et al. 2014; Souriau et al. 2012)"
+    },
+    {
+      "field": "average_max_temperature_PTO_TSV_VFI and 14 C reduction",
+      "reason": "These values come from Section 5.5 text tied to Figure 19, which is a layer-sweep average over benchmarks. The 70 C value's layer count is ambiguous, as the extraction notes. Figure 19 was not visually verified. These values are not the Figure 15 per-benchmark scenario and cannot substitute for it.",
+      "locator": "PDF p.22 Section 5.5; PDF p.21 Figure 19"
+    },
+    {
+      "field": "floorplan / power_w",
+      "reason": "There are no per-block coordinates, block names, or same-scenario power values for any block. The paper publishes only chip-level sizes, cluster core counts and V/F fractions. The empty floorplan is correct. No 2D reproduction, generated shelf layout or constant-power placeholder can be called a reproduction of this 3D, optimizer-driven result.",
+      "locator": "Whole PDF pp.1-25; Table 1 and Table 2 on PDF p.14"
+    }
+  ],
+  "checked_pdf_pages": [
+    5,
+    10,
+    11,
+    13,
+    14,
+    17,
+    19,
+    20,
+    21,
+    22
+  ],
+  "checked_assets": []
+}

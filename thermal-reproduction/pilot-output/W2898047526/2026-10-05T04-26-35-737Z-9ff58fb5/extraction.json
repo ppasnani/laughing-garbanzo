@@ -1,0 +1,236 @@
+{
+  "paper_id": "W2898047526",
+  "paper_title": "STREAM: Stress and Thermal Aware Reliability Management for 3-D ICs",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 12,
+    "figure_or_table": "Fig. 14a (with Fig. 14b)",
+    "description": "Transient maximum temperature of the two-layer 3D IC under a synthetic workload with three cool phases and two hot phases. STREAM (ANN stress model, lifetime banking, lifetime MPC) is compared with the existing method [21] and with free run (no reliability management). The paper reports free-run temperature reaching about 110 C and the existing method holding it below the 90 C threshold. STREAM tolerates threshold violations while the lifetime deposit (Fig. 14b) is positive.",
+    "architecture": "Two-layer 3D IC microprocessor with 32 identical Alpha 21264 cores (16 per layer) and 144 TSVs, 10 mm x 10 mm x 0.3 mm. TSV radii are ri=20 um and ro=24 um, with a Cu-filled TSV and SiO2 liner. Thermal model from HotSpot with 3D extension, ambient 20 C, DVFS with 19 voltage/frequency levels.",
+    "workload": "Synthetic workload emulating user application behavior (three cool phases, two hot phases) over about 400 s. Power traces for SPEC CPU2006 are generated with Wattch, but the synthetic trace is not tabulated.",
+    "operating_point": "Threshold temperature 90 C, ambient 20 C, maximum frequency 2.0 GHz. Free-run maximum temperature about 110 C, read from Fig. 14a. Lifetime deposit reaches zero at about 240 s in Fig. 14b.",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "HotSpot compact RC thermal model with 3D extension (G, C, Bc matrices, 92x92, 92x92 and 92x32), discretized with backward Euler. COMSOL 5.0 provides the golden TSV stress data. Control and reliability code is in MATLAB R2016b (pdf p.3, p.10, p.11).",
+    "optimizer": "Lifetime MPC: closed-form unconstrained least-squares tracking of a target temperature distribution, dP = (Phi^T Phi)^-1 Phi^T (Ytg - V That), with a lookup-table target temperature estimator. The ANN stress model is trained by RPROP backpropagation (pdf p.5, p.6, p.9).",
+    "controller": "STREAM: ANN stress model, lifetime estimator with lifetime banking (LTDP), and lifetime MPC. The MPC power suggestion is realized through DVFS with 19 voltage/frequency levels. A 0.1 s management period was used for the performance experiments and 1 s for the transient-tracking experiment (pdf p.9-12).",
+    "benchmark": "Synthetic workload with three cool phases and two hot phases over about 400 s, on a two-layer 3D IC with 32 Alpha 21264 cores, 144 TSVs and a 10x10x0.3 mm chip. STREAM is compared with the existing method [21] and a free run without management (Fig. 14a/14b, pdf p.12-13). The synthetic power trace itself is not tabulated."
+  },
+  "thermal_observable": {
+    "value": 110,
+    "unit": "degC",
+    "location": "Maximum on-chip temperature of the two-layer 3D IC in Fig. 14a. The 110 degC value is the free-run case, read from the text. The existing method is held below the 90 degC threshold.",
+    "aggregation": "Maximum temperature across the chip at each time instant, as a transient over about 400 s. The 110 degC is the approximate free-run peak and is not an exact tabulated value.",
+    "pdf_page": 12
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The paper models a two-layer 3D IC with TSVs, TSV-induced thermomechanical stress and inter-layer coupling. A Studio 2D single-layer model cannot represent the vertical stacking, TSV heat paths or stress.",
+      "essential": true
+    },
+    {
+      "reason": "The observable is a transient maximum temperature under a time-varying synthetic workload with DVFS feedback. A steady-state 2D model cannot reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The result depends on closed-loop lifetime MPC with lifetime banking and DVFS actuation. This controller, with its ANN stress model, MTTF reliability models (thermal cycling and stress migration) and LTDP lifetime deposit, has no counterpart in a plain thermal solver.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer is a model predictive controller plus RPROP ANN training, not a floorplan or placement optimizer. The paper provides no placement coordinates for an optimization comparison.",
+      "essential": true
+    },
+    {
+      "reason": "The paper uses HotSpot 3D with a 92-node compact model, Wattch power traces, and COMSOL for stress. The solver, grid and package model differ from the Studio solver.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "No paper-linked assets, repositories or supplementary data were found (artifact search found no links). The packet contains no pinned assets.",
+    "No per-core or per-block x_m, y_m, width_m, height_m. Only the total chip size (10 mm x 10 mm x 0.3 mm) and the Fig. 4a layout are given. Alpha 21264 core dimensions are not tabulated.",
+    "No same-scenario per-block power rows (name and watts) for the synthetic workload. The Wattch power traces and the synthetic trace are not provided, and total power is not published.",
+    "No numeric time series for Fig. 14a or Fig. 14b. The 110 degC and 90 degC values come from the text, and the 240 s lifetime deposit exhaustion is read from the figure, so any further values would need digitizing with uncertainty.",
+    "No HotSpot 3D configuration: layer thicknesses and materials, TSV placement coordinates, interface materials, package, spreader and heat sink parameters, or convection boundary conditions.",
+    "No reliability model constants (A0, qc, sigma0, B0, Ea, na), no MTTFth design target value, and no ANN weights or MPC horizons (Np, Nc).",
+    "The Studio package and material assumptions were not supplied in the packet and are not recorded."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "chip_width_m",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V Experimental Results, first paragraph: 'dimension of this 3D IC chip is 10 mm x 10 mm x 0.3 mm'",
+      "provenance": "Total chip lateral dimension from paper text; not a per-block dimension and no placement coordinates are published.",
+      "uncertainty": null
+    },
+    {
+      "field": "chip_height_m",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V Experimental Results, first paragraph: 'dimension of this 3D IC chip is 10 mm x 10 mm x 0.3 mm'",
+      "provenance": "Total chip lateral dimension from paper text; not a per-block dimension.",
+      "uncertainty": null
+    },
+    {
+      "field": "chip_thickness_m",
+      "block_name": null,
+      "source_value": 0.3,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0003,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V Experimental Results, first paragraph: '10 mm x 10 mm x 0.3 mm'",
+      "provenance": "Chip thickness stated in paper text; the two-layer split of thickness is not specified.",
+      "uncertainty": null
+    },
+    {
+      "field": "ambient_temperature_C",
+      "block_name": null,
+      "source_value": 20,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 20,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section V, paragraph 2: 'The ambient temperature is set as 20 °C'",
+      "provenance": "Ambient temperature from paper text.",
+      "uncertainty": null
+    },
+    {
+      "field": "tsv_inner_radius_m",
+      "block_name": null,
+      "source_value": 20,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.00002,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section V, paragraph 2: 'ri = 20 µm and ro = 24 µm'",
+      "provenance": "TSV structure radius from paper text.",
+      "uncertainty": null
+    },
+    {
+      "field": "tsv_outer_radius_m",
+      "block_name": null,
+      "source_value": 24,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000024,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section V, paragraph 2: 'ri = 20 µm and ro = 24 µm'",
+      "provenance": "TSV structure radius from paper text.",
+      "uncertainty": null
+    },
+    {
+      "field": "threshold_temperature_C",
+      "block_name": null,
+      "source_value": 90,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 90,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section V-D, synthetic workload paragraph: 'controlled below 90 °C, which is the threshold temperature'",
+      "provenance": "Threshold temperature for the existing method in the synthetic-workload experiment, from paper text.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_free_run_max_temperature_C",
+      "block_name": null,
+      "source_value": 110,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 110,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section V-D, synthetic workload paragraph and Fig. 14a: 'the temperature can reach 110 °C'",
+      "provenance": "Maximum on-chip temperature of the free-run (unmanaged) case under the synthetic workload. Aggregation is the chip maximum over time (transient, about 400 s). The value comes from the text, approximate.",
+      "uncertainty": "Approximate peak stated in text; no tabulated time series and not digitized from the figure."
+    },
+    {
+      "field": "lifetime_deposit_exhaustion_time_s",
+      "block_name": null,
+      "source_value": 240,
+      "source_unit": "s",
+      "conversion_factor": 1,
+      "normalized_value": 240,
+      "pdf_page": 13,
+      "asset_id": null,
+      "locator": "Section V-D continuation: 'At around 240 s, the lifetime deposit is fully consumed'",
+      "provenance": "Time at which lifetime deposit is exhausted in the synthetic workload, from text and Fig. 14b.",
+      "uncertainty": "Approximate ('around 240 s')."
+    },
+    {
+      "field": "power_rows",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section V paragraph 2: power traces generated by Wattch running SPEC CPU2006 on Alpha 21264; synthetic workload in Section V-D (pdf p.12)",
+      "provenance": "No per-block or total power values are published for the synthetic scenario; no pinned assets exist. Power rows are not recorded and total power is not split.",
+      "uncertainty": "Missing input."
+    },
+    {
+      "field": "block_geometry_x_y_width_height",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Fig. 4a: die structure of 32-core 3D IC (graphical only; no coordinates or core dimensions in text)",
+      "provenance": "The paper gives only a layout figure of 16 cores per layer and 144 TSVs. No x_m, y_m, width_m or height_m is published. The floorplan is left empty.",
+      "uncertainty": "Missing input; digitizing the figure would be needed, and no core dimensions are published."
+    },
+    {
+      "field": "paper_linked_resources",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "All pages 1-15 reviewed; no availability statement, repository URL or supplementary data link found. Only source_url is the author-copy PDF.",
+      "provenance": "No paper-linked repository or supplementary resources found; the packet assets list is empty (no pinned asset files).",
+      "uncertainty": null
+    },
+    {
+      "field": "studio_package_material_assumptions",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "No pinned packet asset or Studio configuration supplied (assets list empty)",
+      "provenance": "Bundled Studio package and material assumptions were not supplied, so none are recorded. The paper gives no package, spreader, heat sink or material configuration for HotSpot 3D.",
+      "uncertainty": "Missing input."
+    }
+  ]
+}

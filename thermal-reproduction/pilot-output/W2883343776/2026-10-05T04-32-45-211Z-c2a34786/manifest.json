@@ -1,0 +1,534 @@
+{
+  "paper_id": "W2883343776",
+  "paper_title": "A novel power model for future heterogeneous 3D chip-multiprocessors in the dark silicon age",
+  "manifest_status": "downloaded",
+  "source_url": "https://content.openalex.org/works/W2883343776.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "d2f6f819a865e57771ef8f8b284a83341a472473a9bf8ced8a0c3a52dfd61886",
+  "pdf_pages": 16,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:34:16.280Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W2883343776",
+    "paper_title": "A novel power model for future heterogeneous 3D chip-multiprocessors in the dark silicon age",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "cc_by_4_license",
+        "url": "http://creativecommons.org/licenses/by/4.0/",
+        "kind": "license",
+        "paper_page": 1
+      },
+      {
+        "id": "ref37_anandtech_iphone4s_review",
+        "url": "http://www.anandtech.com/show/4971/apple-iphone-4s-review-att-verizon/5",
+        "kind": "reference_web_article",
+        "paper_page": 16
+      },
+      {
+        "id": "ref38_spec_benchmark_site",
+        "url": "http://www.specbench.org",
+        "kind": "benchmark_suite_website",
+        "paper_page": 16
+      },
+      {
+        "id": "ref48_cvx_solver_site",
+        "url": "http://cvxr.com/cvx/",
+        "kind": "solver_software_website",
+        "paper_page": 16
+      }
+    ],
+    "scenario": {
+      "pdf_page": 13,
+      "figure_or_table": "Fig. 7a with Table 4 (Experiment 1) and Table 9",
+      "description": "Validation of the analytical power model against simulation for the 16-core 3D CMP with hybrid stacked cache hierarchy (L2 SRAM, L3 eDRAM, L4 STT-RAM), running the multi-threaded PARSEC canneal workload. The paper reports power breakdowns (cores, cache hierarchy, on-chip interconnection) in W, not temperatures or a floorplan.",
+      "architecture": "16-core 3D CMP: 4x4 mesh core layer (Alpha21164 cores, 3 GHz, 3.5 mm2, 32 nm) with 3 stacked layers per cache level (L2, L3, L4), 3D NoC with TSV links, hybrid SRAM/eDRAM/STT-RAM hierarchy",
+      "workload": "canneal, PARSEC multi-threaded, 16 threads, simlarge input, 1 billion instructions from the region of interest",
+      "operating_point": "3 GHz, 32 nm, Pmax 110 W, Tmax 80 C (Table 4)",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "The analytical power model is a linear polynomial formulation solved with the CVX convex optimization solver (Matlab). It is validated against GEM5 full-system simulation traces (with McPAT), 3D Noxim with ORION for NoC power, and CACTI/NVSim for cache energy. No thermal solver is used. Tmax is only a parameter in the leakage terms (Eq. 7, Eq. 20) and in Table 4 (80 C).",
+      "optimizer": "CVX solves a performance-maximization problem under a dark-silicon power budget (Eqs. 35-36, Pmax 110 W). This is a design-time/run-time power budgeting formulation, not a thermal or floorplan optimizer. Evidence is on PDF pages 10-11.",
+      "controller": "None. The paper proposes no closed-loop thermal controller. It models per-core DVFS-style dynamic power (P_D,i = Pmax (f_i/fmax)^2) and gates idle cores off (dark silicon), without a feedback or transient controller.",
+      "benchmark": "Selected scenario: Experiment 1, a 16-core (4x4 mesh) hybrid 3D CMP (L2 SRAM, L3 eDRAM, L4 STT-RAM, 3 layers per level) at 3 GHz and 32 nm, running the PARSEC canneal multi-threaded workload with 16 threads (simlarge, 1 billion instructions from the ROI). Validated in Fig. 7a on PDF page 13, with Table 4 (PDF page 10) and Table 9 (PDF page 14). Other workloads in the paper: SPEC2000/2006 multi-programed sets and a 64-core Experiment 2."
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "",
+      "location": "No thermal observable is reported. The paper reports only power in W (cores, cache hierarchy, on-chip interconnection) in Figs. 7-8. These are digitized bar charts without numeric labels in the extracted text. Tmax = 80 C in Table 4 is a design limit and leakage-model input, not a measured or simulated temperature.",
+      "aggregation": "None for temperature. The power observables are per-workload totals by component, compared between simulation and model, with percentage differences in Tables 9-10.",
+      "pdf_page": 13
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The paper models a 3D stacked CMP (core layer plus 3 layers each of L2/L3/L4 caches, with TSV links), not a 2D planar or interposer chiplet system. A 2D steady-state Studio model cannot represent the vertical stacking, TSVs or the thermal coupling in a core set.",
+        "essential": true
+      },
+      {
+        "reason": "No thermal solver, temperature map, or temperature observable exists in the paper. Only power is validated, and Tmax is a fixed constant in the leakage terms, so there is no thermal result to compare against.",
+        "essential": true
+      },
+      {
+        "reason": "No floorplan is published: no block x/y coordinates, widths or heights for caches, NoC or other blocks. Only the core area (3.5 mm2 each, Table 4) and cache bank areas (Table 1, per technology) are given, and these are not same-scenario placed dimensions.",
+        "essential": true
+      },
+      {
+        "reason": "Per-block power is not published numerically. The component powers for canneal appear only as bar-chart heights in Fig. 7a, and the total chip power cannot be split without a published rule.",
+        "essential": true
+      },
+      {
+        "reason": "No cooling or package model (heat sink, TIM, convection, ambient) is described; ambient/maximum temperature enters only as a scalar leakage coefficient.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is a GEM5 trace-driven execution with activity-dependent power, but no power time series is published. The paper's optimizer and controller (CVX budgeting, dark-silicon core gating) are not thermal management methods and have no Studio equivalent.",
+        "essential": false
+      },
+      {
+        "reason": "There is no reliability analysis; the NVM write endurance discussion is qualitative only.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete paper-derived experiment (dimensions, power per block, thermal observable) exists, so the floorplan is returned empty. Any Studio run would be only an illustrative separate 2D placement, with generated coordinates kept distinct from paper facts.",
+      "If an illustrative run were built, it would use only dimensions and powers explicitly published: the core area of 3.5 mm2 per core (Table 4) and the Table 1 bank areas. It would use a single-row power trace, and its temperatures would not be compared numerically with the paper, which reports none.",
+      "Total chip power would not be split across blocks without a published rule. The Pmax of 110 W is a budget, not a measured canneal power.",
+      "Studio package and material assumptions (default silicon die, heat spreader, heat sink and ambient) are not given in the paper. They would be the bundled Studio defaults and are not paper-derived."
+    ],
+    "missing_inputs": [
+      "No pinned assets were supplied (assets list empty), so no config, geometry or thermal files were inspected. The linked resources are only: the CC-BY 4.0 license (PDF page 1), the AnandTech iPhone 4S review (page 16), the SPEC website (page 16) and the CVX site (page 16). None of these provides the paper's inputs.",
+      "Floorplan: no x_m, y_m, width_m or height_m for the cores, caches, routers or TSV regions of the 16-core hybrid CMP.",
+      "Per-block power rows (name and watts) for canneal: only digitized bar-chart values in Fig. 7a on PDF page 13, with no numeric labels.",
+      "A thermal observable (temperature, in C, at a stated location with an aggregation) is absent.",
+      "Stack material, layer thickness, TSV, interface, heat sink and ambient temperature parameters are absent.",
+      "Power time series for canneal, GEM5/McPAT/Noxim configuration files, and the CVX model code are not provided, and no repository or data availability statement exists."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "core_count",
+        "block_name": "core layer",
+        "source_value": 16,
+        "source_unit": "cores",
+        "conversion_factor": 1,
+        "normalized_value": 16,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Table 4, 'Number of cores' row, Experiment 1: 16, 4 × 4 mesh",
+        "provenance": "Paper text table; Experiment 1 is the selected 16-core hybrid 3D CMP scenario",
+        "uncertainty": null
+      },
+      {
+        "field": "core_area",
+        "block_name": "core (Alpha21164)",
+        "source_value": 3.5,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.0000035,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Table 4, 'Core configuration' row: Alpha21164, 3 GHz, area 3.5 mm2, 32 nm",
+        "provenance": "Paper-published per-core area. Width and height are not given separately and no placement is published.",
+        "uncertainty": "Area only; no aspect ratio, so width_m and height_m cannot be derived."
+      },
+      {
+        "field": "core_frequency",
+        "block_name": "core (Alpha21164)",
+        "source_value": 3,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 3000000000,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Table 4, 'Core configuration' row",
+        "provenance": "Paper-published operating frequency for the selected scenario",
+        "uncertainty": null
+      },
+      {
+        "field": "power_budget_Pmax",
+        "block_name": null,
+        "source_value": 110,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 110,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Table 4, 'Pmax, Tmax' row: 110 W, 80°C",
+        "provenance": "Design power budget used in the dark-silicon constraint (Eqs. 35-36). It is not a measured canneal power and is not split across blocks.",
+        "uncertainty": "Budget limit, not a per-block or measured chip power."
+      },
+      {
+        "field": "temperature_limit_Tmax",
+        "block_name": null,
+        "source_value": 80,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 80,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Table 4, 'Pmax, Tmax' row; also Eq. 7 and Eq. 20 where Tmax is a leakage-model input",
+        "provenance": "Fixed design limit and leakage-model input, not a simulated or measured temperature observable",
+        "uncertainty": "Not a thermal result."
+      },
+      {
+        "field": "bank_area_1MB_SRAM_L2",
+        "block_name": "L2 SRAM bank (1 MB)",
+        "source_value": 3.03,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00000303,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, row '1 MB SRAM', Area (mm2) column",
+        "provenance": "NVSim/CACTI estimate at 32 nm; the hybrid L2 layer uses 16 × 1 MB SRAM banks (PDF page 12)",
+        "uncertainty": "Technology-comparison area, not a placed block dimension."
+      },
+      {
+        "field": "bank_area_4MB_eDRAM_L3",
+        "block_name": "L3 eDRAM bank (4 MB)",
+        "source_value": 3.31,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00000331,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, row '4 MB eDRAM', Area (mm2) column",
+        "provenance": "NVSim/CACTI estimate at 32 nm; the hybrid L3 layer uses 16 × 4 MB eDRAM banks (PDF page 12)",
+        "uncertainty": "Technology-comparison area, not a placed block dimension."
+      },
+      {
+        "field": "bank_area_4MB_STTRAM_L4",
+        "block_name": "L4 STT-RAM bank (4 MB)",
+        "source_value": 3.39,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00000339,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 1, row '4 MB STT-RAM', Area (mm2) column",
+        "provenance": "NVSim/CACTI estimate at 32 nm; the hybrid L4 layer uses 16 × 4 MB STT-RAM banks (PDF page 12)",
+        "uncertainty": "Technology-comparison area, not a placed block dimension."
+      },
+      {
+        "field": "canneal_LLC_utilization",
+        "block_name": null,
+        "source_value": 74,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.74,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 7, row 'canneal', LLC_Util (%) column",
+        "provenance": "Paper workload characterization for the selected canneal scenario",
+        "uncertainty": null
+      },
+      {
+        "field": "canneal_miss_rate",
+        "block_name": null,
+        "source_value": 73,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.73,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 7, row 'canneal', Miss rate (%) column",
+        "provenance": "Paper workload characterization",
+        "uncertainty": null
+      },
+      {
+        "field": "canneal_model_vs_simulation_difference_cores_hybrid",
+        "block_name": "cores (hybrid CMP, 16-core)",
+        "source_value": 4.762,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.04762,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Table 9, row 'canneal', CMP 'Hybrid', Cores (%) column",
+        "provenance": "Paper-reported difference between analytical model and simulation for core power; a power-model validation metric, not a temperature",
+        "uncertainty": "Relative difference only; the absolute watts are shown only as Fig. 7a bars."
+      },
+      {
+        "field": "canneal_model_vs_simulation_difference_cache_hybrid",
+        "block_name": "cache hierarchy (hybrid CMP, 16-core)",
+        "source_value": 14.151,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.14151,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Table 9, row 'canneal', CMP 'Hybrid', Cache hierarchy (%) column",
+        "provenance": "Paper-reported model-vs-simulation difference for cache power",
+        "uncertainty": "Relative difference only."
+      },
+      {
+        "field": "canneal_model_vs_simulation_difference_noc_hybrid",
+        "block_name": "on-chip interconnection (hybrid CMP, 16-core)",
+        "source_value": 0,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Table 9, row 'canneal', CMP 'Hybrid', NoC (%) column",
+        "provenance": "Paper-reported model-vs-simulation difference for NoC power",
+        "uncertainty": "Relative difference only."
+      },
+      {
+        "field": "canneal_component_power_Fig7a",
+        "block_name": "cores / cache hierarchy / on-chip interconnection",
+        "source_value": null,
+        "source_unit": "W",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Fig. 7a (multi-threaded, 16-core CMP), canneal group, Hybrid-Simulation and Hybrid-Model bars",
+        "provenance": "The bar chart has no numeric labels in the extracted text, so no values were digitized. Per-block watts are not published numerically.",
+        "uncertainty": "Digitization was not attempted; the values would be bar heights read from the figure."
+      },
+      {
+        "field": "floorplan_geometry",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Searched all 16 PDF pages including Table 4, Table 1 and Figs. 4-6; the assets list is empty",
+        "provenance": "No x_m, y_m, width_m or height_m is published for any core, cache, NoC or TSV block, and no pinned asset was supplied",
+        "uncertainty": "Floorplan is missing; the experiment is not reproducible from the published inputs."
+      },
+      {
+        "field": "thermal_observable",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Figs. 7-8 report power in W only; Table 4 gives Tmax = 80 C as a limit",
+        "provenance": "No temperature observable (peak, mean or location) is reported; the original solver is a CVX power model validated against GEM5/McPAT/Noxim/ORION, not a thermal solver",
+        "uncertainty": "No thermal result exists to compare against."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "Methods text matches pp. 10-12: a linear analytical power model (Eqs. 1-36) solved with CVX, validated against GEM5+McPAT, 3D Noxim+ORION and CACTI/NVSim. The paper contains no thermal solver and no thermal controller, so the extraction's 'no thermal solver/controller' claim holds. Residual ambiguity: the paper does not say CVX was used to produce the Fig. 7 model bars, and Eq. 5 uses Pmax as a per-core maximum while Table 4 gives 110 W as a chip budget."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No code, model files, GEM5/McPAT/Noxim configs or repository are supplied or cited. Only the CVX, SPEC, AnandTech and license URLs are linked; none contains the paper's inputs, and bare URLs are not evidence."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "The scalars match the PDF: 16 cores in a 4x4 mesh, Alpha21164 at 3 GHz with 3.5 mm2 (Table 4), Pmax 110 W, Tmax 80 C, bank areas 3.03/3.31/3.39 mm2 (Table 1), canneal LLC_Util 74% and miss rate 73% (Table 7), and the Table 9 hybrid differences 4.762/14.151/0.000. The unit conversions are correct. The decisive parameters are absent: no per-block power, no stack, TSV, package or ambient parameters, and no thermal observable. Table 1 bank areas are not placed block dimensions, and a 16-bank layer is not 3.03 mm2."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No pinned asset was supplied. There is no floorplan (x, y, width, height) for cores, caches, routers or TSVs, so the 'floorplan: []' and 'power_w: {}' output is consistent with a missing configuration. The paper describes a 3D stack with TSVs and shared core-set stacking, so a 2D steady custom experiment has no valid basis. Labelling the experiment kind custom_2d_steady alongside steady_2d_relevant=false is internally awkward."
+      },
+      "data": {
+        "status": "missing",
+        "note": "The decisive observable is Fig. 7a (p. 13, canneal, hybrid, 16-core). The page text is rotated and garbled, with no numeric labels, and no visual verification of the bars is evidenced; 'no numeric labels' rests on text extraction only. No per-block same-scenario power exists, and no temperature or transient trace is published. Only relative model-vs-simulation percentages (Table 9) are verified."
+      }
+    },
+    "findings": [
+      {
+        "field": "canneal_component_power_Fig7a",
+        "reason": "The decisive figure was not visually verified. The extraction relies on garbled pdftotext of a rotated page, so the claim that the bars carry no numeric labels and that no values can be read is unverified. It is also unconfirmed that the Fig. 7a canneal group matches the Table 9 row.",
+        "locator": "PDF p. 13, Fig. 7a canneal group"
+      },
+      {
+        "field": "floorplan_geometry",
+        "reason": "No block coordinates or dimensions are published, only the core area and Table 1 technology areas. The Table 1 areas for 1/4/4 MB banks are not same-scenario placed dimensions: each layer has 16 banks, and no stacking or planar mapping is given. No same-scenario power exists for any floorplan block.",
+        "locator": "PDF p. 10 Table 4; p. 4 Table 1; p. 12 text on 16 x bank layers"
+      },
+      {
+        "field": "thermal_observable",
+        "reason": "No temperature or thermal observable is reported. Tmax = 80 C is a design limit and leakage-model input, not a result. Nothing is available for a thermal comparison.",
+        "locator": "PDF p. 10 Table 4, Eqs. 7 and 20; p. 13 Figs. 7-8"
+      },
+      {
+        "field": "power_budget_Pmax",
+        "reason": "Pmax is ambiguous: Eq. 5 treats it as the per-core maximum power budget, while Table 4 and Eqs. 35-36 treat 110 W as the chip budget. It is not a measured canneal power and cannot be split across blocks.",
+        "locator": "PDF p. 7 Eq. 5; p. 10 Table 4; p. 11 Eqs. 35-36"
+      },
+      {
+        "field": "scenario/3D features",
+        "reason": "Decisive 3D features (stacked cache layers, TSVs, core-set thermal coupling) cannot be represented as a 2D reproduction. No cooling or package model, transient trace, or CVX/GEM5 config exists. Any generated 2D shelf placement and constant power row would be an illustrative assumption, not a paper reproduction.",
+        "locator": "PDF p. 6 Fig. 4, Sec. 5; p. 10 Table 4"
+      },
+      {
+        "field": "linked_assets",
+        "reason": "None of the linked assets (CC-BY license, AnandTech article, SPEC site, CVX site) contains the paper's inputs, and none was inspected as a pinned asset. The assets list is empty, so there is no code or data evidence.",
+        "locator": "extraction.linked_assets; PDF pp. 1, 16"
+      },
+      {
+        "field": "experiment.kind",
+        "reason": "The experiment is declared custom_2d_steady but with an empty floorplan and empty power dictionary, and steady_2d_relevant=false. This is not a supported reproducible experiment.",
+        "locator": "extraction.experiment; scenario.steady_2d_relevant"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      4,
+      6,
+      7,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W2883343776",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "No pinned assets were supplied (assets list empty), so no config, geometry or thermal files were inspected. The linked resources are only: the CC-BY 4.0 license (PDF page 1), the AnandTech iPhone 4S review (page 16), the SPEC website (page 16) and the CVX site (page 16). None of these provides the paper's inputs.",
+      "Floorplan: no x_m, y_m, width_m or height_m for the cores, caches, routers or TSV regions of the 16-core hybrid CMP.",
+      "Per-block power rows (name and watts) for canneal: only digitized bar-chart values in Fig. 7a on PDF page 13, with no numeric labels.",
+      "A thermal observable (temperature, in C, at a stated location with an aggregation) is absent.",
+      "Stack material, layer thickness, TSV, interface, heat sink and ambient temperature parameters are absent.",
+      "Power time series for canneal, GEM5/McPAT/Noxim configuration files, and the CVX model code are not provided, and no repository or data availability statement exists.",
+      "Linked asset cc_by_4_license is not pinned and available",
+      "Linked asset ref37_anandtech_iphone4s_review is not pinned and available",
+      "Linked asset ref38_spec_benchmark_site is not pinned and available",
+      "Linked asset ref48_cvx_solver_site is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The paper models a 3D stacked CMP (core layer plus 3 layers each of L2/L3/L4 caches, with TSV links), not a 2D planar or interposer chiplet system. A 2D steady-state Studio model cannot represent the vertical stacking, TSVs or the thermal coupling in a core set.",
+        "essential": true
+      },
+      {
+        "reason": "No thermal solver, temperature map, or temperature observable exists in the paper. Only power is validated, and Tmax is a fixed constant in the leakage terms, so there is no thermal result to compare against.",
+        "essential": true
+      },
+      {
+        "reason": "No floorplan is published: no block x/y coordinates, widths or heights for caches, NoC or other blocks. Only the core area (3.5 mm2 each, Table 4) and cache bank areas (Table 1, per technology) are given, and these are not same-scenario placed dimensions.",
+        "essential": true
+      },
+      {
+        "reason": "Per-block power is not published numerically. The component powers for canneal appear only as bar-chart heights in Fig. 7a, and the total chip power cannot be split without a published rule.",
+        "essential": true
+      },
+      {
+        "reason": "No cooling or package model (heat sink, TIM, convection, ambient) is described; ambient/maximum temperature enters only as a scalar leakage coefficient.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is a GEM5 trace-driven execution with activity-dependent power, but no power time series is published. The paper's optimizer and controller (CVX budgeting, dark-silicon core gating) are not thermal management methods and have no Studio equivalent.",
+        "essential": false
+      },
+      {
+        "reason": "There is no reliability analysis; the NVM write endurance discussion is qualitative only.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete paper-derived experiment (dimensions, power per block, thermal observable) exists, so the floorplan is returned empty. Any Studio run would be only an illustrative separate 2D placement, with generated coordinates kept distinct from paper facts.",
+      "If an illustrative run were built, it would use only dimensions and powers explicitly published: the core area of 3.5 mm2 per core (Table 4) and the Table 1 bank areas. It would use a single-row power trace, and its temperatures would not be compared numerically with the paper, which reports none.",
+      "Total chip power would not be split across blocks without a published rule. The Pmax of 110 W is a budget, not a measured canneal power.",
+      "Studio package and material assumptions (default silicon die, heat spreader, heat sink and ambient) are not given in the paper. They would be the bundled Studio defaults and are not paper-derived."
+    ],
+    "evidence_sha256": "d043b885175d2650ab6e2edd3e7d76d682d85a9b8f7908ab7032a3ebd5c5e7a3",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable, and Studio did not run (simulation status: skipped; simulation_allowed=false; comparison_valid=false). The gate blocked the run because a custom experiment needs 1-128 blocks and a power_w object, and the extraction returned an empty floorplan and empty power map. The selected scenario (Experiment 1, 16-core hybrid 3D CMP with L2 SRAM / L3 eDRAM / L4 STT-RAM, PARSEC canneal, Fig. 7a, Table 4, Table 9) is a 3D stacked power-model validation. The paper reports only component power (cores, cache hierarchy, NoC) validated against GEM5/McPAT/Noxim/ORION/CACTI/NVSim, with CVX used for dark-silicon power budgeting. It reports no temperature, floorplan, package model or thermal solver, and Tmax = 80 C is only a design limit and leakage-model input. Had a run been attempted it would have been a custom 2D steady run with no transient trace and only an illustrative generated placement, not a reproduction. The scenario is neither a bundled EV6/GCC adaptation nor a pinned Ascend910/ATPlace case, so no source commit or pinned-size placement applies. No numerical comparison with the paper is possible because there is no Studio output and no paper temperature. The only paper numbers are power-model validation differences for hybrid canneal (cores 4.762%, cache hierarchy 14.151%, NoC 0%), which are not thermal quantities. The final verdict is therefore no thermal replication or comparison, and nothing here should be read as exact replication.",
+    "limitations": [
+      "Studio was not run; no temperatures, artifacts or traces exist.",
+      "The paper reports no thermal observable, so there is no location, aggregation or steady/transient regime to match, and no numerical comparison is valid.",
+      "Mismatch: the paper models a 3D stack with TSVs, while Studio would use a 2D steady model that cannot represent vertical stacking or TSV coupling.",
+      "Mismatch: no floorplan coordinates or block dimensions are published; only a 3.5 mm2 per-core area (Table 4) and per-technology bank areas (Table 1), with no aspect ratios or placement.",
+      "Mismatch: per-block canneal power appears only as unlabeled bar heights in Fig. 7a and was not digitized; the 110 W Pmax is a budget, not measured power, and cannot be split across blocks without a published rule.",
+      "Mismatch: no package, heat sink, TIM, ambient or material parameters are given; Studio defaults would not be paper-derived.",
+      "Mismatch: the paper's CVX budgeting and core gating are not thermal controllers, and no power time series is published, so a transient comparison is impossible.",
+      "No pinned assets were supplied, so no code, config or data were inspected. The linked resources (license, AnandTech article, SPEC site, CVX site) do not contain the inputs, and the adversarial and independent reviews were unresolved.",
+      "The extracted evidence includes a Table 9 entry flagged as lacking a valid page or pinned asset locator, and the thermal observable lacks a valid page, unit, location and aggregation.",
+      "Any later illustrative run would reflect generated placement and assumed defaults, not the paper's results.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "No pinned assets were supplied (assets list empty), so no config, geometry or thermal files were inspected. The linked resources are only: the CC-BY 4.0 license (PDF page 1), the AnandTech iPhone 4S review (page 16), the SPEC website (page 16) and the CVX site (page 16). None of these provides the paper's inputs.",
+      "Floorplan: no x_m, y_m, width_m or height_m for the cores, caches, routers or TSV regions of the 16-core hybrid CMP.",
+      "Per-block power rows (name and watts) for canneal: only digitized bar-chart values in Fig. 7a on PDF page 13, with no numeric labels.",
+      "A thermal observable (temperature, in C, at a stated location with an aggregation) is absent.",
+      "Stack material, layer thickness, TSV, interface, heat sink and ambient temperature parameters are absent.",
+      "Power time series for canneal, GEM5/McPAT/Noxim configuration files, and the CVX model code are not provided, and no repository or data availability statement exists.",
+      "Linked asset cc_by_4_license is not pinned and available",
+      "Linked asset ref37_anandtech_iphone4s_review is not pinned and available",
+      "Linked asset ref38_spec_benchmark_site is not pinned and available",
+      "Linked asset ref48_cvx_solver_site is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The paper models a 3D stacked CMP (core layer plus 3 layers each of L2/L3/L4 caches, with TSV links), not a 2D planar or interposer chiplet system. A 2D steady-state Studio model cannot represent the vertical stacking, TSVs or the thermal coupling in a core set.",
+      "No thermal solver, temperature map, or temperature observable exists in the paper. Only power is validated, and Tmax is a fixed constant in the leakage terms, so there is no thermal result to compare against.",
+      "No floorplan is published: no block x/y coordinates, widths or heights for caches, NoC or other blocks. Only the core area (3.5 mm2 each, Table 4) and cache bank areas (Table 1, per technology) are given, and these are not same-scenario placed dimensions.",
+      "Per-block power is not published numerically. The component powers for canneal appear only as bar-chart heights in Fig. 7a, and the total chip power cannot be split without a published rule.",
+      "No cooling or package model (heat sink, TIM, convection, ambient) is described; ambient/maximum temperature enters only as a scalar leakage coefficient.",
+      "The workload is a GEM5 trace-driven execution with activity-dependent power, but no power time series is published. The paper's optimizer and controller (CVX budgeting, dark-silicon core gating) are not thermal management methods and have no Studio equivalent.",
+      "There is no reliability analysis; the NVM write endurance discussion is qualitative only.",
+      "No complete paper-derived experiment (dimensions, power per block, thermal observable) exists, so the floorplan is returned empty. Any Studio run would be only an illustrative separate 2D placement, with generated coordinates kept distinct from paper facts.",
+      "If an illustrative run were built, it would use only dimensions and powers explicitly published: the core area of 3.5 mm2 per core (Table 4) and the Table 1 bank areas. It would use a single-row power trace, and its temperatures would not be compared numerically with the paper, which reports none.",
+      "Total chip power would not be split across blocks without a published rule. The Pmax of 110 W is a budget, not a measured canneal power.",
+      "Studio package and material assumptions (default silicon die, heat spreader, heat sink and ambient) are not given in the paper. They would be the bundled Studio defaults and are not paper-derived."
+    ]
+  }
+}

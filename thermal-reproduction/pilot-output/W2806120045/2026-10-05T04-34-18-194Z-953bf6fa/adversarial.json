@@ -1,0 +1,80 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text supports HotSpot v5.02 grid mode for steady state, McPAT 22 nm for core power, MatEx for runtime transient/peak temperature (PDF p.4, p.12), and Tsafe=81.8 C. The ILP/TopoMap optimizer is a separate method and does not apply to the Fig. 1 steady-state scenario. The 'mesh NoC' attribution for Fig. 1 is not stated in the paper, so the method claim is only partly supported."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No repository, supplementary code, or pinned assets exist. All 17 pages show only DOI/handle links (p.1), which are bibliographic. The paper gives no HotSpot config, McPAT config, or scripts, so nothing is executable."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Table 2 values (0.15 mm, 100 W/m-K, 400 W/m-K, 0.1 K/W, 140.4 J/K, 318.15/354.95 K) match PDF p.12. However, die size, core dimensions, spreader/sink geometry, grid resolution, and per-core or total H.264 power are absent. A decisive thermal solve is impossible. The Table 2 values are not confirmed as the settings used for Fig. 1."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The 8x8 array, 50% dark fraction, and 2.6 GHz are stated in the Fig. 1 caption and text. The active-core location map for each of the six patterns exists only in the figure and was not digitized. No floorplan blocks, block names, or same-scenario power rows exist, so the empty floorplan is correct but means there is no reproducible config. The paper does not state the NoC type for Fig. 1, so 'mesh NoC' is unsupported."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The six peak values were read from pdftotext layout output of Fig. 1, not from the rendered figure. They are internally consistent with the prose: 82.17-75.67=6.5 C, 82.17-72.81=9.36 C vs '9.3 C', and the violation text on patterns 2/3. The mapping of labels to patterns 1-6 depends on text-column alignment and was not visually confirmed. The figure is garbled in extraction and no image or asset was supplied. Per-pattern peaks only, with no per-core temperatures, no power data, and no transient traces."
+    }
+  },
+  "findings": [
+    {
+      "field": "chip_peak_temperature_pattern_1..6",
+      "reason": "The values come from extracted figure text, not a visual check of the rendered Fig. 1. The label-to-pattern order is inferred from column layout. Per the review rules, unverified figure data cannot support approval.",
+      "locator": "PDF page 4, Fig. 1 labels"
+    },
+    {
+      "field": "architecture (mesh NoC)",
+      "reason": "The extraction labels the Fig. 1 scenario as a 'mesh NoC'. The Fig. 1 caption and text do not specify any NoC for this thermal experiment. The paper's NoC focus is SMART, and the mesh assertion is inferred.",
+      "locator": "PDF page 4, Fig. 1 caption and Section 3.1"
+    },
+    {
+      "field": "active_core_power / power_w",
+      "reason": "No per-core or total power is published for the H.264 Fig. 1 scenario, and no same-scenario power exists for any block. The thermal observable cannot be tied to a reproducible power input.",
+      "locator": "PDF pages 4 and 12 (McPAT methodology only)"
+    },
+    {
+      "field": "core_geometry / floorplan",
+      "reason": "There are no core coordinates or dimensions, and the active-pattern maps are not tabulated. The floorplan is empty, so no 2D steady-state experiment can be formed. Any generated 8x8 shelf placement would be an illustrative assumption, not a reproduction of Fig. 1.",
+      "locator": "PDF page 4, Fig. 1"
+    },
+    {
+      "field": "scenario.steady_2d_relevant",
+      "reason": "The flag is true, but the scenario lacks the geometry, power, and package data needed for a 2D steady-state reproduction. The decisive HotSpot package, grid, and power inputs are unverifiable.",
+      "locator": "PDF pages 4 and 12, Table 2"
+    },
+    {
+      "field": "Table 2 applicability",
+      "reason": "Table 2 is described as 'Parameters in HotSpot, MatEx' and is not tied explicitly to the Fig. 1 experiment. The parameters for the Fig. 1 run are not separately stated.",
+      "locator": "PDF page 12, Table 2"
+    },
+    {
+      "field": "Fig. 1 caption citations",
+      "reason": "The caption cites 'McPAT [34], Hotspot [35], Tsafe [26]', which conflicts with the reference list (McPAT [33], HotSpot [34], thresholds [35]). This raises doubt about the caption's source attribution. The extraction's Tsafe source of [35] is taken from the body text.",
+      "locator": "PDF page 4, Fig. 1 caption vs PDF page 16 references"
+    },
+    {
+      "field": "code/assets",
+      "reason": "No linked code or data artifact exists. Reproduction depends entirely on unavailable McPAT/HotSpot configs.",
+      "locator": "PDF pages 1-17; packet assets=[]"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    4,
+    5,
+    6,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+  ],
+  "checked_assets": []
+}

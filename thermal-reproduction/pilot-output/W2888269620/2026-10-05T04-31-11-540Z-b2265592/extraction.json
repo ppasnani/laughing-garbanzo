@@ -1,0 +1,231 @@
+{
+  "paper_id": "W2888269620",
+  "paper_title": "Performance and Thermal Tradeoffs for Energy-Efficient Monolithic 3D Network-on-Chip",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 20,
+    "figure_or_table": "Figure 15 (with Table 1 on PDF page 14 and Table 2 on PDF page 14)",
+    "description": "Comparison of maximum, average and minimum chip temperatures for the four-layer PTO TSV-based and PTM M3D-based 3D small-world NoC designs with static VFI power management. The paper reports M3D peak temperature up to 29.1% (average 20.1%) lower than TSV. The average max-min temperature difference is 16.7 C for TSV and 2.9 C for M3D. Thermal profiles come from HotSpot, and the optimizer uses the Cong et al. resistive-network temperature model inside simulated annealing. No per-block coordinates or power values are published in the paper text. No code, data or repository links were found in the paper.",
+    "architecture": "64-core four-layer 3D small-world NoC manycore chip (10 mm x 10 mm per layer, 4x4x4 grid), TSV-based (PTO) versus monolithic 3D (PTM, multi-tier routers, MIVs, thin ILD), with four static voltage-frequency islands",
+    "workload": "Eight benchmarks run in GEM5 with McPAT power: SPLASH-2 (FFT, RADIX, LU, WATER) and PARSEC (DEDUP, VIPS, FLUIDANIMATE, CANNEAL)",
+    "operating_point": "Static VFI cluster sizes and V/F levels per benchmark (Table 1, PDF page 14); results reported as maximum, average and minimum chip temperature in degrees Celsius, with a 110 C throttling limit (PDF page 17)",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "HotSpot (Huang et al. 2006) for thermal profiles of the whole system, with a fast Cong et al. 2004 3D resistive-network model (vertical and horizontal heat flow, Eqs. 3-4) inside the optimization loop. Performance and power come from GEM5 with McPAT.",
+    "optimizer": "Simulated annealing on the joint cost = alpha*O + beta*T (Eq. 2) with two moves, VFI-constrained core swapping S'(i,j) and new-link placement L(l), each chosen with probability 0.5. The M3D variant (PTM) uses altered cost-function weights, and the TSV variant is PTO.",
+    "controller": "Static voltage-frequency islanding (SVFI) with four heterogeneous VFI clusters and per-benchmark static V/F levels (Table 1, PDF page 14). No dynamic controller is used. The 110 C thermal-throttling limit is not triggered.",
+    "benchmark": "Scenario: four-layer 64-core 3D small-world NoC (10 mm x 10 mm per layer, 4x4x4 grid), PTO TSV vs PTM M3D with static VFI (Figure 15, PDF page 20). Workloads are SPLASH-2 (FFT, RADIX, LU, WATER) and PARSEC (DEDUP, VIPS, FLUID, CAN), with GEM5 (64 cores, MOESI_CMP_directory, 64KB L1, 8MB shared L2) and ALASH routing."
+  },
+  "thermal_observable": {
+    "value": 29.1,
+    "unit": "percent reduction in peak temperature (M3D PTM vs TSV PTO); the paper also reports temperatures in degrees C, with an average max-min difference of 16.7 C (TSV) and 2.9 C (M3D)",
+    "location": "Maximum, average and minimum chip temperature over the four-layer 64-core manycore chip from HotSpot, plotted per benchmark in Figure 15",
+    "aggregation": "Maximum over benchmarks of the per-benchmark peak-temperature reduction (up to 29.1%, average 20.1% over benchmarks). Absolute per-benchmark temperatures exist only in the Figure 15 bar chart and are not tabulated in the text.",
+    "pdf_page": 20
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The paper models a 4-tier 3D stack (TSV with BCB bonding layers versus monolithic ILD with MIVs), which a 2D steady-state Studio runner cannot represent, so inter-tier thermal resistance and the TSV/M3D difference are lost.",
+      "essential": true
+    },
+    {
+      "reason": "The M3D versus TSV result depends on vertical thermal resistance (R_j, R_b) and layer material differences extracted from HotSpot. These parameters are not published in the paper, so they cannot be reproduced.",
+      "essential": true
+    },
+    {
+      "reason": "The study is a multi-core NoC (cores, routers, links, VFI clusters) with architecture-level placement optimization. The paper publishes no per-block geometry, coordinates or power values, so no complete floorplan or power table exists.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer is simulated annealing over NoC core, router and link placement with a joint performance-temperature cost, while a Studio thermal runner would use a different or no optimizer. The optimizer is therefore not replicated.",
+      "essential": true
+    },
+    {
+      "reason": "The workload power comes from GEM5/McPAT per benchmark with static VFI voltage-frequency levels. These powers are not published, and no controller or time series is available.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling and heat-sink boundary conditions, package and interposer model are not specified in the paper, though the heat sink location is described qualitatively (high-power VFI clusters near the sink).",
+      "essential": true
+    },
+    {
+      "reason": "No transient behavior, reliability analysis (e.g., NBTI, mentioned only qualitatively) or throttling dynamics are simulated. The paper reports steady-style max/avg/min temperatures with no throttling triggered.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "No linked code, data, repository or supplementary assets; the packet's artifact search found no links and the assets list is empty.",
+    "Per-block x_m, y_m, width_m, height_m: no floorplan coordinates published for cores, routers or VFI clusters. Only layer sizes are given (Table 2, PDF page 14: 10x10 mm for four layers) and a 4x4x4 grid on PDF page 13.",
+    "Per-block power_rows (name and watts): no per-core, per-router or total chip power values published. McPAT outputs are not reported.",
+    "Absolute per-benchmark temperature values for Figure 15 are only in a bar chart; no tabulated values (would require digitization with uncertainty).",
+    "HotSpot configuration, material properties, layer thicknesses, thermal resistances R_j and R_b, heat-sink and ambient boundary conditions for TSV and M3D stacks.",
+    "Final optimized placements of cores, VFI clusters and multi-tier routers for PTO TSV and PTM M3D, and the alpha and beta cost weights.",
+    "Studio package/material assumptions cannot be tied to the paper; none are recorded. No complete experiment exists, so the floorplan is empty."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "layer_size_four_layer_x",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 14,
+      "asset_id": null,
+      "locator": "Table 2, Chip Size for the Different Number of Layers, four-layer column (10 x 10 mm2)",
+      "provenance": "Paper-published layer size for the four-layer configuration; a chip-level dimension only, not per-block geometry. Table header says mm2 but the values are given as 10 x 10 (lengths).",
+      "uncertainty": "Table 2 unit label is 'mm2' while entries are dimension pairs; interpreted as mm x mm."
+    },
+    {
+      "field": "layer_size_four_layer_y",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 14,
+      "asset_id": null,
+      "locator": "Table 2, four-layer column (10 x 10 mm2)",
+      "provenance": "Paper-published layer size for the four-layer configuration; chip-level only.",
+      "uncertainty": "Same unit-label ambiguity as the x dimension."
+    },
+    {
+      "field": "grid_four_layer",
+      "block_name": null,
+      "source_value": 64,
+      "source_unit": "cores (4 x 4 x 4 grid)",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 13,
+      "asset_id": null,
+      "locator": "Section 5.1 Experimental Setup, last paragraph: 'four-layer 4 x 4 x 4 (=64) grids'",
+      "provenance": "Paper text states 64 cores and routers on a regular 4x4x4 grid. No per-block coordinates are published.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_peak_temperature_reduction_max",
+      "block_name": null,
+      "source_value": 29.1,
+      "source_unit": "percent",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 19,
+      "asset_id": null,
+      "locator": "Section 5.4, 'the peak temperature of M3D SWNoC architecture reduces up to 29.1% (average 20.1%) compared to the TSV-based configuration' (text on PDF page 19, Figure 15 on PDF page 20)",
+      "provenance": "Paper-reported reduction in maximum chip temperature for four-layer PTM M3D vs PTO TSV with static VFI, as a percentage across the eight benchmarks. HotSpot-based. Aggregation: maximum (best case) over benchmarks.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_peak_temperature_reduction_average",
+      "block_name": null,
+      "source_value": 20.1,
+      "source_unit": "percent",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 19,
+      "asset_id": null,
+      "locator": "Section 5.4, 'up to 29.1% (average 20.1%)'",
+      "provenance": "Average over the eight benchmarks of per-benchmark peak-temperature reduction, M3D PTM vs TSV PTO.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_avg_max_min_difference_TSV",
+      "block_name": null,
+      "source_value": 16.7,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 19,
+      "asset_id": null,
+      "locator": "Section 5.4, 'average difference between the maximum and minimum temperatures ... TSV and M3D designs are 16.7C and 2.9C'",
+      "provenance": "Average over all benchmarks of the max-min chip temperature difference for the four-layer PTO TSV design.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_avg_max_min_difference_M3D",
+      "block_name": null,
+      "source_value": 2.9,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 19,
+      "asset_id": null,
+      "locator": "Section 5.4, same sentence as above",
+      "provenance": "Average over all benchmarks of the max-min chip temperature difference for the four-layer PTM M3D design.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_throttling_limit",
+      "block_name": null,
+      "source_value": 110,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 17,
+      "asset_id": null,
+      "locator": "Section 5.2, last paragraph: 'we set the limit on the chip temperature to be 110C'",
+      "provenance": "Paper-stated thermal throttling limit; not triggered for the considered benchmarks. The WATER benchmark's 107 C maximum comes from Figure 10 (no VFI power management, different configuration), not Figure 15.",
+      "uncertainty": null
+    },
+    {
+      "field": "four_layer_avg_max_temp_difference_M3D_vs_PTO_TSV",
+      "block_name": null,
+      "source_value": 14,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 22,
+      "asset_id": null,
+      "locator": "Section 5.5, 'PTM-based M3D VFI shows, on average, 17% lower EDP and 14C reduction in the maximum temperature compared to PTO-based TSV VFI'",
+      "provenance": "Paper-reported average maximum-temperature reduction (degrees C) for four-layer PTM M3D vs PTO TSV, averaged over benchmarks (Figure 19).",
+      "uncertainty": null
+    },
+    {
+      "field": "average_max_temperature_PTO_TSV_VFI",
+      "block_name": null,
+      "source_value": 70,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 22,
+      "asset_id": null,
+      "locator": "Section 5.5, 'limiting the average maximum temperature to 70C' (PTO-based TSV VFI)",
+      "provenance": "Paper text; averaged maximum temperature over benchmarks for PTO TSV VFI. Not explicitly specified for the four-layer case only; context is the layer-count sweep in Figure 19.",
+      "uncertainty": "Layer count for this value is not explicit in the sentence; it is likely the four-layer case. The value is rounded in the text."
+    },
+    {
+      "field": "per_block_geometry_and_power",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "Whole paper, PDF pages 1-25; packet assets list is empty",
+      "provenance": "No per-block x_m, y_m, width_m, height_m or power_rows published for the selected scenario, and no linked code, data or repository assets exist (artifact_search_status checked_no_links). Floorplan and power rows must remain empty.",
+      "uncertainty": null
+    },
+    {
+      "field": "workload_and_VFI_operating_point",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 14,
+      "asset_id": null,
+      "locator": "Table 1, VFI cluster sizes and V/F levels (Kim et al. 2016) for CAN, DEDUP, FFT, FLUID, LU, RADIX, VIPS, WATER",
+      "provenance": "Cluster sizes (cores) and relative V/F levels per benchmark are tabulated, but no watts. The sizes sum to 64 cores per benchmark. Total chip power is not published, and no split rule exists.",
+      "uncertainty": "Table 1 V/F values are given as unitless entries such as 0.6 to 1.0, presumably normalized to nominal."
+    }
+  ]
+}

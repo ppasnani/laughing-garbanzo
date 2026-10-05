@@ -1,0 +1,80 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper's method is a closed-loop STREAM controller (ANN stress, MTTF/LTDP lifetime banking, lifetime MPC, DVFS) on a two-layer TSV 3D IC with a transient synthetic workload (pp.4-9, 12-13). The extraction's own physical_mismatches mark five essential mismatches and steady_2d_relevant=false. Yet experiment.kind is 'custom_2d_steady'. That is a 2D steady reproduction claim for a 3D, transient, controller-dependent result, so it is contradicted."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The paper gives no repository or availability statement. The packet has no pinned assets, and the extraction reports only 'checked_no_links'. The MATLAB R2016b implementation, ANN weights, MPC and lookup-table code are not available. No evidence supports reproducing the controller."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Verified in the text: chip 10x10x0.3 mm (p.9), ambient 20 C and ri/ro of 20/24 um (p.10), 90 C threshold and ~110 C free run (p.12), ~240 s deposit exhaustion (p.13). Missing: A0, qc, sigma0, B0, Ea, na, MTTFth, Np, Nc, the MPC lookup-table entries, the synthetic workload power amplitudes, and any numeric Fig. 14a/14b series. The 0.3 mm thickness is ambiguous (total or per layer). The text-derived 110 C is a statement, not a visually verified figure value."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The paper does not publish a HotSpot-3D configuration: layer thicknesses and materials, TSV coordinates, interface material, package, heat sink or convection. Nothing from the Studio package or material assumptions was supplied. Only the 92-node model dimensions (p.11) are given."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no per-block geometry coordinates (Fig. 4a is a graphic only) and no same-scenario per-block power rows for the synthetic workload; floorplan and power_w are empty. There are no pinned assets and no numeric time series. Fig. 14a/14b were not visually verified: the evidence is pdftotext output only, and only a few text scalars were checked. The decisive figures are unverified."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The extraction sets 'custom_2d_steady' although the paper observable is a transient maximum temperature on a two-layer TSV 3D IC under DVFS/MPC feedback. This contradicts the extraction's own steady_2d_relevant=false and the essential mismatches. Calling it a 2D reproduction is unsupported.",
+      "locator": "extraction.experiment.kind vs extraction.scenario.steady_2d_relevant and physical_mismatches; paper pp.9-13"
+    },
+    {
+      "field": "floorplan / power_w",
+      "reason": "The floorplan is empty and there are no same-scenario power rows. Block geometry and power are required for any 2D reproduction and cannot be supported from the paper.",
+      "locator": "extraction.experiment.floorplan=[], power_w={}; evidence power_rows and block_geometry_x_y_width_height; Fig. 4a p.6"
+    },
+    {
+      "field": "thermal_observable_free_run_max_temperature_C",
+      "reason": "The 110 C value comes from the text, not from verified Fig. 14a content. No visual check of the figure is documented, no time series exists, and the aggregation is a transient. It cannot be treated as a paper observable for a steady 2D model.",
+      "locator": "pdf p.12 Section V-D and Fig. 14a"
+    },
+    {
+      "field": "lifetime_deposit_exhaustion_time_s",
+      "reason": "The 240 s value is text-only ('around 240 s'), and Fig. 14b was not visually verified. The paper text on p.13 also says the deposit is 'always larger than 0 according to Fig. 14b' while saying it is fully consumed at ~240 s. This is an unresolved ambiguity needing the figure.",
+      "locator": "pdf p.13 Section V-D; Fig. 14b p.12"
+    },
+    {
+      "field": "chip_thickness_m",
+      "reason": "The paper gives 0.3 mm for a chip made of two identical layers. Whether this is total or per-layer thickness is unspecified, so the normalized 0.0003 m is not unambiguous.",
+      "locator": "pdf p.9 Section V first paragraph"
+    },
+    {
+      "field": "paper_linked_resources / code",
+      "reason": "No code or data assets were found or supplied. Controller, ANN and workload inputs are not independently reconstructable.",
+      "locator": "packet.assets=[]; extraction.artifact_search_status"
+    },
+    {
+      "field": "studio_package_material_assumptions",
+      "reason": "No package or material assumptions were supplied or recorded, and the paper gives no HotSpot-3D package or material config. The config check cannot be resolved.",
+      "locator": "extraction.studio_assumptions=[]; pdf pp.10-11"
+    },
+    {
+      "field": "reliability_constants_and_synthetic_trace",
+      "reason": "The MTTF model constants, MTTFth, MPC horizons and the synthetic workload power trace are not in the paper. The reliability and controller dynamics are therefore not reproducible.",
+      "locator": "pdf pp.3-4 Eqs. 4-6; p.9; p.12"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "checked_assets": []
+}

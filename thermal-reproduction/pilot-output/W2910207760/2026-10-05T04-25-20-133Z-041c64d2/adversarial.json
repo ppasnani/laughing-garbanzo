@@ -1,0 +1,66 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The PWL-MPC method is supported by the text on pp.2-5: eqs. (1)-(2), (9)-(18), the rising/falling case definitions, the uniform Taylor point selection and the closed-form solution. The extraction correctly says the controller is the contribution. Its own mismatch list shows that the method does not map to a steady 2D solve. The averaging scope of the reported tracking difference is not stated in the paper."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets, no repository or code links, and no availability statement. artifact_search_status is checked_no_links. Nothing is available to verify any implementation, so there is no code evidence."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The scalar experiment parameters match the text: ambient 40 C, target 80 C, rising range 40-80 C, falling range 120-80 C, control step 1 s, plant step 1 ms, Nc=1, Np=2, 5 points. The Table 1 values for the Nc=1/Np=2 columns (new 5 points: time 1.28 ms, mem 36 KB, max 1.16, avg 0.78; traditional: time 1.13 ms, mem 13 KB, max 5.97, avg 1.32) match the text layer. However, the decisive parameters are absent: the RC matrices G/C/B/L, the leakage constants K/eta/Vth/Vdd, Pb/Hb, the regularization r, and per-core powers. The extraction itself lists these as missing. The 1.28 ms entry also sits slightly uneasily with the prose claim of 'less than 1.2 ms'."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The 16-core chip configuration exists only in Fig. 3, and the supplied packet has no figure asset or image. The Fig. 3 text layer carries no coordinates, so geometry, block names and the C32 position cannot be verified. Fig. 4 (the C32 transient) was also not visually checked. No Studio package, cooling or material configuration is supplied."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No per-core powers, Wattch/SPEC traces or benchmark-to-core assignment are published as numbers. The floorplan and power_w fields are empty, so no floorplan block has same-scenario power. No decisive figure was digitized or visually verified. The Table 1 observables were read from pdftotext layout, not from rendered pages."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is set to custom_2d_steady with an empty floorplan and empty power_w. The scenario itself says steady_2d_relevant is false and lists essential mismatches: transient closed-loop MPC, nonlinear leakage feedback, a 1 s control step with a 1 ms plant, and no cooling/package data. The kind label contradicts the extraction and cannot be called a 2D reproduction.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant; physical_mismatches"
+    },
+    {
+      "field": "floorplan_block_geometry_and_power",
+      "reason": "Fig. 3 was not visually verified, and no numeric coordinates, dimensions, block names or watts exist in the evidence. No block has same-scenario power. Any generated 2D shelf layout would be an illustrative assumption, not the published placement.",
+      "locator": "pdf p.5 Fig. 3, Section 4.1; evidence floorplan_block_geometry_and_power"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "The 0.78 C average tracking difference (max 1.16) is read from Table 1 via the text layer only. The averaging scope over cores and time is unknown. Fig. 4 (C32 transient) was not visually verified. It is a transient closed-loop controller metric and is not comparable to a steady 2D temperature.",
+      "locator": "pdf p.6 Table 1 row 'New (5 points)', Nc=1 Np=2; Fig. 4"
+    },
+    {
+      "field": "paper_linked_resources_and_assets",
+      "reason": "No code, config or data assets are pinned. A bare absence of links is not evidence of any reproducible artifact, so the code check is unresolved.",
+      "locator": "packet.assets=[]; artifact_search_status=checked_no_links"
+    },
+    {
+      "field": "leakage_model_process_node",
+      "reason": "The 65 nm TSMC process is stated only for the Fig. 1 HSPICE validation. It is not stated to be the 16-core chip process and must not be used as a chip parameter. The Fig. 1 curve was not verified.",
+      "locator": "pdf p.2 Fig. 1 caption"
+    },
+    {
+      "field": "missing_inputs",
+      "reason": "Thermal RC network, leakage constants, benchmark power traces, package and cooling data, and Fig. 3 geometry are all unpublished or unverified. The decisive inputs for any scenario-matched reproduction are missing.",
+      "locator": "extraction.missing_inputs; pdf pp.2-5"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

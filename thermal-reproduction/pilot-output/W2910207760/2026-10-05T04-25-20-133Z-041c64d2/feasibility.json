@@ -1,0 +1,62 @@
+{
+  "paper_id": "W2910207760",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Fig. 3 per-core x/y coordinates, widths and heights. The text gives no block geometry.",
+    "Per-core power values in watts. Only Wattch/SPEC traces with random assignment to cores are described, with no numbers.",
+    "Power time series for the Wattch/SPEC workloads and the assignment of benchmarks to cores.",
+    "Thermal RC network parameters (G, C, B, L matrices), package and material properties, and the cooling model.",
+    "Leakage model parameters (K, eta, Vth, Vdd, the PWL Taylor coefficients Pb and Hb).",
+    "Final placement. Only the chip configuration figure is referenced, with no extractable coordinates.",
+    "Pinned packet assets, code, configs or repository URLs. The packet lists none and the artifact search found no links, so none can be cited.",
+    "The averaging scope (cores and time window) for the Table 1 tracking difference.",
+    "Studio package and material assumptions. The packet does not supply them.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The original study is a transient closed-loop DTM problem with a 1 s control step and a 1 ms plant step, using time-varying SPEC/Wattch power. A steady-state 2D solve with a one-row power trace cannot represent the controller, the predictive horizon or the transient overshoot behavior.",
+      "essential": true
+    },
+    {
+      "reason": "The controller is the main contribution (PWL MPC with Nc/Np horizons, power recommendations, DVFS and task-load adjustment). A static thermal solver has no equivalent.",
+      "essential": true
+    },
+    {
+      "reason": "The leakage-temperature feedback is nonlinear: an exponential subthreshold model, TSMC 65 nm process, PWL-approximated, with an iterated golden plant. A fixed-power thermal solve omits this coupling unless leakage is modeled separately.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer is a closed-form regularized least-squares MPC. A generic placement or thermal optimizer is not equivalent.",
+      "essential": true
+    },
+    {
+      "reason": "The paper reports a reduced-order RC network with sensor-based per-core outputs, and its package, cooling and interposer details are unspecified. The paper's temperatures (80 C target, 40 C ambient) cannot be compared numerically with any 2D Studio result.",
+      "essential": true
+    },
+    {
+      "reason": "The paper contains no 3D stack, interposer or chiplet structure and no reliability analysis beyond the falling-case range (120 to 80 C), so there is no 3D or interposer mismatch to resolve.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "db9c49b4e57eae1b3b37e86dfaeaae72f5ef5722f464e422f6ebffa45117cd2a",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

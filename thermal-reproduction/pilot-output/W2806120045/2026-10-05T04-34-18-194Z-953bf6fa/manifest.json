@@ -1,0 +1,620 @@
+{
+  "paper_id": "W2806120045",
+  "paper_title": "Thermal-Aware Task Mapping on Dynamically Reconfigurable Network-on-Chip Based Multiprocessor System-on-Chip",
+  "manifest_status": "downloaded",
+  "source_url": "https://content.openalex.org/works/W2806120045.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "c7eeb653e359a62297d4108f282d79e6f67453326e3b031be4371586306e14db",
+  "pdf_pages": 17,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:35:42.372Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W2806120045",
+    "paper_title": "Thermal-Aware Task Mapping on Dynamically Reconfigurable Network-on-Chip Based Multiprocessor System-on-Chip",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 4,
+      "figure_or_table": "Fig. 1 (motivational example) with Fig. 2/Fig. 3/Fig. 18 as related thermal-map results",
+      "description": "Steady-state HotSpot thermal maps of six dark-silicon activation patterns (50% dark cores) on an 8x8 Alpha 21264 core array at 22 nm, all running the same multi-thread H.264 workload at full voltage/frequency. Reported observable is per-pattern chip peak temperature in degrees C: pattern 1 80.67, pattern 2 82.17, pattern 3 82.15, pattern 4 75.67, pattern 5 80.11, pattern 6 72.81. The safe threshold is Tsafe = 81.8 C. The paper does not publish per-core x/y/width/height coordinates or per-core wattage for this scenario, and no pinned assets are supplied.",
+      "architecture": "8x8 homogeneous Alpha 21264 core array, 22 nm, 2.6 GHz, 64GB memory, mesh NoC (the paper's broader work targets SMART NoC); core power from McPAT, thermal from HotSpot v5.02",
+      "workload": "Multi-thread H.264 application executed on active cores at full voltage/frequency; 50% of cores dark; dark core power assumed zero",
+      "operating_point": "Steady state after a period of computation; 2.6 GHz; ambient 318.15 K (45 C); threshold 354.95 K (81.8 C); chip peak temperature per pattern in C (Fig. 1 labels)",
+      "steady_2d_relevant": true
+    },
+    "original_setup": {
+      "solver": "HotSpot v5.02 in grid model mode for steady-state thermal maps, with per-core power from McPAT at 22 nm. MatEx is used for transient and peak temperature at runtime in task mapping decisions (PDF pages 4 and 12).",
+      "optimizer": "ILP model for optimal task mapping and scheduling, plus the polynomial-time heuristic TopoMap (Algorithms 1-3). Fig. 1 is a motivational comparison of six hand-chosen dark-silicon activation patterns and does not use these optimizers (PDF pages 2, 4, 9-11).",
+      "controller": "No closed-loop thermal controller. Runtime thermal-aware task mapping keeps temperature below Tsafe = 81.8 C by activating decentralized cores and powering off cores within one hop of active cores, on a reconfigurable SMART NoC with single-cycle multi-hop bypass, HPCmax = 8 (PDF pages 5, 6 and 12). Fig. 1 itself uses fixed activation patterns at full voltage/frequency with no controller.",
+      "benchmark": "Fig. 1 motivational example: multi-thread H.264 on an 8x8 Alpha 21264 core array, 22 nm, 2.6 GHz, 50% dark cores, six activation patterns (PDF page 4). The paper's evaluation benchmarks are PARSEC (Blackscholes, Facesim, Vips, Swaptions), X264 and DSP-stone, on 4x4, 6x6, 8x8 and 10x10 SMART NoCs (PDF pages 10-12)."
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "degC",
+      "location": "Chip peak temperature of the 8x8 core array, read from the Fig. 1 pattern labels. Pattern 1 80.67, pattern 2 82.17, pattern 3 82.15, pattern 4 75.67, pattern 5 80.11, pattern 6 72.81. No single scenario value is selected because the observable is reported per pattern.",
+      "aggregation": "Steady-state chip peak (maximum over the core array) after a period of computation, one value per activation pattern. The paper also reports 6.5 C and 9.3 C reductions relative to contiguous patterns.",
+      "pdf_page": 4
+    },
+    "physical_mismatches": [
+      {
+        "reason": "Not a 3D, interposer or chiplet stack. The scenario is a monolithic 2D homogeneous core array, so interposer, 3D and chiplet-floorplan thermal effects are not represented.",
+        "essential": false
+      },
+      {
+        "reason": "The paper's optimizer (ILP/TopoMap task mapping on a SMART NoC with bypass routing) and runtime MatEx transient control are not part of the Fig. 1 steady-state HotSpot scenario, so optimizer and controller behavior cannot be reproduced from it.",
+        "essential": true
+      },
+      {
+        "reason": "No per-core x/y/width/height geometry and no per-core wattage are published. Only the array size (8x8), the 50% dark fraction and peak temperatures are given, so floorplan and power inputs cannot be reconstructed.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling and package model is given only partially in Table 2 (HotSpot parameters). Chip thickness 0.15 mm, heat sink convection resistance 0.1 K/W and ambient 318.15 K are listed. Die dimensions, spreader and sink geometry, and package layers are not given, which limits solver fidelity.",
+        "essential": true
+      },
+      {
+        "reason": "Pattern-specific active-core locations are shown only graphically in Fig. 1. They are not tabulated and would have to be digitized with uncertainty.",
+        "essential": true
+      },
+      {
+        "reason": "Reliability is addressed only through the Tsafe = 81.8 C threshold. There is no lifetime or electromigration model.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No pinned assets or code are supplied, so any Studio package would use its own bundled 2D steady-state thermal solver and default material and package properties, which are not the paper's HotSpot v5.02 grid model.",
+      "The only paper-published thermal inputs usable as Studio assumptions are the Table 2 values: silicon conductivity 100 W/m-K, chip thickness 0.15 mm, spreader conductivity 400 W/m-K, and ambient 318.15 K (45 C).",
+      "An illustrative 2D placement of an 8x8 array with a one-row power trace may be generated only as a separate construction. Generated coordinates and powers must be labeled as non-paper-derived, and its temperatures must not be compared numerically with the paper's Fig. 1 peaks.",
+      "Dark cores are assumed to have zero power, as stated in the paper (PDF page 12)."
+    ],
+    "missing_inputs": [
+      "Per-core x_m, y_m, width_m and height_m for the 8x8 Alpha 21264 array; the paper gives no die or core dimensions.",
+      "Per-core power_rows (name and watts) for the H.264 workload from McPAT; only methodology is described, and no total chip power is published.",
+      "Exact active-core location maps for each of the six patterns, available only as a figure (Fig. 1, PDF page 4).",
+      "Full HotSpot configuration: die size, package layers, spreader and sink dimensions, and grid resolution. Only partial Table 2 parameters are given.",
+      "No paper-linked repository, URL, supplementary data or code. The artifact search found no linked assets, and none are pinned in the packet.",
+      "Any power time series, since only steady-state results are reported for this scenario.",
+      "A complete experiment cannot be formed, so the floorplan should be returned empty."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "chip_peak_temperature_pattern_1",
+        "block_name": "8x8 Alpha 21264 core array, pattern 1",
+        "source_value": 80.67,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 80.67,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 label 'peak=80.67'",
+        "provenance": "Printed peak label under Pattern 1 in the motivational example (H.264, HotSpot v5.02, steady state, 50% dark cores). Chip peak is the maximum over the core array.",
+        "uncertainty": "Read from a printed figure label, not digitized from the colour map. Chip-level peak only, no per-core values."
+      },
+      {
+        "field": "chip_peak_temperature_pattern_2",
+        "block_name": "8x8 Alpha 21264 core array, pattern 2",
+        "source_value": 82.17,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 82.17,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 label 'peak=82.17'; text of Section 3.1",
+        "provenance": "Printed peak label under Pattern 2. The text says this peak violates Tsafe = 81.8 C.",
+        "uncertainty": "Read from a printed figure label. Chip-level peak only."
+      },
+      {
+        "field": "chip_peak_temperature_pattern_3",
+        "block_name": "8x8 Alpha 21264 core array, pattern 3",
+        "source_value": 82.15,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 82.15,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 label 'peak=82.15'; text of Section 3.1",
+        "provenance": "Printed peak label under Pattern 3. The text says this peak violates Tsafe = 81.8 C.",
+        "uncertainty": "Read from a printed figure label. Chip-level peak only."
+      },
+      {
+        "field": "chip_peak_temperature_pattern_4",
+        "block_name": "8x8 Alpha 21264 core array, pattern 4",
+        "source_value": 75.67,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 75.67,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 label 'peak=75.67'",
+        "provenance": "Printed peak label under Pattern 4 (random activation pattern).",
+        "uncertainty": "Read from a printed figure label. Chip-level peak only."
+      },
+      {
+        "field": "chip_peak_temperature_pattern_5",
+        "block_name": "8x8 Alpha 21264 core array, pattern 5",
+        "source_value": 80.11,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 80.11,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 label 'peak=80.11'",
+        "provenance": "Printed peak label under Pattern 5 (random activation pattern). The text notes hot spots on the left side and in the top-right corner.",
+        "uncertainty": "Read from a printed figure label. Chip-level peak only."
+      },
+      {
+        "field": "chip_peak_temperature_pattern_6",
+        "block_name": "8x8 Alpha 21264 core array, pattern 6",
+        "source_value": 72.81,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 72.81,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 label 'peak=72.81'; text of Section 3.1",
+        "provenance": "Printed peak label under Pattern 6 (uniform pattern, each active core surrounded by dark cores). The text calls it 9.3 C lower than contiguous patterns.",
+        "uncertainty": "Read from a printed figure label. Chip-level peak only."
+      },
+      {
+        "field": "safe_temperature_threshold",
+        "block_name": null,
+        "source_value": 81.8,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 81.8,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1 and Fig. 1 caption text 'Tsafe = 81.8 C'",
+        "provenance": "Stated threshold used for thermal-safe task mapping. It is also given as 354.95 K in Table 2 on PDF page 12.",
+        "uncertainty": null
+      },
+      {
+        "field": "core_array_size",
+        "block_name": "core array",
+        "source_value": 64,
+        "source_unit": "cores (8x8)",
+        "conversion_factor": 1,
+        "normalized_value": 64,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 caption '8*8 Alpha 21264 core array; 22 nm technique; @2.6Ghz, 64GB Memory'",
+        "provenance": "Array size stated only as a count and layout. No physical core or die dimensions are given.",
+        "uncertainty": "The count is derived from 8x8. Geometry is not published."
+      },
+      {
+        "field": "dark_silicon_fraction",
+        "block_name": "core array",
+        "source_value": 50,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.5,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1 'there are 50% cores on the chip will be dark'; Fig. 1 caption",
+        "provenance": "Stated assumption for the motivational example.",
+        "uncertainty": null
+      },
+      {
+        "field": "operating_frequency",
+        "block_name": "active cores",
+        "source_value": 2.6,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 2600000000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Fig. 1 caption '@2.6Ghz'",
+        "provenance": "Full voltage/frequency level for active cores in the H.264 workload.",
+        "uncertainty": null
+      },
+      {
+        "field": "technology_node",
+        "block_name": null,
+        "source_value": 22,
+        "source_unit": "nm",
+        "conversion_factor": 1e-9,
+        "normalized_value": 2.2e-8,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1 and Fig. 1 caption",
+        "provenance": "McPAT power modelling node.",
+        "uncertainty": null
+      },
+      {
+        "field": "dark_core_power",
+        "block_name": "dark cores",
+        "source_value": 0,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Section 6 'We assume the power of dark core is zero'",
+        "provenance": "Stated modelling assumption.",
+        "uncertainty": null
+      },
+      {
+        "field": "active_core_power",
+        "block_name": "per-core power (H.264, Fig. 1 scenario)",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Not published; PDF page 4 and page 12 describe only the McPAT method",
+        "provenance": "Per-core and total chip power for the Fig. 1 scenario are not given, so no power_rows can be built and no total may be split.",
+        "uncertainty": "Missing input."
+      },
+      {
+        "field": "core_geometry_x_y_width_height",
+        "block_name": "all cores",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Not published; Fig. 1 on PDF page 4 shows only graphical colour maps",
+        "provenance": "No coordinates or dimensions are tabulated, so the floorplan is empty.",
+        "uncertainty": "Missing input."
+      },
+      {
+        "field": "paper_linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "All PDF pages 1-17 inspected; no availability statement, repository URL, supplementary data or code link found",
+        "provenance": "The only URLs are DOI and handle links on the front-matter page (PDF page 1), which are bibliographic. The packet lists no pinned assets.",
+        "uncertainty": "No assets pinned, so asset evidence is unavailable."
+      },
+      {
+        "field": "hotspot_chip_thickness",
+        "block_name": "silicon die",
+        "source_value": 0.15,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00015,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2 'Thickness of the chip [mm] 0.15'",
+        "provenance": "Table of HotSpot/MatEx parameters.",
+        "uncertainty": null
+      },
+      {
+        "field": "silicon_thermal_conductivity",
+        "block_name": "silicon die",
+        "source_value": 100,
+        "source_unit": "W/m-K",
+        "conversion_factor": 1,
+        "normalized_value": 100,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2",
+        "provenance": "Table of HotSpot/MatEx parameters.",
+        "uncertainty": null
+      },
+      {
+        "field": "silicon_specific_heat",
+        "block_name": "silicon die",
+        "source_value": 1750000,
+        "source_unit": "J/m3-K",
+        "conversion_factor": 1,
+        "normalized_value": 1750000,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2 '1.75 x 10^6'",
+        "provenance": "Table of HotSpot/MatEx parameters.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_spreader_thermal_conductivity",
+        "block_name": "heat spreader",
+        "source_value": 400,
+        "source_unit": "W/m-K",
+        "conversion_factor": 1,
+        "normalized_value": 400,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2",
+        "provenance": "Table of HotSpot/MatEx parameters.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_spreader_specific_heat",
+        "block_name": "heat spreader",
+        "source_value": 3550000,
+        "source_unit": "J/m3-K",
+        "conversion_factor": 1,
+        "normalized_value": 3550000,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2 '3.55 x 10^6'",
+        "provenance": "Table of HotSpot/MatEx parameters. The row is labelled 'Heat sink spreader specific heat'.",
+        "uncertainty": null
+      },
+      {
+        "field": "interface_material_specific_heat",
+        "block_name": "interface material",
+        "source_value": 4000000,
+        "source_unit": "J/m3-K",
+        "conversion_factor": 1,
+        "normalized_value": 4000000,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2 '4 x 10^6'",
+        "provenance": "Table of HotSpot/MatEx parameters.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_sink_convection_resistance",
+        "block_name": "heat sink",
+        "source_value": 0.1,
+        "source_unit": "K/W",
+        "conversion_factor": 1,
+        "normalized_value": 0.1,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2",
+        "provenance": "Table of HotSpot/MatEx parameters.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_sink_convection_capacitance",
+        "block_name": "heat sink",
+        "source_value": 140.4,
+        "source_unit": "J/K",
+        "conversion_factor": 1,
+        "normalized_value": 140.4,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2",
+        "provenance": "Table of HotSpot/MatEx parameters.",
+        "uncertainty": null
+      },
+      {
+        "field": "ambient_temperature",
+        "block_name": null,
+        "source_value": 318.15,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 318.15,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2 and text 'ambient temperature 318.15K (45 C)'",
+        "provenance": "Stated ambient temperature, given as 45 C in the text.",
+        "uncertainty": null
+      },
+      {
+        "field": "threshold_temperature_K",
+        "block_name": null,
+        "source_value": 354.95,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 354.95,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "PDF page 12, Table 2 and text 'threshold temperature 354.95K (81.8 C)'",
+        "provenance": "Stated threshold, equal to 81.8 C.",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "The text supports HotSpot v5.02 grid mode for steady state, McPAT 22 nm for core power, MatEx for runtime transient/peak temperature (PDF p.4, p.12), and Tsafe=81.8 C. The ILP/TopoMap optimizer is a separate method and does not apply to the Fig. 1 steady-state scenario. The 'mesh NoC' attribution for Fig. 1 is not stated in the paper, so the method claim is only partly supported."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No repository, supplementary code, or pinned assets exist. All 17 pages show only DOI/handle links (p.1), which are bibliographic. The paper gives no HotSpot config, McPAT config, or scripts, so nothing is executable."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Table 2 values (0.15 mm, 100 W/m-K, 400 W/m-K, 0.1 K/W, 140.4 J/K, 318.15/354.95 K) match PDF p.12. However, die size, core dimensions, spreader/sink geometry, grid resolution, and per-core or total H.264 power are absent. A decisive thermal solve is impossible. The Table 2 values are not confirmed as the settings used for Fig. 1."
+      },
+      "config": {
+        "status": "missing",
+        "note": "The 8x8 array, 50% dark fraction, and 2.6 GHz are stated in the Fig. 1 caption and text. The active-core location map for each of the six patterns exists only in the figure and was not digitized. No floorplan blocks, block names, or same-scenario power rows exist, so the empty floorplan is correct but means there is no reproducible config. The paper does not state the NoC type for Fig. 1, so 'mesh NoC' is unsupported."
+      },
+      "data": {
+        "status": "missing",
+        "note": "The six peak values were read from pdftotext layout output of Fig. 1, not from the rendered figure. They are internally consistent with the prose: 82.17-75.67=6.5 C, 82.17-72.81=9.36 C vs '9.3 C', and the violation text on patterns 2/3. The mapping of labels to patterns 1-6 depends on text-column alignment and was not visually confirmed. The figure is garbled in extraction and no image or asset was supplied. Per-pattern peaks only, with no per-core temperatures, no power data, and no transient traces."
+      }
+    },
+    "findings": [
+      {
+        "field": "chip_peak_temperature_pattern_1..6",
+        "reason": "The values come from extracted figure text, not a visual check of the rendered Fig. 1. The label-to-pattern order is inferred from column layout. Per the review rules, unverified figure data cannot support approval.",
+        "locator": "PDF page 4, Fig. 1 labels"
+      },
+      {
+        "field": "architecture (mesh NoC)",
+        "reason": "The extraction labels the Fig. 1 scenario as a 'mesh NoC'. The Fig. 1 caption and text do not specify any NoC for this thermal experiment. The paper's NoC focus is SMART, and the mesh assertion is inferred.",
+        "locator": "PDF page 4, Fig. 1 caption and Section 3.1"
+      },
+      {
+        "field": "active_core_power / power_w",
+        "reason": "No per-core or total power is published for the H.264 Fig. 1 scenario, and no same-scenario power exists for any block. The thermal observable cannot be tied to a reproducible power input.",
+        "locator": "PDF pages 4 and 12 (McPAT methodology only)"
+      },
+      {
+        "field": "core_geometry / floorplan",
+        "reason": "There are no core coordinates or dimensions, and the active-pattern maps are not tabulated. The floorplan is empty, so no 2D steady-state experiment can be formed. Any generated 8x8 shelf placement would be an illustrative assumption, not a reproduction of Fig. 1.",
+        "locator": "PDF page 4, Fig. 1"
+      },
+      {
+        "field": "scenario.steady_2d_relevant",
+        "reason": "The flag is true, but the scenario lacks the geometry, power, and package data needed for a 2D steady-state reproduction. The decisive HotSpot package, grid, and power inputs are unverifiable.",
+        "locator": "PDF pages 4 and 12, Table 2"
+      },
+      {
+        "field": "Table 2 applicability",
+        "reason": "Table 2 is described as 'Parameters in HotSpot, MatEx' and is not tied explicitly to the Fig. 1 experiment. The parameters for the Fig. 1 run are not separately stated.",
+        "locator": "PDF page 12, Table 2"
+      },
+      {
+        "field": "Fig. 1 caption citations",
+        "reason": "The caption cites 'McPAT [34], Hotspot [35], Tsafe [26]', which conflicts with the reference list (McPAT [33], HotSpot [34], thresholds [35]). This raises doubt about the caption's source attribution. The extraction's Tsafe source of [35] is taken from the body text.",
+        "locator": "PDF page 4, Fig. 1 caption vs PDF page 16 references"
+      },
+      {
+        "field": "code/assets",
+        "reason": "No linked code or data artifact exists. Reproduction depends entirely on unavailable McPAT/HotSpot configs.",
+        "locator": "PDF pages 1-17; packet assets=[]"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      4,
+      5,
+      6,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W2806120045",
+    "decision": "illustrative_2d_only",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-core x_m, y_m, width_m and height_m for the 8x8 Alpha 21264 array; the paper gives no die or core dimensions.",
+      "Per-core power_rows (name and watts) for the H.264 workload from McPAT; only methodology is described, and no total chip power is published.",
+      "Exact active-core location maps for each of the six patterns, available only as a figure (Fig. 1, PDF page 4).",
+      "Full HotSpot configuration: die size, package layers, spreader and sink dimensions, and grid resolution. Only partial Table 2 parameters are given.",
+      "No paper-linked repository, URL, supplementary data or code. The artifact search found no linked assets, and none are pinned in the packet.",
+      "Any power time series, since only steady-state results are reported for this scenario.",
+      "A complete experiment cannot be formed, so the floorplan should be returned empty.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "Not a 3D, interposer or chiplet stack. The scenario is a monolithic 2D homogeneous core array, so interposer, 3D and chiplet-floorplan thermal effects are not represented.",
+        "essential": false
+      },
+      {
+        "reason": "The paper's optimizer (ILP/TopoMap task mapping on a SMART NoC with bypass routing) and runtime MatEx transient control are not part of the Fig. 1 steady-state HotSpot scenario, so optimizer and controller behavior cannot be reproduced from it.",
+        "essential": true
+      },
+      {
+        "reason": "No per-core x/y/width/height geometry and no per-core wattage are published. Only the array size (8x8), the 50% dark fraction and peak temperatures are given, so floorplan and power inputs cannot be reconstructed.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling and package model is given only partially in Table 2 (HotSpot parameters). Chip thickness 0.15 mm, heat sink convection resistance 0.1 K/W and ambient 318.15 K are listed. Die dimensions, spreader and sink geometry, and package layers are not given, which limits solver fidelity.",
+        "essential": true
+      },
+      {
+        "reason": "Pattern-specific active-core locations are shown only graphically in Fig. 1. They are not tabulated and would have to be digitized with uncertainty.",
+        "essential": true
+      },
+      {
+        "reason": "Reliability is addressed only through the Tsafe = 81.8 C threshold. There is no lifetime or electromigration model.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No pinned assets or code are supplied, so any Studio package would use its own bundled 2D steady-state thermal solver and default material and package properties, which are not the paper's HotSpot v5.02 grid model.",
+      "The only paper-published thermal inputs usable as Studio assumptions are the Table 2 values: silicon conductivity 100 W/m-K, chip thickness 0.15 mm, spreader conductivity 400 W/m-K, and ambient 318.15 K (45 C).",
+      "An illustrative 2D placement of an 8x8 array with a one-row power trace may be generated only as a separate construction. Generated coordinates and powers must be labeled as non-paper-derived, and its temperatures must not be compared numerically with the paper's Fig. 1 peaks.",
+      "Dark cores are assumed to have zero power, as stated in the paper (PDF page 12)."
+    ],
+    "evidence_sha256": "6c568dfc85c3e2d4d5d30ffe2c8afa737b82c55453902b7493cdced73b2eb771",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "illustrative_2d_only",
+    "comparison_valid": false,
+    "summary": "2D screening label: illustrative_2d_only. Studio did not run (simulation status 'skipped'; simulation_allowed=false). The gate failed because the custom 2D steady experiment has an empty floorplan and no power_w object, so the input is invalid (input_gate_pass=false, scientific_gate_pass=false, independently_verified=false). comparison_valid=false. The scenario is the Fig. 1 motivational example: an 8x8 Alpha 21264 array at 22 nm, 2.6 GHz, 50% dark cores, running multi-thread H.264 in steady state with HotSpot v5.02 and McPAT power. The paper reports per-pattern chip peaks of 80.67, 82.17, 82.15, 75.67, 80.11 and 72.81 C against Tsafe = 81.8 C. Patterns 2 and 3 exceed the threshold, and the uniform pattern 6 is lowest. These are paper-reported values only, not reproduced. Since no simulation ran, there is no Studio temperature, no transient trace (this is a steady-state request) and no numerical comparison with the paper. Qualitatively, the paper reports that spreading active cores apart, so each is surrounded by dark cores, lowers the peak versus contiguous activation. This is the paper's own finding and was not checked here. No pinned assets exist (no Ascend910 or ATPlace commit, no generated placement and no input.flp or input.ptrace), so there is no source commit or placement assumption to report. The result must not be read as an exact replication or validation of the paper.",
+    "limitations": [
+      "Studio did not run, so there is no simulated temperature, and the final verdict and comparison_valid=false are set by the deterministic gate.",
+      "The experiment is invalid: floorplan empty and power_w absent, while a custom experiment needs 1-128 blocks and a power_w object.",
+      "The paper gives no per-core x/y/width/height, die dimensions or per-core/total power for the H.264 scenario. The floorplan and power inputs cannot be reconstructed.",
+      "Active-core maps for the six patterns appear only graphically in Fig. 1 and would need uncertain digitization.",
+      "The HotSpot configuration is only partly specified (Table 2 gives chip thickness, conductivities, convection resistance and ambient). Die size, spreader and sink geometry, package layers and grid resolution are missing.",
+      "Evidence items 12-14 lack valid page or pinned asset locators, and there is no cited thermal observable or steady/transient regime. The adversarial code/parameters/config/data checks and independent page/asset review are unresolved.",
+      "The paper's ILP/TopoMap optimizer, SMART NoC routing and MatEx runtime control are not part of the Fig. 1 steady-state scenario and cannot be assessed.",
+      "Any future Studio run would use its own 2D solver and default package properties rather than HotSpot v5.02 grid mode, with different location, aggregation and boundary assumptions. Numerical comparison with the 72.81-82.17 C peaks would be invalid and only qualitative sensitivity could be discussed.",
+      "Fig. 1 peaks are printed chip-level maxima only, with no per-core values. The 3D/interposer/chiplet and reliability/lifetime effects are not represented.",
+      "No linked repository or pinned assets were found, so no source commit or generated-placement assumption can be reported.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-core x_m, y_m, width_m and height_m for the 8x8 Alpha 21264 array; the paper gives no die or core dimensions.",
+      "Per-core power_rows (name and watts) for the H.264 workload from McPAT; only methodology is described, and no total chip power is published.",
+      "Exact active-core location maps for each of the six patterns, available only as a figure (Fig. 1, PDF page 4).",
+      "Full HotSpot configuration: die size, package layers, spreader and sink dimensions, and grid resolution. Only partial Table 2 parameters are given.",
+      "No paper-linked repository, URL, supplementary data or code. The artifact search found no linked assets, and none are pinned in the packet.",
+      "Any power time series, since only steady-state results are reported for this scenario.",
+      "A complete experiment cannot be formed, so the floorplan should be returned empty.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "Not a 3D, interposer or chiplet stack. The scenario is a monolithic 2D homogeneous core array, so interposer, 3D and chiplet-floorplan thermal effects are not represented.",
+      "The paper's optimizer (ILP/TopoMap task mapping on a SMART NoC with bypass routing) and runtime MatEx transient control are not part of the Fig. 1 steady-state HotSpot scenario, so optimizer and controller behavior cannot be reproduced from it.",
+      "No per-core x/y/width/height geometry and no per-core wattage are published. Only the array size (8x8), the 50% dark fraction and peak temperatures are given, so floorplan and power inputs cannot be reconstructed.",
+      "The cooling and package model is given only partially in Table 2 (HotSpot parameters). Chip thickness 0.15 mm, heat sink convection resistance 0.1 K/W and ambient 318.15 K are listed. Die dimensions, spreader and sink geometry, and package layers are not given, which limits solver fidelity.",
+      "Pattern-specific active-core locations are shown only graphically in Fig. 1. They are not tabulated and would have to be digitized with uncertainty.",
+      "Reliability is addressed only through the Tsafe = 81.8 C threshold. There is no lifetime or electromigration model.",
+      "No pinned assets or code are supplied, so any Studio package would use its own bundled 2D steady-state thermal solver and default material and package properties, which are not the paper's HotSpot v5.02 grid model.",
+      "The only paper-published thermal inputs usable as Studio assumptions are the Table 2 values: silicon conductivity 100 W/m-K, chip thickness 0.15 mm, spreader conductivity 400 W/m-K, and ambient 318.15 K (45 C).",
+      "An illustrative 2D placement of an 8x8 array with a one-row power trace may be generated only as a separate construction. Generated coordinates and powers must be labeled as non-paper-derived, and its temperatures must not be compared numerically with the paper's Fig. 1 peaks.",
+      "Dark cores are assumed to have zero power, as stated in the paper (PDF page 12)."
+    ]
+  }
+}

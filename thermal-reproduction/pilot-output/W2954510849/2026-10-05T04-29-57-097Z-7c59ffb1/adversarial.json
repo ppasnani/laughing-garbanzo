@@ -1,0 +1,78 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The gem5, McPAT and HotSpot 2.0 pipeline, the CMO objective (Eq. 3) and the MBC decision function match pages 3-6. However, the experiment block is typed custom_2d_steady with empty floorplan and power, while the same extraction says the controller, transient ALU peak and cache/performance coupling cannot be represented by a static 2D solve. Those two statements conflict. Pairing of Table III rows is inferred from adjacency. Only bitcount/swim is textually supported (p.6 Fig. 8 discussion, p.7 'swim 77.75 vs 74.19')."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository or supplementary link appears on pages 1-8, and the asset list is empty. The gem5 integration, McPAT inputs, HotSpot setup and CMO implementation are unavailable. The claim that the three simulators were source-integrated is textual only."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Verified in the text layer: 500 MHz core frequency and Table II memory parameters (p.6), 50,000-cycle sampling (p.6), and A = 10/15/20/25% of L2 (p.7). Missing: the TB constant c, the benefit tables B_i(C_i), the CMO update interval and HotSpot parameters. 'No DVFS is used' is inferred and not stated outright."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There are no gem5 config files, McPAT inputs or HotSpot package, spreader, sink, ambient, grid or material parameters. The Alpha 21264 floorplan is given only as 'side-by-side', with no block coordinates or dimensions and no ALU sub-block geometry. The extraction also lists RLPlanner/ATPlace2.5D assets as missing inputs, which are irrelevant to this paper."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Table III values 79.14, 71.88 and 77.75 are correctly transcribed from the pdftotext layer on p.8 for the bitcount/swim rows. No visual check of the table image is available, and the evidence is text-layer only. Per-block power and the power time series are absent, so a same-scenario power row for every floorplan block cannot exist. The floorplan and power_w are empty."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is typed custom_2d_steady with empty floorplan and power_w, while steady_2d_relevant is false and the mismatches list the result as transient, microarchitectural and sub-block. The type implies a 2D steady reproduction that the evidence does not support.",
+      "locator": "extraction.experiment vs scenario.steady_2d_relevant and physical_mismatches"
+    },
+    {
+      "field": "floorplan_geometry_and_block_power",
+      "reason": "There are no published coordinates, dimensions or per-block power. Any 2D placement or constant power would be generated or illustrative, not paper-derived, so there is no same-scenario power for every block.",
+      "locator": "p.6 Section V.A; evidence row floorplan_geometry_and_block_power"
+    },
+    {
+      "field": "scenario pairing (Table III)",
+      "reason": "Task pairs are inferred from row adjacency. The paper only says results were 'paired'. Only bitcount/swim and toast/mgrid are textually corroborated. Rows such as mgrid/lucas and qsort/vpr are not.",
+      "locator": "p.7 Section V.B; p.8 Table III"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "79.14 and 71.88 are transcribed correctly from the text layer. They were not visually verified against the page image. The 'peak over the run' aggregation is not explicitly stated in the table caption.",
+      "locator": "p.8 Table III bitcount row"
+    },
+    {
+      "field": "workload list",
+      "reason": "The paper says 12 benchmarks but lists 11 (5 MiBench + 6 SPEC). Table III contains no applu or CRC32 rows. The extraction repeats the list without flagging the discrepancy.",
+      "locator": "p.6-7 Section V.A; p.8 Table III"
+    },
+    {
+      "field": "paper internal inconsistency",
+      "reason": "The text reports MBC A15 and A20 reducing the mgrid peak by 5.5 and 7.8 degrees. The second mgrid row gives 78.51->72.97 (5.54) and ->70.66 (7.85), which matches. The first mgrid row is non-monotonic: A15 is 64.71 and A20 is 66.83. The extraction does not flag this.",
+      "locator": "p.8 Table III mgrid rows; p.7 Results"
+    },
+    {
+      "field": "controller assumptions",
+      "reason": "'No DVFS is used' is an inference. The paper only says MBC may be combined with other techniques. The value of c, the CMO interval and the benefit tables are unpublished.",
+      "locator": "p.2 intro; p.5 Eq. 3"
+    },
+    {
+      "field": "paper_linked_resources",
+      "reason": "Absence of artifacts is consistent with pages 1-8 (no availability statement), so no code or data check can be marked verified.",
+      "locator": "pp.1-8; assets: []"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "checked_assets": []
+}

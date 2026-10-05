@@ -1,0 +1,76 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Methods text matches pp. 10-12: a linear analytical power model (Eqs. 1-36) solved with CVX, validated against GEM5+McPAT, 3D Noxim+ORION and CACTI/NVSim. The paper contains no thermal solver and no thermal controller, so the extraction's 'no thermal solver/controller' claim holds. Residual ambiguity: the paper does not say CVX was used to produce the Fig. 7 model bars, and Eq. 5 uses Pmax as a per-core maximum while Table 4 gives 110 W as a chip budget."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, model files, GEM5/McPAT/Noxim configs or repository are supplied or cited. Only the CVX, SPEC, AnandTech and license URLs are linked; none contains the paper's inputs, and bare URLs are not evidence."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The scalars match the PDF: 16 cores in a 4x4 mesh, Alpha21164 at 3 GHz with 3.5 mm2 (Table 4), Pmax 110 W, Tmax 80 C, bank areas 3.03/3.31/3.39 mm2 (Table 1), canneal LLC_Util 74% and miss rate 73% (Table 7), and the Table 9 hybrid differences 4.762/14.151/0.000. The unit conversions are correct. The decisive parameters are absent: no per-block power, no stack, TSV, package or ambient parameters, and no thermal observable. Table 1 bank areas are not placed block dimensions, and a 16-bank layer is not 3.03 mm2."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No pinned asset was supplied. There is no floorplan (x, y, width, height) for cores, caches, routers or TSVs, so the 'floorplan: []' and 'power_w: {}' output is consistent with a missing configuration. The paper describes a 3D stack with TSVs and shared core-set stacking, so a 2D steady custom experiment has no valid basis. Labelling the experiment kind custom_2d_steady alongside steady_2d_relevant=false is internally awkward."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The decisive observable is Fig. 7a (p. 13, canneal, hybrid, 16-core). The page text is rotated and garbled, with no numeric labels, and no visual verification of the bars is evidenced; 'no numeric labels' rests on text extraction only. No per-block same-scenario power exists, and no temperature or transient trace is published. Only relative model-vs-simulation percentages (Table 9) are verified."
+    }
+  },
+  "findings": [
+    {
+      "field": "canneal_component_power_Fig7a",
+      "reason": "The decisive figure was not visually verified. The extraction relies on garbled pdftotext of a rotated page, so the claim that the bars carry no numeric labels and that no values can be read is unverified. It is also unconfirmed that the Fig. 7a canneal group matches the Table 9 row.",
+      "locator": "PDF p. 13, Fig. 7a canneal group"
+    },
+    {
+      "field": "floorplan_geometry",
+      "reason": "No block coordinates or dimensions are published, only the core area and Table 1 technology areas. The Table 1 areas for 1/4/4 MB banks are not same-scenario placed dimensions: each layer has 16 banks, and no stacking or planar mapping is given. No same-scenario power exists for any floorplan block.",
+      "locator": "PDF p. 10 Table 4; p. 4 Table 1; p. 12 text on 16 x bank layers"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "No temperature or thermal observable is reported. Tmax = 80 C is a design limit and leakage-model input, not a result. Nothing is available for a thermal comparison.",
+      "locator": "PDF p. 10 Table 4, Eqs. 7 and 20; p. 13 Figs. 7-8"
+    },
+    {
+      "field": "power_budget_Pmax",
+      "reason": "Pmax is ambiguous: Eq. 5 treats it as the per-core maximum power budget, while Table 4 and Eqs. 35-36 treat 110 W as the chip budget. It is not a measured canneal power and cannot be split across blocks.",
+      "locator": "PDF p. 7 Eq. 5; p. 10 Table 4; p. 11 Eqs. 35-36"
+    },
+    {
+      "field": "scenario/3D features",
+      "reason": "Decisive 3D features (stacked cache layers, TSVs, core-set thermal coupling) cannot be represented as a 2D reproduction. No cooling or package model, transient trace, or CVX/GEM5 config exists. Any generated 2D shelf placement and constant power row would be an illustrative assumption, not a paper reproduction.",
+      "locator": "PDF p. 6 Fig. 4, Sec. 5; p. 10 Table 4"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "None of the linked assets (CC-BY license, AnandTech article, SPEC site, CVX site) contains the paper's inputs, and none was inspected as a pinned asset. The assets list is empty, so there is no code or data evidence.",
+      "locator": "extraction.linked_assets; PDF pp. 1, 16"
+    },
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is declared custom_2d_steady but with an empty floorplan and empty power dictionary, and steady_2d_relevant=false. This is not a supported reproducible experiment.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    4,
+    6,
+    7,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "checked_assets": []
+}

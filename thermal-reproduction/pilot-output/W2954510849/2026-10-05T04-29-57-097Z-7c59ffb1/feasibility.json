@@ -1,0 +1,64 @@
+{
+  "paper_id": "W2954510849",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Alpha 21264 core and ALU block dimensions (width_m, height_m) and x_m/y_m coordinates for the 2-core floorplan",
+    "Per-block power (watts) for the bitcount/swim scenario, and the McPAT power time series",
+    "HotSpot 2.0 configuration: package, heat spreader, heat sink, convection resistance, ambient temperature, material properties, grid resolution",
+    "gem5 configuration files, McPAT output, and MBC decision-function and benefit-table parameters, including the value of c in the TB function",
+    "Paper-linked code, data or repository (artifact search found no links and the packet contains no assets)",
+    "Published rule for splitting total core power among blocks, since none exists",
+    "Pinned packet assets (no RLPlanner Ascend910 or ATPlace2.5D files supplied, and they would not apply to this paper)",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The controller is a microarchitectural technique (proactive memory-based computing with a Central MBC Optimizer and reconfigurable cache partitioning) that moves computation from the ALU to cache LUTs. A static 2D thermal solver has no representation of it; its effect enters only through gem5/McPAT time-varying power. It cannot be reproduced from block dimensions and watts.",
+      "essential": true
+    },
+    {
+      "reason": "The result is transient, workload-driven ALU temperature, sampled every 50,000 cycles. A steady-state or one-row power trace would not reproduce the transient peak, and the paper publishes no power time series.",
+      "essential": true
+    },
+    {
+      "reason": "The temperature is for the integer ALU sub-unit inside Alpha 21264 cores. The paper gives no sub-block floorplan, so a Studio model at core or block level cannot resolve the observable.",
+      "essential": true
+    },
+    {
+      "reason": "No block dimensions, coordinates or per-block power are published (only 'Alpha 21264 cores placed side by side'). The paper does not state HotSpot package, cooling or material parameters. Total power would have to be invented or split without a published rule.",
+      "essential": true
+    },
+    {
+      "reason": "The setup involves no 3D stack, interposer or chiplet system. Cooling and package details for HotSpot 2.0 are unspecified, so any Studio package would differ from the original.",
+      "essential": false
+    },
+    {
+      "reason": "Performance and reliability coupling (execution-time overhead of 1.00–1.21, L2 contention across cores, cache miss effects) is part of the paper's optimization objective and is not captured by a thermal-only solver.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [
+    "The paper-linked and packet asset lists are empty, so no Studio package or material assumptions are documented in the packet and none are taken from it.",
+    "If an illustrative 2D placement is built, it would be a separate runner construction with generated coordinates and a single-row power trace. It must not be treated as paper-derived and its temperatures must not be compared numerically to the paper's 79.14 degC.",
+    "Exact replication of the paper's gem5/McPAT/HotSpot MBC experiment is not claimed."
+  ],
+  "evidence_sha256": "29a162798175d1ed8a9d564e9e05216c6fcd034a8d1c15c4e63f9ea9fee04acf",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

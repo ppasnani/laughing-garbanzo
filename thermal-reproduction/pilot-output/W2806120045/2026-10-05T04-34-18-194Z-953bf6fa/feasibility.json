@@ -1,0 +1,67 @@
+{
+  "paper_id": "W2806120045",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-core x_m, y_m, width_m and height_m for the 8x8 Alpha 21264 array; the paper gives no die or core dimensions.",
+    "Per-core power_rows (name and watts) for the H.264 workload from McPAT; only methodology is described, and no total chip power is published.",
+    "Exact active-core location maps for each of the six patterns, available only as a figure (Fig. 1, PDF page 4).",
+    "Full HotSpot configuration: die size, package layers, spreader and sink dimensions, and grid resolution. Only partial Table 2 parameters are given.",
+    "No paper-linked repository, URL, supplementary data or code. The artifact search found no linked assets, and none are pinned in the packet.",
+    "Any power time series, since only steady-state results are reported for this scenario.",
+    "A complete experiment cannot be formed, so the floorplan should be returned empty.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Not a 3D, interposer or chiplet stack. The scenario is a monolithic 2D homogeneous core array, so interposer, 3D and chiplet-floorplan thermal effects are not represented.",
+      "essential": false
+    },
+    {
+      "reason": "The paper's optimizer (ILP/TopoMap task mapping on a SMART NoC with bypass routing) and runtime MatEx transient control are not part of the Fig. 1 steady-state HotSpot scenario, so optimizer and controller behavior cannot be reproduced from it.",
+      "essential": true
+    },
+    {
+      "reason": "No per-core x/y/width/height geometry and no per-core wattage are published. Only the array size (8x8), the 50% dark fraction and peak temperatures are given, so floorplan and power inputs cannot be reconstructed.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling and package model is given only partially in Table 2 (HotSpot parameters). Chip thickness 0.15 mm, heat sink convection resistance 0.1 K/W and ambient 318.15 K are listed. Die dimensions, spreader and sink geometry, and package layers are not given, which limits solver fidelity.",
+      "essential": true
+    },
+    {
+      "reason": "Pattern-specific active-core locations are shown only graphically in Fig. 1. They are not tabulated and would have to be digitized with uncertainty.",
+      "essential": true
+    },
+    {
+      "reason": "Reliability is addressed only through the Tsafe = 81.8 C threshold. There is no lifetime or electromigration model.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No pinned assets or code are supplied, so any Studio package would use its own bundled 2D steady-state thermal solver and default material and package properties, which are not the paper's HotSpot v5.02 grid model.",
+    "The only paper-published thermal inputs usable as Studio assumptions are the Table 2 values: silicon conductivity 100 W/m-K, chip thickness 0.15 mm, spreader conductivity 400 W/m-K, and ambient 318.15 K (45 C).",
+    "An illustrative 2D placement of an 8x8 array with a one-row power trace may be generated only as a separate construction. Generated coordinates and powers must be labeled as non-paper-derived, and its temperatures must not be compared numerically with the paper's Fig. 1 peaks.",
+    "Dark cores are assumed to have zero power, as stated in the paper (PDF page 12)."
+  ],
+  "evidence_sha256": "6c568dfc85c3e2d4d5d30ffe2c8afa737b82c55453902b7493cdced73b2eb771",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

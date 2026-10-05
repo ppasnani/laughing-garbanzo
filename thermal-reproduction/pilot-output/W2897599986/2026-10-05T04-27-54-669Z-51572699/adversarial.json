@@ -1,0 +1,80 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text on pages 2, 5-8 supports the lumped RC model (Eqs. 1-7), activity-factor power model, LP parameter assignment (C1/C2), 1 s ambient estimation (Eq. 20), ΔT=1°C, the EDF slack Algorithm 1, and the RT-MTC/EDF-A/EDF-W baselines. All of it is a lumped, closed-loop real-time scheduling method on a real i.MX6, not a spatial thermal method."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository or pinned asset is supplied. The three linked URLs on page 10 are reference citations (lpsolve, Freescale AN4509, Freescale thermal white paper), not RT-TRM artifacts. Linux Resource Kernel and LPsolver are named but no implementation is available."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The scalar values in Table 1, Table 2, Table 3 and the page 8-9 text match the extraction. However, Table 3 does not state the frequency at which ei applies. The ambient condition for the 59.6 °C maximum (Fig. 8c) is not stated. No numeric Fig. 7 or Fig. 8 temperature, frequency or task-rate time series exist. The 0.8 GHz level for the 35 °C case is inferred."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No chiplet, thermal or controller configuration is supplied and there are no assets. The extraction's experiment kind custom_2d_steady with an empty floorplan and empty power_w is inconsistent with its own finding that the source is a lumped transient closed-loop system (steady_2d_relevant=false)."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Only text-extracted scalars are available. Fig. 7 and Fig. 8 traces are garbled in pdftotext and no rendered image was supplied, so no decisive figure was visually verified. There are no block names, geometry or per-block power rows. Only total-processor values are given (Pmax=3860 mW, task powers 1726/2348 mW). No Fig. 1 ambient trace data are supplied."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The extraction labels the experiment custom_2d_steady with empty floorplan and power. This contradicts its own physical_mismatches and steady_2d_relevant=false: the source is a lumped single-node transient closed-loop DVFS, period-adaptation and idle-insertion experiment. It cannot be called a 2D reproduction.",
+      "locator": "extraction.experiment; PDF pp. 2, 6, 8"
+    },
+    {
+      "field": "scenario vs thermal_observable",
+      "reason": "The scenario is Fig. 7 (ambient 25/30/35 °C), but the observable 59.6 °C comes from the Fig. 8c scheme comparison. The ambient condition for that run is not stated. EDF-A and EDF-W are designed for 25 °C and 35 °C, which suggests a dynamic ambient trace. The observable does not match any Fig. 7 ambient case.",
+      "locator": "PDF p. 9, Fig. 8c paragraph vs Fig. 7"
+    },
+    {
+      "field": "decisive figures",
+      "reason": "Fig. 7 and Fig. 8 (temperature, frequency and task-rate traces) were reviewed only through pdftotext layout text, which is garbled. No image asset or digitization was supplied, so the figure-based claims are not visually verified.",
+      "locator": "PDF pp. 9-10, Figs. 7 and 8; assets list empty"
+    },
+    {
+      "field": "operating_point",
+      "reason": "The extraction says the frequency switches to 0.8 GHz at higher ambient. The text says only that the frequency was reduced at about 150 s at 35 °C, without naming the level. The 0.8 GHz level is an inference. Only the 30 °C case explicitly names 1 and 0.8 GHz.",
+      "locator": "PDF p. 9, Handling ambient temperature variation"
+    },
+    {
+      "field": "task_wcet",
+      "reason": "Table 3 gives ei in seconds without stating the operating frequency, but ei(f) depends on f (Section 3.1). The extraction records these values without that caveat.",
+      "locator": "PDF p. 8, Table 3; p. 2, Section 3.1"
+    },
+    {
+      "field": "architecture",
+      "reason": "The extraction states 'ARM Cortex-A9', but the paper says only 'ARM A9' for the i.MX6. The extraction also calls the processor a 'microcontroller' following the paper's wording. Minor over-specification.",
+      "locator": "PDF p. 8, Experimental setup"
+    },
+    {
+      "field": "assets/code/configs",
+      "reason": "No pinned assets are supplied: no code, no configs, no floorplan, no per-block power. Linked URLs are only citations and are not evidence of available inputs.",
+      "locator": "packet.assets=[]; PDF p. 10, refs [12], [14], [28]"
+    },
+    {
+      "field": "floorplan/power",
+      "reason": "Correctly empty, but this means no floorplan block has same-scenario power and no 2D/3D spatial reproduction is possible. Per-task total powers are not block powers and must not be split.",
+      "locator": "PDF p. 3 Fig. 2; p. 8 Table 2"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,530 @@
+{
+  "paper_id": "W2910207760",
+  "paper_title": "Leakage-aware thermal management for multi-core systems using piecewise linear model based predictive control",
+  "manifest_status": "downloaded",
+  "source_url": "https://wanghaiuestc.github.io/papers/ASPDAC19_pwl.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "5f120e99dc7faa135309d703570686e8974c43e0cbb687cc48d13603a8aed106",
+  "pdf_pages": 6,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:26:34.258Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W2910207760",
+    "paper_title": "Leakage-aware thermal management for multi-core systems using piecewise linear model based predictive control",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 5,
+      "figure_or_table": "Figure 3 and Table 1 (Section 4.1-4.2); transient comparison in Figure 4",
+      "description": "Leakage-aware dynamic thermal management of a 16-core chip comparing the new piecewise-linear (PWL) model predictive control against traditional linear-model MPC, tracking an 80 C target temperature. Figure 3 gives the chip configuration, but the text gives no per-block coordinates, dimensions or powers, and no packet asset was supplied.",
+      "architecture": "16-core multi-core chip with one thermal sensor per core, configuration shown in Fig. 3 (core C32 plotted in Fig. 4)",
+      "workload": "Dynamic power from Wattch running standard SPEC benchmarks, randomly assigned to different cores; golden leakage from iteration-based leakage-aware thermal simulation at 1 ms step",
+      "operating_point": "Ambient 40 C, target temperature 80 C, rising range 40-80 C, falling range 120-80 C, control step 1 s, DTM activated at 1 s; Nc=1, Np=2 with 5 expansion points in Fig. 4",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "Golden plant: iteration-based leakage-aware thermal simulation with a 1 ms step (pdf p.5). Prediction model inside the controller: discretized RC thermal model with a piecewise-linear (Taylor-expanded) leakage model (pdf pp.2-4).",
+      "optimizer": "Closed-form unconstrained least-squares MPC solution, Pd = (V^T V + R)^-1 V^T (Yg - F T(k) - phi1 Pb - phi2 Pbn), minimizing the tracking-error cost with a power-regularization term (pdf pp.2-5).",
+      "controller": "Leakage-aware dynamic thermal management with PWL-model-based predictive control (the 'new DTM'). The scenario is Nc=1, Np=2 with 5 Taylor expansion points, a 1 s control step, an 80 C target and an ambient of 40 C. The comparator is traditional linear-model MPC with a single expansion point at 80 C (pdf pp.5-6).",
+      "benchmark": "16-core system plant (configuration in Fig. 3, pdf p.5). Wattch dynamic power from standard SPEC benchmarks, randomly assigned to cores. Compared against traditional linear MPC in Table 1 (pdf p.6) and the C32 transient in Fig. 4 (pdf p.6)."
+    },
+    "thermal_observable": {
+      "value": 0.78,
+      "unit": "degC",
+      "location": "Per-core plant temperature, with one thermal sensor per core in the 16-core chip, tracked against the 80 C target. Fig. 4 plots core C32.",
+      "aggregation": "Average tracking difference between actual plant temperature and the 80 C target for the new DTM with 5 expansion points, Nc=1, Np=2 (Table 1). The maximum is 1.16 degC. The paper does not state whether the average is over cores, time, or both.",
+      "pdf_page": 6
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The original study is a transient closed-loop DTM problem with a 1 s control step and a 1 ms plant step, using time-varying SPEC/Wattch power. A steady-state 2D solve with a one-row power trace cannot represent the controller, the predictive horizon or the transient overshoot behavior.",
+        "essential": true
+      },
+      {
+        "reason": "The controller is the main contribution (PWL MPC with Nc/Np horizons, power recommendations, DVFS and task-load adjustment). A static thermal solver has no equivalent.",
+        "essential": true
+      },
+      {
+        "reason": "The leakage-temperature feedback is nonlinear: an exponential subthreshold model, TSMC 65 nm process, PWL-approximated, with an iterated golden plant. A fixed-power thermal solve omits this coupling unless leakage is modeled separately.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer is a closed-form regularized least-squares MPC. A generic placement or thermal optimizer is not equivalent.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports a reduced-order RC network with sensor-based per-core outputs, and its package, cooling and interposer details are unspecified. The paper's temperatures (80 C target, 40 C ambient) cannot be compared numerically with any 2D Studio result.",
+        "essential": true
+      },
+      {
+        "reason": "The paper contains no 3D stack, interposer or chiplet structure and no reliability analysis beyond the falling-case range (120 to 80 C), so there is no 3D or interposer mismatch to resolve.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "Fig. 3 per-core x/y coordinates, widths and heights. The text gives no block geometry.",
+      "Per-core power values in watts. Only Wattch/SPEC traces with random assignment to cores are described, with no numbers.",
+      "Power time series for the Wattch/SPEC workloads and the assignment of benchmarks to cores.",
+      "Thermal RC network parameters (G, C, B, L matrices), package and material properties, and the cooling model.",
+      "Leakage model parameters (K, eta, Vth, Vdd, the PWL Taylor coefficients Pb and Hb).",
+      "Final placement. Only the chip configuration figure is referenced, with no extractable coordinates.",
+      "Pinned packet assets, code, configs or repository URLs. The packet lists none and the artifact search found no links, so none can be cited.",
+      "The averaging scope (cores and time window) for the Table 1 tracking difference.",
+      "Studio package and material assumptions. The packet does not supply them."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "ambient_temperature",
+        "block_name": null,
+        "source_value": 40,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 40,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 4.1 Experiment setup, 'The ambient temperature is 40 °C'",
+        "provenance": "Stated in the paper text. Applies to the 16-core DTM experiment.",
+        "uncertainty": null
+      },
+      {
+        "field": "target_temperature",
+        "block_name": null,
+        "source_value": 80,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 80,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 4.1, 'target temperature in DTM is 80 °C'",
+        "provenance": "Stated in the paper text. Also the single Taylor expansion point of the traditional DTM.",
+        "uncertainty": null
+      },
+      {
+        "field": "rising_case_range_lower",
+        "block_name": null,
+        "source_value": 40,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 40,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 4.1, 'operating temperature range for the rising case as from 40 °C to 80 °C'",
+        "provenance": "Stated in the paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "falling_case_range_upper",
+        "block_name": null,
+        "source_value": 120,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 120,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 4.1, 'range for the falling case as from 120 °C to 80 °C'",
+        "provenance": "Stated in the paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "control_step",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "s",
+        "conversion_factor": 1,
+        "normalized_value": 1,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 4.1, 'The control step of DTM is set as 1 s'",
+        "provenance": "Stated in the paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "golden_plant_simulation_step",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "ms",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.001,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 4.1, 'iteration based leakage-aware thermal simulation method with simulation step 1 ms'",
+        "provenance": "Stated in the paper text. This is the golden leakage and plant solver step.",
+        "uncertainty": null
+      },
+      {
+        "field": "dtm_activation_time",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "s",
+        "conversion_factor": 1,
+        "normalized_value": 1,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Fig. 4 caption, 'Both DTM methods are activated at 1 s'",
+        "provenance": "Stated in the figure caption and in Section 4.2 text on p.5.",
+        "uncertainty": null
+      },
+      {
+        "field": "control_horizon_Nc",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "steps",
+        "conversion_factor": 1,
+        "normalized_value": 1,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Fig. 4 caption, 'Nc = 1'; Table 1 column group Nc=1, Np=2",
+        "provenance": "Stated in the figure caption. Selected scenario configuration.",
+        "uncertainty": null
+      },
+      {
+        "field": "prediction_horizon_Np",
+        "block_name": null,
+        "source_value": 2,
+        "source_unit": "steps",
+        "conversion_factor": 1,
+        "normalized_value": 2,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Fig. 4 caption, 'Np = 2'; Table 1 column group Nc=1, Np=2",
+        "provenance": "Stated in the figure caption. Selected scenario configuration.",
+        "uncertainty": null
+      },
+      {
+        "field": "taylor_expansion_point_count",
+        "block_name": null,
+        "source_value": 5,
+        "source_unit": "points",
+        "conversion_factor": 1,
+        "normalized_value": 5,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Fig. 4 caption, 'new DTM (with 5 expansion points)'; Table 1 row 'New (5 points)'",
+        "provenance": "Stated in the figure caption. Selected scenario configuration.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_average_tracking_difference",
+        "block_name": null,
+        "source_value": 0.78,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 0.78,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 1, row 'New (5 points)', column group Nc=1, Np=2, 'avg' under difference",
+        "provenance": "Table value for the average difference between actual plant temperature and the 80 degC target. Not digitized. The averaging scope over cores and time is unspecified.",
+        "uncertainty": "Averaging scope (cores and time window) is not stated in the paper."
+      },
+      {
+        "field": "thermal_observable_maximum_tracking_difference",
+        "block_name": null,
+        "source_value": 1.16,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 1.16,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 1, row 'New (5 points)', column group Nc=1, Np=2, 'max' under difference",
+        "provenance": "Table value for the maximum tracking difference of the new DTM. Not digitized.",
+        "uncertainty": "Scope of the maximum (cores and time) is not stated."
+      },
+      {
+        "field": "traditional_dtm_average_tracking_difference",
+        "block_name": null,
+        "source_value": 1.32,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 1.32,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 1, row 'Traditional', column group Nc=1, Np=2, 'avg'",
+        "provenance": "Table value for the comparator linear-model MPC with a single expansion point at 80 degC.",
+        "uncertainty": null
+      },
+      {
+        "field": "traditional_dtm_maximum_tracking_difference",
+        "block_name": null,
+        "source_value": 5.97,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 5.97,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 1, row 'Traditional', column group Nc=1, Np=2, 'max'",
+        "provenance": "Table value for the comparator.",
+        "uncertainty": null
+      },
+      {
+        "field": "new_dtm_computing_time_per_action",
+        "block_name": null,
+        "source_value": 1.28,
+        "source_unit": "ms",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00128,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 1, row 'New (5 points)', column group Nc=1, Np=2, 'time (ms)'",
+        "provenance": "Average computing time per thermal management action, which occurs every 1 s.",
+        "uncertainty": null
+      },
+      {
+        "field": "new_dtm_memory_cost",
+        "block_name": null,
+        "source_value": 36,
+        "source_unit": "KB",
+        "conversion_factor": 1,
+        "normalized_value": 36,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 1, row 'New (5 points)', column group Nc=1, Np=2, 'mem (KB)'",
+        "provenance": "Table value for stored offline matrices.",
+        "uncertainty": null
+      },
+      {
+        "field": "core_count",
+        "block_name": null,
+        "source_value": 16,
+        "source_unit": "cores",
+        "conversion_factor": 1,
+        "normalized_value": 16,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 4.1, 'experiment is performed on a 16-core system plant' and Fig. 3 caption",
+        "provenance": "Stated in the paper text. Per-core geometry exists only in Fig. 3 and is not given as numbers in the text.",
+        "uncertainty": null
+      },
+      {
+        "field": "leakage_model_process_node",
+        "block_name": null,
+        "source_value": 65,
+        "source_unit": "nm",
+        "conversion_factor": 1e-9,
+        "normalized_value": 6.5e-8,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Fig. 1 caption, 'TSMC 65 nm process MOSFET from HSPICE simulation'",
+        "provenance": "Process used to validate the leakage model. Not stated to be the process of the 16-core chip.",
+        "uncertainty": null
+      },
+      {
+        "field": "floorplan_block_geometry_and_power",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Fig. 3 'configuration of the 16-core chip' and Section 4.1; no numeric x/y/width/height or watts in the text",
+        "provenance": "No block coordinates, dimensions or per-core watts are published as numbers. The power is described only as Wattch/SPEC traces randomly assigned to cores. The floorplan and power_rows therefore stay empty.",
+        "uncertainty": "Figure 3 was not digitized. The text layer has no extractable coordinates."
+      },
+      {
+        "field": "paper_linked_resources_and_assets",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Packet assets list is empty; artifact_search_status is checked_no_links; no availability statement or URL in pages 1-6",
+        "provenance": "No pinned packet assets, code, config or repository links were supplied. No asset evidence is cited, and the missing inputs are recorded in missing_inputs.",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "The PWL-MPC method is supported by the text on pp.2-5: eqs. (1)-(2), (9)-(18), the rising/falling case definitions, the uniform Taylor point selection and the closed-form solution. The extraction correctly says the controller is the contribution. Its own mismatch list shows that the method does not map to a steady 2D solve. The averaging scope of the reported tracking difference is not stated in the paper."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The packet has no assets, no repository or code links, and no availability statement. artifact_search_status is checked_no_links. Nothing is available to verify any implementation, so there is no code evidence."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "The scalar experiment parameters match the text: ambient 40 C, target 80 C, rising range 40-80 C, falling range 120-80 C, control step 1 s, plant step 1 ms, Nc=1, Np=2, 5 points. The Table 1 values for the Nc=1/Np=2 columns (new 5 points: time 1.28 ms, mem 36 KB, max 1.16, avg 0.78; traditional: time 1.13 ms, mem 13 KB, max 5.97, avg 1.32) match the text layer. However, the decisive parameters are absent: the RC matrices G/C/B/L, the leakage constants K/eta/Vth/Vdd, Pb/Hb, the regularization r, and per-core powers. The extraction itself lists these as missing. The 1.28 ms entry also sits slightly uneasily with the prose claim of 'less than 1.2 ms'."
+      },
+      "config": {
+        "status": "missing",
+        "note": "The 16-core chip configuration exists only in Fig. 3, and the supplied packet has no figure asset or image. The Fig. 3 text layer carries no coordinates, so geometry, block names and the C32 position cannot be verified. Fig. 4 (the C32 transient) was also not visually checked. No Studio package, cooling or material configuration is supplied."
+      },
+      "data": {
+        "status": "missing",
+        "note": "No per-core powers, Wattch/SPEC traces or benchmark-to-core assignment are published as numbers. The floorplan and power_w fields are empty, so no floorplan block has same-scenario power. No decisive figure was digitized or visually verified. The Table 1 observables were read from pdftotext layout, not from rendered pages."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The experiment is set to custom_2d_steady with an empty floorplan and empty power_w. The scenario itself says steady_2d_relevant is false and lists essential mismatches: transient closed-loop MPC, nonlinear leakage feedback, a 1 s control step with a 1 ms plant, and no cooling/package data. The kind label contradicts the extraction and cannot be called a 2D reproduction.",
+        "locator": "extraction.experiment; scenario.steady_2d_relevant; physical_mismatches"
+      },
+      {
+        "field": "floorplan_block_geometry_and_power",
+        "reason": "Fig. 3 was not visually verified, and no numeric coordinates, dimensions, block names or watts exist in the evidence. No block has same-scenario power. Any generated 2D shelf layout would be an illustrative assumption, not the published placement.",
+        "locator": "pdf p.5 Fig. 3, Section 4.1; evidence floorplan_block_geometry_and_power"
+      },
+      {
+        "field": "thermal_observable",
+        "reason": "The 0.78 C average tracking difference (max 1.16) is read from Table 1 via the text layer only. The averaging scope over cores and time is unknown. Fig. 4 (C32 transient) was not visually verified. It is a transient closed-loop controller metric and is not comparable to a steady 2D temperature.",
+        "locator": "pdf p.6 Table 1 row 'New (5 points)', Nc=1 Np=2; Fig. 4"
+      },
+      {
+        "field": "paper_linked_resources_and_assets",
+        "reason": "No code, config or data assets are pinned. A bare absence of links is not evidence of any reproducible artifact, so the code check is unresolved.",
+        "locator": "packet.assets=[]; artifact_search_status=checked_no_links"
+      },
+      {
+        "field": "leakage_model_process_node",
+        "reason": "The 65 nm TSMC process is stated only for the Fig. 1 HSPICE validation. It is not stated to be the 16-core chip process and must not be used as a chip parameter. The Fig. 1 curve was not verified.",
+        "locator": "pdf p.2 Fig. 1 caption"
+      },
+      {
+        "field": "missing_inputs",
+        "reason": "Thermal RC network, leakage constants, benchmark power traces, package and cooling data, and Fig. 3 geometry are all unpublished or unverified. The decisive inputs for any scenario-matched reproduction are missing.",
+        "locator": "extraction.missing_inputs; pdf pp.2-5"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W2910207760",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Fig. 3 per-core x/y coordinates, widths and heights. The text gives no block geometry.",
+      "Per-core power values in watts. Only Wattch/SPEC traces with random assignment to cores are described, with no numbers.",
+      "Power time series for the Wattch/SPEC workloads and the assignment of benchmarks to cores.",
+      "Thermal RC network parameters (G, C, B, L matrices), package and material properties, and the cooling model.",
+      "Leakage model parameters (K, eta, Vth, Vdd, the PWL Taylor coefficients Pb and Hb).",
+      "Final placement. Only the chip configuration figure is referenced, with no extractable coordinates.",
+      "Pinned packet assets, code, configs or repository URLs. The packet lists none and the artifact search found no links, so none can be cited.",
+      "The averaging scope (cores and time window) for the Table 1 tracking difference.",
+      "Studio package and material assumptions. The packet does not supply them.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The original study is a transient closed-loop DTM problem with a 1 s control step and a 1 ms plant step, using time-varying SPEC/Wattch power. A steady-state 2D solve with a one-row power trace cannot represent the controller, the predictive horizon or the transient overshoot behavior.",
+        "essential": true
+      },
+      {
+        "reason": "The controller is the main contribution (PWL MPC with Nc/Np horizons, power recommendations, DVFS and task-load adjustment). A static thermal solver has no equivalent.",
+        "essential": true
+      },
+      {
+        "reason": "The leakage-temperature feedback is nonlinear: an exponential subthreshold model, TSMC 65 nm process, PWL-approximated, with an iterated golden plant. A fixed-power thermal solve omits this coupling unless leakage is modeled separately.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer is a closed-form regularized least-squares MPC. A generic placement or thermal optimizer is not equivalent.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports a reduced-order RC network with sensor-based per-core outputs, and its package, cooling and interposer details are unspecified. The paper's temperatures (80 C target, 40 C ambient) cannot be compared numerically with any 2D Studio result.",
+        "essential": true
+      },
+      {
+        "reason": "The paper contains no 3D stack, interposer or chiplet structure and no reliability analysis beyond the falling-case range (120 to 80 C), so there is no 3D or interposer mismatch to resolve.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "db9c49b4e57eae1b3b37e86dfaeaae72f5ef5722f464e422f6ebffa45117cd2a",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "2D screening label: not_2d_applicable. Studio did not run (simulation status: skipped). The gate blocked it because the custom_2d_steady experiment has no blocks and no power_w object (needs 1–128 blocks), so input validity failed. simulation_allowed is false, comparison_valid is false, and the scientific gate and independent verification both failed. The scenario is a custom 2D steady run with no transient trace. It is not a bundled EV6/GCC adapted demonstration. It is also not a pinned Ascend910 or ATPlace illustrative input, so there is no generated placement, no source commit, no input.flp and no one-row input.ptrace. The paper (W2910207760) describes leakage-aware dynamic thermal management of a 16-core chip with piecewise-linear model predictive control. It uses a 1 s control step, a 1 ms golden plant step, an 80 C target, a 40 C ambient and time-varying Wattch/SPEC power. Its reported observable is an average tracking difference of 0.78 degC (maximum 1.16 degC; traditional MPC 1.32 average and 5.97 maximum) for Nc=1, Np=2 and 5 expansion points. No Studio result exists, so no numerical comparison is made. The paper's tracking error measures closed-loop controller behavior around a target. A steady 2D temperature field would be a different quantity, and the paper does not state the averaging scope over cores and time. Any reading of this scenario is limited to qualitative sensitivity: leakage-temperature feedback, controller horizon and expansion-point choices affect tracking accuracy in the paper, which a static solver cannot reproduce. No exact replication is claimed and the final verdict follows the gate.",
+    "limitations": [
+      "Studio did not run: the input is invalid (no floorplan blocks, no power_w) and the verdict is not_2d_applicable, so there is no Studio output to assess.",
+      "comparison_valid is false; the 0.78 degC average tracking difference and the 1.16 degC maximum cannot be compared numerically with any Studio quantity.",
+      "Mismatch in regime: the paper is a transient closed-loop DTM with a 1 s control step and a 1 ms plant step; the screened experiment is steady-state with no transient trace.",
+      "Mismatch in observable and aggregation: the paper reports a tracking error against an 80 C target with unspecified averaging over cores and time; a steady 2D solve gives a spatial temperature field.",
+      "Mismatch in physics: nonlinear exponential leakage feedback (TSMC 65 nm, PWL-approximated, iterated golden plant) and a closed-form regularized least-squares MPC have no counterpart in a fixed-power thermal solve.",
+      "Mismatch in boundary and package assumptions: the paper uses a reduced-order RC network with unspecified package, cooling and material properties and a 40 C ambient; Studio assumptions are empty.",
+      "Missing inputs: Fig. 3 per-core coordinates and sizes, per-core watts, Wattch/SPEC power time series and core assignment, RC matrices, leakage parameters, and the final placement were not provided or digitized.",
+      "No pinned assets, code, configs or repository URLs were found (artifact search: checked_no_links), so no source commit or placement assumption can be reported.",
+      "This is not a bundled EV6/GCC adapted run and not a pinned Ascend910/ATPlace generated-placement illustration, so none of those caveats apply and no illustrative input.flp or input.ptrace was produced.",
+      "Gate blockers remain unresolved: an evidence item lacks a valid page or asset locator, there is no cited steady/transient regime, adversarial code, parameter, config and data checks are unresolved, and independent page/asset review is pending.",
+      "The paper has no 3D, interposer or chiplet structure, so there is no 3D mismatch to resolve; this does not make the 2D steady screening applicable.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Fig. 3 per-core x/y coordinates, widths and heights. The text gives no block geometry.",
+      "Per-core power values in watts. Only Wattch/SPEC traces with random assignment to cores are described, with no numbers.",
+      "Power time series for the Wattch/SPEC workloads and the assignment of benchmarks to cores.",
+      "Thermal RC network parameters (G, C, B, L matrices), package and material properties, and the cooling model.",
+      "Leakage model parameters (K, eta, Vth, Vdd, the PWL Taylor coefficients Pb and Hb).",
+      "Final placement. Only the chip configuration figure is referenced, with no extractable coordinates.",
+      "Pinned packet assets, code, configs or repository URLs. The packet lists none and the artifact search found no links, so none can be cited.",
+      "The averaging scope (cores and time window) for the Table 1 tracking difference.",
+      "Studio package and material assumptions. The packet does not supply them.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The original study is a transient closed-loop DTM problem with a 1 s control step and a 1 ms plant step, using time-varying SPEC/Wattch power. A steady-state 2D solve with a one-row power trace cannot represent the controller, the predictive horizon or the transient overshoot behavior.",
+      "The controller is the main contribution (PWL MPC with Nc/Np horizons, power recommendations, DVFS and task-load adjustment). A static thermal solver has no equivalent.",
+      "The leakage-temperature feedback is nonlinear: an exponential subthreshold model, TSMC 65 nm process, PWL-approximated, with an iterated golden plant. A fixed-power thermal solve omits this coupling unless leakage is modeled separately.",
+      "The optimizer is a closed-form regularized least-squares MPC. A generic placement or thermal optimizer is not equivalent.",
+      "The paper reports a reduced-order RC network with sensor-based per-core outputs, and its package, cooling and interposer details are unspecified. The paper's temperatures (80 C target, 40 C ambient) cannot be compared numerically with any 2D Studio result.",
+      "The paper contains no 3D stack, interposer or chiplet structure and no reliability analysis beyond the falling-case range (120 to 80 C), so there is no 3D or interposer mismatch to resolve."
+    ]
+  }
+}

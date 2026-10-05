@@ -1,0 +1,179 @@
+{
+  "paper_id": "W2954510849",
+  "paper_title": "Proactive Thermal Management using Memory-based Computing in Multicore Architectures",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 8,
+    "figure_or_table": "Table III (two-core processor peak ALU temperature, multi-core proactive MBC)",
+    "description": "Two-core Alpha 21264 processor with a benchmark assigned to each core, running paired task sets (e.g., mgrid with toast, bitcount with swim). The paper reports peak integer ALU temperature and normalized execution time for No MBC and MBC A10/A15/A20/A25. Cores are placed side by side. No block coordinates, dimensions, or per-block power values are published, and there is no paper-linked code or data asset, so a complete floorplan experiment cannot be built.",
+    "architecture": "Multi-core Alpha 21264 cores placed side by side (2-core in Table III, 4-core in Table IV) with private reconfigurable L1 I/D caches, private MBC L1 caches and a shared 128kB 16-way L2 cache. Core frequency is 500 MHz and the CPU model is gem5 DerivO3CPU. A Central MBC Optimizer sets the L1 MBC cache sizes.",
+    "workload": "Paired MiBench (bitcount, CRC32, dijkstra, qsort, toast) and SPEC CPU/MinneSPEC (applu, lucas, mgrid, parser, swim, vpr) benchmarks, one per core.",
+    "operating_point": "Proactive MBC aggressiveness A = 10%, 15%, 20% or 25% of the L2 cache capacity, compared with No MBC. Temperature is sampled every 50,000 CPU cycles. Example: bitcount paired with swim, peak ALU temperature 79.14 C (No MBC) falling to 71.88 C (MBC A25).",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "gem5 (DerivO3CPU, 500 MHz) produces architectural statistics, McPAT estimates power, and HotSpot 2.0 estimates integer ALU temperature. The three simulators were integrated at source level. Core floorplan: Alpha 21264 cores placed side by side (2 cores for Table III). Temperature sampled every 50,000 CPU cycles.",
+    "optimizer": "Central MBC Optimizer (CMO). At regular intervals it maximizes the temperature-benefit function TB = sum_i exp(c*T_i)*B_i(C_i) over per-core MBC L1 cache sizes C_i in {1,2,3,4} KB, subject to sum(C_i) < A, where A is 10%, 15%, 20% or 25% of the L2 cache capacity (MBC A10/A15/A20/A25).",
+    "controller": "Proactive memory-based computing (MBC) dynamic thermal management. A decision function F(i,j) selects which add/multiply operand pairs go to lookup tables (LUTs) cached in way-partitioned L1/L2 caches. The CMO sets the MBC L1 cache sizes using runtime core temperatures and offline-profiled benefit tables. No DVFS is used.",
+    "benchmark": "Table III (PDF page 8): 2-core processor running paired MiBench (bitcount, CRC32, dijkstra, qsort, toast) and SPEC CPU/MinneSPEC (applu, lucas, mgrid, parser, swim, vpr) tasks, one per core. Compared No MBC vs MBC A10/A15/A20/A25 on peak ALU temperature and normalized execution time. Selected pair: bitcount with swim."
+  },
+  "thermal_observable": {
+    "value": 79.14,
+    "unit": "degC",
+    "location": "Integer ALU of the hotter core (bitcount, paired with swim on the neighbouring core) in the 2-core Alpha 21264 processor, No MBC baseline. HotSpot-estimated ALU temperature, not a block-averaged or chip-level value.",
+    "aggregation": "Peak (maximum) temperature over the benchmark run, taken from the ALU temperature trace sampled every 50,000 CPU cycles. Table III reports 79.14 for No MBC, falling to 71.88 for MBC A25.",
+    "pdf_page": 8
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The controller is a microarchitectural technique (proactive memory-based computing with a Central MBC Optimizer and reconfigurable cache partitioning) that moves computation from the ALU to cache LUTs. A static 2D thermal solver has no representation of it; its effect enters only through gem5/McPAT time-varying power. It cannot be reproduced from block dimensions and watts.",
+      "essential": true
+    },
+    {
+      "reason": "The result is transient, workload-driven ALU temperature, sampled every 50,000 cycles. A steady-state or one-row power trace would not reproduce the transient peak, and the paper publishes no power time series.",
+      "essential": true
+    },
+    {
+      "reason": "The temperature is for the integer ALU sub-unit inside Alpha 21264 cores. The paper gives no sub-block floorplan, so a Studio model at core or block level cannot resolve the observable.",
+      "essential": true
+    },
+    {
+      "reason": "No block dimensions, coordinates or per-block power are published (only 'Alpha 21264 cores placed side by side'). The paper does not state HotSpot package, cooling or material parameters. Total power would have to be invented or split without a published rule.",
+      "essential": true
+    },
+    {
+      "reason": "The setup involves no 3D stack, interposer or chiplet system. Cooling and package details for HotSpot 2.0 are unspecified, so any Studio package would differ from the original.",
+      "essential": false
+    },
+    {
+      "reason": "Performance and reliability coupling (execution-time overhead of 1.00–1.21, L2 contention across cores, cache miss effects) is part of the paper's optimization objective and is not captured by a thermal-only solver.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [
+    "The paper-linked and packet asset lists are empty, so no Studio package or material assumptions are documented in the packet and none are taken from it.",
+    "If an illustrative 2D placement is built, it would be a separate runner construction with generated coordinates and a single-row power trace. It must not be treated as paper-derived and its temperatures must not be compared numerically to the paper's 79.14 degC.",
+    "Exact replication of the paper's gem5/McPAT/HotSpot MBC experiment is not claimed."
+  ],
+  "missing_inputs": [
+    "Alpha 21264 core and ALU block dimensions (width_m, height_m) and x_m/y_m coordinates for the 2-core floorplan",
+    "Per-block power (watts) for the bitcount/swim scenario, and the McPAT power time series",
+    "HotSpot 2.0 configuration: package, heat spreader, heat sink, convection resistance, ambient temperature, material properties, grid resolution",
+    "gem5 configuration files, McPAT output, and MBC decision-function and benefit-table parameters, including the value of c in the TB function",
+    "Paper-linked code, data or repository (artifact search found no links and the packet contains no assets)",
+    "Published rule for splitting total core power among blocks, since none exists",
+    "Pinned packet assets (no RLPlanner Ascend910 or ATPlace2.5D files supplied, and they would not apply to this paper)"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "thermal_observable_peak_alu_temperature_no_mbc_bitcount_swim_pair",
+      "block_name": "bitcount core integer ALU",
+      "source_value": 79.14,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 79.14,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Table III, row 'bitcount', column No MBC Peak Temp",
+      "provenance": "Published table value for 2-core Alpha 21264 processor, HotSpot-estimated peak integer ALU temperature, bitcount paired with swim, No MBC baseline",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_peak_alu_temperature_mbc_a25_bitcount",
+      "block_name": "bitcount core integer ALU",
+      "source_value": 71.88,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 71.88,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Table III, row 'bitcount', column MBC A25 Peak Temp",
+      "provenance": "Published table value, peak integer ALU temperature with MBC A25, bitcount paired with swim",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_peak_alu_temperature_no_mbc_swim_pair",
+      "block_name": "swim core integer ALU",
+      "source_value": 77.75,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 77.75,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Table III, row 'swim', column No MBC Peak Temp",
+      "provenance": "Published table value, neighbouring core task paired with bitcount, No MBC",
+      "uncertainty": null
+    },
+    {
+      "field": "sampling_interval",
+      "block_name": null,
+      "source_value": 50000,
+      "source_unit": "CPU cycles",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section V.A Experimental Setup, paragraph on HotSpot/Alpha 21264 floor plan",
+      "provenance": "Text states temperature measurements taken every 50,000 CPU cycles via gem5 to generate the ALU temperature trace",
+      "uncertainty": null
+    },
+    {
+      "field": "core_frequency",
+      "block_name": null,
+      "source_value": 500,
+      "source_unit": "MHz",
+      "conversion_factor": 1000000,
+      "normalized_value": 500000000,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Table II System configuration parameters, Core frequency",
+      "provenance": "Published configuration parameter, gem5 DerivO3CPU",
+      "uncertainty": null
+    },
+    {
+      "field": "aggressiveness_A_range",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section V.B Results, first paragraph",
+      "provenance": "Text defines MBC A10/A15/A20/A25 as sum of L1 MBC cache sizes limited to 10/15/20/25% of L2 capacity; operating point only, no numeric block geometry",
+      "uncertainty": null
+    },
+    {
+      "field": "floorplan_geometry_and_block_power",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section V.A: 'Alpha 21264 cores placed side-by-side'",
+      "provenance": "No x_m, y_m, width_m, height_m or per-block watts are published; no pinned assets in packet; floorplan and power_rows left empty",
+      "uncertainty": "Missing inputs; no total chip power or splitting rule published"
+    },
+    {
+      "field": "paper_linked_resources",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "All pages 1-8 reviewed; no availability statement, repository URL, or supplementary data link found",
+      "provenance": "Packet assets list empty and artifact search found no links; only the source_url of the paper PDF itself exists",
+      "uncertainty": null
+    }
+  ]
+}

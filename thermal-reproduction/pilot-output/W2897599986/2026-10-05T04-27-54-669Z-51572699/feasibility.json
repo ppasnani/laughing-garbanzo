@@ -1,0 +1,66 @@
+{
+  "paper_id": "W2897599986",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No pinned assets in the packet: no chiplet config, thermal config, code, parameter files or repository.",
+    "The linked URLs (lpsolve, Freescale AN4509, Freescale thermal white paper) are reference citations on PDF page 10. They are not paper artifacts and do not prove the experiment inputs exist.",
+    "No block names or x_m, y_m, width_m, height_m for the i.MX6 die or package.",
+    "No per-block power_rows. Only the total Pmax = 3860 mW and the per-task activity factors and average powers are published, with no published rule to split them across blocks.",
+    "No numeric Fig. 7 temperature, frequency or task-rate time series. Digitizing would carry uncertainty, and the figure is not machine-readable in the packet.",
+    "No numeric ambient temperature trace (Fig. 1) and no ambient condition for the 59.6 C maximum in Fig. 8c.",
+    "No die area, material stack, heat-sink or cooling parameters, and no boundary conditions beyond the lumped R and C.",
+    "No published 3D, interposer or chiplet structure, so no complete spatial experiment can be formed. The floorplan should be returned empty.",
+    "Linked asset ref28_lpsolve is not pinned and available",
+    "Linked asset ref12_freescale_an4509 is not pinned and available",
+    "Linked asset ref14_freescale_thermal_wp is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The source model is a lumped single-node RC circuit for one uniprocessor. It has no floorplan, block geometry, spatial heat spreading or per-block power map, so a spatial 2D or 3D chip thermal model cannot reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives no 3D stack, interposer or chiplet structure. Package thermal resistance is only a lumped scalar (R = 22 C/W) taken from vendor data. Cooling and heat-sink details are not described beyond this.",
+      "essential": true
+    },
+    {
+      "reason": "The source result is a transient closed-loop experiment. It combines runtime ambient-temperature estimation, DVFS switching, task-period adaptation and idle-time insertion, with temperature-dependent leakage in the model. A steady-state or open-loop Studio run does not reproduce this controller.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer and controller (LP parameter assignment, EDF idle-time scheduler, RT-MTC feedback baseline) are real-time OS scheduling mechanisms. A chip thermal solver has no equivalent, so they are not replicated.",
+      "essential": true
+    },
+    {
+      "reason": "Power is given only as total-processor quantities (Pmax = 3860 mW, activity factors, average task powers in Fig. 2). No per-block power rows are published, and total power must not be split without a published rule.",
+      "essential": true
+    },
+    {
+      "reason": "No reliability or lifetime metric is evaluated. Only the Tmax = 60 C constraint and the percentage of time it is violated are used.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No pinned packet assets are supplied, so no Studio package or material assumptions are recorded. None are asserted as matching the paper.",
+    "Any Studio run would be a separate illustrative construction that is not paper-derived. Its coordinates and temperatures must not be compared numerically to the paper's 59.6 C."
+  ],
+  "evidence_sha256": "349218d0ddf6a3dd38ecc081e9b6a0bc2493b114b20c9ba632ff420f480c6353",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}
