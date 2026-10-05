@@ -31,6 +31,18 @@ test('paper inbox renders before browser effects run', async () => {
     assert.match(assets, /javascript:alert\(1\)/);
     assert.doesNotMatch(assets, /href="javascript:/);
     assert.doesNotMatch(assets, /<script>/);
+    assert.match(assets, /Saved asset metadata/);
+    const extracted = renderToString(React.createElement(LinkedAssets, { assets: [], extractedAssets: [
+      { id: 'cool3d_github_repo', url: 'https://github.com/iCAS-SJTU/Cool-3D', kind: 'code_repository', paper_page: 1 },
+      { id: 'cool3d_github_repo_conclusion', url: 'https://github.com/iCAS-SJTU/Cool-3D', kind: 'code_repository', paper_page: 13 },
+      { id: 'splash2_benchmark_repo', url: 'https://github.com/liuyix/splash2benchmark', kind: 'benchmark_source_code', paper_page: 14 },
+    ] }));
+    assert.match(extracted, /Links found in paper/);
+    assert.match(extracted, /extraction.json/);
+    assert.equal((extracted.match(/<h3>/g) || []).length, 3);
+    assert.match(extracted, /href="https:\/\/github.com\/iCAS-SJTU\/Cool-3D"/);
+    assert.match(extracted, /href="https:\/\/github.com\/liuyix\/splash2benchmark"/);
+    assert.doesNotMatch(extracted, /No linked assets recorded/);
     assert.match(renderToString(React.createElement(LinkedAssets, { assets: [] })), /No linked assets recorded/);
   } finally {
     delete globalThis.location;
