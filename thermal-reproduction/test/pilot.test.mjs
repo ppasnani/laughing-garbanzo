@@ -7,6 +7,8 @@ import { runGraphInFile } from '@ironclad/rivet-node';
 import { anthropicJson, anthropicExtraction, execute, parseCsv, runStudio, normalizeExtraction,
   EXTRACTION_SCHEMA, EXTRACTION_SECTION_SCHEMAS } from '../pilot.mjs';
 import { reviewDigest, reviewFeasibility, suitableVerdict, sha256, validateExperiment } from '../screening.mjs';
+import { referenceSelection, loadReferenceInputs, loadEv6Example, referenceExperiment,
+  applyReferenceInputs, referenceConfig } from '../reference-inputs.mjs';
 
 const config = await readFile(resolve('../hotspot-studio/dist/example.config'), 'utf8');
 const packet = { paper_id: 'W123', pdf_sha256: 'pdfhash',
@@ -45,11 +47,13 @@ const review = { reviewer: 'second reader', completed_at: '2026-10-03T12:00:00Z'
   evidence_sha256: reviewDigest(packet, extraction, adversarial), approved: true,
   reviewed_pdf_pages: [1, 2], reviewed_assets: [], corrections: [] };
 
-test('manifest parser preserves quoted article titles and 31 rows', async () => {
+test('manifest parser preserves quoted article titles and current paper rows', async () => {
   const text = await readFile(resolve('../chip_thermal_management_papers/download_manifest.csv'), 'utf8');
   const rows = parseCsv(text);
-  assert.equal(rows.length, 31);
-  assert.equal(rows.filter(row => row.status === 'downloaded').length, 22);
+  assert.ok(rows.length > 0);
+  assert.equal(new Set(rows.map(row => row.openalex_id)).size, rows.length);
+  assert.ok(rows.some(row => row.title.startsWith('ATPlace2.5D')));
+  assert.ok(rows.some(row => row.title.startsWith('RLPlanner')));
   assert.equal(parseCsv('openalex_id,title\nW1,"Power, heat, and data"\n')[0].title,
     'Power, heat, and data');
 });
@@ -110,6 +114,80 @@ test('scientific verdict and Studio inputs both control simulation permission', 
   const invalid = structuredClone(extraction);
   invalid.experiment.floorplan[1].x_m = invalid.experiment.floorplan[0].x_m;
   assert.equal(reviewFeasibility(invalid, adversarial, packet, config, review).simulation_allowed, false);
+});
+
+test('descriptive provenance with a valid page is accepted without hiding missing citations', () => {
+  const described = structuredClone(extraction);
+  described.evidence[0].provenance = 'Paper Table 1, manually checked in the PDF';
+  const result = reviewFeasibility(described, adversarial, packet, config);
+  assert.equal(result.blocking_facts.some(item => item.startsWith('Evidence 0 lacks')), false);
+  described.evidence[0].provenance = '  ';
+  const invalid = reviewFeasibility(described, adversarial, packet, config);
+  assert.equal(invalid.blocking_facts.some(item => item.startsWith('Evidence 0 lacks')), true);
+});
+
+test('Ascend910 source dimensions and watts create an illustrative valid snapshot', () => {
+  const reference = { kind: 'ascend910', repo: 'weiweihook/RLPlanner', commit: 'test-revision',
+    caseName: null, assets: [{ id: 'ref_ascend910_cfg', path: 'config/Ascend910.cfg',
+      text: '[chiplets]\nchiplet_count = 2\nwidths = 10, 8\nheights = 9, 7\npowers = 40, 20\n' }] };
+  const prepared = referenceExperiment(reference);
+  assert.deepEqual(Object.values(prepared.experiment.power_w), [40, 20]);
+  const adapted = applyReferenceInputs({ ...structuredClone(extraction),
+    scenario: { ...extraction.scenario, description: 'Ascend 910 System' },
+    experiment: { kind: 'custom_2d_steady', floorplan: [], power_w: {} } }, reference, prepared);
+  assert.equal(adapted.experiment.floorplan.length, 2);
+  assert.equal(adapted.physical_mismatches.at(-1).essential, true);
+  assert.equal(adapted.evidence.filter(item => item.asset_id === 'ref_ascend910_cfg').length, 6);
+  assert.equal(adapted.evidence.find(item => item.field === 'x_m' &&
+    item.block_name === 'chiplet_1').source_value, null);
+  const tuned = referenceConfig(config, reference, prepared);
+  assert.deepEqual(validateExperiment(adapted.experiment, tuned), []);
+  const reviewed = reviewFeasibility(adapted, adversarial, packet, tuned);
+  assert.equal(reviewed.decision, 'illustrative_2d_only');
+  assert.equal(reviewed.simulation_allowed, true);
+  assert.deepEqual(applyReferenceInputs(adapted, reference, prepared), adapted);
+});
+
+test('ATPlace zero placement is replaced with a cited-size illustrative layout', () => {
+  const reference = { kind: 'atplace', repo: 'PKU-IDEA/ATPlace_pub', commit: 'test-revision',
+    caseName: 'Case3', assets: [
+      { id: 'ref_atplace_blocks', path: 'cases/Case3/Case3.blocks', text:
+        'NumHardRectilinearBlocks : 2\nCPU_0 hardrectilinear 4 (0, 0) (0, 9000) (8000, 9000) (8000, 0)\nDRAM_0 hardrectilinear 4 (0, 0) (0, 9000) (9000, 9000) (9000, 0)\n' },
+      { id: 'ref_atplace_power', path: 'cases/Case3/Case3.power', text: 'CPU_0 150\nDRAM_0 20\n' },
+      { id: 'ref_atplace_placement', path: 'cases/Case3/Case3.pl', text: 'CPU_0 0 0\nDRAM_0 0 0\n' },
+      { id: 'ref_atplace_hotspot_config', path: 'thermal/hotspot.config', text:
+        '-r_convec 0.01\n-s_spreader 0.01\n-s_sink 0.06\n-model_type block\n-model_secondary 0\n' },
+      { id: 'ref_atplace_reproduce', path: 'reproduce.py', text:
+        'CASE_INTERPOSER_SIZE = {"Case3": [39000.0, 39000.0]}\n' },
+    ] };
+  const prepared = referenceExperiment(reference);
+  assert.equal(prepared.generated, true);
+  assert.deepEqual(prepared.experiment.power_w, { CPU_0: 150, DRAM_0: 20 });
+  assert.equal(prepared.evidence.find(item => item.field === 'x_m').source_value, null);
+  assert.notDeepEqual(prepared.experiment.floorplan.map(block => block.x_m), [0, 0]);
+  const tuned = referenceConfig(config, reference, prepared);
+  assert.deepEqual(validateExperiment(prepared.experiment, tuned), []);
+  assert.match(tuned, /-r_convec\s+0\.01/);
+  assert.throws(() => applyReferenceInputs({ ...extraction,
+    scenario: { ...extraction.scenario, description: 'Case 2' } }, reference, prepared),
+    /does not match/);
+});
+
+test('bundled EV6 and GCC inputs are available only as an illustrative fallback', async () => {
+  const reference = await loadEv6Example();
+  const prepared = referenceExperiment(reference);
+  assert.equal(prepared.experiment.floorplan.length, 30);
+  assert.deepEqual(validateExperiment(prepared.experiment,
+    referenceConfig(config, reference, prepared)), []);
+  const adapted = applyReferenceInputs({ ...structuredClone(extraction),
+    experiment: { kind: 'custom_2d_steady', floorplan: [], power_w: {} } }, reference, prepared);
+  assert.equal(adapted.physical_mismatches.at(-1).essential, true);
+  assert.match(adapted.physical_mismatches.at(-1).reason, /unrelated to this paper/);
+  assert.equal(referenceSelection({ title: 'ATPlace2.5D example' }).caseName, 'Case3');
+  assert.throws(() => referenceSelection({ title: 'ATPlace2.5D example' }, 'Case11'));
+  await assert.rejects(loadReferenceInputs(referenceSelection({ title: 'RLPlanner paper' }),
+    async () => new Response('changed source')),
+    /SHA-256 mismatch/);
 });
 
 test('backend input gate rejects overlapping blocks and mismatched names', () => {

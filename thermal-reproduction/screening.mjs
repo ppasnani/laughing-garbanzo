@@ -9,8 +9,6 @@ export const suitableVerdict = verdict => verdict === 'candidate_2d_snapshot' ||
 export const CHECKS = ['methods', 'code', 'parameters', 'config', 'data'];
 const GEOMETRY = ['x_m', 'y_m', 'width_m', 'height_m'];
 const REQUIRED = [...GEOMETRY, 'power_w'];
-const SUPPORTED_PROVENANCE = new Set(['explicit_text', 'table', 'figure_digitized',
-  'linked_code', 'linked_data', 'supplement']);
 
 export function reviewDigest(packet, extraction, adversarial) {
   return sha256(JSON.stringify({ pdf_sha256: packet.pdf_sha256,
@@ -103,7 +101,7 @@ export function validateExperiment(experiment, config) {
 
 function cited(item, packet) {
   if (!item || typeof item.locator !== 'string' || !item.locator.trim() ||
-      !SUPPORTED_PROVENANCE.has(item.provenance)) return false;
+      typeof item.provenance !== 'string' || !item.provenance.trim()) return false;
   if (Number.isInteger(item.pdf_page) && item.pdf_page >= 1 && item.pdf_page <= packet.pages.length) return true;
   return typeof item.asset_id === 'string' && packet.assets?.some(asset => asset.id === item.asset_id &&
     asset.sha256 && asset.version && asset.status === 'downloaded' && item.locator.includes(':'));
