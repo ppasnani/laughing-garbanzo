@@ -1,0 +1,5 @@
+{
+  "status": "skipped",
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+  "artifacts": {}
+}

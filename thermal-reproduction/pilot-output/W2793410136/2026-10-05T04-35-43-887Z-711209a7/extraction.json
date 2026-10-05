@@ -1,0 +1,406 @@
+{
+  "paper_id": "W2793410136",
+  "paper_title": "Thermal Management in Fine-Grained 3-D Integrated Circuits",
+  "artifact_search_status": "checked_links_found",
+  "linked_assets": [
+    {
+      "id": "comsol_website_ref27",
+      "url": "www.comsol.com",
+      "kind": "commercial FEM software website cited as reference 27 (not a code, data, or config artifact)",
+      "paper_page": 8
+    }
+  ],
+  "scenario": {
+    "pdf_page": 5,
+    "figure_or_table": "Fig. 4A-B (monolithic 3-D NAND gate thermal profile without heat extraction); geometry and bias in Section IV text; peak temperature reported on PDF page 6",
+    "description": "Finite element (COMSOL) steady-state and transient thermal simulation of a transistor-level monolithic 3-D (M3D) NAND gate with two PMOS in the bottom tier and two NMOS in the top tier, joined by 50 nm inter-tier vias, and no heat extraction feature. The paper reports a top-tier peak of about 420 K (roughly 120 K rise); the introduction cites up to 450 K.",
+    "architecture": "Transistor-level monolithic 3-D IC, NAND gate; overall area 183x145 nm^2, channel length 16 nm, ILV length 110 nm, total z height 1.4 um, 600x300 nm^2 heat sink under the substrate",
+    "workload": "Static NAND gate operation with a 50% duty cycle over a 100 ns period; heat sources at drain and gate blocks",
+    "operating_point": "Drain 0.8 V; gate 0.527 V and 0.495 V on the two pull-up transistors; heat sink bottom held at 300 K; all other boundaries adiabatic",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "COMSOL Multiphysics finite element method, coupled Joule heating and heat conduction PDEs, steady-state and transient (PDF pages 4-5)",
+    "optimizer": "None. The paper runs no placement or design-space optimizer. It hand-places a thermal junction and a tungsten heat-conducting nano pillar at the top transistor (PDF pages 3, 7).",
+    "controller": "None. There is no thermal or DVFS controller. The only time dependence is a 50% duty cycle over a 100 ns period (PDF page 5).",
+    "benchmark": "Transistor-level monolithic 3-D (M3D) NAND gate, with 2 PMOS in the bottom tier and 2 NMOS in the top tier, joined by 50 nm inter-tier vias. Area is 183x145 nm^2, channel length 16 nm, ILV length 110 nm, total z height 1.4 um, and the heat sink is 600x300 nm^2. The scenario has no heat extraction features (PDF pages 5-6, Fig. 4A-B)."
+  },
+  "thermal_observable": {
+    "value": 420,
+    "unit": "K",
+    "location": "Top-tier transistor of the monolithic 3-D NAND gate, without heat extraction (Fig. 4A-B); the paper calls this about a 120 K rise over 300 K ambient",
+    "aggregation": "Peak (maximum) temperature in the FEM steady-state field. The introduction cites up to 450 K for M3D, which is inconsistent with the 420 K in Section V.",
+    "pdf_page": 6
+  },
+  "physical_mismatches": [
+    {
+      "reason": "Nanoscale device-level 3-D FEM (183x145 nm^2 NAND gate, 1.4 um stack) differs in scale from a centimeter-scale 2D floorplan with watt-level block power. It has no block floorplan and no per-block watts; heat comes from transistor I-V Joule heating at the drain and gate blocks. The scenario is not steady_2d_relevant.",
+      "essential": true
+    },
+    {
+      "reason": "Monolithic 3-D stacking: two tiers joined by 50 nm inter-tier vias, with top-tier heating far from the sink. A 2D Studio model cannot represent this vertical tier structure, which is the cause of the hotspot.",
+      "essential": true
+    },
+    {
+      "reason": "No interposer or chiplet system, and no cooling model beyond a 300 K isothermal sink face with adiabatic sides. This differs from package-level heat-sink or cooling models.",
+      "essential": true
+    },
+    {
+      "reason": "Transient behavior is a 50% duty cycle over 100 ns. The scenario has no published power time series, and the paper's transient results are shown only in figures (Figs. 6-7), not as extractable numbers.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's own heat extraction (thermal junction and tungsten pillar) is a design feature, not a controller or optimizer. It is outside the scenario and cannot be reproduced in a 2D Studio runner.",
+      "essential": false
+    },
+    {
+      "reason": "No reliability model. The paper discusses reliability only qualitatively. Nanoscale conductivity reduction (Si nanowire 13 W/m/K) and quantum effects are simplified or ignored.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No Studio package or material assumptions are recorded here, because the packet has no pinned assets and no Studio bundle specification.",
+    "Dimensions and powers do not support a placement. A separate illustrative 2D placement could be constructed only if the runner has dimensions and powers; its coordinates would be generated, not paper-derived, and its temperatures could not be compared numerically to the paper's 420 K."
+  ],
+  "missing_inputs": [
+    "Floorplan blocks (x_m, y_m, width_m, height_m) are not published for any scenario. The packet gives overall area and tier layout only, so the floorplan is left empty.",
+    "Same-scenario power_rows (name and watts) are absent. The paper gives bias voltages (drain 0.8 V, gates 0.527 V and 0.495 V) but no per-block or total watts or currents, and no rule to derive power.",
+    "Table I (device materials and dimensions) on PDF page 4 contains no extractable text, so per-block dimensions and material properties are unavailable.",
+    "No pinned assets: the assets list is empty. The only linked resource is the COMSOL website (www.comsol.com, PDF page 8), a commercial software site, not code, data, or config.",
+    "No power time series or published transient numbers; Figs. 4-7 are figures only, and any digitized values would carry uncertainty.",
+    "COMSOL model files, mesh, and boundary and material configuration are unavailable.",
+    "The 420 K (Section V, PDF page 6) and 450 K (introduction) peak values conflict, and the paper does not say which setup yields 450 K."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "scenario_selection",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section IV Geometry Modeling, PDF page 5; Fig. 4A-B, PDF page 5; text on PDF page 6",
+      "provenance": "Selected scenario: monolithic 3-D (M3D) NAND gate without heat extraction, COMSOL FEM. Two PMOS are in the bottom tier and two NMOS in the top tier, with 50 nm inter-tier vias. The paper gives no block floorplan or per-block watts, so the floorplan is empty.",
+      "uncertainty": "Scenario is device-level 3-D nanoscale, not a 2D floorplan with watts; no complete experiment exists."
+    },
+    {
+      "field": "m3d_overall_area_dimension_1",
+      "block_name": "M3D NAND gate overall footprint",
+      "source_value": 183,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 1.83e-7,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'Overall area for Monolithic 3-D is 183x145nm2'",
+      "provenance": "Paper text; overall footprint of the whole gate, not an individual block placement",
+      "uncertainty": "The text does not say which dimension is x or y; no block coordinates are published."
+    },
+    {
+      "field": "m3d_overall_area_dimension_2",
+      "block_name": "M3D NAND gate overall footprint",
+      "source_value": 145,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 1.45e-7,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'Overall area for Monolithic 3-D is 183x145nm2'",
+      "provenance": "Paper text; overall footprint of the whole gate",
+      "uncertainty": "Axis assignment not stated."
+    },
+    {
+      "field": "m3d_channel_length",
+      "block_name": "M3D transistor channel",
+      "source_value": 16,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 1.6e-8,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'channel length of 16nm'",
+      "provenance": "Paper text",
+      "uncertainty": null
+    },
+    {
+      "field": "m3d_inter_tier_via_size",
+      "block_name": "Inter-tier via (ILV)",
+      "source_value": 50,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 5e-8,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'Size of inter-tier via is 50nm'",
+      "provenance": "Paper text",
+      "uncertainty": "Cross-section versus length not specified for the 50 nm size."
+    },
+    {
+      "field": "m3d_ilv_length_z",
+      "block_name": "Inter-tier via (ILV)",
+      "source_value": 110,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 1.1e-7,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'Length of the ILV towards z-direction is 110nm'",
+      "provenance": "Paper text",
+      "uncertainty": null
+    },
+    {
+      "field": "m3d_total_z_height",
+      "block_name": "M3D stack",
+      "source_value": 1.4,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.0000014,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'Total distance towards z-direction from the bottom substrate is 1.4um'",
+      "provenance": "Paper text",
+      "uncertainty": null
+    },
+    {
+      "field": "heat_sink_dimension_1",
+      "block_name": "Heat sink",
+      "source_value": 600,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 6e-7,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'heat sink is placed with area of 600x300nm2'",
+      "provenance": "Paper text; the heat sink is at the bottom of the substrate",
+      "uncertainty": "Axis assignment not stated."
+    },
+    {
+      "field": "heat_sink_dimension_2",
+      "block_name": "Heat sink",
+      "source_value": 300,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 3e-7,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'heat sink is placed with area of 600x300nm2'",
+      "provenance": "Paper text",
+      "uncertainty": "Axis assignment not stated."
+    },
+    {
+      "field": "drain_voltage",
+      "block_name": null,
+      "source_value": 0.8,
+      "source_unit": "V",
+      "conversion_factor": 1,
+      "normalized_value": 0.8,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Grain Boundary Condition Modeling: 'drain voltage to be at 0.8V'",
+      "provenance": "Paper text; operating point, not power in watts",
+      "uncertainty": "No current or watts given."
+    },
+    {
+      "field": "gate_voltage_pullup_1",
+      "block_name": "Pull-up transistor 1 gate",
+      "source_value": 0.527,
+      "source_unit": "V",
+      "conversion_factor": 1,
+      "normalized_value": 0.527,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5: 'voltages of 0.527V, 0.495V at the gate contact of the two pull-up transistors'",
+      "provenance": "Paper text",
+      "uncertainty": "Pairing of voltage to transistor is not explicit."
+    },
+    {
+      "field": "gate_voltage_pullup_2",
+      "block_name": "Pull-up transistor 2 gate",
+      "source_value": 0.495,
+      "source_unit": "V",
+      "conversion_factor": 1,
+      "normalized_value": 0.495,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5: 'voltages of 0.527V, 0.495V at the gate contact of the two pull-up transistors'",
+      "provenance": "Paper text",
+      "uncertainty": "Pairing of voltage to transistor is not explicit."
+    },
+    {
+      "field": "ambient_heat_sink_boundary_temperature",
+      "block_name": "Heat sink bottom surface",
+      "source_value": 300,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 300,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5: 'The bottom surface of the heat sink is set to 300K (ambient). All other boundaries of the stack are set to be adiabatic.'",
+      "provenance": "Paper text; boundary condition",
+      "uncertainty": null
+    },
+    {
+      "field": "duty_cycle",
+      "block_name": null,
+      "source_value": 50,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.5,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, top: 'we assumed 50% duty cycle of 100ns time'",
+      "provenance": "Paper text; transient workload assumption",
+      "uncertainty": "No power time series published."
+    },
+    {
+      "field": "period",
+      "block_name": null,
+      "source_value": 100,
+      "source_unit": "ns",
+      "conversion_factor": 1e-9,
+      "normalized_value": 1e-7,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, top: 'we assumed 50% duty cycle of 100ns time'",
+      "provenance": "Paper text",
+      "uncertainty": "Wording is ambiguous on whether 100 ns is the period or the simulated time."
+    },
+    {
+      "field": "paper_thermal_observable_peak_temperature",
+      "block_name": "M3D top-tier transistor",
+      "source_value": 420,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 420,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "PDF page 6, Section V.A: 'For top tier highest temperature is 420K, which is almost 120K rise'; Fig. 4A-B",
+      "provenance": "Paper text; peak temperature in the steady-state FEM field of the top tier without heat extraction",
+      "uncertainty": "The paper also states up to 450 K on PDF page 2, which is inconsistent. Aggregation is peak, not mean."
+    },
+    {
+      "field": "paper_thermal_observable_alternate_peak_intro",
+      "block_name": "M3D",
+      "source_value": 450,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 450,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "PDF page 2, introduction: 'without any heat extraction for M3D, temperature increases up to 450K from 300K'",
+      "provenance": "Paper text; conflicts with 420 K in Section V",
+      "uncertainty": "Unclear which setup gives 450 K."
+    },
+    {
+      "field": "silicon_nanowire_thermal_conductivity",
+      "block_name": "Silicon nanowire",
+      "source_value": 13,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 13,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5, Geometry Modeling: 'thermal conductivity of silicon nanowire to be 13 Wm-1K-1'",
+      "provenance": "Paper text; stated for the nanowire stack modeling",
+      "uncertainty": "Stated in the context of the Skybridge single-nanowire stack; applicability to M3D is unclear."
+    },
+    {
+      "field": "dielectric_medium_thermal_conductivity",
+      "block_name": "Dielectric medium",
+      "source_value": 0.3,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 0.3,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "PDF page 7, Section V.B: 'very low thermal conductivity of 0.3 Wm-1K-1'",
+      "provenance": "Paper text; used in the dielectric-medium case, not the no-medium baseline Fig. 4",
+      "uncertainty": null
+    },
+    {
+      "field": "tungsten_pillar_thermal_conductivity",
+      "block_name": "Heat conducting nano pillar",
+      "source_value": 167,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 167,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "PDF page 3: 'tungsten deposition whose thermal conductivity is 167 Wm-1K-1'",
+      "provenance": "Paper text; heat extraction feature, outside the selected baseline scenario",
+      "uncertainty": null
+    },
+    {
+      "field": "block_power_watts",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF pages 4-6 (Sections IV-V); Table I on PDF page 4 has no extractable text",
+      "provenance": "No per-block or total power in watts is published; only bias voltages. No power-splitting rule is given, so no power_rows are created.",
+      "uncertainty": "Missing input."
+    },
+    {
+      "field": "block_positions_x_y_width_height",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Table I (no extractable text); Fig. 4 on PDF page 5 is graphical only",
+      "provenance": "No block x_m, y_m, width_m, or height_m coordinates are published in extractable form.",
+      "uncertainty": "Missing input."
+    },
+    {
+      "field": "linked_resource_comsol",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "PDF page 8, reference 27: www.comsol.com",
+      "provenance": "Commercial FEM software website only. It is not a code, data, or config repository and does not prove that any model inputs exist. No pinned packet assets are supplied.",
+      "uncertainty": "No assets pinned; COMSOL model files, mesh, and material configuration are missing inputs."
+    },
+    {
+      "field": "solver_original",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF page 5: 'COMSOL-multiphysics, commercial finite element simulation tool [27], is used to solve these PDEs'; PDF page 4 Eqs. 1-5",
+      "provenance": "Original solver: COMSOL FEM with coupled Joule heating and transient heat conduction. Optimizer: none. Controller: none. Benchmark: custom M3D NAND gate.",
+      "uncertainty": null
+    },
+    {
+      "field": "physical_mismatch_summary",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "PDF pages 2, 5, 6",
+      "provenance": "Decisive mismatches: nanoscale 3-D monolithic two-tier stack with inter-tier vias, versus a 2D Studio floorplan; no interposer or package cooling (300 K sink face, adiabatic sides); transient results only as figures (Figs. 6-7); no optimizer, controller, or reliability model. Studio package and material assumptions are not recorded because no Studio bundle spec is in the packet. Any illustrative 2D placement would be generated and not comparable numerically to 420 K.",
+      "uncertainty": null
+    }
+  ]
+}

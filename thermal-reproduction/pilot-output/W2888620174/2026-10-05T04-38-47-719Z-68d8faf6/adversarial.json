@@ -1,0 +1,76 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Eq. 1 (solids), eq. 2 (coolant convection term) and eq. 3 (effective conductivity with TTSV) are on PDF pages 2-3, and the 3D-ICE citation [22] is present. The paper names no solver, mesh or convergence criterion, so those are correctly marked missing. 'Finite-volume-style' is the extractor's inference and is not a paper claim. The paper never says the results are steady state."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, or supplementary link appears in the PDF text, and the pinned assets list is empty. Nothing can be run or checked against an implementation."
+    },
+    "parameters": {
+      "status": "verified",
+      "note": "Text-supported values on pages 3-4: conductivities 120/20/600 W/mK, die sizes in mm, hotspots 6e9 and 2e9 W/m3 with their coordinates, 20 mg/s, 10 C inlet, h = 1000 W/m2K, 25 C ambient, channel 1.0 x 2.0 mm, TTSV coordinates, and mg/s to kg/s conversion. Table 1 prints m3 and Wm-1K-1, which contradicts the text units; the extractor resolved this in favor of the text. Channel y/z position, channel count and TTSV diameter are not given. 'Silicon' for the dies is not stated in the paper. Block watts are not published."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No config files exist. The extraction sets kind=custom_2d_steady with an empty floorplan and empty power_w, while also stating steady_2d_relevant=false and that the 3D, micro-channel and TTSV features are essential. That is not a valid 2D reproduction configuration. No same-scenario floorplan or power rows exist, and generated 2D placement or constant powers would be illustrative assumptions only."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The 70 K reduction rests on one sentence on page 4. Figs. 4, 5 and 6 are not in the supplied evidence (text extraction only, no images), so no decisive figure was visually verified. The die-2 z extent, the absolute temperatures and the extra TTSV reduction cannot be checked. No block power in watts, no transient trace, and no data assets exist."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The extraction declares kind 'custom_2d_steady' but also states steady_2d_relevant=false and lists essential 3D, micro-channel and TTSV mismatches. The empty floorplan and power_w do not support any 2D reproduction. The label is contradicted by the extractor's own mismatch list.",
+      "locator": "extraction.experiment vs scenario.steady_2d_relevant and physical_mismatches; PDF pp. 2-4"
+    },
+    {
+      "field": "thermal_observable_microchannel_temperature_reduction",
+      "reason": "The 70 K figure is a single text statement comparing Fig. 5 and Fig. 6. The figures were not supplied for visual verification, and the aggregation (peak, mean or other) is unknown. The comparison cannot be confirmed from the evidence.",
+      "locator": "PDF p. 4, text after Fig. 6; Figs. 5-6"
+    },
+    {
+      "field": "Fig. 4 / hotspot geometry",
+      "reason": "Hotspot extents are taken from text only, and Fig. 4 was not visually verified. The extractor itself calls the die-2 z extent ambiguous. The two-die z layout (die-1 0-5 mm, bond 5-5.5 mm, die-2 5.5-7.5 mm) is an inference, not stated in the paper.",
+      "locator": "PDF p. 3 Model verification paragraph; Fig. 4 on p. 4"
+    },
+    {
+      "field": "Table 1 units",
+      "reason": "Table 1 prints die sizes in m3 and the bottom coefficient in Wm-1K-1, which contradicts the text (mm and W/m2K). The extraction picks the text units without independent confirmation.",
+      "locator": "PDF p. 3 Table 1 Size and Boundary conditions; p. 4 text"
+    },
+    {
+      "field": "thermal_conductivity_die",
+      "reason": "The provenance says 'Silicon die conductivity assumed in the paper', but the paper only gives 120 W/mK for Die-1 and Die-2 and never says silicon in Table 1.",
+      "locator": "PDF p. 3 Table 1 Material properties"
+    },
+    {
+      "field": "original_setup.solver / TTSV modeling",
+      "reason": "'Finite-volume-style' and 'TTSV modeled via effective conductivity in a localized volume' are inferences. Eq. 3 gives an effective die conductivity, while the TTSV is also described as an explicit 1x1x1 mm block. How the TTSV is actually implemented is not specified.",
+      "locator": "PDF p. 2-3 eq. 1-3; PDF p. 4 TTSV paragraph"
+    },
+    {
+      "field": "power_w / floorplan",
+      "reason": "No block-level watts, floorplan blocks or same-scenario power rows are published. Only volumetric W/m3 for two 1 mm3 sources is given. Any 2D shelf coordinates or constant powers would be illustrative assumptions, not paper data.",
+      "locator": "PDF p. 3 Model verification; PDF p. 4"
+    },
+    {
+      "field": "linked_resources",
+      "reason": "No code, config or data is available. The pinned assets are empty, so the code, config and data checks cannot be resolved.",
+      "locator": "manifest assets=[]; PDF p. 6 references"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

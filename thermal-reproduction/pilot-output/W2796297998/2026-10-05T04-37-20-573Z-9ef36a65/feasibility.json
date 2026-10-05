@@ -1,0 +1,59 @@
+{
+  "paper_id": "W2796297998",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "Thermal observable needs a valid page, unit, location, and aggregation",
+    "No cited steady/transient regime",
+    "Per-block x, y, width and height for ami49, or any MCNC case, as used in the paper's runs; the MCNC benchmark data are cited, but no files are pinned.",
+    "Per-block powers for the ami49 run. The paper gives only the random density range 1e5 to 1e7 W/m2.",
+    "Any temperature observable (maximum or mean block temperature) with its unit and location.",
+    "Ambient temperature, package, heat spreader and heat sink, and cooling boundary conditions, and HotSpot configuration files.",
+    "Source code, repository, HotSpot configuration or supplementary data. The artifact search found no linked assets and the packet has none pinned, and the paper gives no availability statement or URL.",
+    "The Perl power-generation script and random seed.",
+    "A power time series. None is published, and the paper's evaluation is static.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper is a numerical linear-solver speed benchmark and reports no temperature, no per-block dimensions or coordinates, no per-block power values, and no ambient or boundary conditions. No complete thermal experiment can be reconstructed from it, so the selected scenario is not steady_2d_relevant.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer is simulated-annealing floorplanning with a changing placement and a relative-sparse-matrix incremental solver. A fixed-placement thermal evaluation would not reproduce this optimizer or solver behavior.",
+      "essential": true
+    },
+    {
+      "reason": "The model is a 2D HotSpot block thermal resistance model. There is no 3D stacking, interposer or chiplet structure, and no cooling or package specification is published. It is not comparable to chiplet or 2.5D setups.",
+      "essential": true
+    },
+    {
+      "reason": "Block powers come from a random Perl script (power density 1e5 to 1e7 W/m2), so there is no real workload and no transient power trace. There is no controller or reliability analysis.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No paper-derived floorplan, power rows or thermal observable exist, so the Studio floorplan is empty.",
+    "Any Studio run would be a separate illustrative construction using bundled package and material assumptions. Its generated coordinates and powers would be kept distinct from paper facts, and its temperatures would not be compared numerically to the paper, which reports none.",
+    "The Studio solver is not the paper's HotSpot LU or CG solver and runs no simulated-annealing optimizer, so no replication of the paper's run-time results is claimed."
+  ],
+  "evidence_sha256": "30e6cf8eb276570a78955b9a0683612329d266fa2e16dd148c91cfcd53cd48cc",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

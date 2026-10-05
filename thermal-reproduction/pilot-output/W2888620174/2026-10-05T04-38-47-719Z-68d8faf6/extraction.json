@@ -1,0 +1,357 @@
+{
+  "paper_id": "W2888620174",
+  "paper_title": "Thermal management of the hotspots in 3-D integrated circuits",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 4,
+    "figure_or_table": "Table 1 (PDF page 3); Figure 4 (PDF page 4); Figure 6 (PDF page 4)",
+    "description": "Two-die 3D-IC (die-1 10x10x5 mm, die-2 10x10x2 mm, 0.5 mm bonding layer) with a 1x1x1 mm hotspot in each die (6.0e9 W/m3 in die-1, 2.0e9 W/m3 in die-2). Compared: no cooling, interlayer micro-channel cooling (1.0 mm x 2.0 mm channel embedded in die-1 along x, water at 20 mg/s, 10 C inlet), and micro-channel plus a thermal TSV (600 W/mK) between the hotspot and the channel. Reported observable: temperature profile along y at x = 5.0 mm, z = 5.0 mm. Micro-channel cooling lowers temperature by about 70 K versus the uncooled case, with a further drop at the hotspot from the TTSV.",
+    "architecture": "Two-die face-to-back 3D-IC with a bonding layer, bottom convective boundary (h = 1000 W/m2K, ambient 25 C), adiabatic top and side surfaces, and embedded micro-channel cooling with a TTSV",
+    "workload": "Steady volumetric hotspot heat generation: 6.0e9 W/m3 in die-1 and 2.0e9 W/m3 in die-2 (1 mm3 each); no power time series",
+    "operating_point": "Water coolant mass flow 20 mg/s, inlet 10 C, bottom heat transfer coefficient 1000 W/m2K, ambient 25 C",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "Not named. The paper gives a compact finite-volume-style heat conduction model (eq. 1, solids) with a convection term for the coolant (eq. 2), following the 3D-ICE formulation it cites. No code, mesh, or solver software is identified.",
+    "optimizer": "None. The paper compares three fixed cases (no cooling, micro-channel, micro-channel plus TTSV) and runs no optimization or placement search.",
+    "controller": "None. There is no dynamic thermal management or flow controller. The coolant mass flow is fixed at 20 mg/s.",
+    "benchmark": "Two-die face-to-back 3D-IC (die-1 10x10x5 mm, die-2 10x10x2 mm, 0.5 mm bonding layer) with a 1x1x1 mm hotspot in each die (6.0e9 W/m3 in die-1, 2.0e9 W/m3 in die-2). The paper compares three cases: no micro-channel or TTSV, micro-channel cooling, and micro-channel plus TTSV. The case is custom and has no named public benchmark."
+  },
+  "thermal_observable": {
+    "value": 70,
+    "unit": "K",
+    "location": "Temperature profile along the y-direction at x = 5.0 mm, z = 5.0 mm, compared between Fig. 5 (no cooling) and Fig. 6 (micro-channel cooling).",
+    "aggregation": "Text-reported temperature decrease of about 70 K from micro-channel cooling, read from a line profile. The paper does not state whether this is a peak, mean, or other value. Absolute temperatures and the extra TTSV reduction at the hotspot appear only in figures and are not quantified in the text.",
+    "pdf_page": 4
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The model is a true 3D stack with two active dies, a bonding layer, and a vertical z axis with hotspots at different heights. A 2D single-layer floorplan thermal model cannot represent this vertical heat flow.",
+      "essential": true
+    },
+    {
+      "reason": "Interlayer micro-channel liquid cooling (1.0 x 2.0 mm channel along x, water at 20 mg/s, 10 C inlet) is central to the result. It adds a convective term (eq. 2) and coolant temperature rise that a conduction-only package/heat-sink model does not include.",
+      "essential": true
+    },
+    {
+      "reason": "The thermal TSV (600 W/mK, 1x1x1 mm) between the hotspot and the channel is a key mechanism. It is modeled via an effective conductivity (eq. 3) in a localized 3D volume and has no 2D floorplan analogue.",
+      "essential": true
+    },
+    {
+      "reason": "The heat sources are volumetric 1 mm3 hotspots specified in W/m3 at fixed 3D positions, not block-level watts on a chip floorplan. The workload has no multi-block layout and no power trace.",
+      "essential": true
+    },
+    {
+      "reason": "The boundary conditions are specific: bottom convection h = 1000 W/m2K at 25 C ambient, and adiabatic top and side surfaces. These differ from a typical Studio package stack with a heat sink and spreader.",
+      "essential": true
+    },
+    {
+      "reason": "The paper has no optimizer or controller. The study is a fixed-configuration steady comparison, so there is no placement optimizer or control policy to replicate.",
+      "essential": false
+    },
+    {
+      "reason": "Eq. 1 and eq. 2 include a transient term, but the reported results are temperature profiles for what appears to be a steady state. The paper does not state this explicitly, and no transient or time-series result is given.",
+      "essential": false
+    },
+    {
+      "reason": "The paper does not report reliability, hotspot-lifetime, or electromigration analysis. Only temperature profiles are given.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "The packet does not describe the bundled Studio package or material stack, so none can be cited here.",
+    "Any Studio run would be a separate illustrative 2D model with its own package and material assumptions and a generated placement. Those coordinates and powers are not paper-derived facts.",
+    "Studio temperatures must not be compared numerically to the paper's ~70 K micro-channel reduction or to its profiles, because of the 3D, micro-channel, and TTSV mismatches."
+  ],
+  "missing_inputs": [
+    "No linked assets, repository, code, config files, or supplementary data are given in the packet (assets list empty; artifact search found no links).",
+    "Solver name, software, mesh or grid resolution, and convergence settings are not given.",
+    "Fig. 5 and Fig. 6 temperature values are not tabulated. Absolute peak temperatures and the TTSV-specific reduction would have to be digitized from figures, with uncertainty.",
+    "Block power in watts is not published. Only volumetric heat generation (W/m3) is given, with no published rule for converting it to a block power or a total chip power.",
+    "Die sizes in Table 1 are printed in m3 but described in the text as mm. The Table 1 bottom heat transfer coefficient unit is also printed as Wm-1K-1 while the text says W/m2K.",
+    "Micro-channel position in y and z, channel count and spacing, and the TTSV count and diameter are not fully specified. Only one TTSV location is given.",
+    "The Fig. 4 heat generation layout is shown only graphically, and the z-extent for die-2 is partly ambiguous.",
+    "The paper gives no power time series, no 2D placement, and no optimizer, controller, or reliability inputs."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "die1_size_x",
+      "block_name": "Die-1",
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification text and Table 1 'Size', Die-1 (10 x 10 x 5; Table 1 prints unit as m3)",
+      "provenance": "Paper text states die-1 is 10 mm by 10 mm by 5 mm. This is a 3D stack die volume, not a 2D floorplan block.",
+      "uncertainty": "Table 1 prints the unit as m3, while the text says mm. The text is used."
+    },
+    {
+      "field": "die1_size_z",
+      "block_name": "Die-1",
+      "source_value": 5,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.005,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification text and Table 1 'Size', Die-1",
+      "provenance": "Die-1 thickness along z from the paper text.",
+      "uncertainty": "Unit ambiguity between Table 1 (m3) and the text (mm)."
+    },
+    {
+      "field": "die2_size_z",
+      "block_name": "Die-2",
+      "source_value": 2,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.002,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification text and Table 1 'Size', Die-2 (10 x 10 x 2)",
+      "provenance": "Die-2 is 10 mm by 10 mm by 2 mm, per the text.",
+      "uncertainty": "Table 1 prints the unit as m3."
+    },
+    {
+      "field": "bonding_layer_thickness",
+      "block_name": "Bonding-layer",
+      "source_value": 0.5,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0005,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification text and Table 1 'Size', Bonding-layer (10 x 10 x 0.5)",
+      "provenance": "Bonding layer is 10 mm by 10 mm by 0.5 mm, per the text.",
+      "uncertainty": "Table 1 unit is printed as m3."
+    },
+    {
+      "field": "hotspot1_heat_generation_die1",
+      "block_name": "Die-1 hotspot",
+      "source_value": 6000000000,
+      "source_unit": "W/m3",
+      "conversion_factor": 1,
+      "normalized_value": 6000000000,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification paragraph: heat source in die-1, 4.5<x<5.5 mm, 2.0<y<3.0 mm, 4.0<z<5.0 mm, 6.0e9 W/m3",
+      "provenance": "Volumetric heat generation in die-1, given as a 1 mm3 source. No block-level watts are published.",
+      "uncertainty": "Power in watts is not published. A derived value of 6 W (6e9 W/m3 x 1e-9 m3) would be an inference and is not recorded as a paper value."
+    },
+    {
+      "field": "hotspot2_heat_generation_die2",
+      "block_name": "Die-2 hotspot",
+      "source_value": 2000000000,
+      "source_unit": "W/m3",
+      "conversion_factor": 1,
+      "normalized_value": 2000000000,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification paragraph: heat source in die-2, 4.5<x<5.5 mm, 7.0<y<8.0 mm, 6.5<z<7.5 mm, 2.0e9 W/m3",
+      "provenance": "Volumetric heat generation in die-2, given as a 1 mm3 source.",
+      "uncertainty": "Power in watts is not published. The z-extent for die-2 is partly ambiguous."
+    },
+    {
+      "field": "hotspot1_x_position",
+      "block_name": "Die-1 hotspot",
+      "source_value": 4.5,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0045,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification paragraph: 4.5 mm < x < 5.5 mm (die-1 heat source)",
+      "provenance": "Lower x bound of the die-1 hotspot, 1 mm wide.",
+      "uncertainty": "Lower bound of an interval in 3D coordinates. It is not a 2D floorplan block origin."
+    },
+    {
+      "field": "hotspot1_y_position",
+      "block_name": "Die-1 hotspot",
+      "source_value": 2,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.002,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification paragraph: 2.0 mm < y < 3.0 mm (die-1 heat source)",
+      "provenance": "Lower y bound of the die-1 hotspot, 1 mm tall.",
+      "uncertainty": "Lower bound of an interval in 3D coordinates."
+    },
+    {
+      "field": "hotspot2_y_position",
+      "block_name": "Die-2 hotspot",
+      "source_value": 7,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.007,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Model verification paragraph: 7.0 mm < y < 8.0 mm (die-2 heat source)",
+      "provenance": "Lower y bound of the die-2 hotspot.",
+      "uncertainty": "The z range for die-2 is partly ambiguous."
+    },
+    {
+      "field": "coolant_mass_flow",
+      "block_name": null,
+      "source_value": 20,
+      "source_unit": "mg/s",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.00002,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 'Cooling liquid settings', Mass-flow; also PDF page 4 first paragraph",
+      "provenance": "Water coolant mass flow in the micro-channel cooling case.",
+      "uncertainty": null
+    },
+    {
+      "field": "coolant_inlet_temperature",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 'Cooling liquid settings', Inlet fluid temperature; also PDF page 4",
+      "provenance": "Inlet water temperature.",
+      "uncertainty": "No Kelvin normalization was applied, since a conversion factor does not describe an offset."
+    },
+    {
+      "field": "bottom_heat_transfer_coefficient",
+      "block_name": null,
+      "source_value": 1000,
+      "source_unit": "W/m2K",
+      "conversion_factor": 1,
+      "normalized_value": 1000,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Text on PDF page 4: 'At the bottom of the bottom-most die, the convective heat transfer coefficient is set to be 1000 W/m2K'; Table 1 on PDF page 3",
+      "provenance": "Bottom-surface convective boundary condition. The other side surfaces are adiabatic.",
+      "uncertainty": "Table 1 prints the unit as Wm-1K-1. The text unit W/m2K is used."
+    },
+    {
+      "field": "ambient_temperature",
+      "block_name": null,
+      "source_value": 25,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 'Boundary conditions', Temperature ambient",
+      "provenance": "Ambient temperature for the bottom convective boundary.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_conductivity_die",
+      "block_name": "Die-1 and Die-2",
+      "source_value": 120,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 120,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 'Material properties', Die-1 and Die-2",
+      "provenance": "Silicon die conductivity assumed in the paper.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_conductivity_bonding_layer",
+      "block_name": "Bonding-layer",
+      "source_value": 20,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 20,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 'Material properties', Bonding-layer",
+      "provenance": "Bonding layer conductivity.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_conductivity_TTSV",
+      "block_name": "TTSV",
+      "source_value": 600,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 600,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 'Material properties', TTSV",
+      "provenance": "Thermal TSV conductivity.",
+      "uncertainty": null
+    },
+    {
+      "field": "microchannel_width",
+      "block_name": "Micro-channel",
+      "source_value": 2,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.002,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Text on PDF page 4: 'micro-channel with height of 1.0 mm and width of 2.0 mm is embedded in die-1'",
+      "provenance": "Micro-channel width. Channel height is 1.0 mm. The channel runs along x under the die-1 heat source.",
+      "uncertainty": "Channel y and z position, channel count, and spacing are not fully specified."
+    },
+    {
+      "field": "microchannel_height",
+      "block_name": "Micro-channel",
+      "source_value": 1,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.001,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Text on PDF page 4: 'micro-channel with height of 1.0 mm and width of 2.0 mm is embedded in die-1'",
+      "provenance": "Micro-channel height.",
+      "uncertainty": null
+    },
+    {
+      "field": "TTSV_position_z",
+      "block_name": "TTSV",
+      "source_value": 3,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.003,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Text on PDF page 4: TTSV 4.5<x<5.5 mm, 2.0<y<3.0 mm, 3.0<z<4.0 mm",
+      "provenance": "Lower z bound of the TTSV between the heat source and the micro-channel. The TTSV is 1 mm x 1 mm x 1 mm.",
+      "uncertainty": "Only one TTSV location is given, and diameter and count are not specified."
+    },
+    {
+      "field": "thermal_observable_microchannel_temperature_reduction",
+      "block_name": null,
+      "source_value": 70,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 70,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Text on PDF page 4 comparing Fig. 6 with Fig. 5: 'the micro-channel cooling can decrease the temperature by 70 K'; profile along y at x = 5.0 mm, z = 5.0 mm",
+      "provenance": "Text-reported temperature decrease on a line profile at x = 5.0 mm, z = 5.0 mm along y, comparing micro-channel cooling with no cooling.",
+      "uncertainty": "The aggregation is not stated (peak, mean, or other). Absolute temperatures and the extra TTSV reduction are only in the figures and are not quantified. No digitization was performed."
+    },
+    {
+      "field": "linked_resources",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "All 6 PDF pages read; the packet assets list is empty. Page 6 contains the references and the open-access CC BY-NC-ND 4.0 notice.",
+      "provenance": "No code, repository, data availability statement, supplementary material, config, or benchmark files are linked in the paper or provided as pinned assets.",
+      "uncertainty": "Missing resources are listed in missing_inputs. No published block-level watts or final placement exist, so no floorplan was extracted."
+    }
+  ]
+}

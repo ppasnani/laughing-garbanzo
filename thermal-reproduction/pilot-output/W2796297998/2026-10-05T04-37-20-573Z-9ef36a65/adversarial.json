@@ -1,0 +1,74 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The LU vs CG (none/Jacobi/SSOR) solver comparison, the SA cost lambdaA*A+lambdaT*T+lambdaW*W, warm-starting from the previous solution, and the R*T=P model are supported by text on PDF pages 3-6. Two extraction claims are not: the 2D label and the 'static' evaluation. The paper also says HotSpot computes 'dynamic block or grid temperature' (p3), and it never calls the model 2D. The paper's own Algorithm 1 is internally defective (see findings)."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No source code, repository, supplementary link, or HotSpot patch is given in the PDF. The packet assets list is empty. Algorithm 1 and 2 pseudocode is garbled and unusable as an implementation: 'b ? A ? x', 'while (rnorm < precision)', Iter never incremented, and bnorm unused."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The only parameters are the 1e5-1e7 W/m2 density range and the machine spec. The exponents appear as '105' and '107' in the pdftotext output and were interpreted as 10^5 and 10^7 without visual confirmation. No lambda weights, SA schedule (Rcool, Kmoves, Nmax, Rreject), CG tolerance 'precision', SSOR relaxation factor, or random seed are given. Per-block power and temperature are unpublished."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot configuration, ambient temperature, package, heat sink, or boundary conditions are published. The scenario is not a thermal-field reproduction and has no steady/2D thermal setup. kind=custom_2d_steady with an empty floorplan is a placeholder, not a paper-derived configuration."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The table numbers for ami49 (Table 1 p6: 49 blocks, 1534.41 s, 135801 solves, 1.13E-02; Table 3 p7: 134.7 s, 11.39, 9.92E-04) match the supplied pdftotext text and are arithmetically consistent. They come from a text layer only; no page image was supplied, so the tables and Figures 1-2 were not visually verified. No block coordinates, dimensions, per-block powers, or temperature are available, so no floorplan block has same-scenario power and the paper's observable is solver run time, not a thermal quantity."
+    }
+  },
+  "findings": [
+    {
+      "field": "architecture / steady_2d_relevant",
+      "reason": "The extraction labels the model 'a 2D HotSpot block thermal resistance model' and the evaluation 'static'. The paper never states 2D. Page 3 says HotSpot 'compute[s] the dynamic block or grid temperature' while elsewhere saying 'static temperature computer'. These labels are inferred and mixed in the source.",
+      "locator": "PDF page 3, Sections 2.1 and 4.1; extraction scenario.architecture and operating_point"
+    },
+    {
+      "field": "block_power_density bounds",
+      "reason": "The power-density exponents are garbled in the text layer ('105 W/m2 to 107 W/m2'). Reading them as 10^5 and 10^7 is an unverified inference with no page image.",
+      "locator": "PDF page 5, Section 5, paragraph 1"
+    },
+    {
+      "field": "Algorithm 1 stopping criterion and pseudocode",
+      "reason": "The pseudocode says 'while (rnorm < precision)', which is inverted relative to the text on p5 ('terminated if rnorm < precision'). Line 4 is garbled ('b ? A ? x'), Iter is never incremented, and the Iter==1 branch is never reached. The code cannot be reconstructed from the paper and the paper is internally inconsistent.",
+      "locator": "PDF page 5, Algorithm 1 lines 4-17, and Section 4.4 on p4"
+    },
+    {
+      "field": "Table 1 narrative vs data",
+      "reason": "The text says CG without preconditioner is slower than LU on two small cases. In Table 1 only hp is slower (8.88 vs 7.53). xerox is faster (5.32 vs 5.69, ratio 1.07). The text also says SSOR is 'less better' than Jacobi, although Table 3 shows SSOR is faster. The paper's narrative is unreliable against its own tables.",
+      "locator": "PDF page 6, text after Table 3 and Table 1 rows xerox/hp; PDF page 5 Table 3 paragraph"
+    },
+    {
+      "field": "CG solver call count",
+      "reason": "Solver-times counts are published only for the LU run. The CG call count is not given. Treating the per-solve average as total run time over the same call count is an inference. The paper also says run time includes SA and cost computations other than the linear solver, so speedup in total run time is not a pure solver speedup.",
+      "locator": "PDF page 1 (comment on [5]) and Tables 1-3 on PDF pages 6-7"
+    },
+    {
+      "field": "floorplan / power_w / temperature",
+      "reason": "There are no published block geometries, per-block powers, or temperature, and no linked assets. Any Studio floorplan or power row would be an illustrative assumption. Nothing supports a 2D reproduction of paper results.",
+      "locator": "Whole PDF pp1-9; packet assets empty"
+    },
+    {
+      "field": "visual verification",
+      "reason": "Only pdftotext output was supplied. No rendered image of the Tables or of Figures 1-2 (PDF page 7) was available to confirm digits or exponents. Figure 2's claim that CG accelerates more with module count is unverified.",
+      "locator": "PDF pages 6-7, Tables 1-4 and Figures 1-2"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "checked_assets": []
+}

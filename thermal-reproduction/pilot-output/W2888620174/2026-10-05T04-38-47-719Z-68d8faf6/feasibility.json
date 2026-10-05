@@ -1,0 +1,71 @@
+{
+  "paper_id": "W2888620174",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No linked assets, repository, code, config files, or supplementary data are given in the packet (assets list empty; artifact search found no links).",
+    "Solver name, software, mesh or grid resolution, and convergence settings are not given.",
+    "Fig. 5 and Fig. 6 temperature values are not tabulated. Absolute peak temperatures and the TTSV-specific reduction would have to be digitized from figures, with uncertainty.",
+    "Block power in watts is not published. Only volumetric heat generation (W/m3) is given, with no published rule for converting it to a block power or a total chip power.",
+    "Die sizes in Table 1 are printed in m3 but described in the text as mm. The Table 1 bottom heat transfer coefficient unit is also printed as Wm-1K-1 while the text says W/m2K.",
+    "Micro-channel position in y and z, channel count and spacing, and the TTSV count and diameter are not fully specified. Only one TTSV location is given.",
+    "The Fig. 4 heat generation layout is shown only graphically, and the z-extent for die-2 is partly ambiguous.",
+    "The paper gives no power time series, no 2D placement, and no optimizer, controller, or reliability inputs.",
+    "Adversarial code check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The model is a true 3D stack with two active dies, a bonding layer, and a vertical z axis with hotspots at different heights. A 2D single-layer floorplan thermal model cannot represent this vertical heat flow.",
+      "essential": true
+    },
+    {
+      "reason": "Interlayer micro-channel liquid cooling (1.0 x 2.0 mm channel along x, water at 20 mg/s, 10 C inlet) is central to the result. It adds a convective term (eq. 2) and coolant temperature rise that a conduction-only package/heat-sink model does not include.",
+      "essential": true
+    },
+    {
+      "reason": "The thermal TSV (600 W/mK, 1x1x1 mm) between the hotspot and the channel is a key mechanism. It is modeled via an effective conductivity (eq. 3) in a localized 3D volume and has no 2D floorplan analogue.",
+      "essential": true
+    },
+    {
+      "reason": "The heat sources are volumetric 1 mm3 hotspots specified in W/m3 at fixed 3D positions, not block-level watts on a chip floorplan. The workload has no multi-block layout and no power trace.",
+      "essential": true
+    },
+    {
+      "reason": "The boundary conditions are specific: bottom convection h = 1000 W/m2K at 25 C ambient, and adiabatic top and side surfaces. These differ from a typical Studio package stack with a heat sink and spreader.",
+      "essential": true
+    },
+    {
+      "reason": "The paper has no optimizer or controller. The study is a fixed-configuration steady comparison, so there is no placement optimizer or control policy to replicate.",
+      "essential": false
+    },
+    {
+      "reason": "Eq. 1 and eq. 2 include a transient term, but the reported results are temperature profiles for what appears to be a steady state. The paper does not state this explicitly, and no transient or time-series result is given.",
+      "essential": false
+    },
+    {
+      "reason": "The paper does not report reliability, hotspot-lifetime, or electromigration analysis. Only temperature profiles are given.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "The packet does not describe the bundled Studio package or material stack, so none can be cited here.",
+    "Any Studio run would be a separate illustrative 2D model with its own package and material assumptions and a generated placement. Those coordinates and powers are not paper-derived facts.",
+    "Studio temperatures must not be compared numerically to the paper's ~70 K micro-channel reduction or to its profiles, because of the 3D, micro-channel, and TTSV mismatches."
+  ],
+  "evidence_sha256": "9e16a29afd4f6b811f6db4abb580323f32408c98bdd4e8d1188d8a7922d653cf",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

@@ -1,0 +1,63 @@
+{
+  "paper_id": "W2793410136",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Floorplan blocks (x_m, y_m, width_m, height_m) are not published for any scenario. The packet gives overall area and tier layout only, so the floorplan is left empty.",
+    "Same-scenario power_rows (name and watts) are absent. The paper gives bias voltages (drain 0.8 V, gates 0.527 V and 0.495 V) but no per-block or total watts or currents, and no rule to derive power.",
+    "Table I (device materials and dimensions) on PDF page 4 contains no extractable text, so per-block dimensions and material properties are unavailable.",
+    "No pinned assets: the assets list is empty. The only linked resource is the COMSOL website (www.comsol.com, PDF page 8), a commercial software site, not code, data, or config.",
+    "No power time series or published transient numbers; Figs. 4-7 are figures only, and any digitized values would carry uncertainty.",
+    "COMSOL model files, mesh, and boundary and material configuration are unavailable.",
+    "The 420 K (Section V, PDF page 6) and 450 K (introduction) peak values conflict, and the paper does not say which setup yields 450 K.",
+    "Linked asset comsol_website_ref27 is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Nanoscale device-level 3-D FEM (183x145 nm^2 NAND gate, 1.4 um stack) differs in scale from a centimeter-scale 2D floorplan with watt-level block power. It has no block floorplan and no per-block watts; heat comes from transistor I-V Joule heating at the drain and gate blocks. The scenario is not steady_2d_relevant.",
+      "essential": true
+    },
+    {
+      "reason": "Monolithic 3-D stacking: two tiers joined by 50 nm inter-tier vias, with top-tier heating far from the sink. A 2D Studio model cannot represent this vertical tier structure, which is the cause of the hotspot.",
+      "essential": true
+    },
+    {
+      "reason": "No interposer or chiplet system, and no cooling model beyond a 300 K isothermal sink face with adiabatic sides. This differs from package-level heat-sink or cooling models.",
+      "essential": true
+    },
+    {
+      "reason": "Transient behavior is a 50% duty cycle over 100 ns. The scenario has no published power time series, and the paper's transient results are shown only in figures (Figs. 6-7), not as extractable numbers.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's own heat extraction (thermal junction and tungsten pillar) is a design feature, not a controller or optimizer. It is outside the scenario and cannot be reproduced in a 2D Studio runner.",
+      "essential": false
+    },
+    {
+      "reason": "No reliability model. The paper discusses reliability only qualitatively. Nanoscale conductivity reduction (Si nanowire 13 W/m/K) and quantum effects are simplified or ignored.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No Studio package or material assumptions are recorded here, because the packet has no pinned assets and no Studio bundle specification.",
+    "Dimensions and powers do not support a placement. A separate illustrative 2D placement could be constructed only if the runner has dimensions and powers; its coordinates would be generated, not paper-derived, and its temperatures could not be compared numerically to the paper's 420 K."
+  ],
+  "evidence_sha256": "4e09018af68f037cb6a1cb76098573d9ab5d9bbd325edccc02d763bc3b485124",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

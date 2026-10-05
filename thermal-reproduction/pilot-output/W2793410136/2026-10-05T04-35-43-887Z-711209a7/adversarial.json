@@ -1,0 +1,88 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Page 4 Eqs. 1-5 (Joule heating plus Fourier conduction) and page 5 (COMSOL, steady-state and transient, 50% duty cycle, NAND configuration) support the stated solver. The method is only partly specified: no mesh, solver tolerances, or time stepping are given, and Fig. 3 flow details are graphical. Nothing in the packet supports a 2D reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, COMSOL model file, or pinned asset exists. The only link is www.comsol.com (ref 27, page 8), a vendor site rather than a reproducible artifact. A bare URL is not evidence."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Text values check out against pages 3, 5 and 7: 183x145 nm^2, 16 nm channel, 50 nm ILV, 110 nm ILV length, 1.4 um z height, 600x300 nm^2 sink, 0.8/0.527/0.495 V, 300 K sink, 13 and 0.3 and 167 W/mK. Table I on page 4 has no extractable text and no image was supplied. The NMOS gate biases, per-block power or current, block dimensions, and material table are absent, so the parameter set is incomplete."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The boundary conditions (300 K sink bottom, adiabatic elsewhere) are stated in text. The M3D layer stack, material assignment per block, mesh, time-stepping, and block coordinates are not published. The extraction sets experiment.kind to custom_2d_steady with an empty floorplan, which is not a valid configuration for this paper."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No same-scenario power rows exist for any floorplan block and no floorplan blocks exist. Figs. 4-7 are graphical and no figure image was supplied for visual verification, so the 420 K peak was checked against text only. The 420 K (page 6) versus 450 K (page 2) conflict is unresolved. Transient numbers are unavailable."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind / steady_2d_relevant",
+      "reason": "The experiment is declared custom_2d_steady, yet the same extraction says steady_2d_relevant=false, the scenario is nanoscale 3-D, and the floorplan and power are empty. This is internally contradictory. A 2D reproduction cannot be called supported, because the decisive 3-D tier/ILV structure, the sink and boundary condition, and the transient behavior have no 2D equivalent.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant; physical_mismatches (PDF p.5-6)"
+    },
+    {
+      "field": "floorplan / power_w",
+      "reason": "No block coordinates, widths, or heights are published, and no per-block watts or currents appear anywhere. Any floorplan block would therefore lack same-scenario power. Only voltages are given, and the NMOS (top-tier) gate biases are not stated at all.",
+      "locator": "PDF p.4 Table I (no text); PDF p.5 Grain Boundary Condition Modeling"
+    },
+    {
+      "field": "paper_thermal_observable_peak_temperature",
+      "reason": "The extraction labels 420 K a 'steady-state' peak, but the text never states that Fig. 4 is steady-state. No figure image was supplied, so the Fig. 4A-B temperature field and its max-versus-region definition were not visually verified. The 450 K figure on page 2 conflicts with 420 K and remains unresolved.",
+      "locator": "PDF p.6 Sec. V.A; PDF p.2 intro; Fig. 4 (PDF p.5)"
+    },
+    {
+      "field": "dielectric_medium_thermal_conductivity",
+      "reason": "The extraction says the 0.3 W/mK dielectric is 'not the no-medium baseline Fig. 4'. The paper never explicitly says Fig. 4 excludes the dielectric medium. This is an inference, so the scenario match to Fig. 4 versus Fig. 5A is unresolved.",
+      "locator": "PDF p.6-7 Sec. V.B; Fig. 5A"
+    },
+    {
+      "field": "silicon_nanowire_thermal_conductivity",
+      "reason": "The 13 W/mK value is stated in the context of the Skybridge single-nanowire stack. Applicability to the M3D scenario is unsupported, and no M3D material table (Table I) is readable.",
+      "locator": "PDF p.5 Geometry Modeling; PDF p.4 Table I"
+    },
+    {
+      "field": "gate_voltage_pullup",
+      "reason": "The 0.527/0.495 V values are given jointly for the M3D and SN3D combinational styles. The assignment of each voltage to a specific M3D transistor, and the NMOS biases, are not given.",
+      "locator": "PDF p.5 Grain Boundary Condition Modeling"
+    },
+    {
+      "field": "duty_cycle / period",
+      "reason": "The wording '50% duty cycle of 100ns time' is ambiguous (period versus simulated time). No published power or temperature time series exists to resolve it. The transient figures (Figs. 6-7) were not visually verified and no digitization is provided.",
+      "locator": "PDF p.5 top; PDF p.7 Figs. 6-7"
+    },
+    {
+      "field": "artifact_search_status",
+      "reason": "The status 'checked_links_found' overstates the situation. The only link is the COMSOL commercial site, which is not an artifact. No assets are pinned, so code, config, and data are unsupported.",
+      "locator": "PDF p.8 ref 27; packet assets=[]"
+    },
+    {
+      "field": "physical_mismatches[0]",
+      "reason": "The 'centimeter-scale 2D floorplan with watt-level block power' and 'Studio runner' claims describe a Studio target that is not defined in the packet. These are unsupported assumptions, though they do not change the conclusion that the scenario is not 2D.",
+      "locator": "extraction.physical_mismatches; studio_assumptions"
+    },
+    {
+      "field": "paper internal inconsistency (Skybridge)",
+      "reason": "The paper says the Skybridge 650 K peak is 'almost 250K rise', but 650 K over 300 K is a 350 K rise. The abstract's '100K-200K' also conflicts. The paper's own observable numbers are unreliable and should be flagged before use as a benchmark.",
+      "locator": "PDF p.6 Sec. V.A; PDF p.1 abstract; PDF p.2"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "checked_assets": []
+}
