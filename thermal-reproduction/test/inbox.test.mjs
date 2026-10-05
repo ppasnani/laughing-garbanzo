@@ -15,10 +15,23 @@ test('paper inbox renders before browser effects run', async () => {
   });
   globalThis.location = { hash: '', pathname: '/', search: '' };
   try {
-    const { default: App } = await server.ssrLoadModule('/src/App.jsx');
+    const { default: App, LinkedAssets } = await server.ssrLoadModule('/src/App.jsx');
     const html = renderToString(React.createElement(App));
     assert.match(html, /Chip Fry/);
     assert.match(html, /Search papers/);
+    const assets = renderToString(React.createElement(LinkedAssets, { assets: [{
+      id: 'code', original_url: 'https://example.org/code', paper_page: 5,
+      sha256: 'saved-hash', extra: { version: 'v1' }, unsafe_url: 'javascript:alert(1)',
+      locator: '<script>untrusted</script>',
+    }] }));
+    assert.match(assets, /href="https:\/\/example.org\/code"/);
+    assert.match(assets, /paper_page/);
+    assert.match(assets, /saved-hash/);
+    assert.match(assets, /v1/);
+    assert.match(assets, /javascript:alert\(1\)/);
+    assert.doesNotMatch(assets, /href="javascript:/);
+    assert.doesNotMatch(assets, /<script>/);
+    assert.match(renderToString(React.createElement(LinkedAssets, { assets: [] })), /No linked assets recorded/);
   } finally {
     delete globalThis.location;
     await server.close();

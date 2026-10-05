@@ -41,29 +41,33 @@ class Block:
         return self.width * self.height
 
 
-def read_floorplan(path):
+def parse_floorplan(text, label="floorplan.flp"):
     blocks = []
     names = set()
-    for number, raw in enumerate(path.read_text().splitlines(), 1):
+    for number, raw in enumerate(text.splitlines(), 1):
         parts = raw.split("#", 1)[0].split()
         if not parts:
             continue
         if len(parts) < 5:
-            raise ValueError(f"{path}:{number}: expected name, width, height, x, y")
+            raise ValueError(f"{label}:{number}: expected name, width, height, x, y")
         name = parts[0]
         if name in names:
-            raise ValueError(f"{path}:{number}: duplicate block {name!r}")
+            raise ValueError(f"{label}:{number}: duplicate block {name!r}")
         try:
             width, height, x, y = (float(value) * 1000 for value in parts[1:5])
         except ValueError as exc:
-            raise ValueError(f"{path}:{number}: invalid geometry") from exc
+            raise ValueError(f"{label}:{number}: invalid geometry") from exc
         if not all(map(math.isfinite, (width, height, x, y))) or width <= 0 or height <= 0:
-            raise ValueError(f"{path}:{number}: width and height must be finite and positive")
+            raise ValueError(f"{label}:{number}: width and height must be finite and positive")
         blocks.append(Block(name, x, y, width, height))
         names.add(name)
     if not blocks:
-        raise ValueError(f"{path}: no floorplan blocks")
+        raise ValueError(f"{label}: no floorplan blocks")
     return blocks
+
+
+def read_floorplan(path):
+    return parse_floorplan(path.read_text(), str(path))
 
 
 def close(a, b):
@@ -213,7 +217,7 @@ def format_change(change):
     return f'<li><span class="swatch" style="background:{COLORS[change["kind"]]}"></span><strong>{esc(change["kind"].title())}</strong> · {esc(before)} → {esc(after)}</li>'
 
 
-def render(base, second, changes, mode, base_path, second_path):
+def render(base, second, changes, mode, base_path, second_path, *, color_scheme="light dark"):
     counts = Counter(change["kind"] for change in changes)
     if mode == "overlay":
         figures = ('<figure><figcaption>Second floorplan over base · dashed outlines mark previous boundaries</figcaption>'
@@ -247,7 +251,7 @@ def render(base, second, changes, mode, base_path, second_path):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title>
 <style>
-  :root {{ color-scheme: light dark; font: 15px/1.45 system-ui,sans-serif; }}
+  :root {{ color-scheme: {color_scheme}; font: 15px/1.45 system-ui,sans-serif; }}
   body {{ max-width: 1200px; margin: 26px auto; padding: 0 20px; background: Canvas; color: CanvasText; }}
   h1 {{ font-size: 1.5rem; margin: 0 0 8px; }}
   .subtle {{ color: GrayText; margin: 0 0 18px; overflow-wrap: anywhere; }}

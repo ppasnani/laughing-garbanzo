@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AnchorButton, Button, Card, Callout, HTMLSelect, HTMLTable, InputGroup, Navbar,
-  NavbarGroup, Spinner, Tag,
+  NavbarGroup, Spinner, Tab, Tabs, Tag,
 } from '@blueprintjs/core';
+import FloorplanComparison from './FloorplanComparison.jsx';
+import chipFryLogo from './assets/chip_fry_logo.png';
 
 const FILTERS = ['All', 'Assessed', 'Queued', 'Processing', 'Simulated', 'No PDF', 'Failed'];
 const STATUS = {
@@ -52,6 +54,33 @@ function Quiet({ title, message }) {
   return <Callout className="quiet-card" title={title}>{message}</Callout>;
 }
 
+export function LinkedAssets({ assets = [] }) {
+  if (Array.isArray(assets) && assets.length === 0) {
+    return <Section title="Linked assets" note="Latest manifest">
+      <Quiet title="No linked assets recorded" message="No linked assets are recorded for this paper's latest result." />
+    </Section>;
+  }
+  const entries = Array.isArray(assets) ? assets : [assets];
+  const display = value => typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  return <Section title="Linked assets" note="Latest manifest">
+    <div className="linked-assets">
+      {entries.map((asset, index) => <Card className="linked-asset" key={index}>
+        <h3>Asset {index + 1}</h3>
+        {asset && typeof asset === 'object' && !Array.isArray(asset) && Object.keys(asset).length > 0
+          ? <dl>{Object.entries(asset).map(([field, value]) => {
+            const url = typeof value === 'string' ? safeLink(value) : null;
+            return <div className="asset-field" key={field}>
+              <dt>{field}</dt><dd>{url
+                ? <a href={url} target="_blank" rel="noopener noreferrer">{value}</a>
+                : <pre>{display(value)}</pre>}</dd>
+            </div>;
+          })}</dl>
+          : <pre>{display(asset)}</pre>}
+      </Card>)}
+    </div>
+  </Section>;
+}
+
 function Results({ results }) {
   if (results?.status !== 'completed') {
     return <Quiet title="No simulation result" message={results?.reason || 'Studio has not completed a simulation for the latest attempt.'} />;
@@ -83,7 +112,7 @@ function Results({ results }) {
   </>;
 }
 
-function Detail({ paper, loading, error, onBack }) {
+function Detail({ paper, loading, error, onBack, onCompare }) {
   if (loading) return <div className="detail-loading"><Spinner size={22} /> Loading latest result…</div>;
   if (error) return <EmptyState title="Unable to load paper" message={error} error />;
   if (!paper) return <EmptyState title="Select a paper" message="Choose a paper from the inbox to inspect its latest assessment and simulation." />;
@@ -109,8 +138,23 @@ function Detail({ paper, loading, error, onBack }) {
         {paper.author_source && <span className="source-note"> · {paper.author_source}</span>}</span>
     </div>
     <div className="status-strip"><Tag intent={statusIntent(paper.status)}>{statusLabel(paper.status)}</Tag>
-      <span>{paper.attempt ? `Latest attempt · ${paper.attempt}` : 'No run recorded yet'}</span></div>
+      <span className="attempt-label">{paper.attempt ? `Latest attempt · ${paper.attempt}` : 'No run recorded yet'}</span>
+      <div className="input-actions">
+        <AnchorButton small outlined icon="download" href={paper.inputs?.download_url}
+          download={`${paper.id}-inputs.zip`} disabled={!paper.inputs?.download_url}
+          title={paper.inputs?.files?.length ? `Download ${paper.inputs.files.join(' and ')} as a ZIP` : 'No saved input files for this attempt'}>
+          Download inputs
+        </AnchorButton>
+        <Button small outlined icon="comparison" onClick={() => onCompare(paper)}
+          disabled={!paper.inputs?.compare_url} title={paper.inputs?.compare_url ? undefined : 'No saved input.flp for this attempt'}>
+          Compare my Floorplan
+        </Button>
+      </div>
+    </div>
 
+    <Tabs className="paper-tabs" id={`paper-tabs-${paper.id}`} key={`${paper.id}-${paper.attempt}`}
+      defaultSelectedTabId="overview" renderActiveTabPanelOnly>
+      <Tab id="overview" title="Overview" panel={<>
     <Section title="Reproducibility assessment" note="Latest attempt">
       {paper.assessment ? <>
         <div className="assessment-grid">
@@ -137,6 +181,9 @@ function Detail({ paper, loading, error, onBack }) {
       </HTMLTable></div> : <Quiet title="No limitations recorded" message={paper.assessment
         ? 'The latest assessment contains no limitation entries.' : 'An assessment has not been saved yet.'} />}
     </Section>
+      </>} />
+      <Tab id="linked-assets" title="Linked assets" panel={<LinkedAssets assets={paper.linked_assets} />} />
+    </Tabs>
     <div className="detail-footer">OpenAlex ID {paper.id} · Citation count from the local manifest · Latest attempt only</div>
   </div>;
 }
@@ -152,6 +199,7 @@ export default function App() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState('');
   const [mobileOpen, setMobileOpen] = useState(Boolean(location.hash));
+  const [comparisonPaper, setComparisonPaper] = useState(null);
   const searchRef = useRef(null);
   const detailRef = useRef(null);
 
@@ -217,7 +265,7 @@ export default function App() {
   return <div className={`shell ${mobileOpen ? 'mobile-detail-open' : ''}`}>
     <Navbar className="topbar">
       <NavbarGroup>
-        <div className="brand-mark" aria-hidden="true"><span /><span /><span /><span /></div>
+        <img className="brand-logo" src={chipFryLogo} alt="" width="64" height="64" />
         <div className="brand"><strong>Chip Fry</strong>
           <small>Replicate, Reproduce and Reuse published results for your own application</small></div>
       </NavbarGroup>
@@ -248,8 +296,11 @@ export default function App() {
         </nav>
       </aside>
       <main className="detail" ref={detailRef} aria-live="polite">
-        <Detail paper={paper} loading={detailLoading} error={detailError || (listError && !selectedId ? listError : '')} onBack={showList} />
+        <Detail paper={paper} loading={detailLoading} error={detailError || (listError && !selectedId ? listError : '')}
+          onBack={showList} onCompare={setComparisonPaper} />
       </main>
     </div>
+    {comparisonPaper && <FloorplanComparison key={`${comparisonPaper.id}-${comparisonPaper.attempt}`}
+      paper={comparisonPaper} onClose={() => setComparisonPaper(null)} />}
   </div>;
 }
