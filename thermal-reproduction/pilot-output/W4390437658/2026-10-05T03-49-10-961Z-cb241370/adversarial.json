@@ -1,0 +1,79 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Page 1 Fig. 1 text and page 2 Sec. II-B/II-C support PPO, an RND bonus, a shared CNN encoder with separate heads, an action mask, microbump assignment before thermal evaluation, and a HotSpot-characterized LTI self/mutual-resistance fast model. The reward formula is garbled in pdftotext, so the exact form of the smoothing term was not verified. The paper does not say how the Ascend 910 Table I temperature was computed (HotSpot or fast model)."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The paper only says 'More details can be found at the github', with no URL, commit or placement output. The only repository evidence is one pinned config file. No RLPlanner code, fast-model tables or final Ascend 910 placement was inspected. The generated shelf layout is not from the source code."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Reward hyperparameters (lambda, mu, T0, alpha), the PPO/RND settings and the self/mutual resistance tables are not in the supplied evidence. The config widths, heights and powers are present, but the config states no units (mm and W are assumed), and the paper never lists chiplet dimensions or powers for the Ascend 910 case. The reference [6] article was not inspected. Reference [6] is not a pinned asset, so the dimension and power provenance is unverified."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no HotSpot configuration: interposer size and thickness, package layers, materials, heat sink or cooling boundary, ambient temperature and grid resolution are all absent. The Studio package and material assumptions are also not provided. The generated custom_2d_steady experiment has no interposer or cooling definition, so it cannot be matched to the paper's thermal setup. The config's path 'outputs/case6/' and comment '#ascend910' only weakly tie it to the Table I Ascend 910 column."
+    },
+    "data": {
+      "status": "missing",
+      "note": "All six blocks have same-scenario powers (256, 14, 20, 20, 20, 20 W) and dimensions from the pinned config, but with an assumed unit and only index-based block names. The final placement is unpublished, so the shelf coordinates are illustrative and not the paper's result. The Table I values (77.12 degC, -7.4063, 18130, 7773) come only from pdftotext output, with ambiguous column layout and no visual verification of the table. The constant power row is a steady-state surrogate, not a published trace."
+    }
+  },
+  "findings": [
+    {
+      "field": "thermal_observable_max_temperature / Table I Ascend 910 RLPlanner row",
+      "reason": "The decisive table was read only from pdftotext -layout. The reward, wirelength and temperature columns are misaligned in the header and body, and no rendered page image was supplied. The 77.12 degC, 18130 mm and 7773 s values are not visually verified. The paper also does not state whether the temperature is a HotSpot or fast-model value.",
+      "locator": "PDF page 2, Table I, Ascend 910 System, RLPlanner row"
+    },
+    {
+      "field": "x_m/y_m for all chiplets",
+      "reason": "No placement coordinates exist in the paper or the config. The shelf coordinates are generated and illustrative, so they cannot be compared numerically with the paper's 77.12 degC for the RL-optimized placement.",
+      "locator": "config/Ascend910.cfg (no x/y keys); PDF page 2 Table I; evidence entries 'Deterministic shelf layout'"
+    },
+    {
+      "field": "width_m/height_m/power_w units",
+      "reason": "The config gives bare numbers, with no mm or W unit and no unit statement in the paper. The mm and W units and the 0.001 conversion are inferred, not evidenced. The paper's mm unit applies only to wirelength.",
+      "locator": "config/Ascend910.cfg:7-9"
+    },
+    {
+      "field": "scenario match (Ascend 910 System vs config)",
+      "reason": "The paper does not name the repo, commit or config file. The link between Table I's Ascend 910 column and this later-pinned config rests on a filename, a '#ascend910' comment and 'case6', which is an inference. The pinned commit is not shown to be the version used in the paper. The reference [6] article that would give the source dimensions and powers was not inspected.",
+      "locator": "config/Ascend910.cfg:1-3; PDF page 2 reference [6]"
+    },
+    {
+      "field": "evidence locators and values",
+      "reason": "The config evidence is inconsistent. Some entries cite 'config/Ascend910.cfg:1' with an index label, others cite lines 7, 8 and 9. chiplet_count is actually line 6. chiplet_1 height appears as both 31.4 and 31.399999999999995, which is a float artifact.",
+      "locator": "evidence entries for chiplet_1 height_m and chiplet_count"
+    },
+    {
+      "field": "HotSpot/cooling/interposer configuration",
+      "reason": "There is no interposer, package or cooling data in the paper or the config, so the 2D steady experiment cannot reproduce the original boundary conditions. A reproduction cannot be claimed.",
+      "locator": "PDF page 2 Sec. II-C and III; ref_ascend910_cfg"
+    },
+    {
+      "field": "RL optimizer / reward parameters",
+      "reason": "The optimizer, wirelength and microbump parts of the paper cannot be reproduced by a thermal-only run. lambda, mu, T0 and alpha are unknown. The reward equation is garbled in the extracted text.",
+      "locator": "PDF page 2, Sec. II-C reward equation"
+    },
+    {
+      "field": "workload/power",
+      "reason": "The power row is a constant steady snapshot of the config powers. The paper publishes no transient or power-time-series data, so any transient claim would be unsupported.",
+      "locator": "config/Ascend910.cfg:9"
+    },
+    {
+      "field": "code/GitHub link",
+      "reason": "The paper gives no repository URL in the supplied text. A repository existing does not prove that a final placement or the fast-model tables exist.",
+      "locator": "PDF page 2, Sec. II-C 'More details can be found at the github'"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2
+  ],
+  "checked_assets": [
+    "ref_ascend910_cfg"
+  ]
+}

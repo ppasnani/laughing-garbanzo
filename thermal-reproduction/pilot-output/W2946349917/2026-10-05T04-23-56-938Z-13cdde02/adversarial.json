@@ -1,0 +1,76 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The text claims about the IR setup, DCT, Laplacian, K-means and LSTM are supported on pp.2-5. The experiment block labels the work custom_2d_steady with an empty floorplan and empty power. That contradicts the extraction's own steady_2d_relevant=false and the essential physical_mismatches, because the paper's method is measured IR imaging plus a transient LSTM, not a 2D steady solve."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet assets list is empty and artifact_search_status is checked_no_links. No code, repository, trained LSTM weights or analysis scripts are supplied. Reference [22] is only the Intel PCM tool URL, which is not evidence of reproducible code."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The reported scalars are supported by pdftotext: Table I RMSE values (HS#1 2.36, HS#10 2.57, HS#11 2.04), the 58.73-101.35 C range, 50 um/pixel, 60 Hz, 18 sources, 187200 samples, 52 min, 80 metrics, and the LSTM layout of 100/80/60 neurons plus an 18-neuron dense layer with 20% dropout, 100 epochs, 60 timesteps and a 60/15/25 split. No block x/y/width/height, die size, per-block watts, Peltier setpoint, material properties, or LSTM optimizer and loss are published, so the parameters needed for any 2D scenario are absent."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No pinned config or geometry asset exists. The extraction has no floorplan, no power_rows and no boundary conditions. The only physical setup details are narrative (rear Peltier cooling with a liquid-cooled hot side, bare front exposed to the IR camera). No scenario-matched config can be built, and generated coordinates would be illustrative only."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no per-block, same-scenario power values, no transient power traces and no digitized Fig. 8 centroid coordinates. The raw IR maps, the 187200-sample dataset and the trained weights are unpublished. Fig. 8 and Fig. 10 are not supplied as images, so the decisive figures were not visually verified. Table I and the text values come from text extraction only."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind custom_2d_steady with empty floorplan and power_w contradicts the extraction's steady_2d_relevant=false and the essential mismatches (transient LSTM, IR measurement, Peltier cooling, no power). It must not be treated as a 2D reproduction scenario.",
+      "locator": "extraction.experiment vs extraction.scenario.steady_2d_relevant and physical_mismatches[0-3]"
+    },
+    {
+      "field": "floorplan_geometry_x_y_width_height / block_power_watts",
+      "reason": "None of the 18 heat-source blocks has a name, geometry or same-scenario power in watts. The paper says the method does not use the floorplan. Any Studio run would rest entirely on invented inputs.",
+      "locator": "PDF p.2 top; PDF p.4 Fig. 8; no power anywhere in PDF pp.1-6"
+    },
+    {
+      "field": "floorplan_geometry_x_y_width_height.locator",
+      "reason": "The locator cites PDF p.1 for the statement that the approach does not rely on the floorplan. That sentence is on PDF p.2 (it continues the last bullet from p.1).",
+      "locator": "PDF p.1 vs PDF p.2, 'does not rely on any proprietary data such as the processor's floorplan'"
+    },
+    {
+      "field": "physical_mismatches[1] (no heat sink or package lid)",
+      "reason": "The paper says only that the front side is exposed to the IR camera and the processor is cooled from underneath. It never states that the package lid or heat spreader is removed, so 'bare' and 'no package lid' are inferences. Section III's COMSOL example involves a heat spreader.",
+      "locator": "PDF p.2 Sec. II.B; PDF p.3 Sec. III.A"
+    },
+    {
+      "field": "controller (PDF pp.2,6)",
+      "reason": "DVFS and thermal management are mentioned in motivation on p.1 (and in the conclusion on p.6). The cited page p.2 does not discuss them.",
+      "locator": "PDF p.1 Introduction; PDF p.6 Conclusion"
+    },
+    {
+      "field": "operating_point (voltage as model input)",
+      "reason": "The abstract names frequency, voltage and instruction count, but the metric list on p.5 names frequency and instruction count with no explicit voltage. The PCM metrics also include internal-sensor temperature, which is not noted as a possible input leakage or confound.",
+      "locator": "PDF p.1 abstract; PDF p.5 Sec. IV.B"
+    },
+    {
+      "field": "Fig. 8 and Fig. 10 decisive figures",
+      "reason": "No figure images or assets were supplied. Fig. 8 (centroids, cluster extraction) and Fig. 10 (HS#1 predicted vs measured) were not visually verified, and the evidence relies on pdftotext only. Table I values were not checked against a page image.",
+      "locator": "PDF p.4 Fig. 8; PDF p.6 Fig. 10 and Table I"
+    },
+    {
+      "field": "pinned_assets / code / dataset",
+      "reason": "No pinned asset, code, config or dataset exists. The only link is the Intel PCM tool URL. Training optimizer, loss, random seed and the manner of the 60/15/25 split (chronological vs random) are unspecified.",
+      "locator": "Packet assets=[]; PDF p.5 Sec. V; PDF p.6 ref [22]"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

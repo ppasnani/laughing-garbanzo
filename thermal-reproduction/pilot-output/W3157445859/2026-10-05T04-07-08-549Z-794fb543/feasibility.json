@@ -1,0 +1,64 @@
+{
+  "paper_id": "W3157445859",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No pinned packet assets were supplied (assets list is empty), so there are no config, floorplan or power files to inspect.",
+    "Router x/y placement coordinates for the 3x3x3 NoC, including TSV regions, are not published; only router size (290 um x 290 um) and logic size (220 um x 220 um) appear in Table 3.",
+    "Per-router power in watts for each synthetic benchmark is shown only in Figure 8 and is not given numerically; per-router powers would need digitizing with uncertainty.",
+    "The numeric per-layer temperatures of the TSV-based and Monolithic systems in Figure 10 are not published in text apart from the 351.64 K Monolithic maximum.",
+    "HotSpot 6.0 configuration details (layer thicknesses, heat sink, convection resistance, ambient temperature, grid resolution) are not given.",
+    "Die or stack dimensions, layer count geometry and silicon/bonding layer thicknesses are not given beyond the 3x3x3 architecture and Table 3 values.",
+    "Paper-linked URLs (Renesas and Toshiba handbooks, NanGate, FreePDK3D45, patent) are third-party references and do not provide inputs for this experiment; no code or data repository for this work is linked.",
+    "Exact traffic injection counts and execution times per benchmark are not published numerically.",
+    "Linked asset ref12_patent_dummy_tsv is not pinned and available",
+    "Linked asset ref11_renesas_handbook is not pinned and available",
+    "Linked asset ref12_toshiba_handbook is not pinned and available",
+    "Linked asset ref25_nangate45 is not pinned and available",
+    "Linked asset ref26_freepdk3d45 is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper's system is a 3x3x3 3D stack with TSV and bonding-layer thermal resistivities and a heat sink on top, so it needs a layered 3D thermal model. A 2D single-layer or interposer-style Studio model cannot represent inter-layer heat flow, TSV conduction, bonding/TIM layers, or the per-layer temperature results in Figure 10.",
+      "essential": true
+    },
+    {
+      "reason": "The Monolithic vs TSV comparison depends on removing bonding layers and modifying TSV-area thermal resistivity (Table 3: Copper 0.0025 mK/W, TIM 0.25 mK/W, TSV area 0.0226 mK/W). These material and layer assumptions cannot be reproduced in a planar model.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives no router coordinates or per-router watts as text, since the per-router synthetic-benchmark powers are only in Figure 8. It publishes only router size, per-router static power and energy per bit, and traffic-scaled power charts. No complete same-scenario floorplan and power set exists.",
+      "essential": true
+    },
+    {
+      "reason": "The paper reports reliability (Black's model MTTF) as a primary outcome. The setup is not a controller or optimizer study, so there is no controller or optimizer to compare, and reliability calculations exceed a simple thermal setup.",
+      "essential": false
+    },
+    {
+      "reason": "The HotSpot 6.0 configuration (heat sink, package, convection, ambient, layer thicknesses) is not published in full, so the solver setup cannot be matched.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "3156302c4da0002cb9632ca288ab8cff49f5eb607457562a93db3546c7800cf8",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

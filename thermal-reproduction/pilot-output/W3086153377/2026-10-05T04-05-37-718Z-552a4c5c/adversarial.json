@@ -1,0 +1,79 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "missing",
+      "note": "The method text is supported: HotSpot 6.0 on gem5/Garnet PARSEC activity, then Black's-model NFR (Eq. 18), then a grid search over theta1/theta2 giving 0/1/2 redundancies (Eq. 19). HotSpot steady/transient mode, layer stack, TSV thermal model and package are not stated. Eq. 17-19 and Step 2 are mis-paged in the extraction. The study is a 3D TSV reliability study, so it is not a 2D thermal reproduction. No decisive 2D thermal method is verified."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets. Pages 1-14 contain no code or data availability statement. The only links are reference URLs (NanGate, FreePDK3D45, PARSEC paper, HotSpot TR, JPL report), which do not prove any executable inputs for this work exist. The IaSiG RTL, gem5/HotSpot scripts and grid-search code are not available."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Verified scalars from text: 64 cores (4x4x4, axis assignment inferred), 36 TSVs per connection, 2 spares, K=32, WCET 5,152 cycles, target MTTF 1.5x/2x/2.5x, 45nm. Not published: Tref, Ea, n, J, theta1/theta2, absolute temperatures, per-router watts, energy per bit. The scalars are digital or reliability parameters, not thermal-model inputs, and the thermal observable is null."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot configuration (materials, layers, heat sink, ambient), no gem5/Garnet config, no cooling description and no pinned config file. The extraction's own experiment kind is custom_2d_steady with an empty floorplan, which is unsupported for a 4-layer 3D scenario. Figure 9 was not visually inspected, since only pdftotext output was supplied."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There is no floorplan: no block names, coordinates or dimensions. There is no same-scenario power for any router block, and the power row set is empty, so floorplan/power matching cannot be checked. Figure 9 values are not tabulated and no figure image was supplied, so no decisive figure was verified. Any generated 2D shelf coordinates or constant power rows would be illustrative assumptions, not published data."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment / floorplan / power_w",
+      "reason": "The extraction labels the experiment custom_2d_steady but supplies an empty floorplan and no power. The paper is a 4x4x4 3D-NoC TSV reliability study with no published geometry or per-router power. It cannot be called a 2D reproduction, and there is no same-scenario floorplan/power data.",
+      "locator": "Section IV-F, PDF pp.12-13; experiment field"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "The observable is null: no absolute temperature, Tref, NFR value or MTTF number is published. Figure 9 outputs are relative redundancy counts and MTTF bars that were not visually verified or digitized.",
+      "locator": "Fig. 9, PDF p.13; thermal_observable"
+    },
+    {
+      "field": "pdf_page for Eq. 17-19 / Step 2 / Eq. 19 location",
+      "reason": "Eq. 17-19 and the Step 1-3 text are on PDF p.9. The extraction cites Eq. 18 on p.8 and Eq. 19 on pp.8, 10 and 12-14, and puts Step 2 on p.12 in one place and p.9 in another. These locators are inconsistent and incorrect.",
+      "locator": "evidence thermal_observable_normalized_fault_rate; original_setup; physical_mismatches; PDF p.9"
+    },
+    {
+      "field": "technology_node pdf_page",
+      "reason": "The NanGate 45nm / FreePDK TSV sentence is in Section IV-A at the end of PDF p.9, not p.10.",
+      "locator": "Section IV-A, PDF p.9"
+    },
+    {
+      "field": "architecture: four clusters of 8 TSVs plus a synchronization TSV",
+      "reason": "This implies 33 TSVs, which does not match the paper's 36 per connection. The 36 comes from 32 data bits plus parity, 2 spares and 1 sync (an inference). The paper elsewhere says the codeword is 35 bits and that a '4-TSV cluster' consists of parity, spare and sync. The cluster composition is ambiguous and unreconciled.",
+      "locator": "Section III-C.1, PDF pp.7-8; Section IV-B, PDF p.10"
+    },
+    {
+      "field": "noc_mesh_dimension_x / noc_mesh_dimension_y / noc_mesh_layers",
+      "reason": "The paper gives only '4 x 4 x 4'. The axis-to-layer assignment is inferred, and the floorplan and layer stack are not given.",
+      "locator": "Section IV-F, PDF p.12"
+    },
+    {
+      "field": "linked_assets / code availability",
+      "reason": "Reference URLs are not evidence of runnable code or data. Packet assets are empty, so nothing was inspected.",
+      "locator": "References [24],[41],[42],[47],[49], PDF p.15; assets: []"
+    },
+    {
+      "field": "steady_2d_relevant / scenario regime",
+      "reason": "The workload is time-varying PARSEC activity, and HotSpot's steady/transient mode is not stated. No regime match to a 2D steady thermal model can be established.",
+      "locator": "Section IV-F, PDF p.12"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15
+  ],
+  "checked_assets": []
+}

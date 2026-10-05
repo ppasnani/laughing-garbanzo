@@ -1,0 +1,78 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper's method is a 3D stack with TSV-coupled cache layers, HotSpot transient simulation, gem5/McPAT power traces, a closed-loop fuzzy DVFS controller with a runtime threshold, and Algorithm 1 bank gating (PDF pp. 3-9). The extraction itself lists these as essential mismatches, yet its experiment block says kind custom_2d_steady. Calling any 2D steady run a reproduction is unsupported. The textual method details (9 rules, 3 triangular sets, mean-of-maxima, T = 2M cycles, 3%) match pp. 6-9."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code repository, supplement, or pinned asset exists (assets list is empty). The only linked URLs are specbench.org and the CC BY license, and neither is a research artifact. The gem5, McPAT, CACTI and HotSpot configs and the controller implementation are not available."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Verified in text: 4 cores, 3 L2 layers, 16 banks per layer, 4 banks per zone, 256 KB banks, 32 KB L1 I and D, T = 2M cycles, 3%, e range [0,3], dT range [-1.5,1.5]. The e(n) unit (degC) and the dT unit are inferred, not stated. Decisive thermal parameters (Ramb, Rv, C, Tamb, runtime threshold values, frequency/voltage levels, power values) are not published. Whether 3.5 degC, 0.5 degC and 3 degC apply to mem2 specifically or to mem2 and com2 together is unclear."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot config (layers, materials, grid, heat sink, package), no floorplan file, and no gem5/McPAT/CACTI configs. Figure 1 is schematic with no dimensions. The runtime threshold of ref. 19 is not given numerically. No Studio config is pinned, so no 2D scenario match can be checked."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No block coordinates or per-block mem2 power exist, so floorplan and power_rows are empty and no same-scenario power can be matched to any block. Figure 6(a) was seen only through pdftotext axis labels. The curves were not visually inspected as an image, and no values are tabulated, so the observable is null. Axis ticks 75-81 degC and 200-450 ms come from a text layer only."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is declared custom_2d_steady while steady_2d_relevant is false and the extraction lists 3D, transient and closed-loop control as essential mismatches. It also has an empty floorplan and no power. This is an internal contradiction and would be a false 2D reproduction.",
+      "locator": "extraction.experiment vs extraction.scenario.steady_2d_relevant and physical_mismatches"
+    },
+    {
+      "field": "floorplan / power_rows",
+      "reason": "No block names, geometry or same-scenario per-block power are published or pinned. Any generated 2D shelf coordinates or constant power rows would be illustrative assumptions, not paper data.",
+      "locator": "PDF p.3 Figure 1; PDF p.9 McPAT description; evidence floorplan.block_geometry and power_rows.per_block_power"
+    },
+    {
+      "field": "Figure 6(a) visual verification",
+      "reason": "Only pdftotext output was supplied. No rendered image of Figure 6 was inspected, so the 200-450 ms and 75-81 degC axes and the curve behaviour are not visually verified. Digitization labels in the evidence rest on text-layer ticks, with no panel or legend check.",
+      "locator": "PDF p.10 Figure 6(a); evidence thermal_observable.* axis fields"
+    },
+    {
+      "field": "thermal_observable.value",
+      "reason": "The observable value is null with no tabulated numbers. The claims of 3 degC reduction and 0.5/3.5 degC fluctuation are text statements across mem2 and com2 (and 3 degC is an average in the abstract), not mem2-specific verified values.",
+      "locator": "PDF p.9 last paragraph; PDF p.1 abstract; evidence baseline_fluctuation, fuzzy_controllers_fluctuation, temperature_reduction_vs_baseline"
+    },
+    {
+      "field": "controller units",
+      "reason": "The units of e(n) (degC) and of the temperature change rate are inferred or unspecified, not stated in the paper. Per-step vs per-second change is unknown.",
+      "locator": "PDF p.7 Section 3.2(2); evidence controller.* fields"
+    },
+    {
+      "field": "thermal/package config",
+      "reason": "Ramb, Rv, C, Tamb, HotSpot materials, grid, heat sink and the numeric runtime threshold are absent. Solver and cooling setup cannot be matched.",
+      "locator": "PDF p.3 Eqs. (1)-(2); PDF p.9 HotSpot paragraph; evidence thermal_config.hotspot_package_materials"
+    },
+    {
+      "field": "artifacts",
+      "reason": "The linked URLs (specbench.org, CC license) are not code, data or inputs, and no pinned assets exist. There is no evidence for code or data availability.",
+      "locator": "PDF p.12 ref. 15 and footer; packet assets []"
+    },
+    {
+      "field": "Algorithm 1 parameters",
+      "reason": "The symbols for the degradation threshold and the maximum bank limit m are garbled in the text extraction. The value of m is not given. The 3% value rests on the prose only.",
+      "locator": "PDF pp.6, 9 Table 1 Algorithm 1"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    3,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12
+  ],
+  "checked_assets": []
+}

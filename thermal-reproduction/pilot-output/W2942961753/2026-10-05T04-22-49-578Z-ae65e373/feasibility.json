@@ -1,0 +1,55 @@
+{
+  "paper_id": "W2942961753",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Named block list with x_m, y_m, width_m and height_m for the Fig. 6 floorplan (no coordinates or dimensions published)",
+    "Explicit mapping of the seven power labels (0.2, 0.2, 1, 3, 2, 2, 1 W) to named blocks (the figure gives values but no block names or locations)",
+    "Mapping of the seven temperature labels to blocks, and any uncertainty from digitizing them",
+    "Die, spreader, TIM and heat-sink dimensions and material properties for the example",
+    "Cooling and ambient conditions for the Fig. 6 example (p. 16 gives 0.8 K/W and 45 C only for HotSpot's validation, not this example)",
+    "Power time series (only a single illustrative power profile is shown, with no transient trace)",
+    "Pinned packet assets such as code, config or data: the packet lists no assets and the paper links no repositories (artifact search: checked_no_links)",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Fig. 6 is only a schematic with no named blocks, coordinates, dimensions or explicit power-to-block mapping. Block geometry and per-block power cannot be extracted, so no floorplan can be built from paper-derived facts.",
+      "essential": true
+    },
+    {
+      "reason": "No package or material parameters are given for the Fig. 6 example (die, spreader, sink thicknesses or conductivities, TIM, heat-sink dimensions). The 0.8 K/W convection resistance and 45 C ambient on p. 16 come from HotSpot's general description and original validation, and are not stated for this example.",
+      "essential": true
+    },
+    {
+      "reason": "The Fig. 6 temperatures and powers are illustrative labels with no tie to any chip, workload or benchmark. Any Studio result would not be numerically comparable to the 46-62 C labels.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is steady-state 2D and has no 3D stacking, interposer, microchannel or TSV modeling, so those survey topics do not apply. HotSpot's transient RK4 solver and its 3D extensions (HS3D) are not used for Fig. 6.",
+      "essential": false
+    },
+    {
+      "reason": "No controller, optimizer or reliability model is part of the Fig. 6 scenario. The survey explicitly excludes thermal-management policies from its scope (p. 10).",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "58ae702844ceeec3f75312303376627d0ad63e76a1754b4e9848c367e9b4281d",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

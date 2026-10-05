@@ -1,0 +1,79 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The gem5 -> McPAT/CACTI-3DD -> HotSpot 7.0 flow, the steady-state heat-map run (PDF p10), and the manual what-if case studies with RL only as future work (pp5-6, 10-13) are supported by the text. This verifies the method description only. It does not support any reproducible geometry or power input. The mismatch notes in the extraction that mention 'Studio', 'RLPlanner Ascend910' and 'ATPlace2.5D' are not in the packet or paper."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The Cool-3D GitHub repository is stated as 'in the process of being released' (p1 footnote and p13). The packet has no pinned assets, so no code, config or input files were inspected. The cited parser repositories (refs [40]-[42]) and the Splash2 repository (ref [46]) are third-party and do not hold the Cool-3D inputs."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The Table VI values match p9 (4 cores, 2 GHz, OoO 8-issue, 2MB shared L2, 8GB, 32 banks, 3 layers, passive heat sink). The Fig. 9 layer maxima (395.52, 392.83 and 390.57 K) match the p10 figure titles in the pdftotext output. HotSpot materials, package and heat-sink parameters, die area, layer thicknesses and ambient temperature are not given anywhere, so the thermal model cannot be parameterized."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No floorplan coordinates or dimensions (x, y, width, height) are published for C0-C3 sub-blocks, L2_shared or B_0-B_31. Fig. 9 gives block labels and relative layout only. There are no HotSpot config or layer files, and the empty floorplan and power_w in the extraction are consistent with this. No simulation configuration can be built without inventing values."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The paper gives no same-scenario per-block power in watts and no total power for baseline Splash2 fft. Every floorplan block therefore lacks power. The only quantitative data are the printed layer maximum temperatures. No pinned data assets were supplied. Generated shelf coordinates and constant power rows would be illustrative assumptions, not paper data. Steady-state fft results cannot support any transient reproduction."
+    }
+  },
+  "findings": [
+    {
+      "field": "scenario.floorplan / experiment.floorplan",
+      "reason": "No block x, y, width or height values exist in the paper for the baseline fft scenario. Fig. 9 shows only heat maps with labels and a colourbar. The extraction correctly leaves the floorplan empty, so no 2D or 3D reproduction is possible without invented geometry.",
+      "locator": "PDF p10, Fig. 9; PDF p9, Table VI"
+    },
+    {
+      "field": "experiment.power_w",
+      "reason": "There is no same-scenario power for any block (C*_*, L2_shared, B_0..B_31) and no total power. The paper reports only temperatures.",
+      "locator": "PDF p10 Fig. 9 and Sec. IV-B"
+    },
+    {
+      "field": "checked_assets / pinned assets",
+      "reason": "The assets list is empty. The Cool-3D repository is unreleased per the paper, so the code, config and data checks cannot be resolved. A bare URL is not evidence.",
+      "locator": "PDF p1 footnote 1; PDF p13 Sec. V; packet assets: []"
+    },
+    {
+      "field": "thermal_observable (395.52 K / 392.83 K / 390.57 K)",
+      "reason": "Only pdftotext output was supplied. No rendered image of Fig. 9 was provided, so the heat map, colourbar and layer assignment were not visually verified. The text-layer values (395.52, 392.83 and 390.57) are consistent with the extraction. The colourbar on the Fig. 9 text layer ends near 394 K while the core-layer maximum is 395.52 K, and this was not examined visually. The decisive figure is therefore not visually verified.",
+      "locator": "PDF p10, Fig. 9"
+    },
+    {
+      "field": "physical_mismatches[1..3]",
+      "reason": "These entries refer to 'RLPlanner Ascend910', 'ATPlace2.5D' and a 'Studio solver'. None of these appear in the paper or the supplied packet, so they are unsupported by the evidence. The 3D-stack-versus-2D mismatch itself is supported by Table VI.",
+      "locator": "extraction.physical_mismatches"
+    },
+    {
+      "field": "resource.gem5_mcpat_parser_scripts (asset gem5_mcpat_parser_hardik44)",
+      "reason": "The Hardik44 URL contains a space ('Gem5toMcPat parser') from pdftotext line breaking and underscore loss, so the URL is garbled and unverified. The same applies to the Splash2 URL, which was split across a line break in the source text. These resources are not paper inputs.",
+      "locator": "PDF p14, refs [41], [46]"
+    },
+    {
+      "field": "workload.core0_instruction_ratio",
+      "reason": "The 5.87x figure is described as 'on average' and the text does not tie it explicitly to fft only. It is a qualitative explanation and cannot be used to derive per-block power.",
+      "locator": "PDF p10, Sec. IV-B"
+    },
+    {
+      "field": "scenario.steady_state_and_cooling",
+      "reason": "The steady-state claim is supported for the Fig. 9 baseline. The paper's headline novelty is microfluidic cooling (cases 2a/2b) plus the 3D stack and HotSpot 7.0, and none of this is reproducible as a plain 2D steady-state block-power problem. A 2D reproduction claim would be contradicted by the 3-layer stack with inter-layer coupling.",
+      "locator": "PDF p9 Table VI; PDF p10 Fig. 9; PDF pp11-12 Figs. 11-12"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    5,
+    6,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "checked_assets": []
+}

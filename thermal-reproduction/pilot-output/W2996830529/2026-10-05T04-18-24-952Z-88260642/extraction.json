@@ -1,0 +1,284 @@
+{
+  "paper_id": "W2996830529",
+  "paper_title": "NanoTherm: An Analytical Fourier-Boltzmann Framework for Full Chip Thermal Simulations",
+  "artifact_search_status": "checked_links_found",
+  "linked_assets": [
+    {
+      "id": "ref15_shashank_thesis",
+      "url": "http://www.cse.iitd.ac.in/~srsarangi/files/thesis/shashank.pdf",
+      "kind": "thesis document (detailed Fourier-BTE solution and validation, cited as reference [15]); not a code or data repository",
+      "paper_page": 8
+    }
+  ],
+  "scenario": {
+    "pdf_page": 7,
+    "figure_or_table": "Test Case 3, Figure 6a/6b (text on PDF page 6)",
+    "description": "Steady-state full-chip Fourier thermal profile of a single Alpha21264 core with 15 functional units plus an L2 cache. The chip is 16 mm x 16 mm x 0.15 mm. Per-unit power densities come from HotSpot and are shown only graphically in Fig. 6a. The paper reports an RMS error of 0.047 C (max error 3.2%) against COMSOL. Block coordinates and power values are not published numerically.",
+    "architecture": "Single-core Alpha21264 floorplan with L2 cache, 16 mm x 16 mm x 0.15 mm silicon die; 10 mm x 10 mm x 3.52 mm heat spreader used in the Fourier setup (silicon k = 150 W/mK, spreader+TIM k = 256 W/mK); adiabatic chip edges; top of spreader held at ambient",
+    "workload": "Per-functional-unit power densities obtained from HotSpot (Fig. 6a); no workload or benchmark named",
+    "operating_point": "Steady state; 0.2 mm grid discretization; power density per unit given only graphically in Fig. 6a",
+    "steady_2d_relevant": true
+  },
+  "original_setup": {
+    "solver": "NanoTherm analytical Green's function solver for the steady-state Fourier heat equation (Hankel transform, with edge/corner folding correction for adiabatic boundaries), implemented in R 3.5.1. Results are validated against COMSOL 5.3b (PDF pages 3-6).",
+    "optimizer": "None. The paper is a thermal-simulation speed and accuracy study and uses no floorplan or design optimizer.",
+    "controller": "None. There is no thermal controller or DTM policy; the scenario is a static steady-state power map.",
+    "benchmark": "Test Case 3: single-core Alpha21264 floorplan with 15 functional units plus an L2 cache, on a 16 mm x 16 mm x 0.15 mm die. Per-unit power densities come from HotSpot and appear only graphically in Fig. 6a (PDF pages 6-7). The paper reports RMS error 0.047 C and max error 3.2% against COMSOL."
+  },
+  "thermal_observable": {
+    "value": null,
+    "unit": "C",
+    "location": "Calculated full-chip temperature-rise map of the silicon die for the Alpha21264 test case (Fig. 6b, PDF page 7). Only a color map is published; no numeric peak or per-block temperature is given.",
+    "aggregation": "Spatial 2D field map at steady state on a 0.2 mm grid. No peak, mean or per-block value is reported numerically. The only numeric figures are the error vs COMSOL (RMS 0.047 C, max 3.2%), which are error metrics rather than temperatures.",
+    "pdf_page": 7
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The original model is a two-layer package (silicon die plus a 3.52 mm heat spreader with TIM) with an isothermal ambient-temperature boundary at the top of the spreader and adiabatic chip edges. It has no heat sink fins, convection model, interposer or 3D stack. A Studio run with different package, cooling and boundary conditions will not reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The solver differs fundamentally. The paper uses an axisymmetric Hankel-transform Green's function, with square sources mapped to equal-area circular sources and sampled at grid centres, and validates against COMSOL. A numerical grid solver in Studio is a different method and will not give the same temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The paper text is internally inconsistent about geometry. The Alpha21264 die is 16 mm x 16 mm, while the Fourier setup lists a 10 mm x 10 mm x 3.52 mm heat spreader. The spreader footprint for this test case is unclear.",
+      "essential": true
+    },
+    {
+      "reason": "The power inputs are per-unit power densities shown only graphically in Fig. 6a. No numeric block powers, areas or coordinates are published, so no complete numeric experiment can be reconstructed from the paper alone.",
+      "essential": true
+    },
+    {
+      "reason": "The transient analysis, the BTE/nanometer-scale model and the reliability aspects of the paper are not part of the selected steady-state Fourier test case and are out of scope. No optimizer or controller exists in the original, so none can be matched.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "Numeric x_m, y_m, width_m and height_m for each of the 15 Alpha21264 functional units and the L2 cache. Fig. 6a gives only a graphical layout, and no HotSpot .flp file is pinned in the packet.",
+    "Numeric per-block power or power density (W or W/cm2), with names. Values exist only graphically in Fig. 6a, and no digitized values with uncertainty are supplied.",
+    "Total chip power for the Alpha21264 case, which is not stated. It must not be inferred or split across blocks without a published rule.",
+    "Heat spreader footprint for the 16 mm die, since the paper's 10 mm x 10 mm spreader conflicts with the die size.",
+    "Ambient temperature value Ta, convection or heat-sink boundary parameters, and TIM thickness for this case. Only the isothermal top boundary and effective conductivities (silicon 150 W/mK, spreader+TIM 256 W/mK) are described.",
+    "Numeric temperature values for Fig. 6b (peak, mean or per-block). Only the colour map and error metrics are published.",
+    "Pinned packet assets: the packet lists none (assets: []). The linked thesis (ref [15], http://www.cse.iitd.ac.in/~srsarangi/files/thesis/shashank.pdf, PDF page 8) is not pinned and so cannot serve as evidence. No code, data or configuration repository is linked in the paper.",
+    "Bundled Studio package and material assumptions, which are not provided in the packet and so are not recorded here.",
+    "No power time series is needed for this steady-state case, but no workload trace is provided either."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "die_width_m",
+      "block_name": "Alpha21264 processor die (chip level)",
+      "source_value": 16,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.016,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section IV.B.1 Steady State, Full Chip Thermal Profile, Test Case 3 paragraph: 'dimensions of the processor are 16 mm x 16 mm x 0.15 mm'",
+      "provenance": "Stated in paper text (Test Case 3, Alpha21264 single core plus L2). Chip-level dimension, not a per-block coordinate.",
+      "uncertainty": null
+    },
+    {
+      "field": "die_height_m",
+      "block_name": "Alpha21264 processor die (chip level)",
+      "source_value": 16,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.016,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section IV.B.1, Test Case 3 paragraph: 'dimensions of the processor are 16 mm x 16 mm x 0.15 mm'",
+      "provenance": "Stated in paper text. Chip-level dimension.",
+      "uncertainty": null
+    },
+    {
+      "field": "die_thickness_m",
+      "block_name": "Alpha21264 processor die (chip level)",
+      "source_value": 0.15,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.00015,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section IV.B.1, Test Case 3 paragraph: '16 mm x 16 mm x 0.15 mm'",
+      "provenance": "Stated in paper text.",
+      "uncertainty": null
+    },
+    {
+      "field": "core_functional_unit_count",
+      "block_name": null,
+      "source_value": 15,
+      "source_unit": "count",
+      "conversion_factor": 1,
+      "normalized_value": 15,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Test Case 3 paragraph: 'The core has 15 functional units'",
+      "provenance": "Stated in paper text. Unit names are visible only in the Fig. 6a labels (PDF page 7), which are not machine-readable coordinates.",
+      "uncertainty": null
+    },
+    {
+      "field": "silicon_thermal_conductivity",
+      "block_name": null,
+      "source_value": 150,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 150,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section IV.B Fourier Analysis, first paragraph: 'conductivity of silicon and the heat spreader is 150 W/mK and 256 W/mK'",
+      "provenance": "Stated in paper text for the Fourier setup.",
+      "uncertainty": null
+    },
+    {
+      "field": "spreader_effective_thermal_conductivity",
+      "block_name": "Heat spreader plus TIM (effective)",
+      "source_value": 256,
+      "source_unit": "W/(m K)",
+      "conversion_factor": 1,
+      "normalized_value": 256,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section IV.B Fourier Analysis, first paragraph",
+      "provenance": "Stated in paper text as the effective conductivity of spreader and TIM.",
+      "uncertainty": null
+    },
+    {
+      "field": "spreader_footprint_width_m",
+      "block_name": "Heat spreader",
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section IV.B: 'chip and heat spreader dimensions are 10 mm x 10 mm x 0.15 mm and 10 mm x 10 mm x 3.52 mm'",
+      "provenance": "Stated in paper text for the generic Fourier setup. It conflicts with the 16 mm Alpha21264 die, so the spreader footprint for Test Case 3 is unclear.",
+      "uncertainty": "Possible inconsistency with the 16 mm die in Test Case 3. Footprint applicability to this case is unconfirmed."
+    },
+    {
+      "field": "spreader_thickness_m",
+      "block_name": "Heat spreader",
+      "source_value": 3.52,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.00352,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section IV.B first paragraph: '10 mm x 10 mm x 3.52 mm'",
+      "provenance": "Stated in paper text for the generic Fourier setup.",
+      "uncertainty": "Applicability to the 16 mm Alpha21264 case is not stated."
+    },
+    {
+      "field": "grid_pitch_m",
+      "block_name": null,
+      "source_value": 0.2,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0002,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Green's function paragraph: 'grid size of 0.2 mm provides sufficient accuracy for a chip of area 100 mm2 or more'",
+      "provenance": "Stated in paper text as the discretization for the Green's function approach. It is not explicitly stated for the Test Case 3 run.",
+      "uncertainty": "Not confirmed as the grid used for Test Case 3."
+    },
+    {
+      "field": "paper_thermal_observable_rms_error_vs_COMSOL",
+      "block_name": "Alpha21264 die (full-chip temperature field)",
+      "source_value": 0.047,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 0.047,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Test Case 3 paragraph: 'An RMS error of 0.047 C (maximum error 3.2%) was observed against the COMSOL model'",
+      "provenance": "Stated in paper text. This is an error metric of the full-chip steady-state temperature rise map over the die versus COMSOL, not a temperature. Errors are reported relative to the maximum temperature rise (Section IV.A).",
+      "uncertainty": null
+    },
+    {
+      "field": "paper_thermal_observable_max_error_vs_COMSOL",
+      "block_name": "Alpha21264 die (full-chip temperature field)",
+      "source_value": 3.2,
+      "source_unit": "percent of maximum temperature rise",
+      "conversion_factor": 1,
+      "normalized_value": 3.2,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Test Case 3 paragraph; Section IV.A Error Metric (percent errors relative to maximum temperature rise)",
+      "provenance": "Stated in paper text. Maximum spatial error versus COMSOL, relative to maximum temperature rise.",
+      "uncertainty": null
+    },
+    {
+      "field": "block_power_density_W_per_cm2",
+      "block_name": "All 15 Alpha21264 functional units plus L2",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Fig. 6a (Power distribution); text on PDF page 6, Test Case 3: 'power density of each functional unit is shown in Figure 6a (obtained from HotSpot)'",
+      "provenance": "Power densities are shown only graphically and no numeric values or digitization are given. They are not recorded, and no total-power split is made.",
+      "uncertainty": "No numeric values available. Digitizing the figure would carry substantial uncertainty."
+    },
+    {
+      "field": "block_coordinates_and_sizes_m",
+      "block_name": "All 15 Alpha21264 functional units plus L2",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Fig. 6a floorplan layout with labels (L2, Icache, Dcache, Bpred, FpAdd, FpReg, FPQ, ITB, LdStQ, DTB, IntExec, FpMul, IntMap, IntQ, FpMap, IntReg)",
+      "provenance": "Only a schematic layout figure is published. There are no numeric x, y, width or height values and no pinned .flp file.",
+      "uncertainty": "Not published numerically."
+    },
+    {
+      "field": "thermal_observable_temperature_map",
+      "block_name": "Alpha21264 die (full-chip temperature field)",
+      "source_value": null,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Fig. 6b (Thermal profile for Alpha21264); text on PDF page 6, Test Case 3: 'The calculated thermal profile of the chip is shown in Figure 6b'",
+      "provenance": "Only a color map of the 2D steady-state temperature rise is published, with no numeric peak, mean or per-block value.",
+      "uncertainty": "No numeric temperature extracted."
+    },
+    {
+      "field": "total_chip_power_W",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Test Case 3 paragraph (PDF page 6) and Fig. 6a (PDF page 7); no total power stated",
+      "provenance": "Total chip power is not published for this case and no splitting rule is given.",
+      "uncertainty": null
+    },
+    {
+      "field": "paper_linked_resource_thesis_ref15",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "References, item [15]: http://www.cse.iitd.ac.in/~srsarangi/files/thesis/shashank.pdf",
+      "provenance": "Cited thesis with detailed Fourier-BTE solution and validation. It is not a code or data repository, is not a pinned packet asset, and is not used as input evidence. The packet lists no pinned assets (assets: []), so none were inspected.",
+      "uncertainty": null
+    }
+  ]
+}

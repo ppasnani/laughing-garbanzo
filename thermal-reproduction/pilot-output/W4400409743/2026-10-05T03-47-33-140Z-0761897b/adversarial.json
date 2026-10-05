@@ -1,0 +1,84 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper is a steady 3D conjugate ANSYS Icepak/FLUENT study of an air-cooled pin-fin sink, so it cannot be reproduced as a 2D floorplan. The extraction labels the experiment kind custom_2d_steady while its own physical_mismatches mark the 3D, forced-air, single-chip and no-optimizer features as essential. The paper is itself inconsistent: p.6 assumes laminar flow but Table 2 uses realizable k-epsilon, and Table 2 lists 'Axisymmetric' for a 3D model. The extraction omits the axisymmetric entry."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, supplementary file or link appears on any page. The Data availability statement on p.11 says no data was used, and the asset list is empty. Nothing is pinned, so no code claim can be verified."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Table 1 and the text on p.5 give conflicting heat sink and fin geometry: 4x4x1.7 cm vs 3x3.5x2 cm, and D=0.2 cm vs radius 0.16 cm with fin height 1.5 cm. Inlet temperature is 298 K in Table 3, but the p.8 text says the pre-sink profile is 295 K. The 8 W power, 0.1 m/s inlet, chip size 2.2x2.2x0.1 cm and Table 6 value of 125.50 C are supported by the text. Eq. 8 defines Ts as the maximum fin-base temperature, while Table 6 calls it 'Source Temp'. Material properties and substrate dimensions are not given."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No runnable configuration, Icepak project file or Studio bundle was supplied. The extraction's empty floorplan and empty power_w do not match the evidence list, which carries an 8 W chip entry. The chip x/y coordinates are null. A custom_2d_steady experiment with no floorplan blocks is not a valid configuration, and the 'steady_2d_relevant: false' flag contradicts that kind."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The Table 6 value of 125.50 C (SA circular) is a text table and matches the page-text excerpt. It conflicts with the Table 5 'current study' SA value of 101.662 C for what the paper describes as the same 6x6, 0.4 cm-gap structure, and the paper does not explain the difference. No chip placement or power time series is published. The figures (Fig. 1, 6, 9, 12) exist only as pdftotext output with no images or digitization, so no figure claim is visually verified."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind / floorplan / power_w",
+      "reason": "The experiment kind is custom_2d_steady with an empty floorplan and an empty power_w, even though the extraction says steady_2d_relevant is false and lists essential 3D, forced-convection and single-chip mismatches. Calling this a 2D reproduction is unsupported. Any generated 2D placement or constant power row would be an illustrative assumption only.",
+      "locator": "extraction.experiment; extraction.scenario.steady_2d_relevant; extraction.physical_mismatches"
+    },
+    {
+      "field": "thermal_observable (125.5 C) vs validation_benchmark_rosli (101.662 C)",
+      "reason": "The paper says the present and reference designs both had a 6x6 structure with 0.4 cm gaps. Table 5 gives SA 101.662 C for the current study, while Table 6 gives 125.50 C for SA circular. The extraction asserts the Table 5 case is 'a different 6x6 geometry', which the text does not support. The paper does not explain the 24 C discrepancy, so the scenario match is unresolved.",
+      "locator": "PDF p.8 Section 2.4 and Table 5; PDF p.11 Table 6"
+    },
+    {
+      "field": "thermal_observable definition",
+      "reason": "Eq. 8 on p.6 defines Ts as the maximum temperature on the fin base, but Table 6 labels the value 'Source Temp'. The extraction treats it as the chip maximum without support. Aggregation and location are ambiguous.",
+      "locator": "PDF p.6 Eq. 7-8; PDF p.11 Table 6"
+    },
+    {
+      "field": "inlet_temperature uncertainty locator",
+      "reason": "The 295 K statement is on PDF p.8 (Section 3.1, text before Fig. 9), not p.9 as the extraction says. The 295 K vs 298 K inconsistency is real but the locator is wrong.",
+      "locator": "PDF p.8 Section 3.1 vs PDF p.7 Table 3"
+    },
+    {
+      "field": "original_solver",
+      "reason": "Table 2 lists the solver type as 'Steady, Axisymmetric, Implicit' alongside 'Dimension 3D'. The extraction reports only steady, 3D, pressure-based and implicit, omitting the axisymmetric entry that contradicts 3D. It notes only the laminar vs k-epsilon conflict.",
+      "locator": "PDF p.3 Table 2; PDF p.6 assumptions list"
+    },
+    {
+      "field": "chip_x_m / chip_y_m / 'Fig. 1 shows no numeric coordinates'",
+      "reason": "Fig. 1(c,d) is described as showing boundary conditions and dimensions, but only pdftotext output was supplied and the figure was never visually inspected. The claim that Fig. 1 contains no numeric dimensions or coordinates is unverified. The absence of chip placement is therefore also unverified.",
+      "locator": "PDF p.3 Fig. 1 caption"
+    },
+    {
+      "field": "figure-only quantities",
+      "reason": "The claims that Fig. 6 (deviation under 3.68%), Fig. 9 and Fig. 12 have no digitizable values, and that Fig. 7-11 contours do not contain relevant values, rest on caption text only. No figure image was reviewed.",
+      "locator": "PDF p.8 Fig. 6 and Fig. 8; PDF p.9 Fig. 9; PDF p.10 Fig. 12"
+    },
+    {
+      "field": "paper-internal reporting error",
+      "reason": "The conclusion says the analysis is based on 'Tables 4 and 6', but Table 4 is the mesh table. The abstract also states the circular maximum temperature is '0.46% of' the cone value, while the conclusion says '0.46% lower'. Percentages are computed on Celsius values. These ambiguities weaken the use of the paper's derived percentages as observables.",
+      "locator": "PDF p.1 abstract; PDF p.11 Section 3.4 and Conclusion"
+    },
+    {
+      "field": "geometry (heat_sink_dimensions_inconsistent, circular_fin_diameter)",
+      "reason": "The geometry is left unresolved: 4x4x1.7 cm vs 3x3.5x2 cm for the sink, and D=0.2 cm vs radius 0.16 cm for the fins. No consistent geometry exists to anchor any model. The heat sink also exceeds or crowds the 2.2 cm chip and the stated fin height and base values do not add up consistently.",
+      "locator": "PDF p.3 Table 1; PDF p.5 Section 2.1 bullets"
+    }
+  ],
+  "checked_pdf_pages": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,527 @@
+{
+  "paper_id": "W2979866182",
+  "paper_title": "Thermal-Aware Scheduling for Integrated CPUs--GPU Platforms",
+  "manifest_status": "downloaded",
+  "source_url": "https://rtcl.eecs.umich.edu/rtclweb/assets/publications/2019/youngmoon-TECS-19.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "a1e3c62c5bba3c2d829b5d3f138d661411dd142961e5c15b7e8c34702d4e6ad7",
+  "pdf_pages": 25,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:21:35.921Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W2979866182",
+    "paper_title": "Thermal-Aware Scheduling for Integrated CPUs–GPU Platforms",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "doi_3358235",
+        "url": "https://doi.org/10.1145/3358235",
+        "kind": "publisher DOI landing link (bibliographic, not code or data)",
+        "paper_page": 1
+      },
+      {
+        "id": "ref20_linux_cfs_doc",
+        "url": "https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt",
+        "kind": "reference documentation for the BASE scheduler (Linux CFS)",
+        "paper_page": 25
+      },
+      {
+        "id": "ref23_cpuburn",
+        "url": "https://patrickmn.com/projects/cpuburn/",
+        "kind": "third-party CPU stress benchmark tool reference",
+        "paper_page": 25
+      }
+    ],
+    "scenario": {
+      "pdf_page": 18,
+      "figure_or_table": "Table 2 (vision task parameters) with Section 7.1 methodology and Figure 6 / Section 7.2 results (RT-TAS peak temperature 60.7 C)",
+      "description": "Real-time CPUs-GPU thermal-aware scheduling experiment (RT-TAS) on a physical Nvidia Tegra X1 running four automotive vision tasks (feature detector, object tracker, motion estimator, video stabilizer), compared against BASE (Linux CFS) and TEA. The paper publishes per-task CPU/GPU power, execution time and period (Table 2) and a thermal coupling matrix (Table 1). It publishes no floorplan block coordinates or dimensions.",
+      "architecture": "Nvidia Tegra X1 SoC with 4 CPU cores and one shared GPU, rated at 15 W maximum, chip thermal resistance 1.15 C/W, fan turned off, per-core thermal sensors, built-in hardware throttling.",
+      "workload": "Four periodic vision tasks, each with a 400 ms period, under partitioned fixed-priority scheduling with MPCP GPU locking. Task parameters are in Table 2: feature detector, object tracker, motion estimator and video stabilizer.",
+      "operating_point": "CPU and GPU at maximum frequency (CPU 1.7 GHz), temperature threshold 65 C, fan off. Paper observable: maximum transient CPU/GPU core temperature, measured per core by on-chip sensors and aggregated as the peak over cores and time; RT-TAS gives 60.7 C versus TEA 66.7 C and BASE 72.9 C (Figure 6 and Section 7.2).",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "No numerical thermal solver. Temperatures were measured with on-chip per-core sensors on a physical Nvidia Tegra X1 (PDF p.17-18). A lumped core-level RC thermal circuit model, T(t)=TA+R*P+R*C*dT/dt, with an empirically identified 5x5 coupling matrix R (Table 1, PDF p.10), is used for analysis and for the synthetic task-set simulations (PDF p.9-10, 21).",
+      "optimizer": "T-WFD thermally-balanced task-to-core assignment (Algorithm 1, PDF p.13). It is a worst-fit-decreasing heuristic that sorts tasks by non-increasing CPU power times utilization and assigns each to the lowest-temperature feasible core. It is compared against FFD, BFD and WFD.",
+      "controller": "RT-TAS online CPU-GPU co-scheduling (Algorithm 2, PDF p.14). It uses partitioned fixed-priority preemptive scheduling with MPCP GPU locking and bounded priority-inversion budgets. It picks the job whose power best matches the average total power. Compared against BASE (Linux CFS) and TEA. Hardware throttling acts as a fallback above the 65 C threshold.",
+      "benchmark": "Real automotive vision workload on an Nvidia Tegra X1 with 4 CPU cores and a shared GPU (15 W max, chip thermal resistance 1.15 C/W, fan off). Four periodic tasks with 400 ms periods (feature detector, object tracker, motion estimator, video stabilizer), with per-task CPU/GPU power and execution times in Table 2 (PDF p.18). Also 1,000 randomly generated task sets with parameters from Table 3 (PDF p.21)."
+    },
+    "thermal_observable": {
+      "value": 60.7,
+      "unit": "degC",
+      "location": "Maximum temperature among the 4 CPU cores and the GPU, from per-core on-chip thermal sensors on the Tegra X1 (RT-TAS case). Compared with TEA 66.7 C and BASE 72.9 C.",
+      "aggregation": "Peak (maximum) transient temperature over all cores and over the experiment time, reported as the core-level peak in Figure 6 and Section 7.2.",
+      "pdf_page": 18
+    },
+    "physical_mismatches": [
+      {
+        "reason": "No floorplan geometry is published: no block x, y, width or height, no die size, no layout coordinates. Fig. 1 is only a qualitative layout schematic. A block-geometry thermal model cannot be built from the paper alone, and no pinned packet asset supplies it.",
+        "essential": true
+      },
+      {
+        "reason": "The original method is a lumped RC thermal-coupling model identified empirically plus real hardware measurement. It is not a spatial 2D or 3D finite-difference/finite-element solver, so a Studio spatial solver would be a different solver class and results cannot be compared numerically with the paper.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is transient and time-varying: periodic jobs, priority inversions and co-scheduling. The published power data are per-task average CPU/GPU power values (Table 2) with no per-block power time series, so a one-row steady power trace would not reproduce the paper's transient dynamics.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer (T-WFD task-to-core assignment) and the controller (online co-scheduling with inversion budgets, hardware DVFS throttling at 65 C, CPU frequency 1.7 to 0.5 GHz) are scheduling-level mechanisms with no floorplan or placement analog in a thermal Studio.",
+        "essential": true
+      },
+      {
+        "reason": "Real packaging and cooling are not specified in detail: Tegra X1 package, heat spreader, board, passive heat sink and ambient temperature. Only the aggregate chip thermal resistance of 1.15 C/W (from a Nvidia design guide) is given, with the fan off. Thermal-resistance-matrix coefficients (Table 1) are core-level and not material or geometry parameters.",
+        "essential": true
+      },
+      {
+        "reason": "No 3D stacking or interposer is involved. The Tegra X1 is a monolithic 2D SoC, so 3D and interposer mismatches do not apply. Reliability (MTTF, 1.52x lifetime) and cooling-cost ($15.6 per chip) are derived analytically and are not Studio outputs.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "Block geometry for the Tegra X1: x_m, y_m, width_m, height_m of the 4 CPU cores, the GPU cluster and other blocks. The paper has only the qualitative Fig. 1 layout and no dimensions.",
+      "Same-scenario per-block power rows in watts for a spatial model. Table 2 gives per-task CPU/GPU power but no per-block power for a defined floorplan, and total chip power must not be split without a published rule.",
+      "Power time series for the transient scenario. Only per-task average power and execution times are published; the traces behind Figures 5, 8 and 9 are not provided as data.",
+      "Die and package dimensions, material properties, heat spreader/heat sink, and ambient temperature for the experiment (not stated).",
+      "No pinned packet assets are supplied (assets list empty). The only paper-linked URLs are the publisher DOI (PDF p.1), the Linux CFS documentation (PDF p.25) and cpuburn (PDF p.25); none are code, config or data repositories for this experiment, and no repository URL proves its inputs exist.",
+      "Digitized values of Figures 5-9 (temperature versus time) are not available as numeric data; only the in-text figures such as 60.7, 66.7, 72.9 C, 61.5 vs 63.6 C are available.",
+      "The tabulated Table 1 coupling matrix (C/W) is not extracted into a geometry-based thermal model, and no rule maps it to floorplan blocks."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "thermal_observable_peak_temperature_RT-TAS",
+        "block_name": null,
+        "source_value": 60.7,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 60.7,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Section 7.2, paragraph 3 (Figure 6 discussion), text 'reduces ... the maximum temperature to 60.7C'",
+        "provenance": "Text value for the maximum transient temperature across the 4 CPU cores and the GPU, measured by on-chip sensors on a Tegra X1. It is a peak over cores and time.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_peak_temperature_TEA",
+        "block_name": null,
+        "source_value": 66.7,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 66.7,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Section 7.2, paragraph 3, text 'resulting in the maximum temperature of 66.7C'",
+        "provenance": "Comparison baseline (TEA) peak core temperature, in-text value.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_peak_temperature_BASE",
+        "block_name": null,
+        "source_value": 72.9,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 72.9,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Section 7.2, paragraph 3, text 'highest maximum temperature of 72.9C'",
+        "provenance": "Comparison baseline (BASE, Linux CFS) peak core temperature, in-text value.",
+        "uncertainty": null
+      },
+      {
+        "field": "temperature_threshold",
+        "block_name": null,
+        "source_value": 65,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 65,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Section 7.1, last paragraph, 'temperature threshold is set to 65C'",
+        "provenance": "Operating-point setting for hardware throttling. The fan is off and CPU/GPU run at maximum frequency.",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_thermal_resistance",
+        "block_name": null,
+        "source_value": 1.15,
+        "source_unit": "degC/W",
+        "conversion_factor": 1,
+        "normalized_value": 1.15,
+        "pdf_page": 17,
+        "asset_id": null,
+        "locator": "Section 7.1, first paragraph, 'chip thermal resistance is 1.15C/W'",
+        "provenance": "Aggregate chip value from the Nvidia Tegra X1 thermal design guide (ref [1]). It is not a material or geometry parameter.",
+        "uncertainty": null
+      },
+      {
+        "field": "platform_rated_max_power",
+        "block_name": null,
+        "source_value": 15,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 15,
+        "pdf_page": 17,
+        "asset_id": null,
+        "locator": "Section 7.1, first paragraph, 'rated at the maximum power dissipation of 15W'",
+        "provenance": "Rated maximum for the whole Tegra X1 platform. It must not be split among blocks.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_cpu_power_PiC",
+        "block_name": "Feature detector (task, not a floorplan block)",
+        "source_value": 1.8,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 1.8,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Feature detector', column PiC (W)",
+        "provenance": "Per-task CPU power in the same experiment scenario. No floorplan block mapping is published.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_gpu_power_PiG",
+        "block_name": "Feature detector (task, not a floorplan block)",
+        "source_value": 3.7,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 3.7,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Feature detector', column PiG (W)",
+        "provenance": "Per-task GPU power in the same experiment scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_cpu_power_PiC",
+        "block_name": "Object tracker (task, not a floorplan block)",
+        "source_value": 1.8,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 1.8,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Object tracker', column PiC (W)",
+        "provenance": "Per-task CPU power in the same experiment scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_gpu_power_PiG",
+        "block_name": "Object tracker (task, not a floorplan block)",
+        "source_value": 2.8,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 2.8,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Object tracker', column PiG (W)",
+        "provenance": "Per-task GPU power in the same experiment scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_cpu_power_PiC",
+        "block_name": "Motion estimator (task, not a floorplan block)",
+        "source_value": 2,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 2,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Motion estimator', column PiC (W)",
+        "provenance": "Per-task CPU power in the same experiment scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_gpu_power_PiG",
+        "block_name": "Motion estimator (task, not a floorplan block)",
+        "source_value": 5.7,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 5.7,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Motion estimator', column PiG (W)",
+        "provenance": "Per-task GPU power in the same experiment scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_cpu_power_PiC",
+        "block_name": "Video stabilizer (task, not a floorplan block)",
+        "source_value": 2.5,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 2.5,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Video stabilizer', column PiC (W)",
+        "provenance": "Per-task CPU power in the same experiment scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_gpu_power_PiG",
+        "block_name": "Video stabilizer (task, not a floorplan block)",
+        "source_value": 3.6,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 3.6,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, row 'Video stabilizer', column PiG (W)",
+        "provenance": "Per-task GPU power in the same experiment scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_period_pi",
+        "block_name": "All four vision tasks (not floorplan blocks)",
+        "source_value": 400,
+        "source_unit": "ms",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.4,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2, column pi (ms), all four rows",
+        "provenance": "Common period of all four tasks; it also equals the relative deadline (PDF p.7, Section 5.1).",
+        "uncertainty": null
+      },
+      {
+        "field": "floorplan_block_geometry_x_y_width_height",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Figure 1 (PDF p.4) is a qualitative layout schematic; Table 1 (PDF p.10) holds only core-level thermal coupling coefficients",
+        "provenance": "No block x, y, width or height values are published. The packet has no pinned assets (assets list empty). The floorplan is therefore empty and nothing was digitized.",
+        "uncertainty": "Not applicable: no values exist to digitize; Figure 1 gives no dimensions."
+      },
+      {
+        "field": "per_block_power_rows_and_power_time_series",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Table 2 (PDF p.18) gives per-task average powers only; Figures 5, 8 and 9 (PDF p.19-20) show traces without numeric data",
+        "provenance": "No per-block power rows for a defined floorplan and no power time series are published. Total chip power is not split because no published rule exists.",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "The text-level method claims match the PDF: T-WFD (Algorithm 1, p.13), co-scheduling with inversion budgets (Algorithm 2, p.14), the lumped RC coupling model (Eq. 6-9, p.9), and the hardware and measurement setup (p.17-18). The extraction correctly says this is not a spatial 2D or 3D solver. None of this supports a 2D steady reproduction."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The assets list is empty. The only linked URLs are the publisher DOI, the Linux CFS documentation and the cpuburn page, none of which is RT-TAS code, a config, or experiment data. No implementation was supplied, so no code claim can be verified."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Table 2 (p.18), the 1.15 C/W resistance, the 15 W rating and the 65 C threshold match the PDF text. Ambient temperature, package, spreader, die size and materials are not stated. The Table 1 coupling matrix is core-level, not geometric, so a spatial model cannot be parameterised from the paper."
+      },
+      "config": {
+        "status": "contradicted",
+        "note": "The experiment is labelled kind=custom_2d_steady with an empty floorplan and empty power_w. The same extraction says steady_2d_relevant=false and that the workload is transient, scheduling-driven and measured on hardware. No floorplan block has same-scenario power because no blocks or coordinates exist. Any generated shelf coordinates or constant power rows would be illustrative only."
+      },
+      "data": {
+        "status": "missing",
+        "note": "The in-text values 60.7/66.7/72.9 C and the Table 2 powers match the extracted PDF text. No figure was visually verified: only pdftotext output was supplied, and Figures 1 and 5-9 are captions without image content. No numeric traces or digitization exist, and the text discrepancy in the RT-TAS peak (60.7 vs 61.5 C) is not reconciled."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The kind is custom_2d_steady although the extraction itself records steady_2d_relevant=false, a transient scheduling workload, a hardware measurement and no block geometry. This invites a 2D reproduction claim that the evidence cannot support.",
+        "locator": "extraction.experiment.kind vs scenario.steady_2d_relevant and physical_mismatches; PDF p.18-20"
+      },
+      {
+        "field": "thermal_observable_peak_temperature_RT-TAS",
+        "reason": "p.18 gives an RT-TAS maximum of 60.7 C. p.20 gives the peak under co-scheduling as 61.5 C at 217 s (63.6 C without co-scheduling). The extraction notes the 61.5 vs 63.6 C pair but does not flag that 61.5 conflicts with 60.7 for the same method. Figures 6 and 8 were not visually verified, so the 60.7 C observable is not confirmed.",
+        "locator": "PDF p.18 Section 7.2 para 3 vs PDF p.20 Figure 8 discussion"
+      },
+      {
+        "field": "figure_verification",
+        "reason": "Only pdftotext output of the PDF was supplied, with no rendered figure images. Figures 1, 5, 6, 7, 8 and 9 were not visually verified. The qualitative claim that Fig. 1 contains no dimensions and the Figure 6 peaks cannot be confirmed from captions alone.",
+        "locator": "PDF p.4 Fig. 1; p.19 Fig. 5-7; p.20 Fig. 8-9"
+      },
+      {
+        "field": "floorplan",
+        "reason": "No block names, x/y/width/height or die size exist. The empty floorplan is consistent with the paper, but this means there is no same-scenario per-block power and no 2D thermal setup to approve.",
+        "locator": "extraction.experiment.floorplan=[]; PDF p.4, p.10"
+      },
+      {
+        "field": "power_w",
+        "reason": "Table 2 powers are per-task (task-level CPU/GPU) average values, not per-floorplan-block power. Mapping them to blocks or splitting the 15 W rating would be an unsupported assumption. Any constant power rows would be illustrative, not published transient traces.",
+        "locator": "PDF p.18 Table 2; PDF p.17 Section 7.1"
+      },
+      {
+        "field": "linked_assets",
+        "reason": "The three linked assets are a DOI, CFS documentation and a stress-tool page. None is code, config or data for the paper's experiment, and none was fetched or inspected. A bare URL is not evidence of reproducibility.",
+        "locator": "extraction.linked_assets; PDF p.1, p.25 refs [20],[23]"
+      },
+      {
+        "field": "task_naming",
+        "reason": "The text on p.5 calls the task 'image stabilizer' while Table 2 and Section 7.1 call it 'video stabilizer'. Example 6.2 (p.11) utilizations (0.2, 0.1, 0.05, 0.05) do not match Table 2 execution times/400 ms periods, so Example 6.2 should not be used as Table 2 data.",
+        "locator": "PDF p.5 Fig. 2 discussion; p.11 Example 6.2; p.18 Table 2"
+      },
+      {
+        "field": "transient_and_cooling_features",
+        "reason": "The decisive features are transient: co-scheduling, priority-inversion budgets, DVFS throttling from 1.7 to 0.5 GHz at 65 C, and a fan-off setup with only an aggregate chip resistance. None of them maps to a steady 2D floorplan reproduction, and the paper gives no cooling or package detail.",
+        "locator": "PDF p.14-16 Algorithm 2; p.18 Section 7.1-7.2; p.17 Section 7.1"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      4,
+      5,
+      7,
+      9,
+      10,
+      11,
+      13,
+      14,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      25
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W2979866182",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Block geometry for the Tegra X1: x_m, y_m, width_m, height_m of the 4 CPU cores, the GPU cluster and other blocks. The paper has only the qualitative Fig. 1 layout and no dimensions.",
+      "Same-scenario per-block power rows in watts for a spatial model. Table 2 gives per-task CPU/GPU power but no per-block power for a defined floorplan, and total chip power must not be split without a published rule.",
+      "Power time series for the transient scenario. Only per-task average power and execution times are published; the traces behind Figures 5, 8 and 9 are not provided as data.",
+      "Die and package dimensions, material properties, heat spreader/heat sink, and ambient temperature for the experiment (not stated).",
+      "No pinned packet assets are supplied (assets list empty). The only paper-linked URLs are the publisher DOI (PDF p.1), the Linux CFS documentation (PDF p.25) and cpuburn (PDF p.25); none are code, config or data repositories for this experiment, and no repository URL proves its inputs exist.",
+      "Digitized values of Figures 5-9 (temperature versus time) are not available as numeric data; only the in-text figures such as 60.7, 66.7, 72.9 C, 61.5 vs 63.6 C are available.",
+      "The tabulated Table 1 coupling matrix (C/W) is not extracted into a geometry-based thermal model, and no rule maps it to floorplan blocks.",
+      "Linked asset doi_3358235 is not pinned and available",
+      "Linked asset ref20_linux_cfs_doc is not pinned and available",
+      "Linked asset ref23_cpuburn is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "No floorplan geometry is published: no block x, y, width or height, no die size, no layout coordinates. Fig. 1 is only a qualitative layout schematic. A block-geometry thermal model cannot be built from the paper alone, and no pinned packet asset supplies it.",
+        "essential": true
+      },
+      {
+        "reason": "The original method is a lumped RC thermal-coupling model identified empirically plus real hardware measurement. It is not a spatial 2D or 3D finite-difference/finite-element solver, so a Studio spatial solver would be a different solver class and results cannot be compared numerically with the paper.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is transient and time-varying: periodic jobs, priority inversions and co-scheduling. The published power data are per-task average CPU/GPU power values (Table 2) with no per-block power time series, so a one-row steady power trace would not reproduce the paper's transient dynamics.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer (T-WFD task-to-core assignment) and the controller (online co-scheduling with inversion budgets, hardware DVFS throttling at 65 C, CPU frequency 1.7 to 0.5 GHz) are scheduling-level mechanisms with no floorplan or placement analog in a thermal Studio.",
+        "essential": true
+      },
+      {
+        "reason": "Real packaging and cooling are not specified in detail: Tegra X1 package, heat spreader, board, passive heat sink and ambient temperature. Only the aggregate chip thermal resistance of 1.15 C/W (from a Nvidia design guide) is given, with the fan off. Thermal-resistance-matrix coefficients (Table 1) are core-level and not material or geometry parameters.",
+        "essential": true
+      },
+      {
+        "reason": "No 3D stacking or interposer is involved. The Tegra X1 is a monolithic 2D SoC, so 3D and interposer mismatches do not apply. Reliability (MTTF, 1.52x lifetime) and cooling-cost ($15.6 per chip) are derived analytically and are not Studio outputs.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "4e65783996857f123f8aa42580c291ed979ed9cd8f6816b93ef3b3b8c4a2c3f1",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable and Studio did not run (simulation status skipped). The gate failed on input validity: a custom experiment needs 1–128 blocks and a power_w object, but the floorplan and power_w are empty. simulation_allowed is false and comparison_valid is false, so the final verdict is that no Studio result exists. The scenario is a custom 2D steady run, so it has no transient trace, yet the paper's observable is transient. The paper reports a measured peak core temperature of 60.7 C for RT-TAS (TEA 66.7 C, BASE 72.9 C) on a physical Nvidia Tegra X1. This is the maximum over 4 CPU cores and the GPU and over time, taken from on-chip sensors under 400 ms periodic vision tasks, 15 W rating, 1.15 C/W chip resistance, fan off, and a 65 C throttle threshold. No Studio temperature exists, so no numerical comparison is made and nothing here claims replication. Qualitatively, the paper suggests that scheduling and task-to-core placement change peak temperature by several degrees. A spatial 2D model could not test this from the published data, because the scheduling mechanisms have no floorplan analog. No bundled EV6/GCC adaptation or pinned Ascend910/ATPlace placement with generated input.flp and input.ptrace was used, so no source commit or placement assumption applies. The paper links are only a publisher DOI, Linux CFS documentation, and the cpuburn page, and none supplies inputs.",
+    "limitations": [
+      "Studio was not run, so there is no simulated temperature and comparison_valid is false.",
+      "No floorplan geometry (block x, y, width, height or die size) is published, and Fig. 1 is only a qualitative schematic.",
+      "No per-block power rows are published. Table 2 gives per-task CPU/GPU powers only, and total chip power must not be split without a published rule.",
+      "The paper observable is a transient peak over cores and time from on-chip sensors, while a custom 2D steady run has no transient trace. Regime and aggregation do not match.",
+      "The original model is a lumped RC thermal-coupling model plus hardware measurement, not a spatial solver, so the solver class differs.",
+      "Scheduling and DVFS throttling mechanisms (T-WFD, RT-TAS, MPCP locking, 65 C throttle) have no placement analog in a thermal Studio.",
+      "Package, heat sink, board, material properties, and ambient temperature are unspecified. Only the aggregate 1.15 C/W resistance is given, so the boundary assumptions cannot be matched.",
+      "No power time series or digitized numeric data for Figures 5-9 are available, and no pinned assets or code repository exist.",
+      "Adversarial and independent reviews were unresolved, and the evidence is not independently verified.",
+      "No numeric comparison with 60.7, 66.7, or 72.9 C is permitted; only qualitative sensitivity can be discussed.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Block geometry for the Tegra X1: x_m, y_m, width_m, height_m of the 4 CPU cores, the GPU cluster and other blocks. The paper has only the qualitative Fig. 1 layout and no dimensions.",
+      "Same-scenario per-block power rows in watts for a spatial model. Table 2 gives per-task CPU/GPU power but no per-block power for a defined floorplan, and total chip power must not be split without a published rule.",
+      "Power time series for the transient scenario. Only per-task average power and execution times are published; the traces behind Figures 5, 8 and 9 are not provided as data.",
+      "Die and package dimensions, material properties, heat spreader/heat sink, and ambient temperature for the experiment (not stated).",
+      "No pinned packet assets are supplied (assets list empty). The only paper-linked URLs are the publisher DOI (PDF p.1), the Linux CFS documentation (PDF p.25) and cpuburn (PDF p.25); none are code, config or data repositories for this experiment, and no repository URL proves its inputs exist.",
+      "Digitized values of Figures 5-9 (temperature versus time) are not available as numeric data; only the in-text figures such as 60.7, 66.7, 72.9 C, 61.5 vs 63.6 C are available.",
+      "The tabulated Table 1 coupling matrix (C/W) is not extracted into a geometry-based thermal model, and no rule maps it to floorplan blocks.",
+      "Linked asset doi_3358235 is not pinned and available",
+      "Linked asset ref20_linux_cfs_doc is not pinned and available",
+      "Linked asset ref23_cpuburn is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "No floorplan geometry is published: no block x, y, width or height, no die size, no layout coordinates. Fig. 1 is only a qualitative layout schematic. A block-geometry thermal model cannot be built from the paper alone, and no pinned packet asset supplies it.",
+      "The original method is a lumped RC thermal-coupling model identified empirically plus real hardware measurement. It is not a spatial 2D or 3D finite-difference/finite-element solver, so a Studio spatial solver would be a different solver class and results cannot be compared numerically with the paper.",
+      "The workload is transient and time-varying: periodic jobs, priority inversions and co-scheduling. The published power data are per-task average CPU/GPU power values (Table 2) with no per-block power time series, so a one-row steady power trace would not reproduce the paper's transient dynamics.",
+      "The optimizer (T-WFD task-to-core assignment) and the controller (online co-scheduling with inversion budgets, hardware DVFS throttling at 65 C, CPU frequency 1.7 to 0.5 GHz) are scheduling-level mechanisms with no floorplan or placement analog in a thermal Studio.",
+      "Real packaging and cooling are not specified in detail: Tegra X1 package, heat spreader, board, passive heat sink and ambient temperature. Only the aggregate chip thermal resistance of 1.15 C/W (from a Nvidia design guide) is given, with the fan off. Thermal-resistance-matrix coefficients (Table 1) are core-level and not material or geometry parameters.",
+      "No 3D stacking or interposer is involved. The Tegra X1 is a monolithic 2D SoC, so 3D and interposer mismatches do not apply. Reliability (MTTF, 1.52x lifetime) and cooling-cost ($15.6 per chip) are derived analytically and are not Studio outputs."
+    ]
+  }
+}

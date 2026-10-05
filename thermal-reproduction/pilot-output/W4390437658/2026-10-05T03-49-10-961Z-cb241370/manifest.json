@@ -1,0 +1,1660 @@
+{
+  "paper_id": "W4390437658",
+  "paper_title": "RLPlanner: Reinforcement Learning based Floorplanning for Chiplets with Fast Thermal Analysis",
+  "manifest_status": "downloaded",
+  "source_url": "https://arxiv.org/pdf/2312.16895",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "965c0d8955bba981f3938dd02cda06a3fc9242d73b002bd3d3cd01e3ae417c7e",
+  "pdf_pages": 2,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [
+    {
+      "id": "ref_ascend910_cfg",
+      "kind": "pinned_public_reference",
+      "original_url": "https://raw.githubusercontent.com/weiweihook/RLPlanner/a75abf0b167a316dc5e2dd8b8d3d926114039271/config/Ascend910.cfg",
+      "final_url": "https://raw.githubusercontent.com/weiweihook/RLPlanner/a75abf0b167a316dc5e2dd8b8d3d926114039271/config/Ascend910.cfg",
+      "version": "a75abf0b167a316dc5e2dd8b8d3d926114039271",
+      "path": "config/Ascend910.cfg",
+      "sha256": "4cc8009d5e0b0fe5fa5f02f3486234a3b78de7f50aa23e005090271d7e257fa4",
+      "bytes": 398,
+      "status": "downloaded",
+      "locator": "config/Ascend910.cfg:1"
+    }
+  ],
+  "reference_inputs": {
+    "repo": "weiweihook/RLPlanner",
+    "commit": "a75abf0b167a316dc5e2dd8b8d3d926114039271",
+    "case_name": null,
+    "generated_placement": true
+  },
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T03:50:58.882Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W4390437658",
+    "paper_title": "RLPlanner: Reinforcement Learning based Floorplanning for Chiplets with Fast Thermal Analysis",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "ref6_servethehome_ascend910",
+        "url": "https://www.servethehome.com/huawei-ascend-910-provides-a-nvidia-aitraining-alternative/",
+        "kind": "paper_reference_url (Ascend 910 source article, reference [6])",
+        "paper_page": 2
+      }
+    ],
+    "scenario": {
+      "pdf_page": 2,
+      "figure_or_table": "Table I, Ascend 910 System column",
+      "description": "Ascend 910 System benchmark (reference [6]) used to compare RLPlanner, RLPlanner(RND), TAP-2.5D(HotSpot) and TAP-2.5D*(Fast Thermal Model). The pinned weiweihook/RLPlanner config/Ascend910.cfg gives 6 chiplets: widths 14.5, 10.5, 7.75, 7.75, 7.75, 7.75 mm, heights 31.4, 16, 11.87, 11.87, 11.87, 11.87 mm, and powers 256, 14, 20, 20, 20, 20 W. The paper and config give no final placement coordinates. The paper reports for RLPlanner: reward -7.4063, wirelength 18130 mm, maximum temperature 77.12 C, runtime 7773 s.",
+      "architecture": "2.5D chiplet-based system (Huawei Ascend 910), 6 chiplets on an interposer, per pinned config/Ascend910.cfg:1",
+      "workload": "Not published in the paper; only static per-chiplet power values appear in the pinned config",
+      "operating_point": "Steady-state maximum temperature of 77.12 C (RLPlanner, Table I) with per-chiplet powers 256, 14, 20, 20, 20, 20 W from config/Ascend910.cfg; original solver HotSpot with the fast LTI thermal model; optimizer PPO reinforcement learning with RND bonus; benchmark baselines TAP-2.5D (simulated annealing)",
+      "steady_2d_relevant": true
+    },
+    "original_setup": {
+      "solver": "Ground truth is the open-source HotSpot thermal solver. RLPlanner's reward loop uses its own fast thermal model, a physics-informed linear time-invariant (LTI) thermal resistance network with self-thermal and mutual-thermal resistance tables characterized from HotSpot runs (Table II: MAE 0.2523 K, 127x speed-up vs HotSpot). TAP-2.5D(HotSpot) baseline uses HotSpot directly.",
+      "optimizer": "RLPlanner: proximal policy optimization (PPO) reinforcement learning that places chiplets sequentially, with an action mask and a shared CNN encoder for policy and value heads. The RLPlanner(RND) variant adds a random network distillation exploration bonus. Reward is -lambda*W - mu*smoothed penalty on max(T-T0,0). Baselines are TAP-2.5D (simulated annealing) with HotSpot or with the fast thermal model.",
+      "controller": "None. There is no runtime thermal or power controller. The RL agent is a design-time floorplanning policy, and the chiplet powers are static values from the pinned config/Ascend910.cfg (256, 14, 20, 20, 20, 20 W).",
+      "benchmark": "Ascend 910 System (paper reference [6]), a 6-chiplet 2.5D system, from the Table I Ascend 910 column. Chiplet widths, heights and powers are in the pinned weiweihook/RLPlanner config/Ascend910.cfg. Compared methods: RLPlanner, RLPlanner(RND), TAP-2.5D(HotSpot), TAP-2.5D*(Fast Thermal Model). RLPlanner row: reward -7.4063, wirelength 18130 mm, runtime 7773 s."
+    },
+    "thermal_observable": {
+      "value": 77.12,
+      "unit": "degC",
+      "location": "Maximum operating temperature of the chiplet-based Ascend 910 system for the final RLPlanner floorplan (Table I, Ascend 910 column, RLPlanner row). The exact location of the hotspot is not published.",
+      "aggregation": "Maximum over the system (peak temperature), a single steady-state value per method. Table I does not state whether it is a HotSpot or fast-model value, nor the averaging method.",
+      "pdf_page": 2
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The paper's 77.12 degC is a peak temperature for an RL-optimized final placement that is not published, so it cannot be reproduced or numerically compared with a separately generated illustrative placement.",
+        "essential": true
+      },
+      {
+        "reason": "The original thermal evaluation uses HotSpot and an LTI self/mutual-resistance fast model for 2.5D chiplets on an interposer. The interposer, package, heat-spreader and cooling parameters are not given in the paper or pinned config, so the original cooling boundary conditions cannot be matched.",
+        "essential": true
+      },
+      {
+        "reason": "The original method is an RL floorplanner (PPO plus RND) that co-optimizes wirelength and temperature with microbump assignment. A thermal-only Studio run has no optimizer, wirelength or microbump assignment, so that part cannot be replicated.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's workload is a static steady-state power per chiplet, with no transient behaviour, power time series, controller or reliability analysis. Any one-row power trace is a steady-state surrogate only.",
+        "essential": false
+      },
+      {
+        "reason": "The paper's fast thermal model is an LTI approximation with a reported MAE of about 0.25 K vs HotSpot. A different solver will differ in numerical details.",
+        "essential": false
+      },
+      {
+        "reason": "The system is 2.5D (chiplets on an interposer), not 3D stacked, so no vertical stacking mismatch applies. Any Studio 2D model must still represent the interposer layer.",
+        "essential": false
+      },
+      {
+        "reason": "Final chiplet coordinates are not supplied by the reference files; generated shelf positions illustrate a 2D power snapshot, not the published placement.",
+        "essential": true
+      }
+    ],
+    "studio_assumptions": [
+      "Pinned weiweihook/RLPlanner@a75abf0b167a316dc5e2dd8b8d3d926114039271",
+      "RLPlanner publishes Ascend910 chiplet sizes and powers, but this config has no placement, power time series, or HotSpot configuration.",
+      "The power trace is one constant row made from source per-chiplet watts."
+    ],
+    "missing_inputs": [
+      "Final chiplet placement coordinates (x_m, y_m) for the Ascend 910 RLPlanner result: not in the paper or in config/Ascend910.cfg, which gives only widths, heights, powers and connections.",
+      "Workload or power time series: only static powers (256, 14, 20, 20, 20, 20 W) in the pinned config are available. The chiplet names/roles are not given (config lists indices only), and the config has no x/y positions.",
+      "HotSpot configuration: interposer size and thickness, package layers, material properties, heat-sink and cooling boundary conditions, ambient temperature, grid resolution.",
+      "Reward hyperparameters (lambda, mu, T0, alpha) and the fast thermal model self/mutual resistance tables used for the Ascend 910 case.",
+      "Repository URL: the paper only says 'More details can be found at the github' with no URL in the extracted text. The pinned config is the only asset evidence, and a repository does not prove that a final placement exists.",
+      "Content of paper reference [6] (ServeTheHome Ascend 910 article) is not a pinned asset, so its dimension and power provenance is unverified.",
+      "Bundled Studio package and material assumptions are not provided in the packet.",
+      "Per-chiplet temperatures and the temperature field for the Ascend 910 system: only the single maximum temperature is reported in Table I.",
+      "Published final chiplet coordinates are unavailable."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [
+        {
+          "name": "chiplet_1",
+          "width_m": 0.0145,
+          "height_m": 0.0314,
+          "x_m": 0,
+          "y_m": 0
+        },
+        {
+          "name": "chiplet_2",
+          "width_m": 0.0105,
+          "height_m": 0.016,
+          "x_m": 0.0145,
+          "y_m": 0
+        },
+        {
+          "name": "chiplet_3",
+          "width_m": 0.00775,
+          "height_m": 0.011869999999999999,
+          "x_m": 0.025,
+          "y_m": 0
+        },
+        {
+          "name": "chiplet_4",
+          "width_m": 0.00775,
+          "height_m": 0.011869999999999999,
+          "x_m": 0.03275,
+          "y_m": 0
+        },
+        {
+          "name": "chiplet_5",
+          "width_m": 0.00775,
+          "height_m": 0.011869999999999999,
+          "x_m": 0,
+          "y_m": 0.0314
+        },
+        {
+          "name": "chiplet_6",
+          "width_m": 0.00775,
+          "height_m": 0.011869999999999999,
+          "x_m": 0.00775,
+          "y_m": 0.0314
+        }
+      ],
+      "power_w": {
+        "chiplet_1": 256,
+        "chiplet_2": 14,
+        "chiplet_3": 20,
+        "chiplet_4": 20,
+        "chiplet_5": 20,
+        "chiplet_6": 20
+      }
+    },
+    "evidence": [
+      {
+        "field": "width_m",
+        "block_name": "chiplet_1",
+        "source_value": 14.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0145,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] widths, index 1",
+        "provenance": "Pinned weiweihook/RLPlanner config at commit a75abf0b; Ascend 910 scenario. Config lists indices only, so block names are index-based.",
+        "uncertainty": "The config does not state its length unit. mm is assumed from the paper's mm wirelength units in Table I."
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_1",
+        "source_value": 31.4,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0314,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] heights, index 1",
+        "provenance": "Pinned RLPlanner config, same Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm; the config does not state it."
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_1",
+        "source_value": 256,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 256,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] powers, index 1",
+        "provenance": "Pinned RLPlanner config, same Ascend 910 scenario. Power is given per chiplet, so no splitting is needed.",
+        "uncertainty": "Unit assumed to be W; the config does not state it."
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_2",
+        "source_value": 10.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0105,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] widths, index 2",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_2",
+        "source_value": 16,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.016,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] heights, index 2",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_2",
+        "source_value": 14,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 14,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] powers, index 2",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be W."
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_3",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] widths, index 3",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_3",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.01187,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] heights, index 3",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_3",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] powers, index 3",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be W."
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_4",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] widths, index 4",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_4",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.01187,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] heights, index 4",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_4",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] powers, index 4",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be W."
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_5",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] widths, index 5",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_5",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.01187,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] heights, index 5",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_5",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] powers, index 5",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be W."
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_6",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] widths, index 6",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_6",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.01187,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] heights, index 6",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be mm."
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_6",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] powers, index 6",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": "Unit assumed to be W."
+      },
+      {
+        "field": "chiplet_count",
+        "block_name": null,
+        "source_value": 6,
+        "source_unit": "count",
+        "conversion_factor": 1,
+        "normalized_value": 6,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 [chiplets] chiplet_count",
+        "provenance": "Pinned RLPlanner config, Ascend 910 scenario.",
+        "uncertainty": null
+      },
+      {
+        "field": "x_m",
+        "block_name": "all chiplets",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 (no x/y keys); paper PDF page 2 Table I (no coordinates)",
+        "provenance": "No final placement x coordinates are published in the paper or in the pinned config. Any x coordinate would be a generated illustrative one, not a paper fact.",
+        "uncertainty": "Missing input."
+      },
+      {
+        "field": "y_m",
+        "block_name": "all chiplets",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:1 (no x/y keys); paper PDF page 2 Table I (no coordinates)",
+        "provenance": "No final placement y coordinates are published in the paper or in the pinned config.",
+        "uncertainty": "Missing input."
+      },
+      {
+        "field": "thermal_observable_max_temperature",
+        "block_name": null,
+        "source_value": 77.12,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 77.12,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Table I, Ascend 910 System column, RLPlanner row, Temperature (°C)",
+        "provenance": "Paper-reported maximum operating temperature of the whole Ascend 910 chiplet system for the RLPlanner final floorplan. Aggregation is a single system-wide maximum. The hotspot location is not published.",
+        "uncertainty": "The table does not say whether the value comes from HotSpot or the fast model. The final placement is unpublished, so the value is not reproducible."
+      },
+      {
+        "field": "reward_RLPlanner",
+        "block_name": null,
+        "source_value": -7.4063,
+        "source_unit": "dimensionless",
+        "conversion_factor": 1,
+        "normalized_value": -7.4063,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Table I, Ascend 910 System, RLPlanner row, Reward",
+        "provenance": "Paper-reported reward for the Ascend 910 RLPlanner result.",
+        "uncertainty": null
+      },
+      {
+        "field": "wirelength_RLPlanner",
+        "block_name": null,
+        "source_value": 18130,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 18.13,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Table I, Ascend 910 System, RLPlanner row, Wirelength (mm)",
+        "provenance": "Paper-reported total wirelength for the Ascend 910 RLPlanner result.",
+        "uncertainty": "The column alignment in the extracted text is ambiguous. The unit is as labelled in the table header."
+      },
+      {
+        "field": "runtime_RLPlanner",
+        "block_name": null,
+        "source_value": 7773,
+        "source_unit": "s",
+        "conversion_factor": 1,
+        "normalized_value": 7773,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Table I, Ascend 910 System, RLPlanner row, Runtime (s)",
+        "provenance": "Paper-reported optimization runtime for the Ascend 910 RLPlanner result.",
+        "uncertainty": null
+      },
+      {
+        "field": "fast_thermal_model_MAE_vs_HotSpot",
+        "block_name": null,
+        "source_value": 0.2523,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 0.2523,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Table II, MAE row",
+        "provenance": "Fast thermal model error against HotSpot ground truth, evaluated on 2,000 synthetic chiplet systems. It is not specific to Ascend 910.",
+        "uncertainty": null
+      },
+      {
+        "field": "fast_thermal_model_speedup",
+        "block_name": null,
+        "source_value": 127,
+        "source_unit": "x",
+        "conversion_factor": 1,
+        "normalized_value": 127,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Table II, Speed row (0.1012 s vs 12.8976 s)",
+        "provenance": "Inference speed-up of the fast thermal model over HotSpot.",
+        "uncertainty": null
+      },
+      {
+        "field": "paper_linked_resource_ascend910_reference",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, References, item [6]: https://www.servethehome.com/huawei-ascend-910-provides-a-nvidia-aitraining-alternative/",
+        "provenance": "Paper-cited source article for the Ascend 910 benchmark. It is not a pinned packet asset, so it was not inspected and its dimension and power provenance is unverified.",
+        "uncertainty": "Unverified."
+      },
+      {
+        "field": "paper_linked_resource_github",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Methodology Section II-C, 'More details can be found at the github.'",
+        "provenance": "The paper mentions a github resource without giving a URL in the extracted text. The pinned weiweihook/RLPlanner config/Ascend910.cfg is the only repository asset in the packet. A repository does not prove that a final placement exists.",
+        "uncertainty": "No URL stated in the paper text."
+      },
+      {
+        "field": "model_context_architecture_solver_optimizer",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF page 2, Sections II-B, II-C and III-B, Table I",
+        "provenance": "The architecture is a 2.5D chiplet system (Ascend 910, 6 chiplets). The workload is static per-chiplet power. The original solvers are HotSpot and a fast LTI self/mutual thermal-resistance model. The optimizer is PPO RL with an RND bonus. The baselines are TAP-2.5D (simulated annealing). There is no runtime controller. The benchmark is the Ascend 910 System in Table I.",
+        "uncertainty": "The interposer, package and cooling parameters are not published. This is a 2.5D system, not 3D, so there is no 3D stacking mismatch. A thermal-only Studio run lacks the optimizer, wirelength and microbump assignment."
+      },
+      {
+        "field": "studio_package_material_assumptions",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Not provided in the packet",
+        "provenance": "The packet gives no bundled Studio package or material assumptions. None are invented here.",
+        "uncertainty": "Missing input."
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_1",
+        "source_value": 14.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0145,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:7",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_1",
+        "source_value": 31.399999999999995,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0314,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:8",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_1",
+        "source_value": 256,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 256,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:9",
+        "provenance": "Pinned repository power value; one steady snapshot",
+        "uncertainty": null
+      },
+      {
+        "field": "x_m",
+        "block_name": "chiplet_1",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "y_m",
+        "block_name": "chiplet_1",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_2",
+        "source_value": 10.5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0105,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:7",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_2",
+        "source_value": 16,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.016,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:8",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_2",
+        "source_value": 14,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 14,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:9",
+        "provenance": "Pinned repository power value; one steady snapshot",
+        "uncertainty": null
+      },
+      {
+        "field": "x_m",
+        "block_name": "chiplet_2",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0.0145,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "y_m",
+        "block_name": "chiplet_2",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_3",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:7",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_3",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.011869999999999999,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:8",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_3",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:9",
+        "provenance": "Pinned repository power value; one steady snapshot",
+        "uncertainty": null
+      },
+      {
+        "field": "x_m",
+        "block_name": "chiplet_3",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0.025,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "y_m",
+        "block_name": "chiplet_3",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_4",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:7",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_4",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.011869999999999999,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:8",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_4",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:9",
+        "provenance": "Pinned repository power value; one steady snapshot",
+        "uncertainty": null
+      },
+      {
+        "field": "x_m",
+        "block_name": "chiplet_4",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0.03275,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "y_m",
+        "block_name": "chiplet_4",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_5",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:7",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_5",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.011869999999999999,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:8",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_5",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:9",
+        "provenance": "Pinned repository power value; one steady snapshot",
+        "uncertainty": null
+      },
+      {
+        "field": "x_m",
+        "block_name": "chiplet_5",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "y_m",
+        "block_name": "chiplet_5",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0.0314,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "width_m",
+        "block_name": "chiplet_6",
+        "source_value": 7.75,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:7",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "height_m",
+        "block_name": "chiplet_6",
+        "source_value": 11.87,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.011869999999999999,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:8",
+        "provenance": "Pinned repository dimensions",
+        "uncertainty": null
+      },
+      {
+        "field": "power_w",
+        "block_name": "chiplet_6",
+        "source_value": 20,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": null,
+        "asset_id": "ref_ascend910_cfg",
+        "locator": "config/Ascend910.cfg:9",
+        "provenance": "Pinned repository power value; one steady snapshot",
+        "uncertainty": null
+      },
+      {
+        "field": "x_m",
+        "block_name": "chiplet_6",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0.00775,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      },
+      {
+        "field": "y_m",
+        "block_name": "chiplet_6",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": 0.0314,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Deterministic shelf layout; original final coordinates not published",
+        "provenance": "Inferred illustrative placement",
+        "uncertainty": "No published final placement coordinates"
+      }
+    ],
+    "reference_inputs": {
+      "repo": "weiweihook/RLPlanner",
+      "commit": "a75abf0b167a316dc5e2dd8b8d3d926114039271",
+      "case_name": null,
+      "generated_placement": true
+    }
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "Page 1 Fig. 1 text and page 2 Sec. II-B/II-C support PPO, an RND bonus, a shared CNN encoder with separate heads, an action mask, microbump assignment before thermal evaluation, and a HotSpot-characterized LTI self/mutual-resistance fast model. The reward formula is garbled in pdftotext, so the exact form of the smoothing term was not verified. The paper does not say how the Ascend 910 Table I temperature was computed (HotSpot or fast model)."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The paper only says 'More details can be found at the github', with no URL, commit or placement output. The only repository evidence is one pinned config file. No RLPlanner code, fast-model tables or final Ascend 910 placement was inspected. The generated shelf layout is not from the source code."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Reward hyperparameters (lambda, mu, T0, alpha), the PPO/RND settings and the self/mutual resistance tables are not in the supplied evidence. The config widths, heights and powers are present, but the config states no units (mm and W are assumed), and the paper never lists chiplet dimensions or powers for the Ascend 910 case. The reference [6] article was not inspected. Reference [6] is not a pinned asset, so the dimension and power provenance is unverified."
+      },
+      "config": {
+        "status": "missing",
+        "note": "There is no HotSpot configuration: interposer size and thickness, package layers, materials, heat sink or cooling boundary, ambient temperature and grid resolution are all absent. The Studio package and material assumptions are also not provided. The generated custom_2d_steady experiment has no interposer or cooling definition, so it cannot be matched to the paper's thermal setup. The config's path 'outputs/case6/' and comment '#ascend910' only weakly tie it to the Table I Ascend 910 column."
+      },
+      "data": {
+        "status": "missing",
+        "note": "All six blocks have same-scenario powers (256, 14, 20, 20, 20, 20 W) and dimensions from the pinned config, but with an assumed unit and only index-based block names. The final placement is unpublished, so the shelf coordinates are illustrative and not the paper's result. The Table I values (77.12 degC, -7.4063, 18130, 7773) come only from pdftotext output, with ambiguous column layout and no visual verification of the table. The constant power row is a steady-state surrogate, not a published trace."
+      }
+    },
+    "findings": [
+      {
+        "field": "thermal_observable_max_temperature / Table I Ascend 910 RLPlanner row",
+        "reason": "The decisive table was read only from pdftotext -layout. The reward, wirelength and temperature columns are misaligned in the header and body, and no rendered page image was supplied. The 77.12 degC, 18130 mm and 7773 s values are not visually verified. The paper also does not state whether the temperature is a HotSpot or fast-model value.",
+        "locator": "PDF page 2, Table I, Ascend 910 System, RLPlanner row"
+      },
+      {
+        "field": "x_m/y_m for all chiplets",
+        "reason": "No placement coordinates exist in the paper or the config. The shelf coordinates are generated and illustrative, so they cannot be compared numerically with the paper's 77.12 degC for the RL-optimized placement.",
+        "locator": "config/Ascend910.cfg (no x/y keys); PDF page 2 Table I; evidence entries 'Deterministic shelf layout'"
+      },
+      {
+        "field": "width_m/height_m/power_w units",
+        "reason": "The config gives bare numbers, with no mm or W unit and no unit statement in the paper. The mm and W units and the 0.001 conversion are inferred, not evidenced. The paper's mm unit applies only to wirelength.",
+        "locator": "config/Ascend910.cfg:7-9"
+      },
+      {
+        "field": "scenario match (Ascend 910 System vs config)",
+        "reason": "The paper does not name the repo, commit or config file. The link between Table I's Ascend 910 column and this later-pinned config rests on a filename, a '#ascend910' comment and 'case6', which is an inference. The pinned commit is not shown to be the version used in the paper. The reference [6] article that would give the source dimensions and powers was not inspected.",
+        "locator": "config/Ascend910.cfg:1-3; PDF page 2 reference [6]"
+      },
+      {
+        "field": "evidence locators and values",
+        "reason": "The config evidence is inconsistent. Some entries cite 'config/Ascend910.cfg:1' with an index label, others cite lines 7, 8 and 9. chiplet_count is actually line 6. chiplet_1 height appears as both 31.4 and 31.399999999999995, which is a float artifact.",
+        "locator": "evidence entries for chiplet_1 height_m and chiplet_count"
+      },
+      {
+        "field": "HotSpot/cooling/interposer configuration",
+        "reason": "There is no interposer, package or cooling data in the paper or the config, so the 2D steady experiment cannot reproduce the original boundary conditions. A reproduction cannot be claimed.",
+        "locator": "PDF page 2 Sec. II-C and III; ref_ascend910_cfg"
+      },
+      {
+        "field": "RL optimizer / reward parameters",
+        "reason": "The optimizer, wirelength and microbump parts of the paper cannot be reproduced by a thermal-only run. lambda, mu, T0 and alpha are unknown. The reward equation is garbled in the extracted text.",
+        "locator": "PDF page 2, Sec. II-C reward equation"
+      },
+      {
+        "field": "workload/power",
+        "reason": "The power row is a constant steady snapshot of the config powers. The paper publishes no transient or power-time-series data, so any transient claim would be unsupported.",
+        "locator": "config/Ascend910.cfg:9"
+      },
+      {
+        "field": "code/GitHub link",
+        "reason": "The paper gives no repository URL in the supplied text. A repository existing does not prove that a final placement or the fast-model tables exist.",
+        "locator": "PDF page 2, Sec. II-C 'More details can be found at the github'"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2
+    ],
+    "checked_assets": [
+      "ref_ascend910_cfg"
+    ]
+  },
+  "feasibility": {
+    "paper_id": "W4390437658",
+    "decision": "illustrative_2d_only",
+    "input_gate_pass": true,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [],
+    "blocking_facts": [
+      "Evidence 30 lacks a valid page or pinned asset locator",
+      "Evidence 34 lacks a valid page or pinned asset locator",
+      "Evidence 35 lacks a valid page or pinned asset locator",
+      "Evidence 39 lacks a valid page or pinned asset locator",
+      "Evidence 40 lacks a valid page or pinned asset locator",
+      "Evidence 44 lacks a valid page or pinned asset locator",
+      "Evidence 45 lacks a valid page or pinned asset locator",
+      "Evidence 49 lacks a valid page or pinned asset locator",
+      "Evidence 50 lacks a valid page or pinned asset locator",
+      "Evidence 54 lacks a valid page or pinned asset locator",
+      "Evidence 55 lacks a valid page or pinned asset locator",
+      "Evidence 59 lacks a valid page or pinned asset locator",
+      "Evidence 60 lacks a valid page or pinned asset locator",
+      "No cited, normalized x_m for chiplet_1",
+      "No cited, normalized y_m for chiplet_1",
+      "No cited, normalized x_m for chiplet_2",
+      "No cited, normalized y_m for chiplet_2",
+      "No cited, normalized x_m for chiplet_3",
+      "No cited, normalized y_m for chiplet_3",
+      "No cited, normalized x_m for chiplet_4",
+      "No cited, normalized y_m for chiplet_4",
+      "No cited, normalized x_m for chiplet_5",
+      "No cited, normalized y_m for chiplet_5",
+      "No cited, normalized x_m for chiplet_6",
+      "No cited, normalized y_m for chiplet_6",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Final chiplet placement coordinates (x_m, y_m) for the Ascend 910 RLPlanner result: not in the paper or in config/Ascend910.cfg, which gives only widths, heights, powers and connections.",
+      "Workload or power time series: only static powers (256, 14, 20, 20, 20, 20 W) in the pinned config are available. The chiplet names/roles are not given (config lists indices only), and the config has no x/y positions.",
+      "HotSpot configuration: interposer size and thickness, package layers, material properties, heat-sink and cooling boundary conditions, ambient temperature, grid resolution.",
+      "Reward hyperparameters (lambda, mu, T0, alpha) and the fast thermal model self/mutual resistance tables used for the Ascend 910 case.",
+      "Repository URL: the paper only says 'More details can be found at the github' with no URL in the extracted text. The pinned config is the only asset evidence, and a repository does not prove that a final placement exists.",
+      "Content of paper reference [6] (ServeTheHome Ascend 910 article) is not a pinned asset, so its dimension and power provenance is unverified.",
+      "Bundled Studio package and material assumptions are not provided in the packet.",
+      "Per-chiplet temperatures and the temperature field for the Ascend 910 system: only the single maximum temperature is reported in Table I.",
+      "Published final chiplet coordinates are unavailable.",
+      "Linked asset ref6_servethehome_ascend910 is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The paper's 77.12 degC is a peak temperature for an RL-optimized final placement that is not published, so it cannot be reproduced or numerically compared with a separately generated illustrative placement.",
+        "essential": true
+      },
+      {
+        "reason": "The original thermal evaluation uses HotSpot and an LTI self/mutual-resistance fast model for 2.5D chiplets on an interposer. The interposer, package, heat-spreader and cooling parameters are not given in the paper or pinned config, so the original cooling boundary conditions cannot be matched.",
+        "essential": true
+      },
+      {
+        "reason": "The original method is an RL floorplanner (PPO plus RND) that co-optimizes wirelength and temperature with microbump assignment. A thermal-only Studio run has no optimizer, wirelength or microbump assignment, so that part cannot be replicated.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's workload is a static steady-state power per chiplet, with no transient behaviour, power time series, controller or reliability analysis. Any one-row power trace is a steady-state surrogate only.",
+        "essential": false
+      },
+      {
+        "reason": "The paper's fast thermal model is an LTI approximation with a reported MAE of about 0.25 K vs HotSpot. A different solver will differ in numerical details.",
+        "essential": false
+      },
+      {
+        "reason": "The system is 2.5D (chiplets on an interposer), not 3D stacked, so no vertical stacking mismatch applies. Any Studio 2D model must still represent the interposer layer.",
+        "essential": false
+      },
+      {
+        "reason": "Final chiplet coordinates are not supplied by the reference files; generated shelf positions illustrate a 2D power snapshot, not the published placement.",
+        "essential": true
+      }
+    ],
+    "studio_assumptions": [
+      "Pinned weiweihook/RLPlanner@a75abf0b167a316dc5e2dd8b8d3d926114039271",
+      "RLPlanner publishes Ascend910 chiplet sizes and powers, but this config has no placement, power time series, or HotSpot configuration.",
+      "The power trace is one constant row made from source per-chiplet watts."
+    ],
+    "evidence_sha256": "f15d87900a8aff55547e87ee4c9d5a2d2a7e7fb060db24d8d3eecd31477cb204",
+    "simulation_allowed": true,
+    "comparison_valid": false,
+    "reason": "The caveated scientific suitability verdict permits an exploratory Studio run; evidence and physical mismatches remain visible."
+  },
+  "simulation": {
+    "status": "completed",
+    "studio_run_id": "c9e576d2499d413c90191897c6ed8b9b",
+    "run_kind": "custom_2d_steady",
+    "input_sha256": "ea04f6149970c567d6843e5c3f420e1f4d2232861fe797c234827f7431915e12",
+    "config_sha256": "3e046c67a1de5a5e4ace2f949ece5edb98ac022342b335a67887403a9acc1b0e",
+    "rows": [
+      {
+        "name": "chiplet_1",
+        "kelvin": 382.38,
+        "celsius": 109.23
+      },
+      {
+        "name": "chiplet_2",
+        "kelvin": 368.38,
+        "celsius": 95.23
+      },
+      {
+        "name": "chiplet_3",
+        "kelvin": 365.75,
+        "celsius": 92.6
+      },
+      {
+        "name": "chiplet_4",
+        "kelvin": 361.44,
+        "celsius": 88.29
+      },
+      {
+        "name": "chiplet_5",
+        "kelvin": 371.37,
+        "celsius": 98.22
+      },
+      {
+        "name": "chiplet_6",
+        "kelvin": 370.33,
+        "celsius": 97.18
+      },
+      {
+        "name": "iface_chiplet_1",
+        "kelvin": 381.74,
+        "celsius": 108.59
+      },
+      {
+        "name": "iface_chiplet_2",
+        "kelvin": 368.28,
+        "celsius": 95.13
+      },
+      {
+        "name": "iface_chiplet_3",
+        "kelvin": 365.5,
+        "celsius": 92.35
+      },
+      {
+        "name": "iface_chiplet_4",
+        "kelvin": 361.19,
+        "celsius": 88.04
+      },
+      {
+        "name": "iface_chiplet_5",
+        "kelvin": 371.12,
+        "celsius": 97.97
+      },
+      {
+        "name": "iface_chiplet_6",
+        "kelvin": 370.08,
+        "celsius": 96.93
+      },
+      {
+        "name": "hsp_chiplet_1",
+        "kelvin": 378.93,
+        "celsius": 105.78
+      },
+      {
+        "name": "hsp_chiplet_2",
+        "kelvin": 367.86,
+        "celsius": 94.71
+      },
+      {
+        "name": "hsp_chiplet_3",
+        "kelvin": 364.42,
+        "celsius": 91.27
+      },
+      {
+        "name": "hsp_chiplet_4",
+        "kelvin": 360.09,
+        "celsius": 86.94
+      },
+      {
+        "name": "hsp_chiplet_5",
+        "kelvin": 370.03,
+        "celsius": 96.88
+      },
+      {
+        "name": "hsp_chiplet_6",
+        "kelvin": 368.99,
+        "celsius": 95.84
+      },
+      {
+        "name": "hsink_chiplet_1",
+        "kelvin": 377.66,
+        "celsius": 104.51
+      },
+      {
+        "name": "hsink_chiplet_2",
+        "kelvin": 367.59,
+        "celsius": 94.44
+      },
+      {
+        "name": "hsink_chiplet_3",
+        "kelvin": 363.87,
+        "celsius": 90.72
+      },
+      {
+        "name": "hsink_chiplet_4",
+        "kelvin": 359.54,
+        "celsius": 86.39
+      },
+      {
+        "name": "hsink_chiplet_5",
+        "kelvin": 369.43,
+        "celsius": 96.28
+      },
+      {
+        "name": "hsink_chiplet_6",
+        "kelvin": 368.38,
+        "celsius": 95.23
+      },
+      {
+        "name": "inode_0",
+        "kelvin": 371.55,
+        "celsius": 98.4
+      },
+      {
+        "name": "inode_1",
+        "kelvin": 354.87,
+        "celsius": 81.72
+      },
+      {
+        "name": "inode_2",
+        "kelvin": 369.51,
+        "celsius": 96.36
+      },
+      {
+        "name": "inode_3",
+        "kelvin": 366.95,
+        "celsius": 93.8
+      },
+      {
+        "name": "inode_4",
+        "kelvin": 371.14,
+        "celsius": 97.99
+      },
+      {
+        "name": "inode_5",
+        "kelvin": 354.61,
+        "celsius": 81.46
+      },
+      {
+        "name": "inode_6",
+        "kelvin": 362.16,
+        "celsius": 89.01
+      },
+      {
+        "name": "inode_7",
+        "kelvin": 362.66,
+        "celsius": 89.51
+      },
+      {
+        "name": "inode_8",
+        "kelvin": 368.94,
+        "celsius": 95.79
+      },
+      {
+        "name": "inode_9",
+        "kelvin": 353.1,
+        "celsius": 79.95
+      },
+      {
+        "name": "inode_10",
+        "kelvin": 360.61,
+        "celsius": 87.46
+      },
+      {
+        "name": "inode_11",
+        "kelvin": 361.09,
+        "celsius": 87.94
+      }
+    ],
+    "solver_log": "=== steady ===\nComputing steady-state temperatures...\nParsing input files...\nCreating thermal circuit...\nSimulation complete.\n",
+    "assumptions": "Bundled example.materials and package.config",
+    "artifacts": {
+      "submitted.experiment.json": {
+        "path": "submitted.experiment.json",
+        "bytes": 667,
+        "sha256": "33721740a9da8f3e61f331d781ed798ea74840b0f65c7ae2d3c71598510cacb3",
+        "studio_url": "/api/runs/c9e576d2499d413c90191897c6ed8b9b/artifacts/submitted.experiment.json"
+      },
+      "input.flp": {
+        "path": "input.flp",
+        "bytes": 258,
+        "sha256": "c4c971981cb96309f8ba316666fa901dda7293c9e7b986091366b88c26145293",
+        "studio_url": "/api/runs/c9e576d2499d413c90191897c6ed8b9b/artifacts/input.flp"
+      },
+      "input.ptrace": {
+        "path": "input.ptrace",
+        "bytes": 79,
+        "sha256": "5001b9871223071511ae117ec848ad08a7356d3579c394c726b9032ecbf0e0f6",
+        "studio_url": "/api/runs/c9e576d2499d413c90191897c6ed8b9b/artifacts/input.ptrace"
+      },
+      "temperatures.steady": {
+        "path": "temperatures.steady",
+        "bytes": 686,
+        "sha256": "31c499f2e2025b0a3ddeee4a10fdcf4ea256fe51093690469b176f288494e88c",
+        "studio_url": "/api/runs/c9e576d2499d413c90191897c6ed8b9b/artifacts/temperatures.steady"
+      }
+    },
+    "comparison_valid": false,
+    "sensitivity": {
+      "status": "completed",
+      "block_name": "chiplet_1",
+      "power_delta_w": 1,
+      "baseline_kelvin": 382.38,
+      "trial_kelvin": 382.59,
+      "passed": true,
+      "run": {
+        "status": "completed",
+        "studio_run_id": "8baad0c871df4439a0f6542ce0e48720",
+        "run_kind": "custom_2d_steady",
+        "input_sha256": "64c730b4324925aab6144911ca222f71f99dca558b77755b4212e0aace6ff56a",
+        "config_sha256": "3e046c67a1de5a5e4ace2f949ece5edb98ac022342b335a67887403a9acc1b0e",
+        "rows": [
+          {
+            "name": "chiplet_1",
+            "kelvin": 382.59,
+            "celsius": 109.44
+          },
+          {
+            "name": "chiplet_2",
+            "kelvin": 368.52,
+            "celsius": 95.37
+          },
+          {
+            "name": "chiplet_3",
+            "kelvin": 365.87,
+            "celsius": 92.72
+          },
+          {
+            "name": "chiplet_4",
+            "kelvin": 361.54,
+            "celsius": 88.39
+          },
+          {
+            "name": "chiplet_5",
+            "kelvin": 371.52,
+            "celsius": 98.37
+          },
+          {
+            "name": "chiplet_6",
+            "kelvin": 370.47,
+            "celsius": 97.32
+          },
+          {
+            "name": "iface_chiplet_1",
+            "kelvin": 381.94,
+            "celsius": 108.79
+          },
+          {
+            "name": "iface_chiplet_2",
+            "kelvin": 368.42,
+            "celsius": 95.27
+          },
+          {
+            "name": "iface_chiplet_3",
+            "kelvin": 365.62,
+            "celsius": 92.47
+          },
+          {
+            "name": "iface_chiplet_4",
+            "kelvin": 361.29,
+            "celsius": 88.14
+          },
+          {
+            "name": "iface_chiplet_5",
+            "kelvin": 371.27,
+            "celsius": 98.12
+          },
+          {
+            "name": "iface_chiplet_6",
+            "kelvin": 370.22,
+            "celsius": 97.07
+          },
+          {
+            "name": "hsp_chiplet_1",
+            "kelvin": 379.12,
+            "celsius": 105.97
+          },
+          {
+            "name": "hsp_chiplet_2",
+            "kelvin": 367.99,
+            "celsius": 94.84
+          },
+          {
+            "name": "hsp_chiplet_3",
+            "kelvin": 364.54,
+            "celsius": 91.39
+          },
+          {
+            "name": "hsp_chiplet_4",
+            "kelvin": 360.2,
+            "celsius": 87.05
+          },
+          {
+            "name": "hsp_chiplet_5",
+            "kelvin": 370.18,
+            "celsius": 97.03
+          },
+          {
+            "name": "hsp_chiplet_6",
+            "kelvin": 369.13,
+            "celsius": 95.98
+          },
+          {
+            "name": "hsink_chiplet_1",
+            "kelvin": 377.84,
+            "celsius": 104.69
+          },
+          {
+            "name": "hsink_chiplet_2",
+            "kelvin": 367.73,
+            "celsius": 94.58
+          },
+          {
+            "name": "hsink_chiplet_3",
+            "kelvin": 363.99,
+            "celsius": 90.84
+          },
+          {
+            "name": "hsink_chiplet_4",
+            "kelvin": 359.65,
+            "celsius": 86.5
+          },
+          {
+            "name": "hsink_chiplet_5",
+            "kelvin": 369.58,
+            "celsius": 96.43
+          },
+          {
+            "name": "hsink_chiplet_6",
+            "kelvin": 368.52,
+            "celsius": 95.37
+          },
+          {
+            "name": "inode_0",
+            "kelvin": 371.71,
+            "celsius": 98.56
+          },
+          {
+            "name": "inode_1",
+            "kelvin": 354.96,
+            "celsius": 81.81
+          },
+          {
+            "name": "inode_2",
+            "kelvin": 369.65,
+            "celsius": 96.5
+          },
+          {
+            "name": "inode_3",
+            "kelvin": 367.08,
+            "celsius": 93.93
+          },
+          {
+            "name": "inode_4",
+            "kelvin": 371.3,
+            "celsius": 98.15
+          },
+          {
+            "name": "inode_5",
+            "kelvin": 354.71,
+            "celsius": 81.56
+          },
+          {
+            "name": "inode_6",
+            "kelvin": 362.29,
+            "celsius": 89.14
+          },
+          {
+            "name": "inode_7",
+            "kelvin": 362.79,
+            "celsius": 89.64
+          },
+          {
+            "name": "inode_8",
+            "kelvin": 369.1,
+            "celsius": 95.95
+          },
+          {
+            "name": "inode_9",
+            "kelvin": 353.19,
+            "celsius": 80.04
+          },
+          {
+            "name": "inode_10",
+            "kelvin": 360.73,
+            "celsius": 87.58
+          },
+          {
+            "name": "inode_11",
+            "kelvin": 361.21,
+            "celsius": 88.06
+          }
+        ],
+        "solver_log": "=== steady ===\nComputing steady-state temperatures...\nParsing input files...\nCreating thermal circuit...\nSimulation complete.\n",
+        "assumptions": "Bundled example.materials and package.config",
+        "artifacts": {
+          "submitted.experiment.json": {
+            "path": "submitted.experiment.json",
+            "bytes": 667,
+            "sha256": "dc4595114838bd4bde2ad8406d459cd9b65099c32b0a4475687794900d5cda23",
+            "studio_url": "/api/runs/8baad0c871df4439a0f6542ce0e48720/artifacts/submitted.experiment.json"
+          },
+          "input.flp": {
+            "path": "input.flp",
+            "bytes": 258,
+            "sha256": "c4c971981cb96309f8ba316666fa901dda7293c9e7b986091366b88c26145293",
+            "studio_url": "/api/runs/8baad0c871df4439a0f6542ce0e48720/artifacts/input.flp"
+          },
+          "input.ptrace": {
+            "path": "input.ptrace",
+            "bytes": 79,
+            "sha256": "8d750cbc9e854e596e862a8525c55e611875907ade7e10cd63b336516e0d1a9c",
+            "studio_url": "/api/runs/8baad0c871df4439a0f6542ce0e48720/artifacts/input.ptrace"
+          },
+          "temperatures.steady": {
+            "path": "temperatures.steady",
+            "bytes": 686,
+            "sha256": "d51043fa3f6e58c65202444b6d8a79442776e20319b18a539e7790abe7acc892",
+            "studio_url": "/api/runs/8baad0c871df4439a0f6542ce0e48720/artifacts/temperatures.steady"
+          }
+        },
+        "comparison_valid": false
+      }
+    }
+  },
+  "assessment": {
+    "verdict": "illustrative_2d_only",
+    "comparison_valid": false,
+    "summary": "Scenario: RLPlanner (W4390437658), Ascend 910 System, 6 chiplets on a 2.5D interposer. The 2D screening label is illustrative_2d_only, and the Studio run did run (run_kind custom_2d_steady, status completed, run id c9e576d2499d413c90191897c6ed8b9b). The input gate passed with no input errors, so the deterministic gate allowed an exploratory run. The scientific gate failed, independently_verified is false, and comparison_valid is false. Inputs: widths, heights and powers (256, 14, 20, 20, 20, 20 W) come from pinned weiweihook/RLPlanner config/Ascend910.cfg at commit a75abf0b167a316dc5e2dd8b8d3d926114039271. The placement is a generated deterministic shelf layout, not the published RL floorplan, which is unavailable. Units (mm, W) are assumed because the config does not state them. A custom 2D steady run has no transient trace; the input.ptrace is one constant row of source powers, so only a steady-state snapshot is represented. Studio result: with bundled example.materials and package.config, the hottest block was chiplet_1 at 382.38 K (109.23 C). Other chiplets ranged from 88.29 C (chiplet_4) to 98.22 C (chiplet_5). A +1 W perturbation on chiplet_1 raised it to 382.59 K (about +0.21 K), so the model responds plausibly and the sensitivity check passed. Comparison to the paper: the paper's 77.12 C is a system-wide peak for an unpublished RL-optimized placement, with unknown HotSpot or fast-model origin and unknown cooling boundaries. The Studio 109.23 C is a block-level steady temperature for a generated placement under bundled package assumptions. The location, aggregation, placement and boundary assumptions do not match, so the roughly 32 C difference is not a numerical agreement or disagreement and must not be read as replication or refutation. Only qualitative inference is supported: the 256 W chiplet dominates the thermal behavior, and the generated layout, which stacks it next to other chiplets, and the unspecified cooling strongly influence peak temperature. This is an exploratory, illustrative result and not an exact replication of the paper.",
+    "limitations": [
+      "Final RLPlanner chiplet placement coordinates are not published; the shelf layout is generated and illustrative only.",
+      "The paper's 77.12 C is a peak for an unpublished placement, with unknown solver (HotSpot vs fast LTI model) and unspecified hotspot location, so no numerical comparison is valid.",
+      "The interposer, package, heat sink, ambient and cooling boundary conditions of the original evaluation are unknown; Studio used bundled example.materials and package.config.",
+      "The RL optimizer (PPO plus RND), wirelength, microbump assignment and reward terms are not reproduced by a thermal-only run.",
+      "The workload is a single constant-power row; there is no transient trace, power time series or controller, and the Studio run is steady-state only.",
+      "Config length and power units (mm, W) are assumed, and chiplet names are index-based only.",
+      "The ServeTheHome reference [6] is unpinned and unverified, and the paper gives no repository URL; the pinned config is the only asset evidence.",
+      "The scientific gate failed with unresolved adversarial checks, pending independent review and several evidence items lacking valid page or asset locators; comparison_valid is false.",
+      "Per-chiplet and temperature-field results are unavailable from the paper, so only the single maximum could be referenced.",
+      "Evidence 30 lacks a valid page or pinned asset locator",
+      "Evidence 34 lacks a valid page or pinned asset locator",
+      "Evidence 35 lacks a valid page or pinned asset locator",
+      "Evidence 39 lacks a valid page or pinned asset locator",
+      "Evidence 40 lacks a valid page or pinned asset locator",
+      "Evidence 44 lacks a valid page or pinned asset locator",
+      "Evidence 45 lacks a valid page or pinned asset locator",
+      "Evidence 49 lacks a valid page or pinned asset locator",
+      "Evidence 50 lacks a valid page or pinned asset locator",
+      "Evidence 54 lacks a valid page or pinned asset locator",
+      "Evidence 55 lacks a valid page or pinned asset locator",
+      "Evidence 59 lacks a valid page or pinned asset locator",
+      "Evidence 60 lacks a valid page or pinned asset locator",
+      "No cited, normalized x_m for chiplet_1",
+      "No cited, normalized y_m for chiplet_1",
+      "No cited, normalized x_m for chiplet_2",
+      "No cited, normalized y_m for chiplet_2",
+      "No cited, normalized x_m for chiplet_3",
+      "No cited, normalized y_m for chiplet_3",
+      "No cited, normalized x_m for chiplet_4",
+      "No cited, normalized y_m for chiplet_4",
+      "No cited, normalized x_m for chiplet_5",
+      "No cited, normalized y_m for chiplet_5",
+      "No cited, normalized x_m for chiplet_6",
+      "No cited, normalized y_m for chiplet_6",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Final chiplet placement coordinates (x_m, y_m) for the Ascend 910 RLPlanner result: not in the paper or in config/Ascend910.cfg, which gives only widths, heights, powers and connections.",
+      "Workload or power time series: only static powers (256, 14, 20, 20, 20, 20 W) in the pinned config are available. The chiplet names/roles are not given (config lists indices only), and the config has no x/y positions.",
+      "HotSpot configuration: interposer size and thickness, package layers, material properties, heat-sink and cooling boundary conditions, ambient temperature, grid resolution.",
+      "Reward hyperparameters (lambda, mu, T0, alpha) and the fast thermal model self/mutual resistance tables used for the Ascend 910 case.",
+      "Repository URL: the paper only says 'More details can be found at the github' with no URL in the extracted text. The pinned config is the only asset evidence, and a repository does not prove that a final placement exists.",
+      "Content of paper reference [6] (ServeTheHome Ascend 910 article) is not a pinned asset, so its dimension and power provenance is unverified.",
+      "Bundled Studio package and material assumptions are not provided in the packet.",
+      "Per-chiplet temperatures and the temperature field for the Ascend 910 system: only the single maximum temperature is reported in Table I.",
+      "Published final chiplet coordinates are unavailable.",
+      "Linked asset ref6_servethehome_ascend910 is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The paper's 77.12 degC is a peak temperature for an RL-optimized final placement that is not published, so it cannot be reproduced or numerically compared with a separately generated illustrative placement.",
+      "The original thermal evaluation uses HotSpot and an LTI self/mutual-resistance fast model for 2.5D chiplets on an interposer. The interposer, package, heat-spreader and cooling parameters are not given in the paper or pinned config, so the original cooling boundary conditions cannot be matched.",
+      "The original method is an RL floorplanner (PPO plus RND) that co-optimizes wirelength and temperature with microbump assignment. A thermal-only Studio run has no optimizer, wirelength or microbump assignment, so that part cannot be replicated.",
+      "The paper's workload is a static steady-state power per chiplet, with no transient behaviour, power time series, controller or reliability analysis. Any one-row power trace is a steady-state surrogate only.",
+      "The paper's fast thermal model is an LTI approximation with a reported MAE of about 0.25 K vs HotSpot. A different solver will differ in numerical details.",
+      "The system is 2.5D (chiplets on an interposer), not 3D stacked, so no vertical stacking mismatch applies. Any Studio 2D model must still represent the interposer layer.",
+      "Final chiplet coordinates are not supplied by the reference files; generated shelf positions illustrate a 2D power snapshot, not the published placement.",
+      "Pinned weiweihook/RLPlanner@a75abf0b167a316dc5e2dd8b8d3d926114039271",
+      "RLPlanner publishes Ascend910 chiplet sizes and powers, but this config has no placement, power time series, or HotSpot configuration.",
+      "The power trace is one constant row made from source per-chiplet watts."
+    ]
+  }
+}

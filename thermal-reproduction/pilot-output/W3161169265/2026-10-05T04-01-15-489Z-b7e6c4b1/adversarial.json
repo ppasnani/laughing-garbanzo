@@ -1,0 +1,77 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The TGV method (grid translation, neighbor-cell adjustment, 2x2 sub-grid sums), the HotSpot reference, the evolutionary 3D floorplanner lineage, the top-mounted heat sink and the pair-comparison protocol are supported by text on pages 2-6. Two caveats. First, the pairing of 'steady-state HotSpot default parameters' with the Figure 10 temperatures is inferred from the page 4 runtime discussion. Second, the extraction's own mismatch list correctly says the 3D, TGV and ranking-study features cannot be mapped to a 2D steady solver."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The paper says the floorplanner and TGV were written in C++ (page 4) but gives no repository, availability statement or link. The extraction's 'no links' conclusion rests on extracted PDF text only. No assets were supplied, so no code was inspected."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The text confirms 564 K, 567 K, 0.319 mm2, 0.326 mm2, 1e5-1e7 W/m2, 45 nm, four layers and the unit conversions (mm2 to m2 x1e-6; nm to m x1e-9). The decisive inputs are absent: per-module power densities and watts, layer thicknesses, TIM, TSV island parameters, and ambient or sink parameters. The 64x64x4 grid for the Figure 10 pair is not stated in the paper for that figure. The meaning of 'area' (footprint versus total across layers) is not stated."
+    },
+    "config": {
+      "status": "missing",
+      "note": "HotSpot is described only as 'default parameters' (page 4, in the runtime comparison). There is no HotSpot configuration file, package or heat-sink convection setting, and no ambient temperature. The extraction's 'custom_2d_steady' kind with an empty floorplan does not match a faithful configuration of this 3D scenario."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The only data are two text-stated peak temperatures and two areas. No module coordinates, per-module power, or TGV values for FP1/FP2 were provided. Figure 10 was never supplied as an image or asset, so no figure value was visually verified. Same-scenario power for every floorplan block does not exist, and correctly no blocks were built."
+    }
+  },
+  "findings": [
+    {
+      "field": "scenario.operating_point / original_setup.solver",
+      "reason": "The extraction asserts that TGV was evaluated on a 64x64x4 grid 'for the selected scenario'. The paper never states the grid used for the Figure 10 FP1/FP2 comparison. 64x64x4 is only the headline grid in the abstract and Table 1. The extraction's own uncertainty field concedes this, yet the scenario and setup present it as fact.",
+      "locator": "extraction.scenario.operating_point; original_setup.solver; evidence evaluation_grid_size (pp.1,3,4,6)"
+    },
+    {
+      "field": "original_setup.solver / thermal_observable.aggregation",
+      "reason": "'Steady-state' and 'default parameters' are tied to the Figure 10 peak temperatures. Page 4 uses these phrases only for the runtime comparison. Applying them to the FP1/FP2 temperatures is an inference.",
+      "locator": "pdf p.4 'steady-state evaluation using Hotspot' / 'Hotspot's default parameters'; p.6 Figure 10 text"
+    },
+    {
+      "field": "evidence.floorplan_total_area_FP1/FP2",
+      "reason": "The paper says only 'area of 0.319 mm2' for the 3D floorplan. The extraction labels it 'Total 3D floorplan area', which assumes an interpretation. It could be per-layer footprint or summed area. The unit conversion itself (x1e-6) is arithmetically correct, but the physical meaning is unverified.",
+      "locator": "pdf p.6 Figure 10 discussion"
+    },
+    {
+      "field": "checked figures (Figure 10)",
+      "reason": "The scenario is anchored on Figure 10, but no figure image or asset was supplied. The values 564 K and 567 K come from the surrounding text. The FP1/FP2 highlighted points, the grey TGV bars and the axes were not visually verified.",
+      "locator": "pdf p.6 Figure 10; assets list is empty"
+    },
+    {
+      "field": "missing_inputs (layer thicknesses)",
+      "reason": "The claim that Figure 1 thicknesses are not given as numbers rests on text extraction only. Figure 1 was not inspected, so its labels may contain thickness values that the extraction cannot rule out.",
+      "locator": "pdf p.1 Figure 1; p.4 dist_z description"
+    },
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is set to 'custom_2d_steady' even though the extraction itself says the scenario is 4-layer 3D, steady_2d_relevant is false, and no complete experiment is reproducible. This labels a decisive 3D scenario as a 2D one.",
+      "locator": "extraction.experiment.kind vs scenario.steady_2d_relevant and physical_mismatches"
+    },
+    {
+      "field": "artifact_search_status",
+      "reason": "'checked_no_links' is supported only by extracted text. Reference 17 on page 7 is garbled in extraction, and no image-level inspection of the PDF was shown. No code or data artifacts were confirmed.",
+      "locator": "pdf p.7 reference list; manifest assets []"
+    },
+    {
+      "field": "original_setup.optimizer / evidence pages",
+      "reason": "Minor citation imprecision. The heat sink on top is stated on page 2, not page 4. The grid evidence locator mixes pages 1, 3 and 4 under a single pdf_page 4 entry.",
+      "locator": "extraction.original_setup; evidence evaluation_grid_size"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "checked_assets": []
+}

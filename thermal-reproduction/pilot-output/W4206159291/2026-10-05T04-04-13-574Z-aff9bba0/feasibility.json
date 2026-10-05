@@ -1,0 +1,67 @@
+{
+  "paper_id": "W4206159291",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Numeric block names, x, y, width and height for the Alpha EV6 floorplan. Fig. 1a shows them only graphically, and no HotSpot floorplan file is pinned in the packet.",
+    "Power values in watts for functional units A, B and C, including pulse amplitude and duty cycle, and the identities of units A, B and C in the EV6 floorplan.",
+    "Chip, substrate and layer thicknesses, the 7-layer z structure, and material properties (conductivity, density, specific heat).",
+    "Robin boundary heat transfer coefficient at the substrate bottom.",
+    "Numeric temperature values for Fig. 4(a)-(c) (digitization needed, with uncertainty).",
+    "FEniCS and POD code or configuration. The packet has no pinned assets; the linked URLs (fenicsproject.org, the HotSpot site, and the microprocessor-trend-data repository) are general websites or background data and do not prove the inputs exist.",
+    "Linked asset ref19_fenics is not pinned and available",
+    "Linked asset ref22_hotspot is not pinned and available",
+    "Linked asset ref1_microprocessor_trend_data is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The original is a 3D finite-element structure with 7 layers in z (Fig. 1b) and a substrate bottom Robin boundary. A 2D Studio model cannot represent this vertical conduction path.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's cooling is a Robin boundary at the substrate bottom with an unreported heat transfer coefficient, and all other faces are adiabatic. This differs from any package, heat sink or interposer cooling stack in Studio.",
+      "essential": true
+    },
+    {
+      "reason": "The workload is a fast pulse train (3.333 us period, the average over 10k cycles at 3 GHz) simulated for 3 ms, with unreported amplitudes and duty cycle. A one-row power trace cannot reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's contribution is POD model order reduction (3 and 5 modes against the DNS). Studio uses a different solver, so POD accuracy and DoF reduction cannot be reproduced or compared.",
+      "essential": true
+    },
+    {
+      "reason": "There is no optimizer, controller or reliability analysis in the paper, so those aspects cannot be mapped to Studio.",
+      "essential": false
+    },
+    {
+      "reason": "Temperatures are reported as rise above a 0 C ambient and shown only in figures. They cannot be compared numerically with Studio output.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "The packet does not specify the Studio package or material assumptions, so none are taken from the paper.",
+    "Any Studio run would use its own bundled package, materials and boundary conditions. These are not paper-derived and not equivalent to the FEniCS 3D stack.",
+    "Any placement and power trace would be a separate illustrative construction, because the paper gives block dimensions and powers only in Fig. 1, which is not numerically extractable. Generated coordinates must be kept distinct from paper facts.",
+    "Studio temperatures must not be compared numerically with the paper's POD or FEniCS results. No exact replication is claimed."
+  ],
+  "evidence_sha256": "433618519ca6b31a59ee2e86c7ef6b291d001f4fc0656c7c40ad271dc826612d",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

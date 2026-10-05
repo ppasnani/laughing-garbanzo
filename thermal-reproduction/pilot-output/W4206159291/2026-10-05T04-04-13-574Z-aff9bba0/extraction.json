@@ -1,0 +1,367 @@
+{
+  "paper_id": "W4206159291",
+  "paper_title": "Thermal Simulation of a CPU Based on Model Order Reduction",
+  "artifact_search_status": "checked_links_found",
+  "linked_assets": [
+    {
+      "id": "ref19_fenics",
+      "url": "https://fenicsproject.org/",
+      "kind": "solver_website",
+      "paper_page": 4
+    },
+    {
+      "id": "ref22_hotspot",
+      "url": "http://lava.cs.virginia.edu/HotSpot/",
+      "kind": "floorplan_source_website",
+      "paper_page": 4
+    },
+    {
+      "id": "ref1_microprocessor_trend_data",
+      "url": "https://github.com/karlrupp/microprocessor-trend-data",
+      "kind": "background_data_repository",
+      "paper_page": 4
+    }
+  ],
+  "scenario": {
+    "pdf_page": 3,
+    "figure_or_table": "Fig. 1 (page 2), Fig. 3 and Fig. 4(a)-(c) (page 3)",
+    "description": "Dynamic thermal simulation of the Alpha EV6 CPU floorplan with uniform power pulses applied to functional units A, B and C on the device layer. A POD reduced-order model (3 and 5 modes) is compared with a FEniCS finite-element DNS. The observable is the temperature rise above ambient at the hot spot in functional unit C versus time, plus x- and y-direction temperature profiles at t = 3 ms.",
+    "architecture": "Alpha EV6 processor floorplan (from HotSpot), 3D finite-element structure with a 129x129x7 mesh. Adiabatic boundaries except the substrate bottom, which has a Robin condition with 0 C ambient.",
+    "workload": "Uniform power pulses in functional units A, B and C. Each has a 3.333 us period, representing an average over 10k cycles at 3 GHz. Simulated for 3 ms.",
+    "operating_point": "Ambient 0 C (temperatures reported as rise above ambient), t = 0 to 3 ms, 3 GHz. Block dimensions and power values are not given in the text, so only the figure shows them.",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "FEniCS finite-element direct numerical simulation (DNS) of 3D transient heat conduction, on a 129x129x7 mesh for 3 ms. The reduced model is a POD-Galerkin ROM with 3 and 5 modes, built by the method of snapshots (pp. 2-3).",
+    "optimizer": "None. There is no floorplan or placement optimizer. POD modes come from a data-driven learning step on DNS snapshots.",
+    "controller": "None. There is no thermal management or DVFS controller. Uniform power pulses with a 3.333 us period are applied to functional units A, B and C.",
+    "benchmark": "Alpha EV6 processor floorplan (Fig. 1, from the HotSpot website), with pulsed power in units A, B and C. The POD ROM is compared with the FEniCS DNS at 3 ms. Ambient is 0 C; the bottom of the substrate has a Robin boundary condition and all other surfaces are adiabatic."
+  },
+  "thermal_observable": {
+    "value": null,
+    "unit": "K (temperature rise above 0 C ambient)",
+    "location": "Hot spot in functional unit C on the device layer, from Fig. 4(a). Fig. 4(b) and 4(c) give x- and y-profiles through hot spots C, B and C, A at t = 3 ms.",
+    "aggregation": "Time series of temperature rise at the unit C hot spot over 0-3 ms, compared for 1, 3 and 5 POD modes and FEniCS. No numeric value is stated in the text; the data appear only in figures.",
+    "pdf_page": 3
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The original is a 3D finite-element structure with 7 layers in z (Fig. 1b) and a substrate bottom Robin boundary. A 2D Studio model cannot represent this vertical conduction path.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's cooling is a Robin boundary at the substrate bottom with an unreported heat transfer coefficient, and all other faces are adiabatic. This differs from any package, heat sink or interposer cooling stack in Studio.",
+      "essential": true
+    },
+    {
+      "reason": "The workload is a fast pulse train (3.333 us period, the average over 10k cycles at 3 GHz) simulated for 3 ms, with unreported amplitudes and duty cycle. A one-row power trace cannot reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's contribution is POD model order reduction (3 and 5 modes against the DNS). Studio uses a different solver, so POD accuracy and DoF reduction cannot be reproduced or compared.",
+      "essential": true
+    },
+    {
+      "reason": "There is no optimizer, controller or reliability analysis in the paper, so those aspects cannot be mapped to Studio.",
+      "essential": false
+    },
+    {
+      "reason": "Temperatures are reported as rise above a 0 C ambient and shown only in figures. They cannot be compared numerically with Studio output.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "The packet does not specify the Studio package or material assumptions, so none are taken from the paper.",
+    "Any Studio run would use its own bundled package, materials and boundary conditions. These are not paper-derived and not equivalent to the FEniCS 3D stack.",
+    "Any placement and power trace would be a separate illustrative construction, because the paper gives block dimensions and powers only in Fig. 1, which is not numerically extractable. Generated coordinates must be kept distinct from paper facts.",
+    "Studio temperatures must not be compared numerically with the paper's POD or FEniCS results. No exact replication is claimed."
+  ],
+  "missing_inputs": [
+    "Numeric block names, x, y, width and height for the Alpha EV6 floorplan. Fig. 1a shows them only graphically, and no HotSpot floorplan file is pinned in the packet.",
+    "Power values in watts for functional units A, B and C, including pulse amplitude and duty cycle, and the identities of units A, B and C in the EV6 floorplan.",
+    "Chip, substrate and layer thicknesses, the 7-layer z structure, and material properties (conductivity, density, specific heat).",
+    "Robin boundary heat transfer coefficient at the substrate bottom.",
+    "Numeric temperature values for Fig. 4(a)-(c) (digitization needed, with uncertainty).",
+    "FEniCS and POD code or configuration. The packet has no pinned assets; the linked URLs (fenicsproject.org, the HotSpot site, and the microprocessor-trend-data repository) are general websites or background data and do not prove the inputs exist."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "pulse_period",
+      "block_name": null,
+      "source_value": 3.333,
+      "source_unit": "us",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000003333,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'Each power source with a period of 3.333μs represents an average, over 10k cycles at 3 GHz'",
+      "provenance": "Stated in paper text. Applies to the power sources in functional units A, B and C of the Alpha EV6 scenario.",
+      "uncertainty": null
+    },
+    {
+      "field": "power_averaging_cycles",
+      "block_name": null,
+      "source_value": 10000,
+      "source_unit": "cycles",
+      "conversion_factor": 1,
+      "normalized_value": 10000,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'average, over 10k cycles at 3 GHz'",
+      "provenance": "Stated in paper text as '10k cycles'. Read as 10,000.",
+      "uncertainty": "'10k' is interpreted as 10,000 cycles."
+    },
+    {
+      "field": "clock_frequency",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 3000000000,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'over 10k cycles at 3 GHz'",
+      "provenance": "Stated in paper text as the operating point behind the averaged power pulses.",
+      "uncertainty": null
+    },
+    {
+      "field": "simulation_duration",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "ms",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.003,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'performed in FEniCS for 3ms'; page 3 Fig. 4 caption 't = 3 ms'",
+      "provenance": "Stated in paper text. FEniCS DNS transient duration.",
+      "uncertainty": null
+    },
+    {
+      "field": "ambient_temperature",
+      "block_name": null,
+      "source_value": 0,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 0,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'ambient temperature taken as 0℃'",
+      "provenance": "Stated in paper text. The Robin boundary at the substrate bottom uses this ambient. Temperatures are reported as rise above ambient. Normalized value kept in degC with no offset applied.",
+      "uncertainty": "Celsius value; no Kelvin offset applied. Only temperature rise is reported."
+    },
+    {
+      "field": "mesh_nx",
+      "block_name": null,
+      "source_value": 129,
+      "source_unit": "mesh divisions",
+      "conversion_factor": 1,
+      "normalized_value": 129,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'meshes of 129×129×7'",
+      "provenance": "Stated in paper text. FEniCS mesh for the CPU structure.",
+      "uncertainty": "Text does not say whether the counts are cells or nodes."
+    },
+    {
+      "field": "mesh_ny",
+      "block_name": null,
+      "source_value": 129,
+      "source_unit": "mesh divisions",
+      "conversion_factor": 1,
+      "normalized_value": 129,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'meshes of 129×129×7'",
+      "provenance": "Stated in paper text. FEniCS mesh for the CPU structure.",
+      "uncertainty": "Text does not say whether the counts are cells or nodes."
+    },
+    {
+      "field": "mesh_nz",
+      "block_name": null,
+      "source_value": 7,
+      "source_unit": "mesh divisions",
+      "conversion_factor": 1,
+      "normalized_value": 7,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'meshes of 129×129×7'; Fig. 1(b) 3D structure",
+      "provenance": "Stated in paper text. This is the 3D vertical discretization, a mismatch with a 2D model.",
+      "uncertainty": "Text does not say whether the counts are cells or nodes. Layer thicknesses are not given."
+    },
+    {
+      "field": "pod_modes_reported_good",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "modes",
+      "conversion_factor": 1,
+      "normalized_value": 3,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Page 4, Sec. IV and Sec. V, 'inclusion of 3 modes ... good agreement with the FEniCS result'",
+      "provenance": "Stated in paper text. POD ROM mode count compared with the FEniCS DNS.",
+      "uncertainty": null
+    },
+    {
+      "field": "pod_modes_reported_excellent",
+      "block_name": null,
+      "source_value": 5,
+      "source_unit": "modes",
+      "conversion_factor": 1,
+      "normalized_value": 5,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Page 4, Sec. IV, 'Results from these 2 approaches are indistinguishable when 5 modes are included'",
+      "provenance": "Stated in paper text. POD ROM mode count compared with the FEniCS DNS.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_hotspot_C_temperature_rise",
+      "block_name": "C",
+      "source_value": null,
+      "source_unit": "K (temperature rise above 0 degC ambient)",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Page 3, Fig. 4(a) caption 'Dynamic temperature at the hot spot, in the Functional unit C'; Fig. 4(b),(c) x and y profiles at t = 3 ms; page 4 text discussing Fig. 4(a)",
+      "provenance": "The observable is the time series of temperature rise at the hot spot in functional unit C on the device layer, for 1, 3 and 5 POD modes and FEniCS. It appears only in figures. No numeric value is given in the text and none was digitized.",
+      "uncertainty": "Figure-only data. Digitization would be needed and no values were extracted."
+    },
+    {
+      "field": "block_geometry_x_y_width_height",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Fig. 1(a) 'Floorplan of the CPU chip (Alpha EV6 processor) with dimensions'",
+      "provenance": "The floorplan appears only as a graphic. The text has no numeric block coordinates or sizes. No pinned HotSpot floorplan asset is supplied (assets list is empty).",
+      "uncertainty": "No numeric dimensions extracted. Generated coordinates would not be paper-derived."
+    },
+    {
+      "field": "power_watts_unit_A",
+      "block_name": "A",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'A, B and C are the locations of the functional units where the uniform power pulses are applied'",
+      "provenance": "Power in watts, pulse amplitude and duty cycle are not given for unit A. The identity of A in the EV6 floorplan is not stated in the text.",
+      "uncertainty": "Missing input. Total chip power must not be split."
+    },
+    {
+      "field": "power_watts_unit_B",
+      "block_name": "B",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'A, B and C are the locations of the functional units where the uniform power pulses are applied'",
+      "provenance": "Power in watts, pulse amplitude and duty cycle are not given for unit B. The identity of B in the EV6 floorplan is not stated in the text.",
+      "uncertainty": "Missing input. Total chip power must not be split."
+    },
+    {
+      "field": "power_watts_unit_C",
+      "block_name": "C",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'A, B and C are the locations of the functional units where the uniform power pulses are applied'",
+      "provenance": "Power in watts, pulse amplitude and duty cycle are not given for unit C. The identity of C in the EV6 floorplan is not stated in the text.",
+      "uncertainty": "Missing input. Total chip power must not be split."
+    },
+    {
+      "field": "robin_boundary_heat_transfer_coefficient",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Sec. III.A, 'Robin boundary condition is used' at the bottom of the substrate",
+      "provenance": "The Robin boundary is stated but its coefficient is not given. The other surfaces are adiabatic.",
+      "uncertainty": "Missing input."
+    },
+    {
+      "field": "material_properties_and_layer_thicknesses",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Page 2, Eq. (5) defines k, rho and C symbolically; Fig. 1(b) shows the 3D structure",
+      "provenance": "No numeric conductivity, density, specific heat or layer thicknesses are given in the text.",
+      "uncertainty": "Missing input."
+    },
+    {
+      "field": "linked_resource_fenics",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Page 4, reference [19] https://fenicsproject.org/",
+      "provenance": "Solver website linked from the paper, cited on page 2 as the open-source FEniCS platform. It is not a pinned asset and does not prove the paper's inputs or code exist.",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_hotspot",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Page 4, reference [22] http://lava.cs.virginia.edu/HotSpot/",
+      "provenance": "Source of the Alpha EV6 floorplan per the Fig. 1 citation [22]. It is a general website, not a pinned asset, and no floorplan file is in the packet.",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_microprocessor_trend_data",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Page 4, reference [1] https://github.com/karlrupp/microprocessor-trend-data",
+      "provenance": "Background transistor-trend data repository cited in the introduction. It is unrelated to the thermal inputs.",
+      "uncertainty": null
+    },
+    {
+      "field": "pinned_assets",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "Packet 'assets' array is empty",
+      "provenance": "No pinned assets are supplied (no HotSpot floorplan file, FEniCS or POD code, or config). Asset-level evidence is unavailable, so these inputs are listed as missing.",
+      "uncertainty": null
+    }
+  ]
+}

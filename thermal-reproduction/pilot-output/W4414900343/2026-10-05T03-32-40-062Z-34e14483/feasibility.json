@@ -1,0 +1,60 @@
+{
+  "paper_id": "W4414900343",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-block floorplan (x_m, y_m, width_m, height_m) for core-layer units (C0-C3 sub-blocks, L2_shared) and memory banks B_0-B_31. Only block names and relative layout appear in the Fig. 9 heat maps; no dimensions or coordinates are given.",
+    "Same-scenario per-block power values in watts for Splash2 fft on the baseline chip. No power table is published and total chip power is not given, so it cannot be split.",
+    "Die area, layer thicknesses, and HotSpot 7.0 material, package and heat-sink parameters (conductivity, convection resistance, ambient temperature).",
+    "Pinned packet assets. The asset list is empty, and the Cool-3D GitHub repository is stated as in the process of being released, so its existence and contents are unverified. The Splash2 repository and gem5-to-McPAT parser links are third-party resources that do not contain the Cool-3D inputs.",
+    "Power time series. The scenario is steady-state only, so any one-row trace would be Studio-generated and not paper-derived.",
+    "Linked asset cool3d_github is not pinned and available",
+    "Linked asset cool3d_github_conclusion is not pinned and available",
+    "Linked asset splash2_benchmark_repo is not pinned and available",
+    "Linked asset gem5_mcpat_parser_tiku is not pinned and available",
+    "Linked asset gem5_mcpat_parser_hardik44 is not pinned and available",
+    "Linked asset mcpat_calib_parser is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Block geometry and power are missing. The paper gives no block x, y, width or height in metres and no per-block watts for the baseline fft scenario. Fig. 9 shows only a temperature heat map with block labels and a colourbar, so no complete floorplan and power table can be built without inventing values. No pinned assets were supplied (assets list is empty) and the GitHub repository is described as still being released.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is a 3-layer core-plus-memory 3D stack with a passive heat sink. A 2.5D chiplet placement on an interposer (RLPlanner Ascend910 or ATPlace2.5D) cannot reproduce it, so 3D inter-layer coupling and vertical heat flow are mismatched.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling mismatch. The baseline uses a passive heat sink with no microfluidic cooling, but the paper's main contribution is microfluidic cooling with vertical and 90-degree bent channel patterns in case studies 2a/2b. The baseline observable does not represent those cases.",
+      "essential": false
+    },
+    {
+      "reason": "Solver and power-model mismatch. The paper's power comes from gem5 + McPAT + CACTI-3DD, with per-benchmark and per-unit microarchitectural activity, and temperatures from HotSpot 7.0. A Studio solver with its own package and materials will not reproduce 395.52 K. The paper does not publish the HotSpot material, package or heat-sink parameters needed for calibration.",
+      "essential": true
+    },
+    {
+      "reason": "No optimizer, controller, transient behaviour or reliability analysis is in the baseline scenario. The run is steady-state only, and the paper has no power time series, so transient or controller comparison is not possible.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "22b08c303c81c8cf9f285b6aed88cd4a63c559323aff4ecdbff9d2d0807a9289",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

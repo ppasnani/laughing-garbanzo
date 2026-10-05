@@ -1,0 +1,59 @@
+{
+  "paper_id": "W3036764451",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-core block names, x/y positions and widths/heights (only 8x8 mesh, squared floorplan, 109 mm^2 total area published)",
+    "Per-core or per-block power values and power time series (only 90 W TDP total given)",
+    "Numeric per-core MTTF values for Fig. 5 and Fig. 6 (only relative percentage improvements in text; figures not digitized)",
+    "HotSpot configuration: package, heat spreader, heat sink, convection resistance, ambient temperature, material properties",
+    "Linked code, data, configuration or repository assets (artifact search found no links; packet assets list is empty)",
+    "Fitted A_TC constant value and PARSEC application list/mix and arrival sequence",
+    "Selected ATPlace2.5D or RLPlanner Ascend910 configuration files (not supplied and not applicable to this paper)",
+    "Adversarial code check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The study is a system-level reliability and resource-management evaluation: the observable is thermal-cycling MTTF (years), not a steady-state temperature field, so it cannot be compared directly to a steady 2D thermal solve.",
+      "essential": true
+    },
+    {
+      "reason": "Transient, workload-driven dynamics are essential (temperature traces sampled about 1 s, rainflow cycle extraction, ms-scale scheduling, 1-2 h control epochs, random application arrivals); a single-row steady power trace cannot reproduce the thermal-cycling amplitude and frequency.",
+      "essential": true
+    },
+    {
+      "reason": "The controller (PID plus multi-objective DPM, mapping unit, scheduler, PCPG and DVFS) and the heuristic optimizer are not representable in a static placement or thermal solve.",
+      "essential": true
+    },
+    {
+      "reason": "Original thermal solver is HotSpot steady-state with unspecified package, cooling and material parameters; the cooling and interposer are not described, and no 3D stacking is involved.",
+      "essential": false
+    },
+    {
+      "reason": "No per-core or per-block geometry (x, y, width, height) and no per-block power are published; only total chip area 109 mm^2, an 8x8 squared floorplan and a 90 W TDP, so splitting power would require an unpublished rule.",
+      "essential": true
+    },
+    {
+      "reason": "Reliability results (MTTF fitted so MTTF_TC=10 years at deltaT=20 C, Tmax=70 C) depend on the Coffin-Manson model parameters, which the Studio does not model.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "c142c4fb20423d2f172d19d39591beeff477fd33336253a64e9463707dd60112",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

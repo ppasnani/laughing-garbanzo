@@ -1,0 +1,650 @@
+{
+  "paper_id": "W3197485759",
+  "paper_title": "WaFFLe: Gated Cache-Ways with Per-Core Fine-Grained DVFS for Reduced On-Chip Temperature and Leakage Consumption",
+  "manifest_status": "downloaded",
+  "source_url": "https://www.sjalander.com/research/pdf/sjalander-taco2021.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "390e6d0d26a68f207b0eb068cdb0bf337ed4f7eff8d1cd205e86c2ca2e67525d",
+  "pdf_pages": 25,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:00:11.597Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3197485759",
+    "paper_title": "WaFFLe: Gated Cache-Ways with Per-Core Fine-Grained DVFS for Reduced On-Chip Temperature and Leakage Consumption",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 13,
+      "figure_or_table": "Table 1 (system parameters) with Fig. 13 (16-tile floorplan), Fig. 16 (peak temperature) and Table 3 (8MB LLC comparison)",
+      "description": "WaFFLe combined LLC way-shutdown plus per-core fine-grained DVFS on a 16-tile homogeneous CMP, evaluated on nine PARSEC applications. The headline result is an 8.4 C reduction in peak temperature and a 6.2 C reduction in average temperature versus baseline (8MB LLC), with 2.5% average IPS degradation. The paper reports no block coordinates, dimensions or per-block wattages in text, only tile layout figures and per-block temperature maps (Fig. 20 for Black).",
+      "architecture": "16-tile homogeneous tiled CMP in 2D (32nm); each tile has an Alpha 21364 out-of-order core with private 64KB L1-I and 64KB L1-D, one bank of a shared SNUCA L2/LLC (1MB 16-way per bank, 8MB total in the main evaluation), and a 2D-mesh NoC router. Per-core on-chip voltage regulators at 20 mV/ns. Simulated with gem5, McPAT and HotSpot 6.0; the HotFloorPlan module generates the floorplan from McPAT area estimates.",
+      "workload": "PARSEC multi-threaded benchmark suite, large inputs, 16 threads (one per core), RoI only, 80M cycles; all cores always active",
+      "operating_point": "Baseline 1.12 V / 3.0 GHz, FG-DVFS low state 0.76 V / 1.2 GHz during LLC-miss stalls; ambient 47 C; thermal interval 0.33 us; way-shutdown interval 2M cycles; POWER_DOWN=0.025, POWER_UP=0.04; DRAM latency 70 ns",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "gem5 full-system simulator with McPAT (32nm power/area) and HotSpot 6.0 (HotFloorPlan generates the floorplan from McPAT area estimates). Leakage is recomputed per component from the previous interval's temperature, in 0.33 us periods (PDF p.12-13).",
+      "optimizer": "No numerical optimizer. The policy is a heuristic with two parts: threshold-based LLC way-shutdown (POWER_DOWN=0.025, POWER_UP=0.04, 2M-cycle interval, clean non-MRU intra-set migration) and an LLC-miss-triggered DVFS rule (Algorithms 1 and 2, PDF p.5-6, 11, 13).",
+      "controller": "WaFFLe combined controller. The LLC controller gates cache-ways per bank from the miss ratio. A per-core FG-DVFS controller switches between 1.12 V/3.0 GHz and 0.76 V/1.2 GHz on global isolated LLC misses detected in the LLC directory. On-chip regulators switch at 20 mV/ns (PDF p.8-11, 14).",
+      "benchmark": "Nine multi-threaded PARSEC applications (large inputs, 16 threads, RoI, 80M cycles) on a 16-tile homogeneous CMP with an 8MB LLC (1MB 16-way per bank). Baselines and comparisons: baseline, WS_OPT, FG-DVFS alone, and GDP1/GDP2 (bank shutdown plus greedy DVFS) (PDF p.12-14, 22)."
+    },
+    "thermal_observable": {
+      "value": 8.4,
+      "unit": "degC (reduction in peak temperature vs. baseline)",
+      "location": "Peak (hottest on-chip point) over the 16-tile CMP, 8MB LLC configuration (cores and caches); the reported maximum is across the nine PARSEC applications",
+      "aggregation": "Maximum reduction in peak temperature across the nine PARSEC applications. The per-application range is 6.5-8.4 C. The paper reports the same figure as the Table 3 headline (8MB LLC) and in the abstract. Average temperature reduction is 6.2 C.",
+      "pdf_page": 22
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The paper's workload is transient and dynamic. Cache ways are gated at 2M-cycle intervals, per-core DVFS switches during memory stalls at ns scale, and temperature is traced at 0.33 us. A steady 2D thermal runner with a one-row power trace cannot reproduce this time-varying behavior.",
+        "essential": true
+      },
+      {
+        "reason": "The controller and optimizer (way-shutdown and FG-DVFS algorithms, directory-based miss detection, performance/IPS feedback) are architectural policies. Their effect depends on gem5 and McPAT performance and power traces, which are not available in a Studio thermal solve.",
+        "essential": true
+      },
+      {
+        "reason": "The paper publishes no block coordinates, dimensions, or per-block wattages. The floorplan is generated by HotFloorPlan from McPAT areas and is shown only as tile figures (Fig. 13, Fig. 20) and temperature maps. No same-scenario block geometry and power rows can be built from the paper without digitizing or inventing values.",
+        "essential": true
+      },
+      {
+        "reason": "The reported observable is a temperature reduction relative to the paper's own baseline, not an absolute temperature. It depends on HotSpot 6.0 package and cooling parameters that the paper does not publish except for a 47 C ambient. Studio package and cooling assumptions cannot be matched, so temperatures are not numerically comparable.",
+        "essential": true
+      },
+      {
+        "reason": "Dynamic power gating of LLC ways is modeled as a time-varying change in power and leakage with temperature feedback (component-wise leakage from the previous period's temperature). A static Studio power map has no such coupling.",
+        "essential": false
+      },
+      {
+        "reason": "The paper is a 2D tiled CMP with no 3D stacking, interposer, or chiplets. This is a mismatch with 3D and interposer thermal tools but not a blocker for a 2D scenario.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete experiment is extractable, so the floorplan is empty. If an illustrative run were made, any generated 2D placement and one-row power trace would be separate from paper facts, and its temperatures would not be compared numerically to the paper.",
+      "Studio package and material properties (die, TIM, heat spreader, heat sink, convection) are bundled defaults and not the paper's HotSpot 6.0 configuration, which is not published.",
+      "Ambient is the only paper-stated thermal boundary condition (47 C, Table 1, PDF p.13). Other boundary conditions would be Studio defaults."
+    ],
+    "missing_inputs": [
+      "Block coordinates (x_m, y_m) and dimensions (width_m, height_m) for cores, L1 caches, L2 banks, and routers. Only tile layout figures (Fig. 13, p.12; Fig. 20, p.16) appear, with no numeric geometry, and the HotFloorPlan output is not provided.",
+      "Per-block power values in watts for any scenario. McPAT outputs are not published. Only regulator power (0.106 W at 0.76 V, 0.168 W at 1.12 V per core, PDF p.14) and stall-period core energies (337 nJ baseline, 86-94 nJ with FG-DVFS, p.10) are given, and these cannot be split into block powers.",
+      "Power time series or traces from gem5/McPAT.",
+      "HotSpot 6.0 package, material, cooling, and boundary-condition configuration (heat spreader, heat sink, TIM, convection resistance, die thickness).",
+      "Absolute baseline and WaFFLe temperatures are given only in Fig. 20 (Black), where per-block values (e.g. 373.83 K) are legible only as figure text and are not tied to a tabulated source.",
+      "No linked repositories, code, configs, or supplementary assets: artifact search found no links and the packet assets list is empty."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "thermal_observable.peak_temperature_reduction_8MB_LLC",
+        "block_name": null,
+        "source_value": 8.4,
+        "source_unit": "degC (reduction vs baseline)",
+        "conversion_factor": 1,
+        "normalized_value": 8.4,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Peak Temperature', WaFFLe column; also abstract p.1 and Sec. 5.1 p.14-15",
+        "provenance": "Published headline: maximum reduction in peak chip temperature across nine PARSEC apps for the 16-core CMP with 8MB LLC. It is a temperature difference (degC equals K), so there is no offset.",
+        "uncertainty": "The location is the hottest point on chip (cores and caches). The paper says maximum across applications and does not give the hotspot block."
+      },
+      {
+        "field": "thermal_observable.average_temperature_reduction_8MB_LLC",
+        "block_name": null,
+        "source_value": 6.2,
+        "source_unit": "degC (reduction vs baseline)",
+        "conversion_factor": 1,
+        "normalized_value": 6.2,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Average Temperature', WaFFLe column",
+        "provenance": "Published average-chip-temperature reduction for WaFFLe on 8MB LLC. The per-application range is 5.0-6.2 degC (p.15).",
+        "uncertainty": "The spatial and temporal averaging scheme is not defined precisely. The value is a maximum across applications."
+      },
+      {
+        "field": "thermal_observable.peak_reduction_range_per_application",
+        "block_name": null,
+        "source_value": 6.5,
+        "source_unit": "degC (lower end of range 6.5-8.4)",
+        "conversion_factor": 1,
+        "normalized_value": 6.5,
+        "pdf_page": 15,
+        "asset_id": null,
+        "locator": "Sec. 5.1 text after Fig. 17, 'The overall maximum reduction in peak temperature varies between 6.5 C and 8.4 C'",
+        "provenance": "Lower end of the per-application range of maximum peak-temperature reduction under WaFFLe.",
+        "uncertainty": "The text does not tie each value to a named application."
+      },
+      {
+        "field": "operating_point.ambient_temperature",
+        "block_name": null,
+        "source_value": 47,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 320.15,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'Ambient Temp.'",
+        "provenance": "Only boundary condition stated for the HotSpot 6.0 setup. Conversion to K is additive (+273.15).",
+        "uncertainty": "The package, heat spreader, heat sink, TIM and convection configuration are not published."
+      },
+      {
+        "field": "operating_point.max_voltage",
+        "block_name": null,
+        "source_value": 1.12,
+        "source_unit": "V",
+        "conversion_factor": 1,
+        "normalized_value": 1.12,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'Max. V/F'; also Sec. 3.2.2 p.9-10",
+        "provenance": "Baseline and high DVFS state voltage.",
+        "uncertainty": null
+      },
+      {
+        "field": "operating_point.max_frequency",
+        "block_name": null,
+        "source_value": 3,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 3000000000,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'Max. V/F'",
+        "provenance": "Baseline and high DVFS state frequency.",
+        "uncertainty": null
+      },
+      {
+        "field": "operating_point.min_voltage",
+        "block_name": null,
+        "source_value": 0.76,
+        "source_unit": "V",
+        "conversion_factor": 1,
+        "normalized_value": 0.76,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'Min. V/F'; Sec. 3.2.2 p.10",
+        "provenance": "Low V/F state used by FG-DVFS during global isolated LLC-miss stalls.",
+        "uncertainty": null
+      },
+      {
+        "field": "operating_point.min_frequency",
+        "block_name": null,
+        "source_value": 1.2,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 1200000000,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'Min. V/F'",
+        "provenance": "Low frequency state used by FG-DVFS.",
+        "uncertainty": null
+      },
+      {
+        "field": "architecture.tile_count",
+        "block_name": null,
+        "source_value": 16,
+        "source_unit": "tiles",
+        "conversion_factor": 1,
+        "normalized_value": 16,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'Tiles'; Sec. 4 p.12; Fig. 13 p.12",
+        "provenance": "16-tile homogeneous 2D tiled CMP, 4x4 grid. Each tile has an Alpha 21364 OoO core, private L1 caches, one L2 bank and a router.",
+        "uncertainty": null
+      },
+      {
+        "field": "architecture.l2_bank_size",
+        "block_name": "L2 bank (per tile)",
+        "source_value": 1,
+        "source_unit": "MB",
+        "conversion_factor": 1048576,
+        "normalized_value": 1048576,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'L2'; 16-way",
+        "provenance": "Per-tile L2 bank size. The 8MB total LLC used in the main evaluation is stated on p.14 (Sec. 5.1) and p.22 (Table 3 caption).",
+        "uncertainty": "1 MB per bank is from Table 1. The paper does not say whether MB means 2^20 bytes."
+      },
+      {
+        "field": "architecture.technology_node",
+        "block_name": null,
+        "source_value": 32,
+        "source_unit": "nm",
+        "conversion_factor": 1e-9,
+        "normalized_value": 3.2e-8,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'Technology'; Sec. 4 p.13",
+        "provenance": "McPAT power and area at 32 nm.",
+        "uncertainty": null
+      },
+      {
+        "field": "workload.simulated_cycles",
+        "block_name": null,
+        "source_value": 80000000,
+        "source_unit": "cycles",
+        "conversion_factor": 1,
+        "normalized_value": 80000000,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Sec. 3.1.2 p.5 and Sec. 4 p.14 (RoI portion; nine PARSEC apps, 16 threads, large inputs)",
+        "provenance": "Nine multi-threaded PARSEC applications, 16 threads, RoI only, all cores always active. This is a gem5 simulated workload, not a power trace.",
+        "uncertainty": "Pages 10 and 13 describe 80M cycles in some places and 80M instructions in others (p.9)."
+      },
+      {
+        "field": "controller.thermal_sampling_interval",
+        "block_name": null,
+        "source_value": 0.33,
+        "source_unit": "us",
+        "conversion_factor": 0.000001,
+        "normalized_value": 3.3e-7,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4, paragraph on McPAT/HotSpot integration; also p.15 (500 time-stamps at 0.33 us)",
+        "provenance": "Period at which gem5 traces go to McPAT and HotSpot. Temperature is assumed stable within it.",
+        "uncertainty": null
+      },
+      {
+        "field": "controller.way_shutdown_interval",
+        "block_name": null,
+        "source_value": 2000000,
+        "source_unit": "clock cycles",
+        "conversion_factor": 1,
+        "normalized_value": 2000000,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4 text after Table 1 ('interval length used for Algorithm 1 is set to 2M clock cycles')",
+        "provenance": "Interval for Algorithm 1 way-shutdown management.",
+        "uncertainty": null
+      },
+      {
+        "field": "controller.POWER_DOWN_threshold",
+        "block_name": null,
+        "source_value": 0.025,
+        "source_unit": "miss ratio",
+        "conversion_factor": 1,
+        "normalized_value": 0.025,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4 text after Fig. 15",
+        "provenance": "A bank miss ratio below this gates one cache-way.",
+        "uncertainty": null
+      },
+      {
+        "field": "controller.POWER_UP_threshold",
+        "block_name": null,
+        "source_value": 0.04,
+        "source_unit": "miss ratio",
+        "conversion_factor": 1,
+        "normalized_value": 0.04,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4 text after Fig. 15",
+        "provenance": "A bank miss ratio above this powers a cache-way on.",
+        "uncertainty": null
+      },
+      {
+        "field": "operating_point.dram_latency",
+        "block_name": null,
+        "source_value": 70,
+        "source_unit": "ns",
+        "conversion_factor": 1e-9,
+        "normalized_value": 7e-8,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, row 'DRAM latency'; Sec. 3.2.2 p.10",
+        "provenance": "Uniform off-chip access delay assumed.",
+        "uncertainty": null
+      },
+      {
+        "field": "controller.regulator_switching_speed",
+        "block_name": null,
+        "source_value": 20,
+        "source_unit": "mV/ns",
+        "conversion_factor": 1000000,
+        "normalized_value": 20000000,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Sec. 4 p.14, 'on-chip VR has a switching speed of 20 mV/ns'; p.10",
+        "provenance": "Per-core on-chip voltage regulator. Converted to V/s (1 mV/ns = 1e6 V/s).",
+        "uncertainty": null
+      },
+      {
+        "field": "power.regulator_power_at_0.76V",
+        "block_name": "per-core voltage regulator",
+        "source_value": 0.106,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.106,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Sec. 4 p.14, 'Each of the regulators ... consumes 0.106W and 0.168W for 0.76 V and 1.12 V'",
+        "provenance": "Regulator overhead only. This is not a block power for floorplan power_rows and cannot be used to split total chip power.",
+        "uncertainty": "Overhead of the regulator, not core power. No same-scenario block powers are published."
+      },
+      {
+        "field": "power.regulator_power_at_1.12V",
+        "block_name": "per-core voltage regulator",
+        "source_value": 0.168,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.168,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Sec. 4 p.14",
+        "provenance": "Regulator overhead at 1.12 V output. Not a floorplan block power.",
+        "uncertainty": "Overhead of the regulator, not core power."
+      },
+      {
+        "field": "power.core_stall_energy_baseline",
+        "block_name": "Alpha 21364 core",
+        "source_value": 337,
+        "source_unit": "nJ per stall period",
+        "conversion_factor": 1e-9,
+        "normalized_value": 3.37e-7,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Sec. 3.2.2 p.10, 'core consumes 337nJ during a stall period'",
+        "provenance": "Energy in a 70 ns stall at high V/F (337.1 nJ in text). With FG-DVFS it is 86-94 nJ. It is an energy figure, not a steady block power, so it is not used as power_rows.",
+        "uncertainty": "Energy per stall, not watts. Dividing by 70 ns would give a derived number that the paper does not publish as block power."
+      },
+      {
+        "field": "performance.average_ips_degradation",
+        "block_name": null,
+        "source_value": 2.5,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.025,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'IPS degradation', WaFFLe column",
+        "provenance": "Average performance penalty of WaFFLe, 8MB LLC.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable.figure20_baseline_hottest_label",
+        "block_name": null,
+        "source_value": 373.83,
+        "source_unit": "K (figure label; units not printed)",
+        "conversion_factor": 1,
+        "normalized_value": 373.83,
+        "pdf_page": 16,
+        "asset_id": null,
+        "locator": "Fig. 20(a) Baseline, Black, colorbar label near top of the chip map",
+        "provenance": "Digitized text label from a figure. Context suggests Kelvin (the value is consistent with a 47 C ambient). It is used only as context and not as a source for floorplan or power.",
+        "uncertainty": "The label may be a colorbar tick and not tied to a specific block. Units are unlabeled. pdftotext layout is interleaved, so the association is uncertain."
+      },
+      {
+        "field": "thermal_observable.figure20_WaFFLe_hottest_label",
+        "block_name": null,
+        "source_value": 366.59,
+        "source_unit": "K (figure label; units not printed)",
+        "conversion_factor": 1,
+        "normalized_value": 366.59,
+        "pdf_page": 16,
+        "asset_id": null,
+        "locator": "Fig. 20(b) WaFFLe, Black, colorbar label near top of the chip map",
+        "provenance": "Digitized text label. 373.83 minus 366.59 is 7.24, and the text says peak temperature is reduced by 7 C (p.16) for the Body/Black time-stamp.",
+        "uncertainty": "Same label-association uncertainty as the baseline. The text mentions Body in Sec. 5.1 but the figure caption says Black."
+      },
+      {
+        "field": "floorplan_geometry",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Fig. 13 (tile layout schematic), p.12; Fig. 20 p.16 (block-name temperature map)",
+        "provenance": "No numeric x, y, width or height for any block is published. The floorplan comes from HotFloorPlan (McPAT areas) and is not provided. Block names such as FPAdd_n, DTB_n, L2_n, IntExec_n appear only as labels in Fig. 20.",
+        "uncertainty": "Digitizing Fig. 13 or Fig. 20 would be speculative. The floorplan is left empty."
+      },
+      {
+        "field": "block_power_rows",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4 p.13 (McPAT dynamic and leakage estimation; no numeric block powers); Sec. 5.2 p.16-17 (relative leakage reductions only)",
+        "provenance": "No per-block or total chip watts for any scenario are published. Only relative leakage reductions (core 28%, LLC 38% mean) and the regulator overheads are given.",
+        "uncertainty": "Total chip power is not stated, so no split is possible."
+      },
+      {
+        "field": "paper_linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 1,
+        "asset_id": null,
+        "locator": "All 25 PDF pages read; no availability statement, repository, or supplementary URL found. The packet assets list is empty (artifact_search_status checked_no_links).",
+        "provenance": "The only URLs are the DOI (https://doi.org/10.1145/3471908, p.1) and the author PDF source. These are not code, config, or data repositories. No pinned asset files exist to cite.",
+        "uncertainty": "The absence of linked resources means gem5, McPAT, HotSpot configs and floorplan files are unavailable, and none can be assumed to exist."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "The gem5 + McPAT + HotSpot 6.0 pipeline, the Algorithm 1 and 2 policies, the 0.33 us thermal interval and the 2M-cycle way-shutdown interval are described in the supplied text (pp.5-6, 8-11, 13). The extraction correctly says this is a transient, architectural, policy-driven study and not a steady 2D case. Paper-level inconsistencies remain: the 13 ns regulator time disagrees with 20 mV/ns, and 500 thermal stamps span only about 165 us versus a 2M-cycle interval."
+      },
+      "code": {
+        "status": "missing",
+        "note": "All 25 pages were read and no repository, availability statement or supplementary link was found. The assets list is empty. No gem5 Ruby patch, McPAT input, HotSpot config or floorplan file can be cited."
+      },
+      "parameters": {
+        "status": "contradicted",
+        "note": "Table 1 values for V/F, ambient, DRAM latency, thresholds, interval, 20 mV/ns and regulator watts match pp.13-14. The L2 capacity claim does not: the extraction gives 1MB 16-way per bank and an 8MB total, but 16 tiles x 1MB = 16MB, and the paper also tests 4MB and 16MB. The 80M-cycle page locator is wrong. The Fig. 20 label interpretation is also unsupported."
+      },
+      "config": {
+        "status": "missing",
+        "note": "The HotSpot 6.0 package, heat spreader, sink, TIM, convection and die-thickness configuration is not published. Only 47 C ambient is given. The HotFloorPlan output and McPAT config are absent, so no same-scenario Studio configuration can be verified."
+      },
+      "data": {
+        "status": "missing",
+        "note": "There are no block coordinates or dimensions, no per-block power for any scenario, and no power traces. The empty floorplan and power_w are consistent with that. Decisive figures (Fig. 16, 20, 29) were available only as pdftotext output with no images, so none were visually verified. Headline numbers rest on Table 3 text only. The Fig. 20 numbers are not per-block data."
+      }
+    },
+    "findings": [
+      {
+        "field": "architecture.l2_bank_size / scenario.architecture (8MB total LLC)",
+        "reason": "The extraction states 1MB 16-way per bank and 8MB total. With 16 tiles each holding one L2 bank, 1MB per bank gives 16MB, and Sec. 5.4 treats 16MB as a separate larger LLC. The paper never shows how 8MB maps onto 16 banks (0.5MB each?). The 8MB headline scenario is therefore not reconciled with Table 1 and Figs. 2, 4, 5 (1MB banks).",
+        "locator": "PDF p.13 Table 1 'L2 1MB, 16-way'; p.6 Fig. 2/3 captions; p.14 Sec. 5.1; p.18 Sec. 5.4; p.22 Table 3 caption"
+      },
+      {
+        "field": "thermal_observable.figure20_baseline_hottest_label / figure20_WaFFLe_hottest_label / missing_inputs item on Fig. 20",
+        "reason": "The values 373.83, 368.20, 362.58, 356.95, 351.33, 345.70, 340.08, 336.33 (and 366.59, 361.69, 356.80, 351.90, 347.01, 342.11, 337.22, 333.96) are evenly spaced about 5.6 K apart and 4.9 K apart. They are autoscaled colorbar ticks, not per-block temperatures or a verified hottest-block reading. The extraction's claim that per-block values such as 373.83 K are legible is unsupported. Treating the top tick difference (7.24) as the peak reduction is an inference without visual verification, and the units are not printed.",
+        "locator": "PDF p.16 Fig. 20(a)/(b) pdftotext layout"
+      },
+      {
+        "field": "thermal_observable.figure20 workload attribution",
+        "reason": "The Fig. 20 caption says 'for Black', but the text says 'Figure 20 shows spatial thermal variation for Body'. The workload and time-stamp behind the '7 C' statement are ambiguous. The extraction flags this but still pairs the labels with a 7 C reduction.",
+        "locator": "PDF p.16 Fig. 20 caption and following paragraph"
+      },
+      {
+        "field": "thermal_observable.peak_temperature_reduction_8MB_LLC (location/aggregation)",
+        "reason": "The 8.4 and 6.2 values are supported by Table 3 and the abstract. The claim that the location is the 'hottest on-chip point over cores and caches' is not stated: the paper does not define the peak location or the averaging, and the application giving 8.4 is not named. Fig. 16 and Fig. 17 (per-application bars) were not visually verified, so the 6.5-8.4 and 5.0-6.2 per-app attribution relies on text alone.",
+        "locator": "PDF p.22 Table 3; p.14-15 Sec. 5.1; p.14 Figs. 16-17"
+      },
+      {
+        "field": "decisive figures not visually verified",
+        "reason": "No images or assets were supplied, and the packet has only pdftotext output. Fig. 13 (floorplan), Fig. 16/17 (peak/average temperature), Fig. 20 and Fig. 29 could not be inspected, so tile geometry, block adjacency and per-app results are unverified. The packet assets list is empty and no figure was digitized.",
+        "locator": "PDF pp.12, 14, 16, 20; assets=[]"
+      },
+      {
+        "field": "workload.simulated_cycles",
+        "reason": "The evidence cites pdf_page 14 and 'Sec. 4 p.14' for 80M cycles. The 80M-clock-cycle statement for the ratio range is on p.13, and 80M cycles also appears on pp.5 and 10, while p.9 says 80M instructions. The locator and the page-14 attribution are imprecise and the cycles-vs-instructions ambiguity is real.",
+        "locator": "PDF p.13 (Fig. 15 paragraph), p.14 (RoI sentence), p.9 Sec. 3.2.2, p.5 Sec. 3.1.2"
+      },
+      {
+        "field": "controller.regulator_switching_speed",
+        "reason": "The 20 mV/ns value is supported, but the paper's derived t_vr is about 13 ns for 1.12 V to 0.76 V. At 20 mV/ns, 0.36 V takes 18 ns. The 42-44 ns low-V/F dwell plus 2 x t_vr within the 70 ns stall does not reconcile either. The paper's own timing and energy claims (86-94 nJ, 44 nJ switching) are internally inconsistent and cannot be taken as verified.",
+        "locator": "PDF p.10 Sec. 3.2.2 (13 ns, 42-44 ns, 44 nJ); p.14 Sec. 4 (20 mV/ns)"
+      },
+      {
+        "field": "controller.way_shutdown_interval vs thermal traces",
+        "reason": "A 2M-cycle way-shutdown interval at 3 GHz is about 0.67 ms, but Fig. 19 shows only 500 stamps x 0.33 us, about 165 us, so a way-gating decision and its thermal effect cannot be seen in that window. The paper's transient claims depend on its unpublished gem5/McPAT/HotSpot traces. Any 2D steady reproduction would not reproduce them.",
+        "locator": "PDF p.13 Sec. 4; p.15 Fig. 19 paragraph"
+      },
+      {
+        "field": "experiment.kind",
+        "reason": "The experiment is declared custom_2d_steady with an empty floorplan and empty power_w while steady_2d_relevant is false and the mismatches are essential (transient, DVFS/way-gating dynamics, no block geometry or power, unpublished package). It must not be treated as a 2D reproduction. Any generated 2D placement or constant power row would be an illustrative assumption, not published data.",
+        "locator": "extraction.experiment; scenario.steady_2d_relevant; physical_mismatches"
+      },
+      {
+        "field": "power.core_stall_energy_baseline / regulator power",
+        "reason": "337 nJ per 70 ns stall and 0.106/0.168 W regulator overheads are correctly not used as block power rows. They are supported (pp.10, 14), but no same-scenario power exists for any floorplan block (cores, L1, L2 banks, routers), so power coverage of every block cannot be verified.",
+        "locator": "PDF p.10 Sec. 3.2.2; p.14 Sec. 4; p.13 Sec. 4"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      5,
+      6,
+      9,
+      10,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3197485759",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Block coordinates (x_m, y_m) and dimensions (width_m, height_m) for cores, L1 caches, L2 banks, and routers. Only tile layout figures (Fig. 13, p.12; Fig. 20, p.16) appear, with no numeric geometry, and the HotFloorPlan output is not provided.",
+      "Per-block power values in watts for any scenario. McPAT outputs are not published. Only regulator power (0.106 W at 0.76 V, 0.168 W at 1.12 V per core, PDF p.14) and stall-period core energies (337 nJ baseline, 86-94 nJ with FG-DVFS, p.10) are given, and these cannot be split into block powers.",
+      "Power time series or traces from gem5/McPAT.",
+      "HotSpot 6.0 package, material, cooling, and boundary-condition configuration (heat spreader, heat sink, TIM, convection resistance, die thickness).",
+      "Absolute baseline and WaFFLe temperatures are given only in Fig. 20 (Black), where per-block values (e.g. 373.83 K) are legible only as figure text and are not tied to a tabulated source.",
+      "No linked repositories, code, configs, or supplementary assets: artifact search found no links and the packet assets list is empty.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The paper's workload is transient and dynamic. Cache ways are gated at 2M-cycle intervals, per-core DVFS switches during memory stalls at ns scale, and temperature is traced at 0.33 us. A steady 2D thermal runner with a one-row power trace cannot reproduce this time-varying behavior.",
+        "essential": true
+      },
+      {
+        "reason": "The controller and optimizer (way-shutdown and FG-DVFS algorithms, directory-based miss detection, performance/IPS feedback) are architectural policies. Their effect depends on gem5 and McPAT performance and power traces, which are not available in a Studio thermal solve.",
+        "essential": true
+      },
+      {
+        "reason": "The paper publishes no block coordinates, dimensions, or per-block wattages. The floorplan is generated by HotFloorPlan from McPAT areas and is shown only as tile figures (Fig. 13, Fig. 20) and temperature maps. No same-scenario block geometry and power rows can be built from the paper without digitizing or inventing values.",
+        "essential": true
+      },
+      {
+        "reason": "The reported observable is a temperature reduction relative to the paper's own baseline, not an absolute temperature. It depends on HotSpot 6.0 package and cooling parameters that the paper does not publish except for a 47 C ambient. Studio package and cooling assumptions cannot be matched, so temperatures are not numerically comparable.",
+        "essential": true
+      },
+      {
+        "reason": "Dynamic power gating of LLC ways is modeled as a time-varying change in power and leakage with temperature feedback (component-wise leakage from the previous period's temperature). A static Studio power map has no such coupling.",
+        "essential": false
+      },
+      {
+        "reason": "The paper is a 2D tiled CMP with no 3D stacking, interposer, or chiplets. This is a mismatch with 3D and interposer thermal tools but not a blocker for a 2D scenario.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete experiment is extractable, so the floorplan is empty. If an illustrative run were made, any generated 2D placement and one-row power trace would be separate from paper facts, and its temperatures would not be compared numerically to the paper.",
+      "Studio package and material properties (die, TIM, heat spreader, heat sink, convection) are bundled defaults and not the paper's HotSpot 6.0 configuration, which is not published.",
+      "Ambient is the only paper-stated thermal boundary condition (47 C, Table 1, PDF p.13). Other boundary conditions would be Studio defaults."
+    ],
+    "evidence_sha256": "c21afeb5b790fe1187272f0898cd62947f07d0a36c491992122e69676fecbeb0",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable, and Studio did not run (simulation status: skipped). The gate failed on Studio input validity: the custom_2d_steady experiment has an empty floorplan and no power_w, while the schema requires 1-128 blocks plus a power object. input_gate_pass and scientific_gate_pass are false, simulation_allowed is false, comparison_valid is false, and the result is not independently verified. Because of the gate, the final verdict is no simulation and no numerical comparison. No exact replication is claimed. The paper scenario is WaFFLe on a 16-tile, 32nm 2D CMP using gem5, McPAT and HotSpot 6.0, with LLC way-gating plus per-core fine-grained DVFS. The headline observable is an 8.4 C maximum reduction in peak temperature versus the paper's own baseline (6.2 C for average temperature) on the 8MB LLC. This is a relative reduction from a transient, policy-driven workload. The paper's temperatures were sampled at 0.33 us with way-shutdown at 2M-cycle intervals. A custom 2D steady run would have no transient trace and cannot reproduce this dynamic behavior. No pinned Ascend910 or ATPlace commit, bundled EV6/GCC adaptation, or generated placement was used, so there is no illustrative input.flp or one-row input.ptrace and no source commit to report. The artifact search found no linked code, configs or floorplans. The paper gives no block geometry or per-block watts, and the only stated boundary condition is a 47 C ambient. Studio's package and cooling defaults would differ from the unpublished HotSpot configuration. Any such run would be illustrative only. Numerical comparison would require matching location (hottest on-chip point), aggregation (maximum across nine apps), regime (transient with leakage feedback) and boundary assumptions, and none of these can be matched. At most, a qualitative statement is possible: lowering power during memory stalls and gating cache ways plausibly reduces temperature and leakage. This is not verified here.",
+    "limitations": [
+      "Studio did not run; there are no simulated temperatures to assess.",
+      "The experiment has an empty floorplan and no power_w, so the input is invalid.",
+      "The paper publishes no block coordinates, dimensions or per-block wattages; the floorplan came from HotFloorPlan and appears only in figures. Digitizing it would be speculative.",
+      "The reported 8.4 C and 6.2 C are temperature reductions versus the paper's own baseline, as maxima across nine PARSEC apps. They are not absolute temperatures, so they cannot be matched against a Studio absolute result.",
+      "The paper's behavior is transient and policy-driven (2M-cycle way gating, ns-scale DVFS switching, 0.33 us thermal intervals, temperature-dependent leakage). A steady 2D run with a one-row trace cannot capture it.",
+      "The HotSpot 6.0 package, TIM, spreader, heat sink and convection settings are unpublished; only the 47 C ambient is known. Studio defaults would differ.",
+      "Regulator powers (0.106/0.168 W) and stall energies (337 nJ) are not block powers and cannot be turned into a power map.",
+      "The Fig. 20 labels (373.83 K, 366.59 K) have uncertain units and association, so they cannot serve as a quantitative benchmark.",
+      "No code, configs or supplementary assets were found, and there is no pinned Ascend910/ATPlace or EV6/GCC source commit or placement assumption to report.",
+      "Adversarial code, parameter, config and data checks are unresolved, and independent page/asset review is pending.",
+      "The scenario is not exactly replicable; the gate sets comparison_valid to false.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Block coordinates (x_m, y_m) and dimensions (width_m, height_m) for cores, L1 caches, L2 banks, and routers. Only tile layout figures (Fig. 13, p.12; Fig. 20, p.16) appear, with no numeric geometry, and the HotFloorPlan output is not provided.",
+      "Per-block power values in watts for any scenario. McPAT outputs are not published. Only regulator power (0.106 W at 0.76 V, 0.168 W at 1.12 V per core, PDF p.14) and stall-period core energies (337 nJ baseline, 86-94 nJ with FG-DVFS, p.10) are given, and these cannot be split into block powers.",
+      "Power time series or traces from gem5/McPAT.",
+      "HotSpot 6.0 package, material, cooling, and boundary-condition configuration (heat spreader, heat sink, TIM, convection resistance, die thickness).",
+      "Absolute baseline and WaFFLe temperatures are given only in Fig. 20 (Black), where per-block values (e.g. 373.83 K) are legible only as figure text and are not tied to a tabulated source.",
+      "No linked repositories, code, configs, or supplementary assets: artifact search found no links and the packet assets list is empty.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The paper's workload is transient and dynamic. Cache ways are gated at 2M-cycle intervals, per-core DVFS switches during memory stalls at ns scale, and temperature is traced at 0.33 us. A steady 2D thermal runner with a one-row power trace cannot reproduce this time-varying behavior.",
+      "The controller and optimizer (way-shutdown and FG-DVFS algorithms, directory-based miss detection, performance/IPS feedback) are architectural policies. Their effect depends on gem5 and McPAT performance and power traces, which are not available in a Studio thermal solve.",
+      "The paper publishes no block coordinates, dimensions, or per-block wattages. The floorplan is generated by HotFloorPlan from McPAT areas and is shown only as tile figures (Fig. 13, Fig. 20) and temperature maps. No same-scenario block geometry and power rows can be built from the paper without digitizing or inventing values.",
+      "The reported observable is a temperature reduction relative to the paper's own baseline, not an absolute temperature. It depends on HotSpot 6.0 package and cooling parameters that the paper does not publish except for a 47 C ambient. Studio package and cooling assumptions cannot be matched, so temperatures are not numerically comparable.",
+      "Dynamic power gating of LLC ways is modeled as a time-varying change in power and leakage with temperature feedback (component-wise leakage from the previous period's temperature). A static Studio power map has no such coupling.",
+      "The paper is a 2D tiled CMP with no 3D stacking, interposer, or chiplets. This is a mismatch with 3D and interposer thermal tools but not a blocker for a 2D scenario.",
+      "No complete experiment is extractable, so the floorplan is empty. If an illustrative run were made, any generated 2D placement and one-row power trace would be separate from paper facts, and its temperatures would not be compared numerically to the paper.",
+      "Studio package and material properties (die, TIM, heat spreader, heat sink, convection) are bundled defaults and not the paper's HotSpot 6.0 configuration, which is not published.",
+      "Ambient is the only paper-stated thermal boundary condition (47 C, Table 1, PDF p.13). Other boundary conditions would be Studio defaults."
+    ]
+  }
+}

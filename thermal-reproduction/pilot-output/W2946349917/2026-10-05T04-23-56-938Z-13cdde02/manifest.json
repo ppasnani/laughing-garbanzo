@@ -1,0 +1,482 @@
+{
+  "paper_id": "W2946349917",
+  "paper_title": "Hot Spot Identification and System Parameterized Thermal Modeling for Multi-Core Processors Through Infrared Thermal Imaging",
+  "manifest_status": "downloaded",
+  "source_url": "https://past.date-conference.com/proceedings-archive/2019/pdf/0519.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "f8c2e35a1374256057bad0d185122ef09079964495c11f11af409e6d5f841cc7",
+  "pdf_pages": 6,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:25:18.605Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W2946349917",
+    "paper_title": "Hot Spot Identification and System Parameterized Thermal Modeling for Multi-Core Processors Through Infrared Thermal Imaging",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 6,
+      "figure_or_table": "Table I and Fig. 10",
+      "description": "Intel i5-3337U dual-core processor imaged with a rear-cooled IR thermography setup (FLIR A325sc, 50 um/pixel). 18 heat-sources were identified via DCT filtering, Laplacian and K-means. An LSTM model predicts the temperature of each heat-source from 80 PCM performance metrics. Table I gives RMSE per heat-source (2.04 to 2.57 C), and Fig. 10 compares predicted and measured temperature for heat-source #1 over about 8 minutes.",
+      "architecture": "Intel i5-3337U, 2 cores with 2 threads per core, rear-mounted Peltier thermo-electric cooling with liquid-cooled hot side, front side exposed to the IR camera",
+      "workload": "Mixed realistic workloads over 52 minutes at 60 Hz (187200 samples): idling, word processing, data compression, compute-intensive and memory-intensive tasks",
+      "operating_point": "Observed temperature range 58.73 C to 101.35 C. Frequency, voltage and instruction count are model inputs; no single steady power or frequency is published.",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "No numerical thermal solver. Temperatures are measured with a FLIR A325sc IR camera (320x240, 60 Hz, 50 um/pixel, microscope lens) on an Intel i5-3337U. Heat sources are located by 2D DCT noise filtering, a 2D discrete Laplacian and K-means clustering. A trained LSTM predicts temperatures. A COMSOL simulation (Fig. 3, PDF p.3) validates only the Laplacian heat-source identification idea. (PDF pp.2-5)",
+      "optimizer": "Neural-network training for 100 epochs with 60 timesteps, 20% dropout and a 60/15/25 train/validation/test split. The optimizer algorithm is not named. K-means with the elbow criterion selects k. No design or placement optimizer is used. (PDF pp.4-5)",
+      "controller": "None. No thermal or power controller is implemented. The paper motivates DVFS and thermal management only as future uses. Rear-mounted Peltier cooling with a liquid-cooled hot side is a measurement fixture, not a controller. (PDF pp.2,6)",
+      "benchmark": "Intel i5-3337U, 2 cores and 2 threads per core, run under mixed real workloads (idle, word processing, data compression, compute-intensive and memory-intensive tasks). 187200 samples at 60 Hz (52 min), each with 80 Intel PCM metrics and 18 heat-source temperatures. (PDF pp.2,4-5)"
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "degC (RMSE of predicted vs measured heat-source temperature)",
+      "location": "18 identified heat-sources on the i5-3337U die surface, imaged by IR. Table I gives per-source RMSE, and Fig. 10 shows heat-source #1 (THS#1).",
+      "aggregation": "Per-heat-source RMSE of the LSTM prediction on the held-out 25% test set. The range across sources is 2.04 degC (HS#11) to 2.57 degC (HS#10). No single scalar is selected, so value is null. The observed dynamic range is 58.73 to 101.35 degC. (PDF p.6, Table I)",
+      "pdf_page": 6
+    },
+    "physical_mismatches": [
+      {
+        "reason": "No floorplan geometry is published (no block x, y, width, height), and no per-block power in watts. The 18 heat-source centroids lack named blocks and dimensions, and the paper explicitly says it does not use the processor floorplan. A Studio 2D steady-state model cannot be built from the paper's facts, and this is essential.",
+        "essential": true
+      },
+      {
+        "reason": "Cooling mismatch: the experiment uses a rear-mounted Peltier/thermo-electric cooler with a liquid-cooled hot side, and the die front is exposed bare to the IR camera. There is no heat sink or package lid in the measurement, which differs from a typical heat-sink-based chip stack.",
+        "essential": true
+      },
+      {
+        "reason": "Transient and workload mismatch: the result is a dynamic, workload-driven LSTM prediction (60 Hz time series over 52 minutes). No steady-state power map or single operating point is published, so a steady 2D solve does not correspond to the paper's observable.",
+        "essential": true
+      },
+      {
+        "reason": "Solver mismatch: the paper uses data-driven LSTM regression and image processing, not a finite-difference or finite-element thermal solver. Only a simple COMSOL validation of the Laplacian idea is mentioned. A Studio solver would not reproduce the RMSE metric.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports no 3D stacking, interposer, chiplet, optimizer or reliability evaluation. Reliability (EM, BTI, HCI) is mentioned only as motivation. The die is a single commercial processor, so interposer and placement-optimizer features of the Studio package are not applicable.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No paper-derived floorplan exists, so any Studio run would use a separate illustrative 2D placement with generated coordinates, kept distinct from paper facts.",
+      "Any illustrative run would use the Studio's bundled default package and material assumptions (default die, TIM, heat spreader and boundary conditions). Their values were not supplied in the packet and are not paper-derived.",
+      "Total chip power cannot be split across blocks because the paper publishes no power or splitting rule. Any power would be a one-row illustrative trace, not paper data.",
+      "Temperatures from an illustrative Studio run must not be compared numerically to the paper's RMSE (2.04 to 2.57 degC) or temperature range."
+    ],
+    "missing_inputs": [
+      "Block names with x_m, y_m, width_m and height_m for the i5-3337U die or the 18 heat-sources (no floorplan published; die dimensions not stated)",
+      "Per-block power_rows (name and watts), or total chip power and a splitting rule. No watts are published.",
+      "Power time series, or frequency and voltage operating point. These are model inputs only and are not tabulated.",
+      "Thermal boundary conditions and material parameters for the Peltier cooler, PCB and die (Peltier setpoint, hot-side liquid temperature, thermal conductivities)",
+      "Pinned packet assets: assets list is empty and artifact search found no linked resources, with no repository, code, config or supplementary data",
+      "Numeric heat-source centroid coordinates for the 18 heat-sources (only shown graphically in Fig. 8, PDF p.4, with no digitized values)",
+      "Raw IR thermal maps, the 187200-sample dataset and trained LSTM weights (not published)",
+      "LSTM optimizer and loss function (training optimizer not named)"
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "thermal_observable_rmse_min",
+        "block_name": "HS #11",
+        "source_value": 2.04,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 2.04,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF p.6, Table I, HS #11 entry; Results text 'lowest was 2.04 C (HS #11)'",
+        "provenance": "Paper-reported per-heat-source RMSE of LSTM predicted vs IR-measured temperature on the held-out 25% test set. Heat-source centroid on the i5-3337U die, aggregated as RMSE over the test time series.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_rmse_max",
+        "block_name": "HS #10",
+        "source_value": 2.57,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 2.57,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF p.6, Table I, HS #10 entry; Results text 'highest RMSE was 2.57 C (HS #10)'",
+        "provenance": "Paper-reported per-heat-source RMSE of LSTM predicted vs measured temperature (test set). Largest of the 18 values.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_rmse_hs1",
+        "block_name": "HS #1",
+        "source_value": 2.36,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 2.36,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF p.6, Table I, HS #1 entry; Fig. 10 shows HS #1 predicted vs measured over about 8 minutes",
+        "provenance": "Tabulated RMSE for heat-source #1, the source shown in Fig. 10. Aggregation is RMSE over the test set.",
+        "uncertainty": null
+      },
+      {
+        "field": "observed_temperature_min",
+        "block_name": null,
+        "source_value": 58.73,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 58.73,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF p.6, Results paragraph, 'observed dynamic range of 58.73 C to 101.35 C'",
+        "provenance": "Paper-reported lower bound of the measured heat-source temperature range. Specific location and sample not stated.",
+        "uncertainty": null
+      },
+      {
+        "field": "observed_temperature_max",
+        "block_name": null,
+        "source_value": 101.35,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 101.35,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF p.6, Results paragraph, 'observed dynamic range of 58.73 C to 101.35 C'",
+        "provenance": "Paper-reported upper bound of the measured heat-source temperature range. Specific location and sample not stated.",
+        "uncertainty": null
+      },
+      {
+        "field": "ir_spatial_resolution",
+        "block_name": null,
+        "source_value": 50,
+        "source_unit": "um/pixel",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00005,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF p.2, Sec. II.B, IR setup paragraph, 'spatial resolution of 50um/pixel'",
+        "provenance": "Paper-stated IR camera spatial resolution with microscope lens (FLIR A325sc). Converted um to m per pixel. This is not a die dimension.",
+        "uncertainty": null
+      },
+      {
+        "field": "ir_frame_rate",
+        "block_name": null,
+        "source_value": 60,
+        "source_unit": "Hz",
+        "conversion_factor": 1,
+        "normalized_value": 60,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "PDF p.2, Sec. II.B, 'operating frequency of 60Hz'; PDF p.5 sync of metrics at 60 Hz",
+        "provenance": "Paper-stated camera capture rate, synchronized with performance metric recording.",
+        "uncertainty": null
+      },
+      {
+        "field": "num_heat_sources",
+        "block_name": null,
+        "source_value": 18,
+        "source_unit": "count",
+        "conversion_factor": 1,
+        "normalized_value": 18,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF p.4, Sec. III.B.3, 'identify 18 prominent heat-sources'; Fig. 8",
+        "provenance": "Paper-stated count of K-means centroids on the i5-3337U. Coordinates are only shown graphically in Fig. 8 and no values are given.",
+        "uncertainty": null
+      },
+      {
+        "field": "num_samples",
+        "block_name": null,
+        "source_value": 187200,
+        "source_unit": "samples",
+        "conversion_factor": 1,
+        "normalized_value": 187200,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF p.5, Sec. V, 'a total of 187200 data points'; also PDF p.4 Fig. 8 caption",
+        "provenance": "Paper-stated number of measured samples, each with 80 metrics and 18 heat-source temperatures.",
+        "uncertainty": null
+      },
+      {
+        "field": "experiment_duration",
+        "block_name": null,
+        "source_value": 52,
+        "source_unit": "min",
+        "conversion_factor": 60,
+        "normalized_value": 3120,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF p.5, Sec. V, '52 minutes of continuous runtime'",
+        "provenance": "Paper-stated total runtime of the data collection, converted min to s.",
+        "uncertainty": null
+      },
+      {
+        "field": "num_performance_metrics",
+        "block_name": null,
+        "source_value": 80,
+        "source_unit": "count",
+        "conversion_factor": 1,
+        "normalized_value": 80,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF p.5, Sec. IV.B and IV.C, 'PCM provides 80 performance metrics (P1 to P80)'",
+        "provenance": "Paper-stated count of LSTM input features from Intel PCM. They are not power values in watts.",
+        "uncertainty": null
+      },
+      {
+        "field": "floorplan_geometry_x_y_width_height",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "PDF pp.1-6 searched; no block x, y, width, height or die size. PDF p.1 says the approach does not rely on the processor floorplan. Fig. 8 on p.4 is graphical only.",
+        "provenance": "Missing input. No dimensions are published and none are invented.",
+        "uncertainty": "No numeric values available. Digitizing Fig. 8 was not attempted, and it does not give block extents."
+      },
+      {
+        "field": "block_power_watts",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "PDF pp.1-6 searched; no watts per block, no total chip power, no splitting rule",
+        "provenance": "Missing input. Power is estimated only implicitly via performance metrics. No power is published, so none can be split.",
+        "uncertainty": null
+      },
+      {
+        "field": "pinned_assets",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Packet assets list is empty; artifact_search_status is checked_no_links",
+        "provenance": "No pinned config, geometry, code or thermal config assets were supplied, so there is no asset evidence. No repository or supplementary-data URL in the paper.",
+        "uncertainty": null
+      },
+      {
+        "field": "paper_linked_resource_intel_pcm",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF p.6, reference [22], https://software.intel.com/en-us/articles/intel-performance-counter-monitor",
+        "provenance": "The only paper-linked resource is the Intel PCM tool URL, cited as the performance-metric source. It is not a dataset or input for floorplan or power, and it is not a pinned asset.",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The text claims about the IR setup, DCT, Laplacian, K-means and LSTM are supported on pp.2-5. The experiment block labels the work custom_2d_steady with an empty floorplan and empty power. That contradicts the extraction's own steady_2d_relevant=false and the essential physical_mismatches, because the paper's method is measured IR imaging plus a transient LSTM, not a 2D steady solve."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The packet assets list is empty and artifact_search_status is checked_no_links. No code, repository, trained LSTM weights or analysis scripts are supplied. Reference [22] is only the Intel PCM tool URL, which is not evidence of reproducible code."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "The reported scalars are supported by pdftotext: Table I RMSE values (HS#1 2.36, HS#10 2.57, HS#11 2.04), the 58.73-101.35 C range, 50 um/pixel, 60 Hz, 18 sources, 187200 samples, 52 min, 80 metrics, and the LSTM layout of 100/80/60 neurons plus an 18-neuron dense layer with 20% dropout, 100 epochs, 60 timesteps and a 60/15/25 split. No block x/y/width/height, die size, per-block watts, Peltier setpoint, material properties, or LSTM optimizer and loss are published, so the parameters needed for any 2D scenario are absent."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No pinned config or geometry asset exists. The extraction has no floorplan, no power_rows and no boundary conditions. The only physical setup details are narrative (rear Peltier cooling with a liquid-cooled hot side, bare front exposed to the IR camera). No scenario-matched config can be built, and generated coordinates would be illustrative only."
+      },
+      "data": {
+        "status": "missing",
+        "note": "There are no per-block, same-scenario power values, no transient power traces and no digitized Fig. 8 centroid coordinates. The raw IR maps, the 187200-sample dataset and the trained weights are unpublished. Fig. 8 and Fig. 10 are not supplied as images, so the decisive figures were not visually verified. Table I and the text values come from text extraction only."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The kind custom_2d_steady with empty floorplan and power_w contradicts the extraction's steady_2d_relevant=false and the essential mismatches (transient LSTM, IR measurement, Peltier cooling, no power). It must not be treated as a 2D reproduction scenario.",
+        "locator": "extraction.experiment vs extraction.scenario.steady_2d_relevant and physical_mismatches[0-3]"
+      },
+      {
+        "field": "floorplan_geometry_x_y_width_height / block_power_watts",
+        "reason": "None of the 18 heat-source blocks has a name, geometry or same-scenario power in watts. The paper says the method does not use the floorplan. Any Studio run would rest entirely on invented inputs.",
+        "locator": "PDF p.2 top; PDF p.4 Fig. 8; no power anywhere in PDF pp.1-6"
+      },
+      {
+        "field": "floorplan_geometry_x_y_width_height.locator",
+        "reason": "The locator cites PDF p.1 for the statement that the approach does not rely on the floorplan. That sentence is on PDF p.2 (it continues the last bullet from p.1).",
+        "locator": "PDF p.1 vs PDF p.2, 'does not rely on any proprietary data such as the processor's floorplan'"
+      },
+      {
+        "field": "physical_mismatches[1] (no heat sink or package lid)",
+        "reason": "The paper says only that the front side is exposed to the IR camera and the processor is cooled from underneath. It never states that the package lid or heat spreader is removed, so 'bare' and 'no package lid' are inferences. Section III's COMSOL example involves a heat spreader.",
+        "locator": "PDF p.2 Sec. II.B; PDF p.3 Sec. III.A"
+      },
+      {
+        "field": "controller (PDF pp.2,6)",
+        "reason": "DVFS and thermal management are mentioned in motivation on p.1 (and in the conclusion on p.6). The cited page p.2 does not discuss them.",
+        "locator": "PDF p.1 Introduction; PDF p.6 Conclusion"
+      },
+      {
+        "field": "operating_point (voltage as model input)",
+        "reason": "The abstract names frequency, voltage and instruction count, but the metric list on p.5 names frequency and instruction count with no explicit voltage. The PCM metrics also include internal-sensor temperature, which is not noted as a possible input leakage or confound.",
+        "locator": "PDF p.1 abstract; PDF p.5 Sec. IV.B"
+      },
+      {
+        "field": "Fig. 8 and Fig. 10 decisive figures",
+        "reason": "No figure images or assets were supplied. Fig. 8 (centroids, cluster extraction) and Fig. 10 (HS#1 predicted vs measured) were not visually verified, and the evidence relies on pdftotext only. Table I values were not checked against a page image.",
+        "locator": "PDF p.4 Fig. 8; PDF p.6 Fig. 10 and Table I"
+      },
+      {
+        "field": "pinned_assets / code / dataset",
+        "reason": "No pinned asset, code, config or dataset exists. The only link is the Intel PCM tool URL. Training optimizer, loss, random seed and the manner of the 60/15/25 split (chronological vs random) are unspecified.",
+        "locator": "Packet assets=[]; PDF p.5 Sec. V; PDF p.6 ref [22]"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W2946349917",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Block names with x_m, y_m, width_m and height_m for the i5-3337U die or the 18 heat-sources (no floorplan published; die dimensions not stated)",
+      "Per-block power_rows (name and watts), or total chip power and a splitting rule. No watts are published.",
+      "Power time series, or frequency and voltage operating point. These are model inputs only and are not tabulated.",
+      "Thermal boundary conditions and material parameters for the Peltier cooler, PCB and die (Peltier setpoint, hot-side liquid temperature, thermal conductivities)",
+      "Pinned packet assets: assets list is empty and artifact search found no linked resources, with no repository, code, config or supplementary data",
+      "Numeric heat-source centroid coordinates for the 18 heat-sources (only shown graphically in Fig. 8, PDF p.4, with no digitized values)",
+      "Raw IR thermal maps, the 187200-sample dataset and trained LSTM weights (not published)",
+      "LSTM optimizer and loss function (training optimizer not named)",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "No floorplan geometry is published (no block x, y, width, height), and no per-block power in watts. The 18 heat-source centroids lack named blocks and dimensions, and the paper explicitly says it does not use the processor floorplan. A Studio 2D steady-state model cannot be built from the paper's facts, and this is essential.",
+        "essential": true
+      },
+      {
+        "reason": "Cooling mismatch: the experiment uses a rear-mounted Peltier/thermo-electric cooler with a liquid-cooled hot side, and the die front is exposed bare to the IR camera. There is no heat sink or package lid in the measurement, which differs from a typical heat-sink-based chip stack.",
+        "essential": true
+      },
+      {
+        "reason": "Transient and workload mismatch: the result is a dynamic, workload-driven LSTM prediction (60 Hz time series over 52 minutes). No steady-state power map or single operating point is published, so a steady 2D solve does not correspond to the paper's observable.",
+        "essential": true
+      },
+      {
+        "reason": "Solver mismatch: the paper uses data-driven LSTM regression and image processing, not a finite-difference or finite-element thermal solver. Only a simple COMSOL validation of the Laplacian idea is mentioned. A Studio solver would not reproduce the RMSE metric.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports no 3D stacking, interposer, chiplet, optimizer or reliability evaluation. Reliability (EM, BTI, HCI) is mentioned only as motivation. The die is a single commercial processor, so interposer and placement-optimizer features of the Studio package are not applicable.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No paper-derived floorplan exists, so any Studio run would use a separate illustrative 2D placement with generated coordinates, kept distinct from paper facts.",
+      "Any illustrative run would use the Studio's bundled default package and material assumptions (default die, TIM, heat spreader and boundary conditions). Their values were not supplied in the packet and are not paper-derived.",
+      "Total chip power cannot be split across blocks because the paper publishes no power or splitting rule. Any power would be a one-row illustrative trace, not paper data.",
+      "Temperatures from an illustrative Studio run must not be compared numerically to the paper's RMSE (2.04 to 2.57 degC) or temperature range."
+    ],
+    "evidence_sha256": "a337b2d53bf870df92bcbda2b70db95eae97ab5479a554c84b8e1f102e11fc62",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable, and Studio did not run (simulation status: skipped). The gate reports simulation_allowed=false, input_gate_pass=false, scientific_gate_pass=false, and comparison_valid=false. The scenario is a custom 2D steady experiment type, but it has no blocks and no power_w object. A custom 2D steady run has no transient trace, while the paper's observable is a 60 Hz, 52-minute workload-driven LSTM prediction on an Intel i5-3337U. The paper reports per-heat-source RMSE of 2.04 to 2.57 degC (HS#11 lowest, HS#10 highest, HS#1 at 2.36 degC) and an observed range of 58.73 to 101.35 degC. These are data-driven prediction errors, not outputs of a thermal solver, so a steady 2D solve would not correspond to them. There is no pinned Ascend910 or ATPlace asset, no bundled EV6/GCC adaptation, and no generated placement. No source commit exists and no input.flp or input.ptrace was produced. No numerical comparison is made, since the Studio produced no temperatures and the location, aggregation, regime, and boundary assumptions do not match. Only qualitative sensitivity is discussed. The paper's cooling is a rear Peltier with a liquid-cooled hot side and a bare die facing the IR camera, whereas a Studio run would use default package assumptions. The result is a not-applicable verdict, and it must not be read as replication or validation of the paper.",
+    "limitations": [
+      "The Studio did not run, so there are no simulated temperatures, no input.flp, and no input.ptrace.",
+      "The feasibility verdict is not_2d_applicable and comparison_valid is false, so no exact replication or numerical agreement can be claimed.",
+      "No floorplan geometry is published (no block x, y, width, height, and no die size), and the 18 heat-source centroids are only graphical in Fig. 8.",
+      "No per-block power in watts, no total chip power, no splitting rule, and no power time series or frequency and voltage operating point are published.",
+      "Observable mismatch: the paper's metric is the LSTM prediction RMSE per heat source (2.04 to 2.57 degC) on a held-out test set, which a thermal solver does not produce. The observed 58.73 to 101.35 degC range has no stated location or sample.",
+      "Regime mismatch: the paper is transient and workload-driven (60 Hz, 52 min, 187200 samples), while a custom 2D steady run has no transient trace.",
+      "Boundary mismatch: the Peltier and liquid-cooled hot side with a bare die differ from default Studio package, TIM, and heat spreader assumptions. Peltier setpoint, hot-side liquid temperature, and material conductivities are not published.",
+      "Evidence items 11 to 13 lack a valid page or pinned asset locator, there is no cited steady/transient regime, and the adversarial and independent review checks are unresolved or pending.",
+      "No pinned assets or linked repositories exist (artifact_search_status is checked_no_links). The only linked resource is the Intel PCM tool URL, which is not a floorplan or power input. Raw IR maps, the dataset, LSTM weights, and the training optimizer and loss function are unavailable.",
+      "Any future illustrative run would need generated coordinates and powers kept separate from paper facts, and its temperatures could not be compared numerically to the paper's RMSE or temperature range.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Block names with x_m, y_m, width_m and height_m for the i5-3337U die or the 18 heat-sources (no floorplan published; die dimensions not stated)",
+      "Per-block power_rows (name and watts), or total chip power and a splitting rule. No watts are published.",
+      "Power time series, or frequency and voltage operating point. These are model inputs only and are not tabulated.",
+      "Thermal boundary conditions and material parameters for the Peltier cooler, PCB and die (Peltier setpoint, hot-side liquid temperature, thermal conductivities)",
+      "Pinned packet assets: assets list is empty and artifact search found no linked resources, with no repository, code, config or supplementary data",
+      "Numeric heat-source centroid coordinates for the 18 heat-sources (only shown graphically in Fig. 8, PDF p.4, with no digitized values)",
+      "Raw IR thermal maps, the 187200-sample dataset and trained LSTM weights (not published)",
+      "LSTM optimizer and loss function (training optimizer not named)",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "No floorplan geometry is published (no block x, y, width, height), and no per-block power in watts. The 18 heat-source centroids lack named blocks and dimensions, and the paper explicitly says it does not use the processor floorplan. A Studio 2D steady-state model cannot be built from the paper's facts, and this is essential.",
+      "Cooling mismatch: the experiment uses a rear-mounted Peltier/thermo-electric cooler with a liquid-cooled hot side, and the die front is exposed bare to the IR camera. There is no heat sink or package lid in the measurement, which differs from a typical heat-sink-based chip stack.",
+      "Transient and workload mismatch: the result is a dynamic, workload-driven LSTM prediction (60 Hz time series over 52 minutes). No steady-state power map or single operating point is published, so a steady 2D solve does not correspond to the paper's observable.",
+      "Solver mismatch: the paper uses data-driven LSTM regression and image processing, not a finite-difference or finite-element thermal solver. Only a simple COMSOL validation of the Laplacian idea is mentioned. A Studio solver would not reproduce the RMSE metric.",
+      "The paper reports no 3D stacking, interposer, chiplet, optimizer or reliability evaluation. Reliability (EM, BTI, HCI) is mentioned only as motivation. The die is a single commercial processor, so interposer and placement-optimizer features of the Studio package are not applicable.",
+      "No paper-derived floorplan exists, so any Studio run would use a separate illustrative 2D placement with generated coordinates, kept distinct from paper facts.",
+      "Any illustrative run would use the Studio's bundled default package and material assumptions (default die, TIM, heat spreader and boundary conditions). Their values were not supplied in the packet and are not paper-derived.",
+      "Total chip power cannot be split across blocks because the paper publishes no power or splitting rule. Any power would be a one-row illustrative trace, not paper data.",
+      "Temperatures from an illustrative Studio run must not be compared numerically to the paper's RMSE (2.04 to 2.57 degC) or temperature range."
+    ]
+  }
+}

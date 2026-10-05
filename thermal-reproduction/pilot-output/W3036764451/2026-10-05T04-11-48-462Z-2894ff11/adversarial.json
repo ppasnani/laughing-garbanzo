@@ -1,0 +1,66 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Text on PDF pp.2-5 supports the described methods: Coffin-Manson, Miner's rule, rainflow counting, RAF mapping extending MapPro, temperature-deviation scheduling, and MOC-based DPM with avgAmplitude x maxT. The Noculator + McPAT/Lumos + HotSpot steady-state setup is also supported. This is verified from extracted text only. The paper is a system-level reliability and resource-management study with transient traces and a controller. It is not a 2D steady reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, availability statement or pinned asset is supplied (assets list is empty). The only URLs are the ITRS site and the source PDF. Noculator, MapPro, MOC and the HotSpot setup are cited but not supplied, so no code claim can be verified."
+    },
+    "parameters": {
+      "status": "verified",
+      "note": "The published scalars match p.5: EaTC=0.42 eV, b=2.35, Tth=1 C, k=8.62e-5 eV/K, calibration at deltaT=20 C, TMax=70 C, 1 h, m=10 giving 10 years, 109 mm^2, 16 nm, TDP 90 W, 25 applications. The p.3 values (about 1 s sampling, 1-2 h long-term period) also match. The fitted A_TC is unpublished. The percent improvements (54/51/39, 40/21/20, 55/43/38) match p.5 text, but the absolute MTTF values behind them are not available."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no HotSpot package, cooling, ambient or material configuration. The PARSEC mix and arrival sequence are unpublished. No per-core geometry or placement is given. The extraction sets experiment.kind to custom_2d_steady with an empty floorplan, which is not a usable configuration and conflicts with its own steady_2d_relevant=false."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no per-block names, coordinates, dimensions or per-block or same-scenario power values. Only the chip total of 109 mm^2 and the 90 W TDP are given. Fig. 5 (per-core MTTF snapshot) and Fig. 6 (MIN/STD/AVG bars) were only available as garbled pdftotext residue. No image or digitization is supplied, so the decisive figures were not visually verified. The Fig. 6 caption says 'Analysis of the results in Fig. 2', which appears to be a copy of the Fig. 3 caption and was not reconciled."
+    }
+  },
+  "findings": [
+    {
+      "field": "thermal_observable (Fig. 5 / Fig. 6)",
+      "reason": "The decisive MTTF figures were not visually verified. Only pdftotext residue and text percentages exist; the bar values and per-core snapshots are unreadable and not digitized, so the observable value remains null. The Fig. 6 caption is a duplicate of the Fig. 3 caption ('results in Fig. 2'), which the extraction does not note.",
+      "locator": "PDF p.6 Fig. 5/Fig. 6; p.5 results paragraph"
+    },
+    {
+      "field": "experiment.kind",
+      "reason": "The extraction labels the experiment custom_2d_steady with an empty floorplan and empty power_w, but also says steady_2d_relevant is false and that transient dynamics, the controller and Coffin-Manson reliability are essential. This is an internal contradiction. No 2D reproduction is supported, and any 2D version would rest on invented shelf coordinates and constant power.",
+      "locator": "extraction.experiment vs scenario.steady_2d_relevant and physical_mismatches"
+    },
+    {
+      "field": "thermal_observable.pdf_page",
+      "reason": "The page is recorded as 6 (figures), but the quoted percentages come from the text on PDF p.5. The evidence entries cite p.5. The page locator is inconsistent, and the figure content on p.6 is unverified.",
+      "locator": "extraction.thermal_observable.pdf_page vs evidence rows (p.5)"
+    },
+    {
+      "field": "per_block_geometry_and_power",
+      "reason": "No per-core x/y, width/height or watts are published, so no floorplan block has same-scenario power. The 90 W TDP is a chip-level bound, not a per-core power. A 64-block layout would be an unpublished assumption.",
+      "locator": "PDF p.5 Section V; extraction.experiment.floorplan/power_w"
+    },
+    {
+      "field": "paper_linked_resources_and_pinned_assets",
+      "reason": "No code, data or config assets are supplied. Reproducibility cannot be verified for the Noculator, HotSpot or controller implementations.",
+      "locator": "packet.assets = []; PDF pp.1-6"
+    },
+    {
+      "field": "missing_inputs / solver description",
+      "reason": "The missing_inputs list names ATPlace2.5D and RLPlanner Ascend910 configs, which are unrelated to this paper. The paper says HotSpot is steady-state yet also relies on temperature traces sampled at about 1 s for rainflow counting. The extraction does not explain how the thermal traces were produced, and the HotSpot mode is unverified.",
+      "locator": "extraction.missing_inputs; PDF p.5 Section V; p.3 Reliability Analysis unit"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

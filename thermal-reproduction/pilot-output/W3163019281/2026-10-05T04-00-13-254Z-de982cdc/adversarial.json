@@ -1,0 +1,72 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The PACT method is supported by text on pp. 3-8: SPICE-based compact RC netlist, Xyce 6.12 with OpenMPI 3.1.4, KLU/SuperLU/AztecOO steady-state solvers, TRAP transient solver, and a medium-cost heat sink. HotSpot uses SuperLU and adaptive RK4 as comparison. Minor issue: the packet's 'No optimizer/controller' claim is an inference, though plausible. Methods describe the original simulator only, not any Studio reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The only code references are the unpinned URLs github.com/peaclab/PACT (p.2 footnote 3) and OpenSTA (p.7 footnote 4). The assets list is empty, so no pinned code, commit, or script exists. A bare URL is not evidence, and the OpenSTA link does not supply SCC inputs."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Only the hot spot power density of 216.6 W/cm2 (p.8) is supported, and the conversion to 2,166,000 W/m2 is arithmetically correct. Table III (grid resolution, die size, heat sink spec) and Table IV were not visible in the text extraction, and no page image was supplied to verify them. There are no per-block geometry or power parameters. The 1.9x and 232x speedups are speed metrics only. The text on p.8 also states 232x for the SCC chip while the abstract and p.3 state a 186x maximum for OpenROAD designs, so these are different scenarios and must not be mixed."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no pinned config, floorplan, thermal, or power file (assets empty). The experiment is declared custom_2d_steady with an empty floorplan and empty power_w, so no runnable configuration exists. Table III contents are unverified because no figure or table image was supplied."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no floorplan block coordinates or names, and no per-block same-scenario power for the 256-core SCC chip. The power profile comes from Eris et al. (ref 20), which is not packaged. The thermal observable is null, and Table IV is unreadable. Any 2D shelf placement with constant power rows would be an illustrative assumption, not a reproduction of a published placement or transient trace. The study is a speed comparison and includes a monolithic 3D/transient/heat sink feature set (Table IV also covers the 33-layer monolithic 3D chip), so it cannot be treated as a 2D steady-state reproduction. Every floorplan block lacks power, so the check fails."
+    }
+  },
+  "findings": [
+    {
+      "field": "floorplan_blocks",
+      "reason": "No per-block coordinates or dimensions for the 256-core SCC chip exist in the paper text or in any pinned asset; the floorplan is empty.",
+      "locator": "PDF p.8, Section IV-A / Table III; assets: []"
+    },
+    {
+      "field": "block_power_rows",
+      "reason": "No per-block power values for the selected Eris et al. profile are published or pinned. Only a hot spot density of 216.6 W/cm2 is given, which cannot become power rows without an unpublished splitting rule.",
+      "locator": "PDF p.8, Section IV-A; ref [20] on p.13"
+    },
+    {
+      "field": "paper_thermal_observable",
+      "reason": "No thermal observable for the SCC scenario is available. Table IV is a speed table and its contents were not visually verified; value is null. The ~90 degC and ~9 degC figures on p.11 belong to the OpenROAD MPSoC scenario.",
+      "locator": "PDF p.8 Table IV; p.11 Section IV-D"
+    },
+    {
+      "field": "Table III / Table IV",
+      "reason": "Decisive tables were not visually verified because only pdftotext output was supplied, with no page images or table crops; grid resolution, die size, and heat sink specs remain unknown.",
+      "locator": "PDF p.8, Tables III and IV"
+    },
+    {
+      "field": "experiment.kind",
+      "reason": "A custom_2d_steady experiment with empty floorplan/power is not a valid reproduction. The scenario is a speed comparison on a chip with transient simulation, a medium-cost heat spreader/sink, and a parallel Xyce solver, none of which a generated 2D shelf with constant power would match.",
+      "locator": "extraction.experiment; PDF p.8"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "The PACT and OpenSTA GitHub URLs are unpinned (no commit or hash) and do not prove that the SCC inputs exist.",
+      "locator": "PDF p.2 footnote 3; p.7 footnote 4"
+    },
+    {
+      "field": "speedup values",
+      "reason": "The 1.9x/232x SCC speedups on p.8 differ from the 1.83x/186x OpenROAD figures in the abstract and p.3; the p.8 steady figure is 1.9x versus 1.83x elsewhere. They must be kept distinct and are not thermal results.",
+      "locator": "PDF p.8 vs pp.1, 3, 11-12"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    11,
+    13
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,66 @@
+{
+  "paper_id": "W4414900343",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block-level floorplan geometry (x, y, width, height in meters) for all core-layer units and memory banks. It is only shown graphically in Fig. 9 without numeric dimensions or die area.",
+    "Per-block power in watts for the fft baseline run. Total chip or layer power is also not stated.",
+    "HotSpot 7.0 configuration for the stack: layer thicknesses, material properties, heat sink and convection parameters, ambient temperature, grid resolution and interface materials.",
+    "Cool-3D framework code, floorplan files and experiment data. The GitHub repository (PDF pages 1 and 13) is described as 'in the process of being released', and no pinned packet assets were supplied.",
+    "Numeric tabulation of the thermal results. Only the heat-map figure titles give maximum temperatures. No tables or files give per-block temperatures.",
+    "Gem5 and McPAT outputs (statistics, power traces) for the fft benchmark on the baseline chip.",
+    "Memory and cooling details beyond Table VI, such as die area, die thickness, TSV and bonding layer properties, and CACTI-3DD memory power per bank.",
+    "Linked asset cool3d_github_footnote is not pinned and available",
+    "Linked asset cool3d_github_conclusion is not pinned and available",
+    "Linked asset ref40_gem5mcpat_parser is not pinned and available",
+    "Linked asset ref41_gem5mcpat_parser is not pinned and available",
+    "Linked asset ref42_mcpat_calib_parser is not pinned and available",
+    "Linked asset ref46_splash2_benchmark is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a 3D stack of three dies (cores, memory banks, memory banks) with vertical heat coupling between layers. A generic 2D single-layer Studio thermal model cannot capture inter-layer coupling, the stack ordering effect or per-layer temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling is a passive heat sink on a 3D stack, with the core layer at the bottom far from the heat sink. A Studio 2D package with its own cooling and boundary conditions does not reproduce this thermal path. Microfluidic cooling is used in later cases of the paper but not in this baseline.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's power comes from a gem5, McPAT and CACTI-3DD pipeline over the fft workload. Per-block power values are not published, only heat maps, so no power rows can be taken from the paper.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's solver is HotSpot 7.0 with a 3D layered floorplan and cooling configuration. Studio uses a different solver and material stack, so numerical agreement cannot be claimed.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives no block coordinates or dimensions in numeric form. The floorplan appears only as Fig. 9 heat-map images with unit labels such as C0_IALU and B_0, and the floorplan files are not in the packet.",
+      "essential": true
+    },
+    {
+      "reason": "The paper uses no optimizer or controller in the selected scenario, so there is nothing to mismatch there. Transient behavior is not studied, since the result is steady state, and reliability is not evaluated.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "21acae5f8bf3952b23c6ecd82c25f5f42d274e17dbbdfe362b95eb5b8bf75b63",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

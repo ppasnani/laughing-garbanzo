@@ -1,0 +1,58 @@
+{
+  "paper_id": "W2996830529",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Numeric x_m, y_m, width_m and height_m for each of the 15 Alpha21264 functional units and the L2 cache. Fig. 6a gives only a graphical layout, and no HotSpot .flp file is pinned in the packet.",
+    "Numeric per-block power or power density (W or W/cm2), with names. Values exist only graphically in Fig. 6a, and no digitized values with uncertainty are supplied.",
+    "Total chip power for the Alpha21264 case, which is not stated. It must not be inferred or split across blocks without a published rule.",
+    "Heat spreader footprint for the 16 mm die, since the paper's 10 mm x 10 mm spreader conflicts with the die size.",
+    "Ambient temperature value Ta, convection or heat-sink boundary parameters, and TIM thickness for this case. Only the isothermal top boundary and effective conductivities (silicon 150 W/mK, spreader+TIM 256 W/mK) are described.",
+    "Numeric temperature values for Fig. 6b (peak, mean or per-block). Only the colour map and error metrics are published.",
+    "Pinned packet assets: the packet lists none (assets: []). The linked thesis (ref [15], http://www.cse.iitd.ac.in/~srsarangi/files/thesis/shashank.pdf, PDF page 8) is not pinned and so cannot serve as evidence. No code, data or configuration repository is linked in the paper.",
+    "Bundled Studio package and material assumptions, which are not provided in the packet and so are not recorded here.",
+    "No power time series is needed for this steady-state case, but no workload trace is provided either.",
+    "Linked asset ref15_shashank_thesis is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The original model is a two-layer package (silicon die plus a 3.52 mm heat spreader with TIM) with an isothermal ambient-temperature boundary at the top of the spreader and adiabatic chip edges. It has no heat sink fins, convection model, interposer or 3D stack. A Studio run with different package, cooling and boundary conditions will not reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The solver differs fundamentally. The paper uses an axisymmetric Hankel-transform Green's function, with square sources mapped to equal-area circular sources and sampled at grid centres, and validates against COMSOL. A numerical grid solver in Studio is a different method and will not give the same temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The paper text is internally inconsistent about geometry. The Alpha21264 die is 16 mm x 16 mm, while the Fourier setup lists a 10 mm x 10 mm x 3.52 mm heat spreader. The spreader footprint for this test case is unclear.",
+      "essential": true
+    },
+    {
+      "reason": "The power inputs are per-unit power densities shown only graphically in Fig. 6a. No numeric block powers, areas or coordinates are published, so no complete numeric experiment can be reconstructed from the paper alone.",
+      "essential": true
+    },
+    {
+      "reason": "The transient analysis, the BTE/nanometer-scale model and the reliability aspects of the paper are not part of the selected steady-state Fourier test case and are out of scope. No optimizer or controller exists in the original, so none can be matched.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "0ec3a85a66c584dedcf195fe7da7c7b2742df774347047a778f0656f9ed1cdaf",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

@@ -1,0 +1,76 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Page 5 supports the solver description: Fourier solution in R 3.5.1, COMSOL 5.3b validation, RMS error relative to maximum temperature rise. Pages 3-4 support the Hankel-transform Green's function with a two-layer silicon/spreader stack. Page 5 supports the edge/corner folding for adiabatic edges. Page 6 supports the equal-area circular source mapping. Extracting 'no optimizer or controller' is correct. The method is a 3D layered analytical model, not a numerical 2D grid solver, and the extraction records this as a mismatch."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No NanoTherm R/Matlab code or repository is linked in the PDF. The packet has assets: [] and no pinned files. The only linked resource is thesis ref [15] (page 8), which is a document, not pinned and not code. A bare URL is not evidence, so no executable artifact exists."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Verified: die 16x16x0.15 mm, 15 units, k_Si 150 and k_spreader+TIM 256 W/mK, RMS 0.047 C and max 3.2% (pages 5-6). Contradicted or unresolved: the extraction's architecture field lists a 10x10x3.52 mm spreader as used for the 16 mm Alpha21264 die, which cannot be a valid pairing. The 0.2 mm grid is not stated for Test Case 3 (only the generic Green's function claim and the 50x50 grid for cases 1-2). Total power, ambient Ta, TIM thickness and per-block powers are not given."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No pinned configuration, .flp file, solver input or boundary-condition file exists. Qualitative boundary conditions (isothermal top at Ta, adiabatic edges) are described on pages 3 and 5, but Ta, convection and sink parameters, and the spreader footprint for the 16 mm die are unspecified. The experiment block is custom_2d_steady with an empty floorplan and empty power_w."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The Fig. 6a floorplan and power densities and the Fig. 6b temperature map exist only as graphics. The packet provides pdftotext extraction only and no rendered page images or figure crops, so no decisive figure was visually verified. There are no numeric block coordinates, power values or temperatures. The extraction correctly leaves them null, but this means no floorplan block has same-scenario power. The observable value is null and only the error metrics are published."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.floorplan / experiment.power_w",
+      "reason": "The floorplan is empty and power_w is empty. No block has same-scenario geometry and power, so no 2D reproduction or Studio run can be formed. Generated shelf coordinates or constant power rows would be illustrative assumptions, not published placement or power.",
+      "locator": "extraction.experiment; PDF p.6 Test Case 3, PDF p.7 Fig. 6a"
+    },
+    {
+      "field": "scenario.steady_2d_relevant / experiment.kind=custom_2d_steady",
+      "reason": "The original is a two-layer 3D conduction model (Hankel-domain z-dependence, a 3.52 mm spreader, an isothermal top at z=delta+b, sources at the bottom of the silicon). Labelling it a 2D steady scenario drops a decisive vertical conduction and package feature. It is not supported as a 2D reproduction.",
+      "locator": "PDF p.3 Eqs. 4-9, 14-16; PDF p.5 Sec. IV.B"
+    },
+    {
+      "field": "scenario.architecture",
+      "reason": "The architecture states the 10x10x3.52 mm spreader is used with the 16x16 mm Alpha21264 die. The paper gives the spreader size only for the generic Fourier setup, and it contradicts the 16 mm die. The pairing is an inference, not a published fact.",
+      "locator": "PDF p.5 Sec. IV.B para 1; PDF p.6 Test Case 3"
+    },
+    {
+      "field": "evidence.grid_pitch_m",
+      "reason": "The 0.2 mm grid is stated as a general accuracy finding for chips of 100 mm2 or more and for the 10x10 mm test cases 1-2 (50x50 grid). It is not stated for the 16 mm Test Case 3 run, and scenario.operating_point asserts it as used.",
+      "locator": "PDF p.6 Green's function paragraph and Full Chip Thermal Profile"
+    },
+    {
+      "field": "Fig. 6a / Fig. 6b visual verification",
+      "reason": "The packet has only pdftotext output with garbled figure labels and no figure images. The block names and layout in Fig. 6a and the temperature map in Fig. 6b were not visually verified, and no digitization exists. The 16 labels cannot be confirmed as complete or correctly mapped to the layout.",
+      "locator": "PDF p.7 Fig. 6a-b; extraction.evidence block_coordinates_and_sizes_m"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "The paper observable is a color map with no numeric temperature. The extracted numbers (0.047 C RMS, 3.2%) are error metrics versus COMSOL, not temperatures or a reproducible target. No numeric target exists for validation.",
+      "locator": "PDF p.6 Test Case 3; PDF p.7 Fig. 6b"
+    },
+    {
+      "field": "missing_inputs.linked_assets / artifact_search_status",
+      "reason": "The status 'checked_links_found' overstates what exists. The only link is thesis [15], which is unpinned, was not inspected, and is not code or data. There is no code, data or config artifact.",
+      "locator": "extraction.linked_assets; PDF p.8 ref [15]"
+    },
+    {
+      "field": "scenario.operating_point / ambient",
+      "reason": "The ambient temperature Ta, the TIM thickness, and total chip power are unreported. Without them the absolute temperatures cannot be reproduced.",
+      "locator": "PDF p.3 Eq. 8; PDF p.5-6 Sec. IV.B"
+    }
+  ],
+  "checked_pdf_pages": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "checked_assets": []
+}

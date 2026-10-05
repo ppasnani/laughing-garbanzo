@@ -1,0 +1,67 @@
+{
+  "paper_id": "W3006943355",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block names with x_m, y_m, width_m and height_m for the 4 cores and the cache zones or banks in each layer (Figure 1 is a die floorplan diagram with no numeric dimensions).",
+    "Same-scenario per-block power_rows (watts) for the mem2 workload, and any published rule for splitting total power.",
+    "The gem5, McPAT and CACTI configuration files and the actual power trace per control step.",
+    "The HotSpot configuration: layer thicknesses, material conductivities and capacitances, grid size, heat sink and package parameters, Ramb, Rv, C and ambient temperature.",
+    "Numeric thermal threshold values (the runtime-varying threshold from ref. 19) and the fuzzy controller parameters beyond the membership ranges.",
+    "Numeric data behind Figure 6(a), since the curves are not tabulated and would have to be digitized with stated uncertainty.",
+    "Any code repository, supplementary data or pinned asset for this work. Only the SPEC website and the CC BY license URL are linked (PDF page 12), and neither is a research input.",
+    "Linked asset ref15_specbench is not pinned and available",
+    "Linked asset cc_by_license is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The original system is a 3D stack with TSV-coupled cache layers above a core layer next to the heat sink. A 2D placement with no vertical layers cannot reproduce the super-core vertical heat path or the stacked cache power.",
+      "essential": true
+    },
+    {
+      "reason": "The original observable is a transient maximum-temperature time series (about 200-450 ms) from HotSpot driven by a gem5/McPAT power trace. A steady-state or one-row power trace cannot reproduce the temperature fluctuations or the control dynamics.",
+      "essential": true
+    },
+    {
+      "reason": "The original uses a closed-loop fuzzy DVFS controller with a runtime-varying thermal threshold, plus an Algorithm 1 cache-bank power-gating heuristic. The Studio runner has no equivalent controller or cache reconfiguration, so the 3 degC reduction and fluctuation claims cannot be tested.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling and package details are not published: heat sink, thermal resistances Ramb and Rv, and ambient temperature. The paper also gives no HotSpot configuration (materials, layer thicknesses, grid resolution), so the solver and cooling setup cannot be matched.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives no block geometry (x, y, width, height) and no per-block power for the cores or cache zones. Any placement or power split would be illustrative and not paper-derived.",
+      "essential": true
+    },
+    {
+      "reason": "Leakage-temperature feedback in the original, Pleak depending on T per Eq. (3), is modelled in the paper's own simulations. A fixed-power thermal solve would lack this reliability-relevant coupling.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No pinned packet assets and no Studio package or material assumptions are supplied here, so none are claimed as paper-derived or matched to HotSpot.",
+    "If the runner builds a separate illustrative 2D placement and one-row power trace, its generated coordinates, powers, package and material properties are runner-made assumptions and must be kept distinct from paper facts.",
+    "Temperatures from any illustrative Studio run must not be compared numerically to the paper's Figure 6(a) curves, and no exact replication is claimed."
+  ],
+  "evidence_sha256": "b93791538a6fb3da161f9297ec9980214b26e1c4c8c7395ccdb5a7cb46fff717",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

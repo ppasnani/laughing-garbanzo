@@ -1,0 +1,93 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper text supports the Sniper/McPAT/HotSpot (LifeSim) toolchain and the Algorithm 1 task-migration plus DVFS controller (pp. 7-10). The extraction's experiment.kind 'custom_2d_steady' contradicts the paper's closed-loop transient method and its own steady_2d_relevant=false. The 'CBGA package model' wording is also overstated, because Figure 6 is only a 'typical' CBGA stack adapted from [37]. Nothing in the paper confirms the simulated package used exactly those layers."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets, and the paper has no code, repository, or data-availability statement (pp. 16-18). No LifeSim/Sniper/McPAT/HotSpot modification code or config files were supplied, so none can be verified."
+    },
+    "parameters": {
+      "status": "verified",
+      "note": "Text-verified against the PDF: 2.95 mm core (p.8, Fig 4 p.9), 64 cores, 4 GHz, 32 active cores (p.10), eps 5 C, step 200 MHz, Fthr 3.6 GHz (p.10), threshold range 60-85 C (p.11), Table 4 values (p.11), 100 us wake-up (p.9), 1000-cycle penalty (p.12), and TDP 42 W for the OSP comparison only (p.15). Ambiguities remain: the OSP comparison gives eps = 0.5 without units, and the Table 1 symbol Δf versus ζ in Algorithm 1 is inconsistent. The 10.8 C aggregation is not verified (see findings)."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The HotSpot floorplan file, control period, package/spreader/sink dimensions, L3 block size, and absolute core coordinates are not published. Figure 4 is a schematic extracted only as garbled text, so no layout was visually verified. The Studio package/material assumptions were not supplied. The extraction's floorplan list is empty."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No per-core or per-block power values, no power traces, and no total chip power are published. The extraction has power_w={} and floorplan=[], so no block has same-scenario power. Figure 10 (Tmax/Tavg/Tmin per threshold) and Figure 11 transients were not digitized or visually verified; only axis text was available. The 10.8 C and 13.6 C values come from prose only."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind 'custom_2d_steady' contradicts the paper's transient, closed-loop DTM method, the extraction's own steady_2d_relevant=false, and the essential physical mismatch it lists. Any steady 2D reproduction would not be the paper's scenario. Generated shelf coordinates and constant power rows would be illustrative assumptions, not a reproduction.",
+      "locator": "extraction.experiment.kind vs scenario.steady_2d_relevant and physical_mismatches[0]; paper pp. 6-10"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "The floorplan and power lists are empty. No per-core power, no coordinates, and no total chip power are available, so no block has same-scenario power. The paper's McPAT power is not published (p.8-10), so power rows cannot be supported.",
+      "locator": "extraction.experiment; evidence core_power_w, core_x_m, core_y_m; PDF pp. 8-10"
+    },
+    {
+      "field": "paper_thermal_observable 10.8 C aggregation",
+      "reason": "The extraction asserts that the 10.8 C is the 'maximum across thresholds' and that peak is 'taken over the cores'. The p.15 text says only 'the average peak temperature is reduced by 10.8 C' with no 'up to'; the abstract says 'up to 10.8'. The paper also defines Tmax as the 90th percentile of transient temperature (p.12), not a true peak. The aggregation across thresholds and cores is inferred, and the per-threshold Figure 10 bars were not verified.",
+      "locator": "thermal_observable.aggregation; PDF p.1 abstract, p.12, p.13 Fig 10, p.15 para 1"
+    },
+    {
+      "field": "Figure 10/11/12 verification",
+      "reason": "The decisive figures (Figure 10 temperature/slowdown bars, Figure 11 transients, Figure 12 OSP comparison) are available only as pdftotext axis text. No images or digitization were supplied, so no visual verification of the decisive figure data is possible.",
+      "locator": "PDF pp. 13-15; checked_assets empty"
+    },
+    {
+      "field": "original_setup.solver / physical_mismatches[2] CBGA package",
+      "reason": "The extraction states the HotSpot model uses a CBGA package stack with a ceramic substrate and printed board. The paper shows this only as 'a typical CBGA package (adapted from Figure 2 in [37])' (Fig 6) and Table 4 gives only silicon, spreader, TIM, and sink parameters. There is no confirmation that the simulated package included the ceramic substrate or printed board, and no layer dimensions are given.",
+      "locator": "PDF p.10 Fig 6 caption; p.11 Table 4"
+    },
+    {
+      "field": "scenario.architecture '2D planar die'",
+      "reason": "The paper never says 'monolithic 2D planar die'. This is an inference from the lack of any 3D stacking. It is not an explicit statement.",
+      "locator": "scenario.architecture; no supporting page"
+    },
+    {
+      "field": "scenario.pdf_page",
+      "reason": "The scenario is cited to pdf_page 10, but Table 4 is on p.11, Figure 10 on p.13, and Figure 4 on p.9. The page locator is imprecise for the scenario as stated.",
+      "locator": "scenario.pdf_page vs PDF pp. 9, 11, 13"
+    },
+    {
+      "field": "safe_margin_epsilon / OSP parameters",
+      "reason": "The extraction notes eps = 0.5 and Δf = 200 without units for the OSP comparison. These are unresolved and conflict with eps = 5 C and 200 MHz in the main scenario, so the controller parameters are scenario-dependent.",
+      "locator": "PDF p.10 vs p.15 para 3"
+    },
+    {
+      "field": "code/assets",
+      "reason": "The assets array is empty and no paper-linked repository or supplementary material was found. Claims about code or configs cannot be verified.",
+      "locator": "packet.assets=[]; PDF pp. 16-18"
+    },
+    {
+      "field": "paper internal inconsistency",
+      "reason": "The paper says migration is one-way (active to dark), but the conclusion says task migration works 'by swapping tasks among active and dark cores' (p.15-16). Table 1 uses Δf and Algorithm 1 uses ζ, and line 20 uses M[ti] versus Q. The controller specification is therefore ambiguous and not safely implementable from the text.",
+      "locator": "PDF pp. 6-8, 15-16"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    18
+  ],
+  "checked_assets": []
+}

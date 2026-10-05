@@ -1,0 +1,68 @@
+{
+  "paper_id": "W3035869053",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "Thermal observable needs a valid page, unit, location, and aggregation",
+    "No cited steady/transient regime",
+    "Block-level floorplan (named blocks with x_m, y_m, width_m, height_m) for Processor A",
+    "Per-block power_rows (name and watts) for Processor A; only the 28 W total is published",
+    "Die aspect ratio and die dimensions (only the 195 mm2 area is given)",
+    "Material layer thicknesses and conductivities for the 11 material layers and 4 metal layers",
+    "Thermal grid geometry and discretization used for T1-T7, and the ambient temperature",
+    "Numeric values for Figure 3 worst-case temperatures (digitization needed, with temperature units and axis scale)",
+    "Local and global power-density bound values (b_L, b_U, B_L, B_U) and the global block partition matrix M",
+    "Any paper-linked repository, code, config or pinned asset (the packet assets list is empty; CHOLMOD and Gurobi links are third-party solver references only)",
+    "Power time series or workload trace (none published; the paper is vectorless and steady-state)",
+    "Linked asset cholmod_url is not pinned and available",
+    "Linked asset gurobi_url is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper models a full 3D mesh thermal grid with 11 material layers and 4 metal layers. A 2D Studio model cannot reproduce this vertical stack, so the 3D mismatch is decisive.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's output is a worst-case temperature over an ensemble of power vectors from LP-based vectorless verification. A Studio run uses a single fixed power vector, so the observables are not equivalent.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling is represented only by equivalent heat transfer coefficients (heat sink 3.3e3 and package 2.0e3 W/m2K) with no interposer, TIM or package geometry. It cannot be mapped to a Studio package model without added assumptions.",
+      "essential": true
+    },
+    {
+      "reason": "No block-level floorplan, block dimensions, or per-block powers are published, so no same-scenario geometry and power set exists. Only 28 W total and 195 mm2 total die area are given, and total power cannot be split without a published rule.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's solver (CHOLMOD Cholesky with spectral sparsification and multilevel AMG), optimizer (Gurobi LP), and benchmarks (runtime and error on grids of 25K to 2M nodes) differ from a Studio thermal solver. The paper's temperature outputs are method-comparison artifacts, so a Studio run is not a replication.",
+      "essential": true
+    },
+    {
+      "reason": "The setup is steady-state with no transient, controller or reliability simulation. Thermal integrity verification is only motivated qualitatively and no reliability model is used.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No bundled Studio package/material assumptions are supplied in the packet, so none are asserted or attributed to the paper.",
+    "Since the paper publishes only aggregate power and die area, any Studio run would be a separate illustrative construction at best. Its coordinates and powers would be runner-generated, kept distinct from paper-derived facts, and not compared numerically to the paper's temperatures."
+  ],
+  "evidence_sha256": "0d538a4572260b2457c2f52f4cc8ba81b5322c676b9eaabd19f9642065256e8b",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

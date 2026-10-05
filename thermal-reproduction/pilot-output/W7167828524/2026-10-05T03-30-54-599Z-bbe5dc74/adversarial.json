@@ -1,0 +1,75 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The method claims are supported by the text. HotSpot 6.0 steady state (p.4, p.7), TED+SCBO under 75 C and 300 mm2 (p.7-9), fine-grained uTask orchestration with corner-first thermal mapping (p.5), and average power as energy/(delay x period) (Eq. 19, p.7) all match the PDF. However, the paper's thermal model is a 2.5D interposer stack with NoP, TIM, spreader and heat sink (Fig. 6, p.7). The extraction itself lists this as an essential mismatch, yet it still sets steady_2d_relevant=true and experiment.kind=custom_2d_steady. Those two choices contradict the extraction's own essential mismatches."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, supplementary data or availability statement appears in the supplied pages (pp.1-14). The only URLs are refs [1] and [36] and the arXiv source. The asset list is empty, so there is no pinned evidence for the simulator, the TED+SCBO implementation or the HotSpot configs."
+    },
+    "parameters": {
+      "status": "verified",
+      "note": "Table IV 'Ours' (p.10) matches the extraction: 74.8 C, 59.8 mJ, 2.01 ms, 0.911 yield, EDYP 132.2, 5x4 cores, 1x2 chiplets, 2.3 mm ICS, 240 GB/s, 1024 KB, 208x112. Conditions on p.9 also match: 14 nm, 1.8 GHz, 45 C ambient, 0.4 K/W, 300 mm2, 75 C. The Fig. 11 vector ordering on p.12 is consistent with the XX,YY,Xcut,Ycut reading. These are aggregate parameters only. The 1 KB = 1024 B convention and the EDYP units (mJ*ms) are the extraction's inference, not stated in the paper. Only the Table IV numbers were checked against the extracted text, because no figure images were supplied."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no paper-derived floorplan, block coordinates, block dimensions or per-block power for the selected design. TIM, spreader and heat-sink properties are only cited to TESA [12] (p.7) with no values. Compute-die, I/O-die and interposer areas for the 2-chiplet design are not given. The empty floorplan and power_w in the extraction are consistent with this absence. A generated 2D layout would be an illustrative assumption, not the paper's configuration."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Only totals are tabulated: energy, delay, yield and peak temperature. No per-block power exists for any floorplan block in the same scenario, no transient trace and no hotspot location. Fig. 10(a) and Fig. 10(b) (p.12) are available only as extracted text captions, with no rendered images. They were not visually verified and no digitization was done. The area fractions (49%, 17.6%, 14.2% less buffer area) come from p.12 text only."
+    }
+  },
+  "findings": [
+    {
+      "field": "inter_chiplet_spacing.locator",
+      "reason": "The locator cites the Fig. 11 caption (p.12) as support for the 2.3 mm ICS of the Table IV 'Ours' scenario. That caption describes a different scenario: a 200 mm2 area limit and design [4,4,1,2,2.3,144,112,1024KB,240] with 4x4 cores, 2.27 ms, 60 mJ and yield 0.943. The ICS match is coincidental, so this is a scenario mismatch and the citation is invalid.",
+      "locator": "Extraction evidence 'inter_chiplet_spacing'; PDF p.12 Fig. 11 caption vs PDF p.10 Table IV"
+    },
+    {
+      "field": "scenario.steady_2d_relevant / experiment.kind",
+      "reason": "The extraction marks the scenario as steady_2d_relevant=true with kind custom_2d_steady. The paper's setup is 2.5D multi-chiplet with an interposer, NoP and a TIM/spreader/sink stack. The extraction itself calls this essential and says a 2D single-die runner cannot reproduce it. A 2D reproduction label would hide a decisive 3D/cooling-stack feature.",
+      "locator": "Extraction scenario.steady_2d_relevant; physical_mismatches[0] and [4]; PDF p.7 Fig. 6"
+    },
+    {
+      "field": "block_geometry_x_y_width_height",
+      "reason": "No per-block coordinates or dimensions exist in the paper. Figs. 10(a) and 10(b) were not supplied as images, so no decisive figure was visually verified and no floorplan can be reproduced from the paper.",
+      "locator": "PDF p.12 Fig. 10; pp.1-14 searched"
+    },
+    {
+      "field": "block_power_watts",
+      "reason": "No same-scenario power exists for any floorplan block. Only total energy and delay are tabulated (Table IV, p.10), with no published splitting rule. A constant power row would be an illustrative assumption, not paper data.",
+      "locator": "PDF p.10 Table IV 'Ours'; p.7 Eq. 19"
+    },
+    {
+      "field": "paper_linked_resources",
+      "reason": "No code, config or data assets are supplied, so the code and config checks cannot be verified. The asset list is empty and there is nothing pinned to check.",
+      "locator": "packet.assets=[]; PDF pp.1-14"
+    },
+    {
+      "field": "scenario.architecture (Arch-S)",
+      "reason": "The extraction labels the 'Ours' design as 'Arch-S'. The paper defines Arch-S on p.9 as an architecture supporting fine-grained task orchestration across chiplets, but it never explicitly equates the Table IV 'Ours' design with Arch-S. This is an inference.",
+      "locator": "PDF p.9 Implementation Details; PDF p.10 Table IV"
+    },
+    {
+      "field": "noc_bandwidth",
+      "reason": "Table IV labels 240 GB/s as 'NoC bandwidth', while the p.10 text calls it an 'inter-chiplet link', so the interconnect level is ambiguous. The p.11 text gives 256 GB/s for the exhaustively scanned best design, which is a different design point. The extraction notes this but then stores the value as 'noc_bandwidth' without resolving the NoC vs NoP ambiguity.",
+      "locator": "PDF p.10 Table IV and text; PDF p.11 Section V.E"
+    }
+  ],
+  "checked_pdf_pages": [
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "checked_assets": []
+}

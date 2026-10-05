@@ -1,0 +1,81 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "PDF pp. 3-4 support steady-state HotSpot v7.0 as an RC network with finite-difference solution, uniform power density per block, validation against ANSYS and a thermal test chip, and a 27 C ambient with temperatures reported above ambient. That only verifies the paper's own method. The paper gives no block-versus-grid choice, grid resolution or 2D package definition, so a 2D reproduction method is not specified. 2D power and floorplan are deferred to ref [38], which is not in the packet."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No pinned code or assets were supplied (assets=[]). The HotSpot GitHub URL (ref [45], p. 9) and the arXiv and TVLSI DOIs are bare links. None of them proves that the MemPool-2D HotSpot inputs or scripts exist, and a later repo default is not evidence."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Verified in the text: 4.8x4.8 mm die, 425x425 um tiles, 64 tiles, 4 cores per tile, 50% tile utilization, 40 W total TDP, Rconv 0.17 K/W heatsink to ambient, 50 K/W PCB to ambient, Tmax,2D=46 C. The units are printed as mm2 and um2 and are read as edge lengths. This reading is consistent: 64x0.425^2/0.5 is about 23.1 mm2, close to 4.8^2 = 23.04 mm2. Table I lists only 3D-stack layers sized for 3.95 mm dies, and the heat spreader (5.92 mm) and heatsink (7.9 mm) scale with that die. The paper does not state that these package dimensions apply unchanged to the 4.8 mm 2D die. The 2D die thickness and conductivity are not published. The 1 MiB SPM capacity for the 2D baseline is only inferred from Fig. 10 normalization."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot config, material file, grid settings or boundary-condition files are available, and no pinned asset or Studio package assumptions were given. The 2D package stack beyond the 3D Table I is not defined. The extraction's experiment block is custom_2d_steady with an empty floorplan and empty power_w, so no runnable configuration is supported."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Floorplan block coordinates are not in this paper (deferred to ref [38], not in the packet). There is no per-block power for the 2D scenario: only the 40 W total and the Fig. 3 percentage breakdown, whose legend-to-slice mapping is ambiguous. No digitization into watts exists, so same-scenario power for every floorplan block is absent. Only pdftotext output was supplied. The Fig. 4(a) thermal map and the Fig. 3 pie chart were not visually verified as images, and the 46 C label is verified only through extracted text. Generated shelf coordinates or constant power rows would be illustrative assumptions, not paper data."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.floorplan / experiment.power_w",
+      "reason": "Both are empty, so there is no runnable 2D experiment with per-block power. The 40 W total was never allocated to blocks by any published rule, and the 2D floorplan coordinates are deferred to ref [38], which is not in the packet.",
+      "locator": "PDF p.3 Sec. II ('detailed floorplan ... given in [38]'); extraction.experiment"
+    },
+    {
+      "field": "scenario.steady_2d_relevant",
+      "reason": "It is set true although the extraction itself lists essential mismatches: no floorplan, no per-block power, no 2D die thickness or conductivity, and no 2D package stack. This claim is unsupported and contradicts missing_inputs.",
+      "locator": "extraction.scenario.steady_2d_relevant vs physical_mismatches; PDF p.3"
+    },
+    {
+      "field": "package parameters (TIM, heat spreader, heatsink, C4, etc.)",
+      "reason": "Table I dimensions are for the 3D stack with 3.95x3.95 mm dies, and the spreader and heatsink sizes are 1.5x and 2x that die. Applying them to the 4.8 mm 2D die is an inference. The paper does not say that the 2D case uses the same package.",
+      "locator": "PDF p.3 Table I; evidence fields tim/heat_spreader/heatsink_geometry"
+    },
+    {
+      "field": "heatsink_to_ambient_resistance",
+      "reason": "The 0.17 K/W is stated in the package description. Its application to the 2D case is only inferred, as the extraction's own uncertainty note admits.",
+      "locator": "PDF p.3 Sec. II; evidence heatsink_to_ambient_resistance"
+    },
+    {
+      "field": "per_block_power_rows (Fig. 3)",
+      "reason": "The percentage slices (39/27/13/11/10) are text-extracted only, with a garbled legend mapping. No visual verification of the figure was possible, and no watts can be derived without an unpublished rule. The figure covers only tile-level breakdown, not interconnect routing blocks placed in the floorplan.",
+      "locator": "PDF p.3 Fig. 3"
+    },
+    {
+      "field": "thermal_observable Tmax,2D=46 C",
+      "reason": "The value is supported by the text label on p.3 and the prose on p.4, but the Fig. 4(a) map is not visually confirmed. The hotspot location and the per-block temperatures are unknown, so no spatial observable can be matched.",
+      "locator": "PDF p.3 Fig. 4(a) label; PDF p.4 Sec. III-A"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "The HotSpot GitHub, arXiv and TVLSI DOIs are bare URLs, not pinned assets. They are not evidence that the MemPool-2D inputs, configs or power data exist. The packet assets list is empty.",
+      "locator": "PDF p.9 refs [38],[41],[45]; packet.assets=[]"
+    },
+    {
+      "field": "paper internal inconsistency (note)",
+      "reason": "The text says the logic-die hotspot is 'relatively (3 C) higher' than the memory die, but the stated 57 C versus 55 C is 2 C. This does not affect the 2D baseline, but the paper's own numbers are not fully self-consistent. The 3D values (55/57 C) must not be mixed into the 2D scenario.",
+      "locator": "PDF p.4 Sec. III-A"
+    },
+    {
+      "field": "1 MiB SPM baseline capacity",
+      "reason": "The extraction acknowledges that this is inferred from Fig. 10 normalization to 2D 1MiB and not stated explicitly for the Fig. 4 2D baseline.",
+      "locator": "PDF p.2 Sec. II; PDF p.6 Fig. 10; evidence architecture_workload_operating_point"
+    }
+  ],
+  "checked_pdf_pages": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    9
+  ],
+  "checked_assets": []
+}

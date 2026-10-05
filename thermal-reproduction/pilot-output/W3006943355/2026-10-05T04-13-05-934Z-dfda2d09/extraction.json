@@ -1,0 +1,452 @@
+{
+  "paper_id": "W3006943355",
+  "paper_title": "Fuzzy-Based Thermal Management Scheme for 3D Chip Multicores with Stacked Caches",
+  "artifact_search_status": "checked_links_found",
+  "linked_assets": [
+    {
+      "id": "ref15_specbench",
+      "url": "http://www.specbench.org",
+      "kind": "benchmark suite website (SPEC CPU2006, reference 15); not a code, data or input artifact for this work",
+      "paper_page": 12
+    },
+    {
+      "id": "cc_by_license",
+      "url": "http://creativecommons.org/licenses/by/4.0/",
+      "kind": "license URL (CC BY 4.0); not a research artifact",
+      "paper_page": 12
+    }
+  ],
+  "scenario": {
+    "pdf_page": 10,
+    "figure_or_table": "Figure 6(a): transient maximum temperature while executing the mem2 program set (Baseline vs FLC vs FBTM)",
+    "description": "Transient maximum temperature curves of a 3D-stacked NUCA cache multicore under three thermal management schemes (DVFS baseline, fuzzy-logic controller FLC, and FBTM = fuzzy control plus dynamic cache reconfiguration). Curves are plotted from about 200 to 450 ms on a roughly 75-81 degC axis. The paper reports that the baseline fluctuates by up to 3.5 degrees, while FLC and FBTM hold fluctuation within 0.5 degrees and give about 3 degrees of temperature reduction. The paper publishes no block coordinates, dimensions, or per-block power table.",
+    "architecture": "3D-stacked NUCA cache: one core layer next to the heat sink with four cores (32 KB L1 I and 32 KB L1 D each), plus three stacked L2 cache layers. Each cache layer has 16 banks of 256 KB (CACTI), grouped into four 4-bank cache zones, each stacked above a core and connected by TSVs.",
+    "workload": "SPEC CPU2006 multiprogrammed memory-intensive set mem2 (libquantum, lbm, GemsFDTD, art), run on gem5 with McPAT power traces",
+    "operating_point": "Runtime-varying thermal threshold (per ref. 19). Algorithm 1 uses T = 2M clock cycles and 3% allowable cache miss-rate degradation. Fuzzy controller uses e(n) range [0,3], dT range [-1.5,1.5] and a normalized frequency output. Observable is maximum chip temperature in degC over time (ms), read from the figure at about 75-81 degC. The original solver is HotSpot, a transient grid-based model. The controller is the fuzzy-based DVFS policy with dynamic cache reconfiguration.",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "HotSpot, a grid-based transient compact thermal model. Power traces come from gem5 (with the Ruby memory model) and McPAT, with cache capacities from CACTI (PDF pages 9-10).",
+    "optimizer": "No numerical optimizer. Algorithm 1 is a heuristic dynamic cache reconfiguration that power-gates cache banks using shadow-tag miss-rate prediction, with T = 2M clock cycles, 3% allowable miss-rate degradation and a maximum number of banks that can be shut off (PDF pages 5-6, 9).",
+    "controller": "Fuzzy-based closed-loop DVFS controller, one per super-core. Inputs are the temperature error e(n) in [0,3] and the temperature change rate in [-1.5,1.5], with three triangular membership functions each. The output is a normalized frequency using 9 rules and mean-of-maxima defuzzification. FBTM adds dynamic cache reconfiguration, FLC is the fuzzy controller alone, and the baseline is DVFS from ref. 18 with a runtime-varying thermal threshold from ref. 19 (PDF pages 6-9).",
+    "benchmark": "Selected scenario is Figure 6(a), the SPEC CPU2006 memory-intensive multiprogrammed set mem2 (libquantum, lbm, GemsFDTD, art). It runs on a 4-core 3D-stacked NUCA cache with 3 L2 layers of 16 banks of 256 KB each, and 32 KB L1 I and D caches per core (PDF pages 8-10)."
+  },
+  "thermal_observable": {
+    "value": null,
+    "unit": "degC",
+    "location": "Maximum temperature of the chip. The text calls it the transient maximum temperature of the 3D-stacked multicore, with the exact HotSpot block or layer not stated.",
+    "aggregation": "Maximum over the chip at each control step, plotted over time from about 200 to 450 ms for Baseline, FLC and FBTM. Curves are read from Figure 6(a) on a 75-81 degC axis. The text reports baseline fluctuation up to 3.5 degC, FLC and FBTM fluctuation within 0.5 degC, and about 3 degC reduction. No exact numeric value is tabulated, so the value is null.",
+    "pdf_page": 10
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The original system is a 3D stack with TSV-coupled cache layers above a core layer next to the heat sink. A 2D placement with no vertical layers cannot reproduce the super-core vertical heat path or the stacked cache power.",
+      "essential": true
+    },
+    {
+      "reason": "The original observable is a transient maximum-temperature time series (about 200-450 ms) from HotSpot driven by a gem5/McPAT power trace. A steady-state or one-row power trace cannot reproduce the temperature fluctuations or the control dynamics.",
+      "essential": true
+    },
+    {
+      "reason": "The original uses a closed-loop fuzzy DVFS controller with a runtime-varying thermal threshold, plus an Algorithm 1 cache-bank power-gating heuristic. The Studio runner has no equivalent controller or cache reconfiguration, so the 3 degC reduction and fluctuation claims cannot be tested.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling and package details are not published: heat sink, thermal resistances Ramb and Rv, and ambient temperature. The paper also gives no HotSpot configuration (materials, layer thicknesses, grid resolution), so the solver and cooling setup cannot be matched.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives no block geometry (x, y, width, height) and no per-block power for the cores or cache zones. Any placement or power split would be illustrative and not paper-derived.",
+      "essential": true
+    },
+    {
+      "reason": "Leakage-temperature feedback in the original, Pleak depending on T per Eq. (3), is modelled in the paper's own simulations. A fixed-power thermal solve would lack this reliability-relevant coupling.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No pinned packet assets and no Studio package or material assumptions are supplied here, so none are claimed as paper-derived or matched to HotSpot.",
+    "If the runner builds a separate illustrative 2D placement and one-row power trace, its generated coordinates, powers, package and material properties are runner-made assumptions and must be kept distinct from paper facts.",
+    "Temperatures from any illustrative Studio run must not be compared numerically to the paper's Figure 6(a) curves, and no exact replication is claimed."
+  ],
+  "missing_inputs": [
+    "Block names with x_m, y_m, width_m and height_m for the 4 cores and the cache zones or banks in each layer (Figure 1 is a die floorplan diagram with no numeric dimensions).",
+    "Same-scenario per-block power_rows (watts) for the mem2 workload, and any published rule for splitting total power.",
+    "The gem5, McPAT and CACTI configuration files and the actual power trace per control step.",
+    "The HotSpot configuration: layer thicknesses, material conductivities and capacitances, grid size, heat sink and package parameters, Ramb, Rv, C and ambient temperature.",
+    "Numeric thermal threshold values (the runtime-varying threshold from ref. 19) and the fuzzy controller parameters beyond the membership ranges.",
+    "Numeric data behind Figure 6(a), since the curves are not tabulated and would have to be digitized with stated uncertainty.",
+    "Any code repository, supplementary data or pinned asset for this work. Only the SPEC website and the CC BY license URL are linked (PDF page 12), and neither is a research input."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "architecture.core_count",
+      "block_name": "core layer",
+      "source_value": 4,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section 2 System Model, first paragraph; Section 4 PDF page 8 (four cores)",
+      "provenance": "Paper text: the core layer next to the heat sink has four processor cores. Architecture fact, not a geometry or power value.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.l2_cache_layers",
+      "block_name": "stacked L2 cache layers",
+      "source_value": 3,
+      "source_unit": "layers",
+      "conversion_factor": 1,
+      "normalized_value": 3,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4 Experimental Evaluation, first paragraph (end of page 8)",
+      "provenance": "Paper text: four cores with three L2 cache layers.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.banks_per_cache_layer",
+      "block_name": "cache layer",
+      "source_value": 16,
+      "source_unit": "banks",
+      "conversion_factor": 1,
+      "normalized_value": 16,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section 2, first paragraph",
+      "provenance": "Paper text: every cache layer has 16 cache banks.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.banks_per_cache_zone",
+      "block_name": "cache zone",
+      "source_value": 4,
+      "source_unit": "banks",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section 2, first paragraph",
+      "provenance": "Paper text: every cache zone has four cache banks. Each zone is stacked above a core and its area equals the core area (no numeric dimensions given).",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.l2_bank_capacity",
+      "block_name": "cache bank",
+      "source_value": 256,
+      "source_unit": "KB",
+      "conversion_factor": 1,
+      "normalized_value": 256,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, top of page 9 (CACTI-computed bank capacity)",
+      "provenance": "Paper text: capacity of every cache bank computed by CACTI is 256 KB.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.l1_instruction_cache_per_core",
+      "block_name": "core",
+      "source_value": 32,
+      "source_unit": "KB",
+      "conversion_factor": 1,
+      "normalized_value": 32,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4, first paragraph",
+      "provenance": "Paper text: every core has a 32KB L1 instruction cache.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.l1_data_cache_per_core",
+      "block_name": "core",
+      "source_value": 32,
+      "source_unit": "KB",
+      "conversion_factor": 1,
+      "normalized_value": 32,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 4, first paragraph",
+      "provenance": "Paper text: every core has a 32KB L1 data cache.",
+      "uncertainty": null
+    },
+    {
+      "field": "workload.selected_scenario",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 6(a), caption 'Executing the mem2 program set'; Table 3 on PDF page 9 lists mem2 as libquantum, lbm, GemsFDTD, art",
+      "provenance": "Selected scenario is the SPEC CPU2006 multiprogrammed memory-intensive set mem2 run on gem5/McPAT with HotSpot. Categorical, no numeric value.",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point.algorithm1_time_interval",
+      "block_name": null,
+      "source_value": 2000000,
+      "source_unit": "clock cycles",
+      "conversion_factor": 1,
+      "normalized_value": 2000000,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, paragraph before Figure 6 ('T was set to 2M clock cycles')",
+      "provenance": "Paper text for the Algorithm 1 parameter T.",
+      "uncertainty": null
+    },
+    {
+      "field": "operating_point.allowable_cache_miss_rate_degradation",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.03,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, paragraph before Figure 6",
+      "provenance": "Paper text: allowable degradation percentage in cache miss rate set to 3%.",
+      "uncertainty": null
+    },
+    {
+      "field": "controller.error_input_range_upper",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 3,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3.2 (2) Fuzzy Membership Functions, searching range of e(n) = [0,3]; Figure 5(a) on page 8",
+      "provenance": "Paper text gives the e(n) search range [0,3]. The unit is not stated in the text; degC is assumed because e(n) is a temperature difference.",
+      "uncertainty": "Unit is inferred, not stated."
+    },
+    {
+      "field": "controller.temperature_change_rate_range_lower",
+      "block_name": null,
+      "source_value": -1.5,
+      "source_unit": "unspecified (temperature change rate)",
+      "conversion_factor": 1,
+      "normalized_value": -1.5,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3.2 (2), searching range of the temperature change rate = [-1.5, 1.5]; Figure 5(b) on page 8",
+      "provenance": "Paper text gives the lower bound of the range. The unit is not stated.",
+      "uncertainty": "Unit not stated."
+    },
+    {
+      "field": "controller.temperature_change_rate_range_upper",
+      "block_name": null,
+      "source_value": 1.5,
+      "source_unit": "unspecified (temperature change rate)",
+      "conversion_factor": 1,
+      "normalized_value": 1.5,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3.2 (2), searching range of the temperature change rate = [-1.5, 1.5]; Figure 5(b) on page 8",
+      "provenance": "Paper text gives the upper bound of the range. The unit is not stated.",
+      "uncertainty": "Unit not stated."
+    },
+    {
+      "field": "thermal_observable.maximum_chip_temperature_time_axis_start",
+      "block_name": null,
+      "source_value": 200,
+      "source_unit": "ms",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.2,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 6(a) x-axis, left end of the plotted window",
+      "provenance": "Digitized from the axis tick labels of Figure 6(a).",
+      "uncertainty": "Read from tick labels; the window start is approximate."
+    },
+    {
+      "field": "thermal_observable.maximum_chip_temperature_time_axis_end",
+      "block_name": null,
+      "source_value": 450,
+      "source_unit": "ms",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.45,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 6(a) x-axis, right end of the plotted window",
+      "provenance": "Digitized from the axis tick labels of Figure 6(a).",
+      "uncertainty": "Read from tick labels; the window end is approximate."
+    },
+    {
+      "field": "thermal_observable.maximum_chip_temperature_axis_range_lower",
+      "block_name": null,
+      "source_value": 75,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 75,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 6(a) y-axis, 'Maximum Temperature (℃)' lower tick",
+      "provenance": "Axis limit read from Figure 6(a). It is an axis range, not a reported temperature value.",
+      "uncertainty": "Axis tick only. No numeric curve values were digitized; curve values are not tabulated, so the observable value is null."
+    },
+    {
+      "field": "thermal_observable.maximum_chip_temperature_axis_range_upper",
+      "block_name": null,
+      "source_value": 81,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 81,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 6(a) y-axis, upper tick",
+      "provenance": "Axis limit read from Figure 6(a). It is an axis range, not a reported temperature value.",
+      "uncertainty": "Axis tick only. No numeric curve values were digitized."
+    },
+    {
+      "field": "thermal_observable.transient_maximum_temperature_value",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": "degC",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Figure 6(a) curves for Baseline, FLC and FBTM; text on PDF page 9 (last paragraph) describes the curves",
+      "provenance": "Observable is the transient maximum chip temperature (degC) over time (ms), aggregated as the maximum over the chip at each control step. The exact HotSpot block or layer is not stated and no tabulated values exist.",
+      "uncertainty": "No tabulated values; any digitization of the curves would be uncertain, on the order of 0.5 degC or more."
+    },
+    {
+      "field": "thermal_observable.baseline_fluctuation",
+      "block_name": null,
+      "source_value": 3.5,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 3.5,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, paragraph describing Figure 6 ('fluctuation could be as large as 3.5 degrees')",
+      "provenance": "Paper text for the baseline DVFS peak-to-peak fluctuation in the transient maximum temperature, for the mem2 and com2 sets together.",
+      "uncertainty": "Text does not state whether the value is mem2-specific or applies to both mem2 and com2."
+    },
+    {
+      "field": "thermal_observable.fuzzy_controllers_fluctuation",
+      "block_name": null,
+      "source_value": 0.5,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 0.5,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, paragraph describing Figure 6 ('volatility within 0.5 degrees')",
+      "provenance": "Paper text: FLC and FBTM hold temperature volatility within 0.5 degrees, for the mem2 and com2 sets together.",
+      "uncertainty": "Text does not state whether the value is mem2-specific."
+    },
+    {
+      "field": "thermal_observable.temperature_reduction_vs_baseline",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 3,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, paragraph describing Figure 6 ('achieving about 3 degrees of temperature reduction'); abstract on PDF page 1",
+      "provenance": "Paper text: about 3 degrees of temperature reduction for FLC and FBTM versus baseline. The abstract gives it as an average.",
+      "uncertainty": "Approximate wording ('about'); aggregation across workloads is not specified."
+    },
+    {
+      "field": "secondary_observable.leakage_energy_reduction_fbtm",
+      "block_name": null,
+      "source_value": 41,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.41,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 4, paragraph on Figure 7 ('FBTM saved 41%'); abstract on PDF page 1",
+      "provenance": "Paper text: average leakage energy saving of FBTM normalized to the baseline across test program sets. It is not specific to mem2.",
+      "uncertainty": "Average over sets; not mem2-specific."
+    },
+    {
+      "field": "floorplan.block_geometry",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Figure 1 'Die floorplan of 3D-stacked NUCA cache architecture' on PDF page 3; no dimension table anywhere in PDF pages 1-12",
+      "provenance": "The paper publishes no x, y, width or height for cores, cache zones or banks. Figure 1 is a schematic with no numeric dimensions.",
+      "uncertainty": "Missing input; the floorplan must stay empty."
+    },
+    {
+      "field": "power_rows.per_block_power",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": "W",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, GEM5/McPAT power-trace description on PDF page 9; no power table in PDF pages 1-12",
+      "provenance": "Power comes from gem5 and McPAT traces that are not published. No per-block or total watts appear for mem2, and no splitting rule is given.",
+      "uncertainty": "Missing input; power_rows must stay empty."
+    },
+    {
+      "field": "thermal_config.hotspot_package_materials",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 4, HotSpot described as the thermal simulation platform; Eqs. (1)-(2) on PDF page 3 use Ramb, Rv and Tamb without numeric values",
+      "provenance": "No HotSpot configuration, layer thicknesses, material properties, heat sink parameters, Ramb, Rv or ambient temperature are published.",
+      "uncertainty": "Missing input."
+    },
+    {
+      "field": "linked_resource.specbench",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Reference 15: http://www.specbench.org (accessed on 3 May 2019)",
+      "provenance": "Benchmark suite website for SPEC CPU2006. It is not a code, data or input artifact for this work, and no pinned asset was supplied.",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource.cc_by_license",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Footer: http://creativecommons.org/licenses/by/4.0/",
+      "provenance": "License URL (CC BY 4.0), not a research artifact.",
+      "uncertainty": null
+    },
+    {
+      "field": "pinned_assets.availability",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "Packet field 'assets' is an empty list; no RLPlanner Ascend910 or ATPlace2.5D files and no thermal config are supplied",
+      "provenance": "No pinned packet assets exist, so no asset-derived geometry, power or thermal config evidence can be cited. The paper has no availability statement, code repository or supplementary data.",
+      "uncertainty": null
+    }
+  ]
+}

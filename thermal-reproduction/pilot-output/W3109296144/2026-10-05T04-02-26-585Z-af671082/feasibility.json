@@ -1,0 +1,51 @@
+{
+  "paper_id": "W3109296144",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No paper-linked URLs, repositories, supplementary data or code were found (artifact search: checked, no links); the packet contains no pinned assets (assets array empty), so no config, floorplan or thermal-config files could be inspected.",
+    "Per-core power values in W (McPAT outputs) and power time series or traces are not published.",
+    "Absolute x_m and y_m placement coordinates of the cores (Figure 4 shows only a schematic floorplan) are missing.",
+    "Chip total die dimensions and the L3 cache block size and location are not given.",
+    "The HotSpot floorplan, HotSpot control period, and package dimensions (spreader and sink area) are missing; Table 4 gives only material and convection parameters.",
+    "Digitized numerical values of Tmax/Tavg/Tmin per threshold from Figure 10 and the transient traces from Figure 11 are not provided.",
+    "Details of the Studio package and material assumptions bundled with the runner were not supplied in the packet.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper's result depends on dynamic transient control: closed-loop DTaPO task migration and DVFS, with a 100 us wake-up latency, 1000-cycle migration penalty and cache cold-start effects. A steady-state 2D Studio solve with a fixed placement and a one-row power trace cannot reproduce the controller behavior or the dynamic thermal results.",
+      "essential": true
+    },
+    {
+      "reason": "The paper publishes no per-core or per-block power values, only that McPAT was used. Per-core power cannot be split from a total, since no total chip power or splitting rule is given. Core absolute coordinates are also not published; only the core size (2.95 mm x 2.95 mm) and the chessboard pattern are given.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's solver is the coupled Sniper/McPAT/HotSpot/LifeSim toolchain with a CBGA package: heat spreader, heat sink with R = 0.1 K/W, TIM, ceramic substrate and printed board. A Studio solver with different package/cooling assumptions would not match it. The 3D, interposer and chiplet aspects are not applicable, because the paper uses a monolithic 2D planar die.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer and workload are architecture-level: DVFS levels, task mapping and multi-threaded benchmarks over time-varying power. No optimizer is involved in the Studio setup and no placement optimization is performed. The paper also covers no reliability analysis and no 3D stacking.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "6a1ec8ce3ce7abe37a49ded98287d8df6153f68e9303c2493ebdcd3744436b13",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

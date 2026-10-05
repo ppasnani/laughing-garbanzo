@@ -1,0 +1,65 @@
+{
+  "paper_id": "W2946349917",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block names with x_m, y_m, width_m and height_m for the i5-3337U die or the 18 heat-sources (no floorplan published; die dimensions not stated)",
+    "Per-block power_rows (name and watts), or total chip power and a splitting rule. No watts are published.",
+    "Power time series, or frequency and voltage operating point. These are model inputs only and are not tabulated.",
+    "Thermal boundary conditions and material parameters for the Peltier cooler, PCB and die (Peltier setpoint, hot-side liquid temperature, thermal conductivities)",
+    "Pinned packet assets: assets list is empty and artifact search found no linked resources, with no repository, code, config or supplementary data",
+    "Numeric heat-source centroid coordinates for the 18 heat-sources (only shown graphically in Fig. 8, PDF p.4, with no digitized values)",
+    "Raw IR thermal maps, the 187200-sample dataset and trained LSTM weights (not published)",
+    "LSTM optimizer and loss function (training optimizer not named)",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "No floorplan geometry is published (no block x, y, width, height), and no per-block power in watts. The 18 heat-source centroids lack named blocks and dimensions, and the paper explicitly says it does not use the processor floorplan. A Studio 2D steady-state model cannot be built from the paper's facts, and this is essential.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling mismatch: the experiment uses a rear-mounted Peltier/thermo-electric cooler with a liquid-cooled hot side, and the die front is exposed bare to the IR camera. There is no heat sink or package lid in the measurement, which differs from a typical heat-sink-based chip stack.",
+      "essential": true
+    },
+    {
+      "reason": "Transient and workload mismatch: the result is a dynamic, workload-driven LSTM prediction (60 Hz time series over 52 minutes). No steady-state power map or single operating point is published, so a steady 2D solve does not correspond to the paper's observable.",
+      "essential": true
+    },
+    {
+      "reason": "Solver mismatch: the paper uses data-driven LSTM regression and image processing, not a finite-difference or finite-element thermal solver. Only a simple COMSOL validation of the Laplacian idea is mentioned. A Studio solver would not reproduce the RMSE metric.",
+      "essential": true
+    },
+    {
+      "reason": "The paper reports no 3D stacking, interposer, chiplet, optimizer or reliability evaluation. Reliability (EM, BTI, HCI) is mentioned only as motivation. The die is a single commercial processor, so interposer and placement-optimizer features of the Studio package are not applicable.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No paper-derived floorplan exists, so any Studio run would use a separate illustrative 2D placement with generated coordinates, kept distinct from paper facts.",
+    "Any illustrative run would use the Studio's bundled default package and material assumptions (default die, TIM, heat spreader and boundary conditions). Their values were not supplied in the packet and are not paper-derived.",
+    "Total chip power cannot be split across blocks because the paper publishes no power or splitting rule. Any power would be a one-row illustrative trace, not paper data.",
+    "Temperatures from an illustrative Studio run must not be compared numerically to the paper's RMSE (2.04 to 2.57 degC) or temperature range."
+  ],
+  "evidence_sha256": "a337b2d53bf870df92bcbda2b70db95eae97ab5479a554c84b8e1f102e11fc62",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

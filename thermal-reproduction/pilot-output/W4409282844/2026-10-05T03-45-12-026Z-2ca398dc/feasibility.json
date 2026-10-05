@@ -1,0 +1,113 @@
+{
+  "paper_id": "W4409282844",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": true,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [],
+  "blocking_facts": [
+    "Evidence 50 lacks a valid page or pinned asset locator",
+    "Evidence 51 lacks a valid page or pinned asset locator",
+    "Evidence 52 lacks a valid page or pinned asset locator",
+    "Evidence 68 lacks a valid page or pinned asset locator",
+    "Evidence 69 lacks a valid page or pinned asset locator",
+    "Evidence 73 lacks a valid page or pinned asset locator",
+    "Evidence 74 lacks a valid page or pinned asset locator",
+    "Evidence 78 lacks a valid page or pinned asset locator",
+    "Evidence 79 lacks a valid page or pinned asset locator",
+    "Evidence 83 lacks a valid page or pinned asset locator",
+    "Evidence 84 lacks a valid page or pinned asset locator",
+    "Evidence 88 lacks a valid page or pinned asset locator",
+    "Evidence 89 lacks a valid page or pinned asset locator",
+    "Evidence 93 lacks a valid page or pinned asset locator",
+    "Evidence 94 lacks a valid page or pinned asset locator",
+    "Evidence 98 lacks a valid page or pinned asset locator",
+    "Evidence 99 lacks a valid page or pinned asset locator",
+    "Evidence 103 lacks a valid page or pinned asset locator",
+    "Evidence 104 lacks a valid page or pinned asset locator",
+    "No cited, normalized x_m for CPU2_0",
+    "No cited, normalized y_m for CPU2_0",
+    "No cited, normalized x_m for CPU2_1",
+    "No cited, normalized y_m for CPU2_1",
+    "No cited, normalized x_m for CPU2_2",
+    "No cited, normalized y_m for CPU2_2",
+    "No cited, normalized x_m for CPU2_3",
+    "No cited, normalized y_m for CPU2_3",
+    "No cited, normalized x_m for DRAM_0",
+    "No cited, normalized y_m for DRAM_0",
+    "No cited, normalized x_m for DRAM_1",
+    "No cited, normalized y_m for DRAM_1",
+    "No cited, normalized x_m for DRAM_2",
+    "No cited, normalized y_m for DRAM_2",
+    "No cited, normalized x_m for DRAM_3",
+    "No cited, normalized y_m for DRAM_3",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Final Case 3 chiplet placement (x, y, orientation). Case3.pl holds only (0,0) placeholders and Fig. 5 is image-only.",
+    "Case3 nets file and microbump offset data, which are not included in the pinned packet.",
+    "Per-layer thickness, conductivity and dimensions of the interposer, microbump, TSV, epoxy, TIM, spreader and heatsink. The paper only says they are inherited from refs [6, 36], which are not in the packet.",
+    "Authoritative heatsink convection resistance and spreader/heatsink sizes, since the paper and hotspot.config disagree.",
+    "Studio bundled package and material parameter specification, which is not supplied in the packet.",
+    "Paper-linked code or data availability statement. The paper contains only DOI, vendor and tool URLs, and the pinned repository files do not prove the inputs exist.",
+    "Power time series. Only static per-chiplet watts are published (4 CPU at 150 W each, 4 DRAM at 20 W each in Case3.power).",
+    "Per-chiplet temperatures. Only the single Tmax (92.3 degC) is reported.",
+    "Published final chiplet coordinates are unavailable.",
+    "Linked asset paper_doi is not pinned and available",
+    "Linked asset ref38_comsol is not pinned and available",
+    "Linked asset ref39_cadence_celsius is not pinned and available",
+    "Linked asset ref54_gurobi is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper models a 3D-structured 2.5D package: passive interposer with TSVs, RDL and microbumps, epoxy fill, TIM, spreader and an air-forced heatsink. A simplified 2D steady-state Studio model cannot represent these through-thickness layers explicitly.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's thermal solver is HotSpot 6.0 (64x64 grid) plus a fitted compact model. A different Studio solver and mesh will not reproduce the 92.3 degC value, so numerical comparison is invalid.",
+      "essential": true
+    },
+    {
+      "reason": "No final Case 3 placement is published in the pinned files: Case3.pl holds placeholder (0,0) coordinates for all 8 chiplets. The final layout appears only as Fig. 5 images, so the paper's Tmax cannot be tied to explicit coordinates.",
+      "essential": true
+    },
+    {
+      "reason": "The pinned thermal/hotspot.config does not match the paper text. It sets r_convec to 0.01 K/W versus the paper's 0.1 K/W, and spreader and heatsink sides of 0.03 m and 0.06 m versus the paper's 2x interposer-edge scaling (a 39 mm interposer exceeds a 30 mm spreader). It also sets model_type to block while the paper uses a 64x64 grid, and the secondary path is off. Ambient 318.15 K (45 degC) and the 64x64 grid_rows/grid_cols entries do match the paper.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer (analytical CGD with MILP and Bayesian hyperparameter tuning) and the thermal-penalty objective, which trades off wirelength and Tmax, cannot be replicated by a Studio thermal run. Studio would evaluate a fixed placement only.",
+      "essential": true
+    },
+    {
+      "reason": "The paper treats steady-state worst-case power only, with no transient behavior, no controller, no DTM and no reliability analysis, and it ignores temperature dependence of the parameters. Dynamic or time-varying use of the setup would be outside the published scope.",
+      "essential": false
+    },
+    {
+      "reason": "The paper imposes adiabatic lateral surfaces and the primary heat path only, ignoring the secondary substrate/PCB path. The compact model additionally assumes infinite space and quasi-homogeneous materials, which causes errors at chiplet edges and the interposer boundary (MAE about 1.25 degC for Case 3).",
+      "essential": false
+    },
+    {
+      "reason": "Final chiplet coordinates are not supplied by the reference files; generated shelf positions illustrate a 2D power snapshot, not the published placement.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [
+    "Any Studio run for Case 3 uses a separate illustrative 2D placement and a one-row power trace built from the pinned dimensions and powers (CPU 8 mm x 9 mm at 150 W each, DRAM 9 mm x 9 mm at 20 W each). Its coordinates are generated by the runner and are not paper-derived.",
+    "Generated Studio temperatures are not compared numerically with the paper's 92.3 degC, and exact replication is not claimed.",
+    "Pinned PKU-IDEA/ATPlace_pub@782b89ba6fe494bd50f075dff8019971133ec7c5",
+    "Case3.pl has overlapping or out-of-bounds input positions; a deterministic nonoverlapping shelf layout was generated.",
+    "The public package says final placement is produced by its encrypted kernel, not by the supplied .pl input.",
+    "The power trace is one constant row made from source per-chiplet watts."
+  ],
+  "evidence_sha256": "74c6e35b81c16a703cd0d526f42dbe1e15897feeec6f8c89fd2bb300089fd13d",
+  "simulation_allowed": true,
+  "comparison_valid": false,
+  "reason": "The caveated scientific suitability verdict permits an exploratory Studio run; evidence and physical mismatches remain visible."
+}

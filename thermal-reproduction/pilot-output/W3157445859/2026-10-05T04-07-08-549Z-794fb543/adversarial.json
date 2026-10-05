@@ -1,0 +1,98 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The text supports HotSpot 6.0 steady grid, PrimeTime power extraction, Eq. 3 traffic scaling and Black's model (pp. 2-5). Equations 4-5 are garbled in the extracted text. The extraction record labels the experiment kind custom_2d_steady while also stating steady_2d_relevant=false and listing essential 3D mismatches (TSV and bonding layers, per-layer results, heat sink on top). That labeling contradicts the paper's 3D method."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code repository or pinned asset exists. The flow uses proprietary Synopsys DC/ICC/PrimeTime plus HotSpot 6.0, and C++/Python/Bash scripts are mentioned but not released (p.10). The linked URLs are third-party references only and are not evidence of code."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Table 3 values and Table 2 values were found on pp.7-8 and are correctly normalized. The paper contradicts itself on static power (7.64e-4 W in Table 2 vs 7.66e-4 W in text) and on energy per bit (9.2546e-13 in Table 2 vs 9.246e-13 in text). The Table 2 area of 38,838 um^2 does not reconcile with the 290x290 um (84,100 um^2) footprint. The TSV area of 35,700 um^2 / 10.16% is of unstated scope and does not reconcile with the footprint. The extraction itself flags these inconsistencies. No same-scenario per-router power exists for any floorplan block."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The HotSpot 6.0 configuration is not published: heat sink, convection, ambient, layer thicknesses, grid resolution and die size are all absent. Router x/y coordinates, the 3x3x3 stack geometry and the Monolithic variant's layer parameters are not given. No config asset was supplied. The extraction's claim that Figures 2 and 4 contain no coordinates was not verified visually."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The only numeric thermal observable in text is 351.64 K (78.49 C), the Monolithic maximum on p.9; the arithmetic 78.49+273.15 is correct. Figures 8 and 10, which carry the per-router powers and per-layer temperatures, were not supplied as images, since only pdftotext output and no assets exist. The extraction.experiment floorplan and power_w are empty. The benchmark that produces 351.64 K is unnamed. No digitization was verified."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is labeled custom_2d_steady although the paper's decisive setup is a 3x3x3 TSV/Monolithic stack with bonding layers and per-layer temperatures, and the extraction itself says steady_2d_relevant=false. This must not be treated as a 2D reproduction.",
+      "locator": "extraction.experiment vs scenario.steady_2d_relevant; PDF p.8 Table 3, p.9 Figure 10"
+    },
+    {
+      "field": "floorplan / power_w",
+      "reason": "The floorplan and power_w are empty, so no block has same-scenario power. No router coordinates are published, and any generated 2D shelf coordinates or constant power rows would be illustrative assumptions, not published placement or traces.",
+      "locator": "extraction.experiment; PDF pp.5-8 (Fig. 2, Fig. 4, Fig. 8)"
+    },
+    {
+      "field": "router_static_power",
+      "reason": "Internal paper contradiction: Table 2 gives 7.64e-4 W, while the Section 4.1 text gives 7.66e-4 W. Neither can be preferred without a source; the extraction records both as conflicting.",
+      "locator": "PDF p.7 Table 2 and Section 4.1 paragraph"
+    },
+    {
+      "field": "router_energy_per_data_bit",
+      "reason": "Table 2 gives 9.2546e-13 J/bit, while the text gives 9.246e-13. The Table 2 energy of 2.9022496e-8 J divided by 31360 bits gives 9.2546e-13, which supports the table, but the discrepancy is unresolved in the paper.",
+      "locator": "PDF p.7 Table 2 and Section 4.1"
+    },
+    {
+      "field": "router_area_cost / router footprint",
+      "reason": "The synthesized area of 38,838 um^2 does not match the 290x290 um (84,100 um^2) floorplan in Table 3. The logic of 220x220 um at 80% utilization is also not reconciled with either figure. The physical placement area basis is unsupported.",
+      "locator": "PDF p.7 Table 2 vs p.8 Table 3"
+    },
+    {
+      "field": "tsv_region_area",
+      "reason": "The TSV area of 35,700 um^2 and 10.16% has unknown scope (per router or per layer) and cannot be verified against the footprint. Using it for geometry would be an unsupported assumption.",
+      "locator": "PDF p.8 Table 3"
+    },
+    {
+      "field": "thermal_observable_351.64K",
+      "reason": "The number is text-supported, but the benchmark and layer are not named in the text, and the surrounding TSV-vs-Monolithic comparison depends on Figure 10, which was not visually verified in the supplied evidence. The decisive per-layer values and the hottest-TSV-equals-coolest-Monolithic claim remain unquantified.",
+      "locator": "PDF p.9 Section 4.2 text and Figure 10"
+    },
+    {
+      "field": "per_router_power_synthetic_benchmarks",
+      "reason": "Figures 7 and 8 are not rendered in the supplied evidence, and the extraction digitizes nothing. The per-router power basis (min/max versus per-router values) cannot be confirmed.",
+      "locator": "PDF pp.7-8 Figures 7 and 8"
+    },
+    {
+      "field": "hotspot_configuration",
+      "reason": "HotSpot 6.0 boundary conditions, heat sink and layer stack parameters are missing, so the solver setup cannot be matched. This is an essential missing input.",
+      "locator": "PDF p.8 Section 4.2 and Table 3"
+    },
+    {
+      "field": "pinned_assets/artifacts",
+      "reason": "The assets list is empty, and linked URLs are third-party references (patent, handbooks, NanGate, FreePDK3D45) rather than code or data for this work. A bare URL is not evidence.",
+      "locator": "packet.assets=[]; PDF pp.12-13 refs [8],[11],[12],[25],[26]"
+    },
+    {
+      "field": "equations_4_5",
+      "reason": "The DVFS scaling equations 4-5 are not legible in the extracted text, and the extraction relies on them for the 2 GHz PARSEC scaling claim. This is unverified for the synthetic case; the 500 MHz point is unaffected.",
+      "locator": "PDF pp.5 and 7 (Equations 4-5)"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "checked_assets": []
+}

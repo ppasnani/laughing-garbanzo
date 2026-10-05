@@ -1,0 +1,69 @@
+{
+  "paper_id": "W3086153377",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "Thermal observable needs a valid page, unit, location, and aggregation",
+    "No cited steady/transient regime",
+    "Router and block placement coordinates (x_m, y_m) for the 4x4x4 3D NoC floorplan",
+    "Router and block dimensions (width_m, height_m) and layer thickness",
+    "Per-router power in watts for any PARSEC benchmark; only the average energy per bit is mentioned and no numeric value is given in the text",
+    "HotSpot 6.0 configuration: layer stack, materials, TSV thermal modelling, heat sink and cooling, ambient temperature",
+    "Absolute temperatures and the reference temperature (Tref) value; Figure 9 results are not numerically tabulated in the text",
+    "Black's-model parameters (activation energy Ea, current density exponent n, current density J) and the thresholds theta1 and theta2 found by grid search",
+    "Pinned packet assets: the packet lists no assets (assets array empty), so no config or case files could be inspected",
+    "Paper-linked resources are only reference URLs (NanGate 45nm, FreePDK3D45, PARSEC publication, HotSpot 6.0 report, JPL reliability report, PDF page 15). No code, repository or data availability statement for this work was found, so no inputs are proven to exist",
+    "Power time series or workload trace for the PARSEC runs",
+    "Linked asset ref41_nangate_45nm is not pinned and available",
+    "Linked asset ref42_freepdk3d45 is not pinned and available",
+    "Linked asset ref47_parsec is not pinned and available",
+    "Linked asset ref49_hotspot6 is not pinned and available",
+    "Linked asset ref24_jpl_reliability is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper is a 3D-IC (4x4x4 TSV-based stack) TSV lifetime-reliability study, not a 2D chiplet or interposer thermal experiment. A 2D steady-state Studio model cannot represent the vertical layer coupling, inter-layer temperature differences or TSV thermal paths.",
+      "essential": true
+    },
+    {
+      "reason": "The paper publishes no floorplan: no block coordinates, dimensions or per-block or per-router watts. The power map and floorplan used for HotSpot are not given in the text (Step 2 on PDF page 12 only mentions them), so no same-scenario geometry and power rows can be built.",
+      "essential": true
+    },
+    {
+      "reason": "The workload is derived from PARSEC switching activity from gem5 and varies over time and by benchmark, while the thermal result is only a relative fault rate; no absolute temperature is published to compare against.",
+      "essential": true
+    },
+    {
+      "reason": "The principal contributions are the IaSiG hardware fault-detection method (parity check, isolation and shift) and the grid-search redundancy insertion. These are digital reliability mechanisms with WCET in cycles, not thermal management controllers or optimizers, and do not map to a Studio thermal controller or placement optimizer.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling configuration, package and HotSpot 6.0 parameters (layer stack, TSV thermal modelling, heat sink, ambient) are not published in the paper. The paper notes TSV insertion slightly changes temperature but ignores it.",
+      "essential": true
+    },
+    {
+      "reason": "The reliability metric (Black's-model normalized fault rate and MTTF, Eq. 17-18) and its parameters (Ea, current density exponent) are outside a thermal solver and are not reproduced by a steady-state temperature calculation.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "2fc32395f60a2786b441fa10f0dcae8341b69d1bf42a1d0c95ea72e0d6ec2fb3",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

@@ -1,0 +1,72 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper's method is a purely conductive 3D parametric detailed thermal model reduced by projection (pp. 3, 5-7). The extraction's own solver description matches that. Its mismatch list also marks the 3D vertical paths through die attach, epad and board as essential, and steady_2d_relevant is false. Yet the experiment kind is custom_2d_steady. A 2D Studio run cannot reproduce this 3D package model, so no 2D reproduction claim is supportable."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, supplementary data or availability statement appears on pages 1-16, and the assets list is empty. Reference 24 is a conference paper and ref. 25 is FloTHERM, neither a code artifact. TRIC's internals and the FloTHERM model are not inspectable."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Verified in text on p.12: 9x9 mm2 package, 5x5 mm2 epad, 4x4 mm2 die, four 1x1 mm2 sources at 0.5 W each. The 0.9 mm thickness is inferred from the general Section 2 statement (p.4), not stated in Section 4.4. Missing or unpublished: heat-source coordinates (Figure 13 sketch only), die position, die thickness, die attach, epad thickness, pin and board geometry, and all material conductivities. Layout #2 values are garbled in the extracted text."
+    },
+    "config": {
+      "status": "missing",
+      "note": "Section 4.4 states no ambient temperature or boundary conditions for the multi-source case. The 20 C ambient belongs only to the Figure 11 eTQFP maps, so it must not be assumed here. The experiment floorplan is empty and power_w is empty, so no Studio floorplan, block names or per-block power mapping can be checked. No scenario-matched block-to-power mapping exists for any 2D block, and generated 2D coordinates would be illustrative only."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Table 1 Layout #1 (56.31 x4, 57.06 center, 57.06 max) is legible in the pdftotext output on p.12, and the text confirms ΔTcenter = ΔTmax for layout #1. However, only pdftotext was supplied. Figures 13 and 14 and the Table 1 rendering were never visually verified, and the Table 1 text is duplicated and garbled. The Layout #2 row is unreliable. Layout #1 was chosen for legibility rather than relevance, and its heat-source geometry is not digitized, so the observable cannot be tied to a reconstructable geometry. FloTHERM maps for this case are not shown, so the <3% claim cannot be checked."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment kind is custom_2d_steady, but the same extraction sets steady_2d_relevant=false and lists essential 3D, boundary-condition and solver mismatches. The package is a 3D conductive model with vertical heat paths and board/pin homogenisation, so calling it a 2D reproduction contradicts the stated mismatches.",
+      "locator": "experiment.kind vs scenario.steady_2d_relevant and physical_mismatches; pp.3,12"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "The floorplan and power_w are empty. Powers for HS1-HS4 (0.5 W each) exist only in evidence rows with no corresponding floorplan blocks, so same-scenario block-to-power matching cannot be verified.",
+      "locator": "experiment.floorplan=[]; evidence power_W rows; p.12"
+    },
+    {
+      "field": "heat_source_x_y_m / die_x_m",
+      "reason": "Heat-source and die positions exist only in the Figure 13 sketch, and the supplied evidence contains no rendered image and no digitization. The decisive layout geometry is not visually verified.",
+      "locator": "Figure 13, p.12"
+    },
+    {
+      "field": "thermal_observable (layout #1 dTmax=57.06 K)",
+      "reason": "The value is read from garbled pdftotext (page 12 contains duplicated and overlapping Table 1 text) with no visual check of the table. It is a TRIC output with unspecified boundary conditions, and layout #1 was selected for legibility. Without ambient or boundary conditions it cannot be compared with any 2D result.",
+      "locator": "Table 1, p.12"
+    },
+    {
+      "field": "package_thickness_m",
+      "reason": "The 0.9 mm value comes from the general Section 2 eQFN statement about simulations in Section 4. Section 4.4 does not restate it, so it is an inference rather than a scenario-specific fact.",
+      "locator": "Section 2 eQFN bullet, p.4; Section 4.4, p.12"
+    },
+    {
+      "field": "ambient_temperature_section44 / boundary conditions",
+      "reason": "No ambient or boundary conditions are stated for the Section 4.4 case. The extraction correctly notes the gap, but it remains an unresolved decisive config item, along with missing die thickness and material properties.",
+      "locator": "Section 4.4, p.12; Figure 11 text, p.10"
+    },
+    {
+      "field": "linked_resources",
+      "reason": "No code, config or data assets were found or pinned, so the code, config and data checks cannot be resolved from artifacts. Only the published text is available.",
+      "locator": "assets=[]; pp.1-16"
+    }
+  ],
+  "checked_pdf_pages": [
+    3,
+    4,
+    6,
+    10,
+    11,
+    12,
+    16
+  ],
+  "checked_assets": []
+}

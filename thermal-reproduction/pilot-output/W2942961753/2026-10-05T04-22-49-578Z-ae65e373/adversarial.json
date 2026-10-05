@@ -1,0 +1,63 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text on pp. 15-16 supports HotSpot as a four-layer RC network (die, spreader, sink, convective layer) solved with 4th-order Runge-Kutta. The extraction also says the same solver gives a steady-state result for Fig. 6, but the survey never states that, so that claim is unsupported. Fig. 6 is an illustrative schematic and not a reproducible experiment."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet lists no assets and the paper links no repositories (checked_no_links). No code, solver version or script was verified. Calling the setup a 2D reproduction would need a later repo default or an inferred HotSpot configuration, and neither counts as evidence."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The 0.8 K/W convection resistance and 45 C ambient on p. 16 are general HotSpot or original-validation values, not stated for Fig. 6. No die, spreader, TIM or sink dimensions, no material properties, no block coordinates or sizes, and no power-to-block mapping are given."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no configuration file or published floorplan. The extracted experiment has an empty floorplan and empty power_w while still being labeled custom_2d_steady with steady_2d_relevant true. This is inconsistent: no runnable config can be built from the paper without invented geometry. Any generated shelf coordinates and constant power rows would be illustrative assumptions, not published placement or transient traces."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The seven power labels (0.2, 0.2, 1, 3, 2, 2, 1 W) and seven temperature labels (46, 46.1, 51, 62, 57, 55, 49 C) come only from pdftotext of the Fig. 6 page. Neither set is visually verified. No label maps to a named block, so no block has same-scenario power. The 62 C maximum observable has no location and is not a validated result; the aggregation is an inference. No power time series exists."
+    }
+  },
+  "findings": [
+    {
+      "field": "scenario_selection / experiment",
+      "reason": "Fig. 6 is a schematic with no block names, coordinates, dimensions or power-to-block mapping. The extraction leaves floorplan and power_w empty but keeps kind=custom_2d_steady and steady_2d_relevant=true. No 2D reproduction target exists.",
+      "locator": "Fig. 6, PDF p. 16"
+    },
+    {
+      "field": "power_label / thermal_observable",
+      "reason": "All power and temperature labels were read from pdftotext, not from the rendered figure. Label placement and the label-to-block association are unverified. Since the figure is the decisive evidence, no visual verification is supplied.",
+      "locator": "Fig. 6, PDF p. 16"
+    },
+    {
+      "field": "thermal_observable_max_temperature_label",
+      "reason": "Taking the maximum of the seven labels (62 C) as the observable is an unsupported inference. The paper states no aggregation, location or validation for it.",
+      "locator": "Fig. 6, PDF p. 16"
+    },
+    {
+      "field": "original_setup.solver",
+      "reason": "The extraction says HotSpot is solved 'as a steady-state RC circuit' for the example. The survey only says the differential equations are solved with Runge-Kutta of order 4, and never mentions a steady-state solver for Fig. 6.",
+      "locator": "Section 5.2.2, PDF p. 16"
+    },
+    {
+      "field": "hotspot_convection_resistance / ambient",
+      "reason": "The 0.8 K/W value and 45 C ambient are general HotSpot or original-validation values. They are correctly flagged as not tied to Fig. 6, so they must not be used as parameters for the example.",
+      "locator": "Section 5.2.2, PDF p. 16"
+    },
+    {
+      "field": "assets / code / config / data",
+      "reason": "The packet has no pinned assets and the paper links no repositories, so no code, config or data excerpt can be checked.",
+      "locator": "packet.assets (empty); artifact_search_status=checked_no_links"
+    }
+  ],
+  "checked_pdf_pages": [
+    10,
+    15,
+    16
+  ],
+  "checked_assets": []
+}

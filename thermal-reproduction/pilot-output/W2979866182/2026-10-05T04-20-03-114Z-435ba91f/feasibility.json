@@ -1,0 +1,62 @@
+{
+  "paper_id": "W2979866182",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block geometry for the Tegra X1: x_m, y_m, width_m, height_m of the 4 CPU cores, the GPU cluster and other blocks. The paper has only the qualitative Fig. 1 layout and no dimensions.",
+    "Same-scenario per-block power rows in watts for a spatial model. Table 2 gives per-task CPU/GPU power but no per-block power for a defined floorplan, and total chip power must not be split without a published rule.",
+    "Power time series for the transient scenario. Only per-task average power and execution times are published; the traces behind Figures 5, 8 and 9 are not provided as data.",
+    "Die and package dimensions, material properties, heat spreader/heat sink, and ambient temperature for the experiment (not stated).",
+    "No pinned packet assets are supplied (assets list empty). The only paper-linked URLs are the publisher DOI (PDF p.1), the Linux CFS documentation (PDF p.25) and cpuburn (PDF p.25); none are code, config or data repositories for this experiment, and no repository URL proves its inputs exist.",
+    "Digitized values of Figures 5-9 (temperature versus time) are not available as numeric data; only the in-text figures such as 60.7, 66.7, 72.9 C, 61.5 vs 63.6 C are available.",
+    "The tabulated Table 1 coupling matrix (C/W) is not extracted into a geometry-based thermal model, and no rule maps it to floorplan blocks.",
+    "Linked asset doi_3358235 is not pinned and available",
+    "Linked asset ref20_linux_cfs_doc is not pinned and available",
+    "Linked asset ref23_cpuburn is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "No floorplan geometry is published: no block x, y, width or height, no die size, no layout coordinates. Fig. 1 is only a qualitative layout schematic. A block-geometry thermal model cannot be built from the paper alone, and no pinned packet asset supplies it.",
+      "essential": true
+    },
+    {
+      "reason": "The original method is a lumped RC thermal-coupling model identified empirically plus real hardware measurement. It is not a spatial 2D or 3D finite-difference/finite-element solver, so a Studio spatial solver would be a different solver class and results cannot be compared numerically with the paper.",
+      "essential": true
+    },
+    {
+      "reason": "The workload is transient and time-varying: periodic jobs, priority inversions and co-scheduling. The published power data are per-task average CPU/GPU power values (Table 2) with no per-block power time series, so a one-row steady power trace would not reproduce the paper's transient dynamics.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer (T-WFD task-to-core assignment) and the controller (online co-scheduling with inversion budgets, hardware DVFS throttling at 65 C, CPU frequency 1.7 to 0.5 GHz) are scheduling-level mechanisms with no floorplan or placement analog in a thermal Studio.",
+      "essential": true
+    },
+    {
+      "reason": "Real packaging and cooling are not specified in detail: Tegra X1 package, heat spreader, board, passive heat sink and ambient temperature. Only the aggregate chip thermal resistance of 1.15 C/W (from a Nvidia design guide) is given, with the fan off. Thermal-resistance-matrix coefficients (Table 1) are core-level and not material or geometry parameters.",
+      "essential": true
+    },
+    {
+      "reason": "No 3D stacking or interposer is involved. The Tegra X1 is a monolithic 2D SoC, so 3D and interposer mismatches do not apply. Reliability (MTTF, 1.52x lifetime) and cooling-cost ($15.6 per chip) are derived analytically and are not Studio outputs.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "4e65783996857f123f8aa42580c291ed979ed9cd8f6816b93ef3b3b8c4a2c3f1",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

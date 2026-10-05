@@ -1,0 +1,494 @@
+{
+  "paper_id": "W2946670511",
+  "paper_title": "An Overview of Thermal Challenges and Opportunities for Monolithic 3D ICs",
+  "manifest_status": "downloaded",
+  "source_url": "https://content.openalex.org/works/W2946670511.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "d771122d92e55e5bcfb595e05976f8316329b4c64694453a8f2a71ca589b1460",
+  "pdf_pages": 7,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:22:47.874Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W2946670511",
+    "paper_title": "An Overview of Thermal Challenges and Opportunities for Monolithic 3D ICs",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 4,
+      "figure_or_table": "Section 3.1 text and Figure 4 (thermal maps of TSV-based 3D IC and Mono3D IC with four upper-tier hot spots and one bottom-tier hot spot)",
+      "description": "Two-tier flip-chip Mono3D IC compared with a similarly sized two-tier TSV-based 3D IC in HotSpot-6.0. The 10 mm x 10 mm chip has one 400 um x 400 um hot spot at the center of the bottom tier and four 400 um x 400 um hot spots in the upper tier. Background power densities are 25 W/cm2 (bottom tier) and 30 W/cm2 (upper tier). Interconnects receive 5% of total tier power, 20% of which goes to the TSVs. Each hot spot has a power density of 750 W/cm2. Hot spot coordinates and per-block watts are not published.",
+      "architecture": "Two-tier flip-chip Mono3D IC (thin tiers, ILD, MIVs not modeled) versus TSV-based 3D IC (4 TSV arrays of 5 mm x 200 um x 33 um, bonding layer), with the heat sink mounted on top of the bottom tier; 10 mm x 10 mm die",
+      "workload": "Synthetic steady-state hot spot power-density maps (not an application workload); background plus hot spot power densities",
+      "operating_point": "Steady-state; hot spots 750 W/cm2, background 25 W/cm2 (bottom) and 30 W/cm2 (upper); maximum on-chip temperature kept below 110 C; TSV-based upper-tier hot spots about 109 C, bottom tier about 38 C cooler; Mono3D hot spots about 77 C with a roughly 4 C difference between tiers",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "HotSpot-6.0 architectural-level steady-state thermal simulator (grid-based, with heterogeneous in-layer modeling used for TSVs; 100 x 100 grids per layer cited in Section 3.3), PDF page 4",
+      "optimizer": "None. The paper is an overview and simulation study with no placement or floorplan optimizer in the selected scenario; floorplanning and partitioning optimizers are only discussed as related work or future opportunities (PDF pages 3 and 6-7).",
+      "controller": "None. No runtime thermal controller is used in the selected scenario; runtime task allocation and operating-mode control are mentioned only qualitatively as opportunities (PDF page 7).",
+      "benchmark": "Synthetic hot spot power-density scenario (PDF page 4, Section 3.1, Figure 4). The 10 mm x 10 mm two-tier flip-chip Mono3D IC is compared with a TSV-based 3D IC. There is one 400 um x 400 um hot spot at the center of the bottom tier and four in the upper tier, each at 750 W/cm2. Background power density is 25 W/cm2 for the bottom tier and 30 W/cm2 for the upper tier. Interconnects get 5% of tier power, 20% of which goes to the TSVs. This is not an application workload."
+    },
+    "thermal_observable": {
+      "value": 77,
+      "unit": "degC",
+      "location": "Hot spot locations on the bottom tier of the two-tier Mono3D IC (approximate, from the text describing Figure 4c/4d). The upper-tier hot spot value for the TSV-based 3D IC is about 109 degC.",
+      "aggregation": "Approximate hot spot temperature read from steady-state HotSpot thermal maps (maximum or hot spot level), reported as ~77 degC in the text. The tier-to-tier variation in the Mono3D IC is about 4 degC, versus up to 38 degC in the TSV-based IC.",
+      "pdf_page": 4
+    },
+    "physical_mismatches": [
+      {
+        "reason": "3D stacked two-tier Mono3D and TSV-based structure (thin tiers, ILD or bonding layer, vertical inter-tier coupling and heat sink on top of the bottom tier). A 2D single-layer Studio model cannot reproduce vertical inter-tier heat flow, the upper-tier vs bottom-tier temperature difference, or TSV and MIV effects.",
+        "essential": true
+      },
+      {
+        "reason": "The paper models TSV arrays (4 arrays of 5 mm x 200 um x 33 um) and metal layers 1-8 with interconnect Joule heating (5% of tier power, 20% of which to TSVs). A 2D Studio model has no equivalent interconnect or TSV heating.",
+        "essential": true
+      },
+      {
+        "reason": "Hot spot coordinates for the four upper-tier hot spots and the per-block watts are not published, so no complete same-scenario floorplan and power set exists. Only dimensions (400 um x 400 um) and power densities are given (hot spot watts could be derived as density x area, but positions are missing).",
+        "essential": true
+      },
+      {
+        "reason": "The cooling configuration (heat sink and heat spreader parameters, convection resistance, ambient temperature) is not specified in the paper, and the paper's heat path runs through the bottom tier. A Studio package with a different cooling stack would give different temperatures.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's solver is HotSpot-6.0 with multi-layer heterogeneous grids. The Studio solver and its grid and material treatment differ, so temperatures cannot be compared numerically.",
+        "essential": true
+      },
+      {
+        "reason": "The selected scenario is steady-state only, with no transient power trace, controller, optimizer or reliability analysis. A transient one-row trace would be purely illustrative.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "Any Studio run would be a separate illustrative 2D placement built from the published dimensions (10 mm x 10 mm die, 400 um x 400 um hot spots) and power densities, with generated coordinates kept distinct from paper-derived facts.",
+      "Studio's bundled package and material assumptions (default silicon, TIM, heat spreader/sink, ambient and convection settings) are used instead of the paper's HotSpot-6.0 stack, whose parameters are not published.",
+      "Power would be a one-row constant (steady-state) trace.",
+      "Studio results would not be numerically compared with the paper's ~77 degC and ~109 degC values.",
+      "No exact replication of the paper is claimed."
+    ],
+    "missing_inputs": [
+      "Coordinates (x_m, y_m) of the four upper-tier hot spots and the bottom-tier center hot spot, as the paper only says center and, for other scenarios, quadrant centers.",
+      "Per-block power rows (named watts); only power densities are published (hot spot 750 W/cm2, backgrounds 25 and 30 W/cm2).",
+      "HotSpot configuration files, layer stack thicknesses and material properties, heat sink, heat spreader and ambient parameters (no linked code, config or repository was found; artifact_search_status checked_no_links).",
+      "Layer files (floorplan files per layer) and the power trace files used in HotSpot.",
+      "Exact numeric thermal map data for Figure 4 (only approximate values in the text; any digitized figure values would carry uncertainty).",
+      "No pinned packet assets are supplied (assets list is empty), so there are no RLPlanner or ATPlace2.5D files or thermal configs."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "chip_width",
+        "block_name": "chip",
+        "source_value": 10,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.01,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, paragraph 'To study the thermal behavior of the two ICs, we model a 10 mm x 10 mm chip'",
+        "provenance": "Published text; dimension of the modeled two-tier chip in the selected scenario (Figure 4 case)",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_height",
+        "block_name": "chip",
+        "source_value": 10,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.01,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'we model a 10 mm x 10 mm chip'",
+        "provenance": "Published text; chip footprint in the selected scenario",
+        "uncertainty": null
+      },
+      {
+        "field": "hot_spot_width",
+        "block_name": "hot_spot (bottom center and four upper-tier)",
+        "source_value": 400,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.0004,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'All of the hot spots are of size 400 um x 400 um'",
+        "provenance": "Published text; hot spot size in the selected scenario",
+        "uncertainty": null
+      },
+      {
+        "field": "hot_spot_height",
+        "block_name": "hot_spot (bottom center and four upper-tier)",
+        "source_value": 400,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.0004,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'All of the hot spots are of size 400 um x 400 um'",
+        "provenance": "Published text; hot spot size in the selected scenario",
+        "uncertainty": null
+      },
+      {
+        "field": "hot_spot_power_density",
+        "block_name": "hot_spot",
+        "source_value": 750,
+        "source_unit": "W/cm2",
+        "conversion_factor": 10000,
+        "normalized_value": 7500000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'we assign each hot spot a power density of 750 W/cm2'",
+        "provenance": "Published text; the power density is given, per-block watts are not published. Converted to W/m2 (1 W/cm2 = 10000 W/m2).",
+        "uncertainty": "Per-block watts not published; could only be derived as density x area (not asserted here)."
+      },
+      {
+        "field": "background_power_density_bottom_tier",
+        "block_name": "bottom tier background",
+        "source_value": 25,
+        "source_unit": "W/cm2",
+        "conversion_factor": 10000,
+        "normalized_value": 250000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'bottom and upper tiers consume a background power density of 25 and 30 W/cm2'",
+        "provenance": "Published text; background power density for the bottom tier",
+        "uncertainty": null
+      },
+      {
+        "field": "background_power_density_upper_tier",
+        "block_name": "upper tier background",
+        "source_value": 30,
+        "source_unit": "W/cm2",
+        "conversion_factor": 10000,
+        "normalized_value": 300000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'bottom and upper tiers consume a background power density of 25 and 30 W/cm2'",
+        "provenance": "Published text; background power density for the upper tier",
+        "uncertainty": null
+      },
+      {
+        "field": "interconnect_power_fraction",
+        "block_name": "interconnects",
+        "source_value": 5,
+        "source_unit": "percent of total tier power",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.05,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'we assign 5% of the total power consumed by the tiers to the interconnects'",
+        "provenance": "Published text; interconnect power share (20% of it assigned to the TSVs)",
+        "uncertainty": null
+      },
+      {
+        "field": "tsv_power_fraction_of_interconnect",
+        "block_name": "TSVs",
+        "source_value": 20,
+        "source_unit": "percent of interconnect power",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.2,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'Of that 5%, we assign 20% to the TSVs'",
+        "provenance": "Published text; applies to the TSV-based IC",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_mono3d_hot_spot_temperature",
+        "block_name": "Mono3D bottom tier hot spots",
+        "source_value": 77,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 77,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, text describing Figures 4c and 4d, 'reaching a temperature of ~77 C'; Figure 4 on PDF page 5",
+        "provenance": "Published approximate text value from HotSpot-6.0 steady-state thermal maps; hot spot level temperature in the Mono3D IC",
+        "uncertainty": "Approximate ('~77 C') text value; aggregation (max or hot spot level) not exactly defined; no digitization of the figure performed."
+      },
+      {
+        "field": "thermal_observable_tsv_upper_tier_hot_spot_temperature",
+        "block_name": "TSV-based 3D IC upper tier hot spots",
+        "source_value": 109,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 109,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'hot spots in the upper tier reach very high temperatures (~109 C) in the TSV-based 3D IC'",
+        "provenance": "Published approximate text value from HotSpot-6.0 steady-state thermal maps (Figure 4a,b on PDF page 5)",
+        "uncertainty": "Approximate text value; hot spot-level aggregation not strictly defined."
+      },
+      {
+        "field": "thermal_observable_tsv_tier_difference",
+        "block_name": "TSV-based 3D IC bottom vs upper tier",
+        "source_value": 38,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 38,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'same locations on the bottom tier are approximately 38 C cooler'",
+        "provenance": "Published approximate text value; temperature difference between tiers at the same locations in the TSV-based IC",
+        "uncertainty": "Approximate ('approximately 38 C'); text value only."
+      },
+      {
+        "field": "thermal_observable_mono3d_tier_difference",
+        "block_name": "Mono3D IC bottom vs upper tier",
+        "source_value": 4,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 4,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'temperature distribution among the two tiers varies up to only ~4 C'",
+        "provenance": "Published approximate text value; maximum inter-tier temperature variation in the Mono3D IC",
+        "uncertainty": "Approximate ('~4 C'); text value only."
+      },
+      {
+        "field": "tsv_array_dimensions",
+        "block_name": "TSV arrays (4)",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'we model the TSVs as 4 TSV arrays, each of dimension 5 mm x 200 um x 33 um (length x width x height)'",
+        "provenance": "Published geometry for the TSV-based comparison IC (5 mm x 200 um x 33 um per array); it is a 3D structure feature, not mapped to a 2D floorplan block and not used as a floorplan value",
+        "uncertainty": "Three-dimensional TSV geometry; no position given."
+      },
+      {
+        "field": "hot_spot_positions",
+        "block_name": "four upper-tier hot spots and bottom-tier center hot spot",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1, 'place a hot spot at the center of the bottom tier and 4 hot spots in the upper tier' (upper-tier coordinates not given; Figure 3 on PDF page 4 shows top view only)",
+        "provenance": "Only the bottom-tier center location is described in text; the upper-tier hot spot x_m, y_m coordinates are not published numerically, so no floorplan coordinates are asserted.",
+        "uncertainty": "Missing source values; Figure 3 would require digitization and was not digitized."
+      },
+      {
+        "field": "per_block_power_watts",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "PDF page 4, Section 3.1; no per-block watts published; PDF page 1-7 contain no repository, code or supplementary links; no pinned packet assets supplied",
+        "provenance": "Searched all 7 PDF pages; the paper gives only power densities. Total chip power is not split, and no watts are invented.",
+        "uncertainty": "Missing source values."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The text supports HotSpot-6.0 steady-state simulation of a 10x10 mm two-tier flip-chip Mono3D IC against a TSV-based IC (PDF p.4). The extraction's own mismatch list marks the 3D tier stack, bonding layer/ILD, TSVs and heat sink on the bottom tier as essential. The experiment kind is custom_2d_steady, so a 2D reproduction would contradict the decisive vertical-coupling mechanism. The extraction also mixes Section 3.3 details (metal layers 1-8, 100x100 grids) into the Section 3.1 scenario."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No code, repository, supplementary link or pinned asset exists in the 7 PDF pages. The assets list is empty, and the HotSpot layer files and scripts used are not available."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Text-stated values match PDF p.4: 10 mm chip, 400 um hot spots, 750 W/cm2, backgrounds 25/30 W/cm2, 5% interconnect power with 20% to TSVs, TSV array 5mm x 200um x 33um, ~109/~77/~38/~4 C. The unit conversions are arithmetically correct. Still missing: hot spot coordinates, per-block watts, layer thicknesses and materials, and the TSV positions. The ~77 C value is ambiguous (bottom-tier hot spots vs both tiers) and approximate. The Figure 4 values were not visually verified."
+      },
+      "config": {
+        "status": "missing",
+        "note": "The heat sink, spreader, convection resistance, ambient temperature, layer stack and HotSpot config/grid settings for the Section 3.1 run are not published. The 100x100 grid and metal layers 1-8 come from Section 3.3 (p.6) and are not shown to apply to Figure 4."
+      },
+      "data": {
+        "status": "missing",
+        "note": "There are no same-scenario floorplan blocks or per-block power rows (floorplan and power_w are empty). Upper-tier hot spot positions are not numeric, and Figure 3/4 images are not supplied. Generated 2D shelf coordinates and constant power rows would be illustrative assumptions, not published placement or transient traces."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment (custom_2d_steady)",
+        "reason": "The decisive observables (inter-tier coupling, ~38 C vs ~4 C tier difference, TSV/bonding-layer effects) are 3D phenomena. A 2D reproduction would contradict the paper's physics, and the extraction itself flags this as essential.",
+        "locator": "PDF p.4 Section 3.1; physical_mismatches"
+      },
+      {
+        "field": "solver (100 x 100 grids per layer)",
+        "reason": "The 100x100 grid figure appears only in the Section 3.3 runtime remark. Attributing it to the Section 3.1 Figure 4 scenario with a p.4 locator is unsupported.",
+        "locator": "PDF p.6 Section 3.3 vs extraction original_setup.solver (cites p.4)"
+      },
+      {
+        "field": "physical_mismatches (metal layers 1-8)",
+        "reason": "Metal layers 1-8 and linear interconnect power distribution belong to Section 3.3. Section 3.1 says only that all metal layers are modeled, so mixing the two is a scenario mismatch.",
+        "locator": "PDF p.4 Section 3.1 vs p.6 Section 3.3"
+      },
+      {
+        "field": "thermal_observable_mono3d_hot_spot_temperature",
+        "reason": "The text says hot spots on the upper tier lead to similar hot spots on the bottom tier reaching ~77 C, which is ambiguous about which tier and which aggregation. Figure 4c/4d was not visually verified and the value is approximate, so the observable is not decisively verified.",
+        "locator": "PDF p.4 Section 3.1; Figure 4 on p.5 (image not supplied)"
+      },
+      {
+        "field": "hot_spot_positions / floorplan",
+        "reason": "Upper-tier hot spot coordinates were not digitized from Figure 3, and the floorplan list and power_w are empty. No block has same-scenario power, so floorplan completeness is not satisfied.",
+        "locator": "PDF p.4 Figure 3; experiment.floorplan=[]"
+      },
+      {
+        "field": "tsv_array_dimensions",
+        "reason": "The source_value and unit fields are null although the dimensions are published in the text (5 mm x 200 um x 33 um). The record is internally inconsistent, and the TSV positions are unknown.",
+        "locator": "PDF p.4 Section 3.1"
+      },
+      {
+        "field": "cooling configuration",
+        "reason": "The heat sink, spreader, convection and ambient settings are not specified in the paper. Any cooling stack used would be an assumption, so temperatures cannot be compared with the paper's.",
+        "locator": "PDF p.4 Section 3.1 and Figure 2 on p.4"
+      },
+      {
+        "field": "checked_assets",
+        "reason": "No pinned assets or figure images were supplied. Figures 3, 4 and 5-8 contain only garbled pdftotext axis labels, so no decisive figure was visually verified.",
+        "locator": "packet.assets=[]; PDF pp.4-6"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W2946670511",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Coordinates (x_m, y_m) of the four upper-tier hot spots and the bottom-tier center hot spot, as the paper only says center and, for other scenarios, quadrant centers.",
+      "Per-block power rows (named watts); only power densities are published (hot spot 750 W/cm2, backgrounds 25 and 30 W/cm2).",
+      "HotSpot configuration files, layer stack thicknesses and material properties, heat sink, heat spreader and ambient parameters (no linked code, config or repository was found; artifact_search_status checked_no_links).",
+      "Layer files (floorplan files per layer) and the power trace files used in HotSpot.",
+      "Exact numeric thermal map data for Figure 4 (only approximate values in the text; any digitized figure values would carry uncertainty).",
+      "No pinned packet assets are supplied (assets list is empty), so there are no RLPlanner or ATPlace2.5D files or thermal configs.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "3D stacked two-tier Mono3D and TSV-based structure (thin tiers, ILD or bonding layer, vertical inter-tier coupling and heat sink on top of the bottom tier). A 2D single-layer Studio model cannot reproduce vertical inter-tier heat flow, the upper-tier vs bottom-tier temperature difference, or TSV and MIV effects.",
+        "essential": true
+      },
+      {
+        "reason": "The paper models TSV arrays (4 arrays of 5 mm x 200 um x 33 um) and metal layers 1-8 with interconnect Joule heating (5% of tier power, 20% of which to TSVs). A 2D Studio model has no equivalent interconnect or TSV heating.",
+        "essential": true
+      },
+      {
+        "reason": "Hot spot coordinates for the four upper-tier hot spots and the per-block watts are not published, so no complete same-scenario floorplan and power set exists. Only dimensions (400 um x 400 um) and power densities are given (hot spot watts could be derived as density x area, but positions are missing).",
+        "essential": true
+      },
+      {
+        "reason": "The cooling configuration (heat sink and heat spreader parameters, convection resistance, ambient temperature) is not specified in the paper, and the paper's heat path runs through the bottom tier. A Studio package with a different cooling stack would give different temperatures.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's solver is HotSpot-6.0 with multi-layer heterogeneous grids. The Studio solver and its grid and material treatment differ, so temperatures cannot be compared numerically.",
+        "essential": true
+      },
+      {
+        "reason": "The selected scenario is steady-state only, with no transient power trace, controller, optimizer or reliability analysis. A transient one-row trace would be purely illustrative.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "Any Studio run would be a separate illustrative 2D placement built from the published dimensions (10 mm x 10 mm die, 400 um x 400 um hot spots) and power densities, with generated coordinates kept distinct from paper-derived facts.",
+      "Studio's bundled package and material assumptions (default silicon, TIM, heat spreader/sink, ambient and convection settings) are used instead of the paper's HotSpot-6.0 stack, whose parameters are not published.",
+      "Power would be a one-row constant (steady-state) trace.",
+      "Studio results would not be numerically compared with the paper's ~77 degC and ~109 degC values.",
+      "No exact replication of the paper is claimed."
+    ],
+    "evidence_sha256": "ce110c70a3afe9df243941df54fab116223904a858fd2d73f53ce9a5de8208e3",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "2D screening label: not_2d_applicable. Studio did not run (simulation status: skipped). The input gate and scientific gate both failed, simulation_allowed is false, and comparison_valid is false. The selected scenario is Section 3.1 / Figure 4 of W2946670511: a two-tier flip-chip Mono3D IC versus a TSV-based 3D IC in HotSpot-6.0, 10 mm x 10 mm, with 400 um x 400 um hot spots at 750 W/cm2 and backgrounds of 25 and 30 W/cm2. The experiment kind is custom_2d_steady. That means a steady run with no transient trace, but no floorplan blocks or power_w rows were supplied, so the input validity check failed (\"A custom experiment needs 1–128 blocks and a power_w object\"). No bundled EV6/GCC adaptation and no pinned Ascend910 or ATPlace assets with a generated placement were used, so no illustrative input.flp or one-row input.ptrace exists, and there is no source commit or generated-placement assumption to report. No Studio temperatures exist, so nothing can be compared with the paper's approximate ~77 degC (Mono3D hot spots), ~109 degC (TSV-based upper-tier hot spots), ~38 degC tier difference in the TSV-based IC, or ~4 degC tier difference in the Mono3D IC. Even if a run were forced, the same location, aggregation, regime and boundary assumptions would not match, so only qualitative sensitivity could be discussed: vertical inter-tier coupling and TSV/interconnect heating are what drive the paper's tier-to-tier differences, and a 2D model cannot represent them. The verdict is gated by the feasibility decision and input validity, and it does not claim exact replication or numerical agreement with the paper.",
+    "limitations": [
+      "Studio was not run; there is no thermal result, input.flp, input.ptrace, or Studio artifact to assess.",
+      "The paper scenario is a 3D two-tier stack (Mono3D vs TSV-based) with vertical inter-tier heat flow, TSV arrays and interconnect heating; a 2D single-layer model cannot represent these (essential mismatch).",
+      "Hot spot coordinates for the four upper-tier hot spots and the bottom-tier hot spot placement beyond 'center' are not published, and per-block watts are not given; only densities and sizes are available.",
+      "The HotSpot-6.0 configuration (layer stack, materials, heat sink, spreader, convection, ambient) is not published, and the cooling path differs from any Studio default package; no code, config or repository links were found.",
+      "The paper's ~77 degC and ~109 degC values are approximate text values with undefined aggregation (maximum vs hot spot level) and location, and the solver, grid and boundary assumptions differ from Studio; numerical comparison is invalid.",
+      "The adversarial methods, code, parameters, config and data checks are unresolved, the reviewer did not approve all extracted claims, and the independent page/asset review is pending.",
+      "No pinned assets (Ascend910, ATPlace, RLPlanner) were supplied, so no source commit or generated-placement assumption applies.",
+      "The scenario is steady-state only with no transient trace, controller or optimizer; any one-row trace would be purely illustrative and would not support exact replication.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Coordinates (x_m, y_m) of the four upper-tier hot spots and the bottom-tier center hot spot, as the paper only says center and, for other scenarios, quadrant centers.",
+      "Per-block power rows (named watts); only power densities are published (hot spot 750 W/cm2, backgrounds 25 and 30 W/cm2).",
+      "HotSpot configuration files, layer stack thicknesses and material properties, heat sink, heat spreader and ambient parameters (no linked code, config or repository was found; artifact_search_status checked_no_links).",
+      "Layer files (floorplan files per layer) and the power trace files used in HotSpot.",
+      "Exact numeric thermal map data for Figure 4 (only approximate values in the text; any digitized figure values would carry uncertainty).",
+      "No pinned packet assets are supplied (assets list is empty), so there are no RLPlanner or ATPlace2.5D files or thermal configs.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "3D stacked two-tier Mono3D and TSV-based structure (thin tiers, ILD or bonding layer, vertical inter-tier coupling and heat sink on top of the bottom tier). A 2D single-layer Studio model cannot reproduce vertical inter-tier heat flow, the upper-tier vs bottom-tier temperature difference, or TSV and MIV effects.",
+      "The paper models TSV arrays (4 arrays of 5 mm x 200 um x 33 um) and metal layers 1-8 with interconnect Joule heating (5% of tier power, 20% of which to TSVs). A 2D Studio model has no equivalent interconnect or TSV heating.",
+      "Hot spot coordinates for the four upper-tier hot spots and the per-block watts are not published, so no complete same-scenario floorplan and power set exists. Only dimensions (400 um x 400 um) and power densities are given (hot spot watts could be derived as density x area, but positions are missing).",
+      "The cooling configuration (heat sink and heat spreader parameters, convection resistance, ambient temperature) is not specified in the paper, and the paper's heat path runs through the bottom tier. A Studio package with a different cooling stack would give different temperatures.",
+      "The paper's solver is HotSpot-6.0 with multi-layer heterogeneous grids. The Studio solver and its grid and material treatment differ, so temperatures cannot be compared numerically.",
+      "The selected scenario is steady-state only, with no transient power trace, controller, optimizer or reliability analysis. A transient one-row trace would be purely illustrative.",
+      "Any Studio run would be a separate illustrative 2D placement built from the published dimensions (10 mm x 10 mm die, 400 um x 400 um hot spots) and power densities, with generated coordinates kept distinct from paper-derived facts.",
+      "Studio's bundled package and material assumptions (default silicon, TIM, heat spreader/sink, ambient and convection settings) are used instead of the paper's HotSpot-6.0 stack, whose parameters are not published.",
+      "Power would be a one-row constant (steady-state) trace.",
+      "Studio results would not be numerically compared with the paper's ~77 degC and ~109 degC values.",
+      "No exact replication of the paper is claimed."
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper's method (PWL-model MPC DTM with sampling-based MOR, Kalman filter, 1 s closed-loop control, rising and falling cases) is supported by text on pages 3-8. But experiment.kind='custom_2d_steady' contradicts the extraction's own steady_2d_relevant=false and its essential physical_mismatches. The scenario is transient, closed-loop, leakage-nonlinear and package-resolved (1612-order RC model), so it cannot be called a 2D steady reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository or availability statement appears on pages 1-10. The packet has no assets. The only links are the PTM device-model page (ref [23], page 9) and the author-hosted paper PDF, and neither is evidence of controller, plant or thermal-solver code."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Several scalars are confirmed as printed: 70 C target, 20 C ambient, 1 s step, 0.01 s golden step, 20x20 grid, 25 grids per core, order 1612 reduced to 32, 60 W on core11 (MOR test only), 3 sampling points. The summary range 'tracking differences of 0.209 to 0.438 C for PWL' is contradicted by Table I, whose maximum PWL value is 0.448 (rise, 3 points, Nc=3/Np=4). The note that Table I 'prints 0.209 and 0.21 elsewhere' is unsupported: the table prints 0.209 and 0.210 for other columns. The leakage polynomial coefficients, MPC weight R, Kalman settings and Taylor point and switching-time values are not published."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No numeric chip or core dimensions, no core block coordinates, and no package layer thicknesses, materials, TIM, heat sink or convection boundary conditions are provided. Fig. 3 on page 6 is a schematic only. It was not visually verified as an image because the evidence is pdftotext output and no assets were supplied, and it carries no scale to digitize. No Studio package or material assumptions are supplied."
+    },
+    "data": {
+      "status": "missing",
+      "note": "floorplan=[] and power_w={}, so no floorplan block has same-scenario power. The Wattch/SPEC power traces, benchmark identities and random core assignment are unpublished. 'Several watts per core' is qualitative, 60 W is a MOR test input, and the NoC figure is an upper bound. Fig. 5 (core22 transient) and Fig. 4 are not provided as digitizable data. The headline 0.209 C is verified in text-extracted Table I (page 8) and the page 8 prose, but its per-core and per-step aggregation is not available."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is 'custom_2d_steady' with an empty floorplan and no power. This contradicts steady_2d_relevant=false and the essential mismatches (transient closed-loop MPC, nonlinear leakage feedback, 1612-order packaged model, no published block geometry or power). A 2D steady reproduction would omit decisive transient, leakage and package features and would use invented shelf geometry and constant power.",
+      "locator": "extraction.experiment; extraction.scenario.steady_2d_relevant; physical_mismatches; pdf pages 6-8"
+    },
+    {
+      "field": "scenario.operating_point",
+      "reason": "The stated range 'tracking differences of 0.209 to 0.438 C for PWL' is wrong. Table I shows PWL rise 3 points at Nc=3/Np=4 as 0.448, and also 0.439 for Nc=5. The maximum is 0.448, not 0.438.",
+      "locator": "pdf page 8, Table I, rise case PWL (3 points) rows"
+    },
+    {
+      "field": "evidence.thermal_observable_tracking_difference.uncertainty",
+      "reason": "The claim that 'Table I prints 0.209 and 0.21 elsewhere in the text' is not supported. Table I prints 0.209 for 11 points and 0.210 for 9 points at fall Nc=3/Np=4. The prose says 0.209 only. No '0.21' appears.",
+      "locator": "pdf page 8, Table I and discussion text"
+    },
+    {
+      "field": "geometry and power",
+      "reason": "Core coordinates, sizes and per-core power are absent. No block name has a same-scenario power value, and the 60 W core11 step and the NoC bound are explicitly unusable as scenario power rows. Fig. 3 and Fig. 5 were not visually verified, since only text extraction was supplied and no assets are pinned.",
+      "locator": "extraction.missing_inputs; evidence block_geometry_x_y_width_height, per_core_power_rows; pdf pages 6-7"
+    },
+    {
+      "field": "code/config/data availability",
+      "reason": "The assets list is empty, and the PTM link and the author-hosted PDF do not provide controller code, thermal config or power data. Nothing is pinned to support replication.",
+      "locator": "packet.assets=[]; pdf page 9 ref [23]; pdf page 1"
+    },
+    {
+      "field": "scenario.operating_point",
+      "reason": "Nc=1/Np=1 is listed as an operating point, while page 3 states Np > Nc for the MPC definition. The paper itself uses Nc=Np=1 in Table I and Fig. 5, so the horizon definition and the tested cases are not fully consistent and should be flagged rather than assumed.",
+      "locator": "pdf page 3 (Eq. 7 text); pdf page 7 Fig. 5 caption; pdf page 8 Table I"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "checked_assets": []
+}

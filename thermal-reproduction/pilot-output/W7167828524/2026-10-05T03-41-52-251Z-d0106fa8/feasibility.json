@@ -1,0 +1,64 @@
+{
+  "paper_id": "W7167828524",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-block floorplan coordinates x_m, y_m and dimensions width_m, height_m for the 5x4 core, 1x2 chiplet design. Only an area breakdown (Fig. 10(a)) and a thermal map (Fig. 10(b)) are given graphically, not as numeric geometry.",
+    "Per-block power values (watts) for the selected design. Only energy (59.8 mJ) and delay (2.01 ms) are given, and total power must not be split without a published rule.",
+    "HotSpot configuration files, material property values and layer thicknesses (TIM, heat spreader, heat sink, interposer).",
+    "Code, repository, configuration or supplementary data. No availability statement or URL is present in the paper packet, and no pinned assets were supplied.",
+    "Final placement, I/O die size and power time series. The workload power is only an averaged quantity and is not published.",
+    "Exact die and interposer dimensions. The 300 mm2 interposer area is a constraint, not a published geometry.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The packet has no pinned assets or paper-linked resources (artifact search found no links; assets list empty). No per-block coordinates, dimensions or power values are published for the selected design, so no complete floorplan or power input exists.",
+      "essential": true
+    },
+    {
+      "reason": "The paper models a 2.5D system with an interposer, BEOL layers, micro-bumps, a TIM/heat spreader/heat sink stack and distributed NoP power. A simple 2D steady-state Studio model cannot reproduce this stack or the interposer-level D2D heat coupling. Compute dies and an I/O die are separate, with ICS-dependent lateral coupling.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's thermal result comes from workload-averaged component power from its own energy/latency simulator, with fine-grained task mapping. A one-row illustrative power trace has no equivalent of this, so the paper's workload-derived power distribution cannot be reproduced.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer (TED+SCBO) and design-space search are outside a thermal-solver runner. Only a single design point could be evaluated, not the DSE result.",
+      "essential": false
+    },
+    {
+      "reason": "No transient behavior, runtime controller or DVFS is modeled in the paper, which is steady-state only. Reliability and yield are modeled analytically, not thermally. This is a mismatch only if the Studio assumes transient dynamics.",
+      "essential": false
+    },
+    {
+      "reason": "3D stacking is explicitly out of scope (future work, PDF page 13). The cooling model is a fixed 0.4 K/W convection resistance with 45 C ambient and TESA-derived materials, which may differ from Studio defaults.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Any Studio run would be a separate illustrative 2D placement, not a replication of the paper's HotSpot 6.0 result.",
+    "Generated coordinates would be kept distinct from paper-derived facts, and any one-row power trace would be an assumption.",
+    "Studio package/material assumptions (die, interposer, TIM, spreader, heat sink properties and boundary conditions) are not extracted here. The paper does not publish its HotSpot material values, which are cited from TESA [12].",
+    "Studio temperatures must not be compared numerically to the paper's 74.8 C."
+  ],
+  "evidence_sha256": "6b1d47fed2367cab97cb615d4a8d2f854e0a821602bee2674efc83faa91eeb53",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

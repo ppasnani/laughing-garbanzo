@@ -1,0 +1,685 @@
+{
+  "paper_id": "W3109296144",
+  "paper_title": "DTaPO: Dynamic Thermal-Aware Performance Optimization for Dark Silicon Many-Core Systems",
+  "manifest_status": "downloaded",
+  "source_url": "https://mdpi-res.com/d_attachment/electronics/electronics-09-01980/article_deploy/electronics-09-01980.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "78fabcf2cd55491b4aaea83280949af87939f99dcb8937b71c50f111c46ddd56",
+  "pdf_pages": 18,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:04:12.155Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3109296144",
+    "paper_title": "DTaPO: Dynamic Thermal-Aware Performance Optimization for Dark Silicon Many-Core Systems",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 10,
+      "figure_or_table": "Section 4.1 and Table 4; Figure 10 (slowdown and Tmax/Tavg/Tmin across DTM techniques and thresholds); Figure 4 (floorplan)",
+      "description": "DTaPO (task migration plus DVFS) evaluated on a simulated 64-core NoC many-core system, with 32 active and 32 dark cores in a chessboard pattern. The workload mixes radix, ocean, blackscholes and bodytrack with 8 threads each. Thresholds range from 60 to 85 C, compared against DVFS-only and no-DTM baselines. Core size is 2.95 mm x 2.95 mm. No per-core power values or absolute core coordinates are published in the paper text.",
+      "architecture": "64-core homogeneous 22 nm NoC many-core (8x8 mesh, 4 GHz max, 32 KB L1-I/L1-D, 512 KB L2 per core, 8 MB L3 per 8 cores), 2D planar die, HotSpot ceramic BGA package stack with heat spreader and heat sink",
+      "workload": "Mix of Splash-2 radix and ocean and PARSEC blackscholes and bodytrack, 8 threads each, run on 32 active cores",
+      "operating_point": "Threshold temperatures 60-85 C (epsilon 5 C, frequency step 200 MHz, Fthr 3.6 GHz), ambient 318.15 K, 50% dark silicon",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "LifeSim toolchain: Sniper performance simulation, McPAT power estimation (22 nm), and HotSpot (HotSpot 6.0 cited) transient thermal simulation with a stacked ceramic BGA package model (Section 4.1, PDF pp. 8-10, Table 4 on p. 11)",
+      "optimizer": "No formal numerical optimizer. DTaPO is a heuristic runtime algorithm (Algorithm 1, p. 8) that minimizes makespan subject to Ti < Tthr for all cores (Eq. 3, p. 7). Parameters epsilon = 5 C, frequency step = 200 MHz and Fthr = 3.6 GHz were set empirically (p. 10).",
+      "controller": "DTaPO: periodic threshold-based dynamic thermal management. It sees transient core temperatures, migrates tasks one way from hot active cores to cooler dark cores within an LLC-sharing cluster, and falls back to stepwise DVFS when no cooler core is available. The 64 cores sit in an 8x8 mesh with a 50% chessboard active/dark pattern (pp. 5-8).",
+      "benchmark": "64-core 22 nm NoC many-core system with 32 active and 32 dark cores. Workload mix: Splash-2 radix and ocean plus PARSEC blackscholes and bodytrack, 8 threads each (Table 3, p. 10). Thresholds 60-85 C are compared against DVFS-only and no-DTM baselines (Figure 10, p. 13). A separate 10-application comparison against OSP uses TDP = 42 W (Figure 12, p. 15)."
+    },
+    "thermal_observable": {
+      "value": 10.8,
+      "unit": "degC (reduction in average peak temperature of DTaPO relative to DVFS-only; a delta, not an absolute temperature)",
+      "location": "Per-core transient temperatures of the simulated 64-core chip, with peak taken over the cores. The paper states the maximum and minimum are represented by the 90th and 10th percentiles of the fluctuating transient temperatures.",
+      "aggregation": "Average of 10 repeated runs over the four-application mix, with the reduction reported as the maximum across thresholds (60-85 C). Text on p. 15 and abstract p. 1; per-threshold Tmax/Tavg/Tmin bars are shown in Figure 10 (p. 13) and have not been digitized. A separate 13.6 degC peak reduction vs OSP is reported for the 10-application comparison.",
+      "pdf_page": 15
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The paper's result depends on dynamic transient control: closed-loop DTaPO task migration and DVFS, with a 100 us wake-up latency, 1000-cycle migration penalty and cache cold-start effects. A steady-state 2D Studio solve with a fixed placement and a one-row power trace cannot reproduce the controller behavior or the dynamic thermal results.",
+        "essential": true
+      },
+      {
+        "reason": "The paper publishes no per-core or per-block power values, only that McPAT was used. Per-core power cannot be split from a total, since no total chip power or splitting rule is given. Core absolute coordinates are also not published; only the core size (2.95 mm x 2.95 mm) and the chessboard pattern are given.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's solver is the coupled Sniper/McPAT/HotSpot/LifeSim toolchain with a CBGA package: heat spreader, heat sink with R = 0.1 K/W, TIM, ceramic substrate and printed board. A Studio solver with different package/cooling assumptions would not match it. The 3D, interposer and chiplet aspects are not applicable, because the paper uses a monolithic 2D planar die.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer and workload are architecture-level: DVFS levels, task mapping and multi-threaded benchmarks over time-varying power. No optimizer is involved in the Studio setup and no placement optimization is performed. The paper also covers no reliability analysis and no 3D stacking.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "No paper-linked URLs, repositories, supplementary data or code were found (artifact search: checked, no links); the packet contains no pinned assets (assets array empty), so no config, floorplan or thermal-config files could be inspected.",
+      "Per-core power values in W (McPAT outputs) and power time series or traces are not published.",
+      "Absolute x_m and y_m placement coordinates of the cores (Figure 4 shows only a schematic floorplan) are missing.",
+      "Chip total die dimensions and the L3 cache block size and location are not given.",
+      "The HotSpot floorplan, HotSpot control period, and package dimensions (spreader and sink area) are missing; Table 4 gives only material and convection parameters.",
+      "Digitized numerical values of Tmax/Tavg/Tmin per threshold from Figure 10 and the transient traces from Figure 11 are not provided.",
+      "Details of the Studio package and material assumptions bundled with the runner were not supplied in the packet."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "core_width_m",
+        "block_name": "core",
+        "source_value": 2.95,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00295,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section 4.1 Experimental Setup, para 1: 'The size of each core is 2.95 mm × 2.95 mm'; also Figure 4 on PDF page 9",
+        "provenance": "Paper text; per-core dimension for the simulated 64-core DTaPO system. No absolute x_m/y_m coordinates are published.",
+        "uncertainty": "Core size only. It is unclear whether the L1/L2 caches are included in the 2.95 mm tile. The L3 block size is not given."
+      },
+      {
+        "field": "core_height_m",
+        "block_name": "core",
+        "source_value": 2.95,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00295,
+        "pdf_page": 9,
+        "asset_id": null,
+        "locator": "Figure 4 'Floorplan of the simulated many-core system', 2.95 mm dimension labels; Section 4.1 on PDF page 8",
+        "provenance": "Paper figure label and text; same scenario as the width.",
+        "uncertainty": "Figure 4 is a schematic with no absolute coordinates."
+      },
+      {
+        "field": "core_x_m",
+        "block_name": "core",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 9,
+        "asset_id": null,
+        "locator": "Figure 4 (schematic only); no table or text gives coordinates",
+        "provenance": "Not published. Only the 8x8 mesh and the chessboard active/dark pattern (p. 6) are described.",
+        "uncertainty": "Missing input. Any placement coordinates must be generated by the runner and labelled illustrative."
+      },
+      {
+        "field": "core_y_m",
+        "block_name": "core",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 9,
+        "asset_id": null,
+        "locator": "Figure 4 (schematic only)",
+        "provenance": "Not published.",
+        "uncertainty": "Missing input."
+      },
+      {
+        "field": "core_power_w",
+        "block_name": "core",
+        "source_value": null,
+        "source_unit": "W",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 9,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF pp. 8-9: power profile 'calculated using McPAT for 22-nm technology'; no values are given",
+        "provenance": "Per-core power is not published. Total chip power is also not published, and no splitting rule is given, so no power split is permitted.",
+        "uncertainty": "Missing input. No power_rows can be derived."
+      },
+      {
+        "field": "l3_block_dimensions_and_power",
+        "block_name": "L3",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 10: 'The L3 cache's power was excluded'",
+        "provenance": "L3 cache is shown in Figure 4 (p. 9) but has no published size or location. Its power is excluded from the HotSpot input.",
+        "uncertainty": "Missing input."
+      },
+      {
+        "field": "number_of_cores",
+        "block_name": null,
+        "source_value": 64,
+        "source_unit": "cores",
+        "conversion_factor": 1,
+        "normalized_value": 64,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section 4.1 para 1 and Table 2 (PDF p. 9)",
+        "provenance": "Paper text; 8x8 mesh NoC.",
+        "uncertainty": null
+      },
+      {
+        "field": "active_cores",
+        "block_name": null,
+        "source_value": 32,
+        "source_unit": "cores",
+        "conversion_factor": 1,
+        "normalized_value": 32,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 10: 'simulated on 64 cores, where 32 cores are active and 32 cores are dark'; p. 6 says 50% active",
+        "provenance": "Paper text; chessboard pattern.",
+        "uncertainty": null
+      },
+      {
+        "field": "max_frequency",
+        "block_name": null,
+        "source_value": 4,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 4000000000,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section 4.1 para 1; Table 2 (PDF p. 9)",
+        "provenance": "Paper text; maximum core frequency.",
+        "uncertainty": null
+      },
+      {
+        "field": "threshold_temperature_range_low",
+        "block_name": null,
+        "source_value": 60,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 60,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 11, first lines: 'ranged from 60 to 85 °C'; Table 5 (p. 12)",
+        "provenance": "Paper text; DTaPO threshold sweep, lower bound.",
+        "uncertainty": null
+      },
+      {
+        "field": "threshold_temperature_range_high",
+        "block_name": null,
+        "source_value": 85,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 85,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 11; Figure 10 (p. 13)",
+        "provenance": "Paper text; DTaPO threshold sweep, upper bound.",
+        "uncertainty": null
+      },
+      {
+        "field": "safe_margin_epsilon",
+        "block_name": null,
+        "source_value": 5,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 5,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 10: 'ε, Δf, and Fthr are set to 5 °C, 200 MHz and 3.6 GHz'",
+        "provenance": "Paper text; empirically determined controller parameter.",
+        "uncertainty": "The OSP comparison on p. 15 reports Δf = 200 and ε = 0.5 without units; this is ambiguous."
+      },
+      {
+        "field": "frequency_step",
+        "block_name": null,
+        "source_value": 200,
+        "source_unit": "MHz",
+        "conversion_factor": 1000000,
+        "normalized_value": 200000000,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 10",
+        "provenance": "Paper text; DVFS step.",
+        "uncertainty": null
+      },
+      {
+        "field": "threshold_frequency_Fthr",
+        "block_name": null,
+        "source_value": 3.6,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 3600000000,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 10",
+        "provenance": "Paper text; controller parameter.",
+        "uncertainty": null
+      },
+      {
+        "field": "ambient_temperature",
+        "block_name": null,
+        "source_value": 318.15,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 318.15,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4, 'Ambient temperature 318.15 K'",
+        "provenance": "Paper table; HotSpot configuration. Equals 45 degC.",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_thickness",
+        "block_name": "silicon die",
+        "source_value": 0.15,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.00015,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4, 'Thickness of the chip'",
+        "provenance": "Paper table; HotSpot configuration.",
+        "uncertainty": null
+      },
+      {
+        "field": "silicon_thermal_conductivity",
+        "block_name": "silicon die",
+        "source_value": 100,
+        "source_unit": "W/(m·K)",
+        "conversion_factor": 1,
+        "normalized_value": 100,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4",
+        "provenance": "Paper table; HotSpot configuration.",
+        "uncertainty": null
+      },
+      {
+        "field": "silicon_specific_heat",
+        "block_name": "silicon die",
+        "source_value": 1750000,
+        "source_unit": "J/(m3·K)",
+        "conversion_factor": 1,
+        "normalized_value": 1750000,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4, 'Silicon specific heat 1.75 × 10^6'",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_sink_convection_resistance",
+        "block_name": "heat sink",
+        "source_value": 0.1,
+        "source_unit": "K/W",
+        "conversion_factor": 1,
+        "normalized_value": 0.1,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4",
+        "provenance": "Paper table; HotSpot configuration.",
+        "uncertainty": "Heat sink and spreader physical dimensions are not published."
+      },
+      {
+        "field": "heat_sink_convection_capacitance",
+        "block_name": "heat sink",
+        "source_value": 140.4,
+        "source_unit": "J/K",
+        "conversion_factor": 1,
+        "normalized_value": 140.4,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_spreader_thermal_conductivity",
+        "block_name": "heat spreader",
+        "source_value": 400,
+        "source_unit": "W/(m·K)",
+        "conversion_factor": 1,
+        "normalized_value": 400,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_spreader_specific_heat",
+        "block_name": "heat spreader",
+        "source_value": 3550000,
+        "source_unit": "J/(m3·K)",
+        "conversion_factor": 1,
+        "normalized_value": 3550000,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4, '3.55 ×10^6'",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "interface_material_thickness",
+        "block_name": "thermal interface material",
+        "source_value": 20,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00002,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "interface_material_thermal_conductivity",
+        "block_name": "thermal interface material",
+        "source_value": 4,
+        "source_unit": "W/(m·K)",
+        "conversion_factor": 1,
+        "normalized_value": 4,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "interface_material_specific_heat",
+        "block_name": "thermal interface material",
+        "source_value": 4000000,
+        "source_unit": "J/(m3·K)",
+        "conversion_factor": 1,
+        "normalized_value": 4000000,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 4, '4 × 10^6'",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "package_stack",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Figure 6 'Stacked layers in a typical CBGA package (adapted from Figure 2 in [37])'",
+        "provenance": "HotSpot layers: heat sink, spreader, TIM, silicon bulk, interconnect, C4 pads/underfill, ceramic substrate, CBGA joint, printed board. Descriptive only.",
+        "uncertainty": "The layer dimensions of the non-silicon layers are not published. The Studio bundled package/material assumptions were not supplied in the packet."
+      },
+      {
+        "field": "wake_up_latency",
+        "block_name": null,
+        "source_value": 100,
+        "source_unit": "us",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.0001,
+        "pdf_page": 9,
+        "asset_id": null,
+        "locator": "Section 4.1, PDF p. 9: 'adding 100 µs'",
+        "provenance": "Paper text; dynamic transient controller overhead modeled in Sniper.",
+        "uncertainty": null
+      },
+      {
+        "field": "task_migration_penalty",
+        "block_name": null,
+        "source_value": 1000,
+        "source_unit": "cycles",
+        "conversion_factor": 1,
+        "normalized_value": 1000,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.2, PDF p. 12, first para after the list",
+        "provenance": "Paper text; fixed penalty per migration.",
+        "uncertainty": null
+      },
+      {
+        "field": "paper_thermal_observable_peak_temperature_reduction_vs_DVFS",
+        "block_name": null,
+        "source_value": 10.8,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 10.8,
+        "pdf_page": 15,
+        "asset_id": null,
+        "locator": "Section 4.2, PDF p. 15, para 1: 'average peak temperature is reduced by 10.8 °C'; Abstract on PDF p. 1; Figure 10 on p. 13",
+        "provenance": "Paper text. Delta in the average peak (10 runs) transient core temperature, DTaPO vs DVFS-only, for the four-application mix on the 64-core chip, maximum across thresholds. Tmax/Tmin are the 90th/10th percentiles of the transient temperatures (p. 10).",
+        "uncertainty": "This is a temperature difference, not an absolute temperature. It is not digitized per threshold, and the Figure 10 bars are not digitized."
+      },
+      {
+        "field": "paper_thermal_observable_peak_reduction_vs_OSP",
+        "block_name": null,
+        "source_value": 13.6,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 13.6,
+        "pdf_page": 15,
+        "asset_id": null,
+        "locator": "Section 4.2, PDF p. 15, last para; Figure 12b",
+        "provenance": "Paper text. Maximum peak temperature reduction vs OSP across 10 SPLASH2/PARSEC applications, which is a different workload set from the four-application scenario.",
+        "uncertainty": "Separate comparison. Not combined with the four-application scenario data."
+      },
+      {
+        "field": "TDP_for_OSP_comparison",
+        "block_name": null,
+        "source_value": 42,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 42,
+        "pdf_page": 15,
+        "asset_id": null,
+        "locator": "Section 4.2, PDF p. 15: 'The value of TDP was set to 42 W as in [27]'",
+        "provenance": "Paper text; constraint for the OSP comparison only. It is not a per-core power, and its use as a total power split is not published.",
+        "uncertainty": "Applies only to the OSP comparison scenario, not to the selected threshold-sweep scenario. It must not be split among cores."
+      },
+      {
+        "field": "linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 18,
+        "asset_id": null,
+        "locator": "Reviewed all 18 pages. Back matter (pp. 16-18): Author Contributions, Funding, Conflicts of Interest, References. No Data Availability statement or repository URL.",
+        "provenance": "No paper-linked code, data, or supplementary resources found. Only reference-list URLs (ITRS, Intel datasheet, ACPI) and the source PDF/DOI. The packet's assets array is empty, so no asset inspection was possible.",
+        "uncertainty": "Missing or absent assets are listed in missing_inputs. No repository existence is claimed."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The paper text supports the Sniper/McPAT/HotSpot (LifeSim) toolchain and the Algorithm 1 task-migration plus DVFS controller (pp. 7-10). The extraction's experiment.kind 'custom_2d_steady' contradicts the paper's closed-loop transient method and its own steady_2d_relevant=false. The 'CBGA package model' wording is also overstated, because Figure 6 is only a 'typical' CBGA stack adapted from [37]. Nothing in the paper confirms the simulated package used exactly those layers."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The packet has no assets, and the paper has no code, repository, or data-availability statement (pp. 16-18). No LifeSim/Sniper/McPAT/HotSpot modification code or config files were supplied, so none can be verified."
+      },
+      "parameters": {
+        "status": "verified",
+        "note": "Text-verified against the PDF: 2.95 mm core (p.8, Fig 4 p.9), 64 cores, 4 GHz, 32 active cores (p.10), eps 5 C, step 200 MHz, Fthr 3.6 GHz (p.10), threshold range 60-85 C (p.11), Table 4 values (p.11), 100 us wake-up (p.9), 1000-cycle penalty (p.12), and TDP 42 W for the OSP comparison only (p.15). Ambiguities remain: the OSP comparison gives eps = 0.5 without units, and the Table 1 symbol Δf versus ζ in Algorithm 1 is inconsistent. The 10.8 C aggregation is not verified (see findings)."
+      },
+      "config": {
+        "status": "missing",
+        "note": "The HotSpot floorplan file, control period, package/spreader/sink dimensions, L3 block size, and absolute core coordinates are not published. Figure 4 is a schematic extracted only as garbled text, so no layout was visually verified. The Studio package/material assumptions were not supplied. The extraction's floorplan list is empty."
+      },
+      "data": {
+        "status": "missing",
+        "note": "No per-core or per-block power values, no power traces, and no total chip power are published. The extraction has power_w={} and floorplan=[], so no block has same-scenario power. Figure 10 (Tmax/Tavg/Tmin per threshold) and Figure 11 transients were not digitized or visually verified; only axis text was available. The 10.8 C and 13.6 C values come from prose only."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The kind 'custom_2d_steady' contradicts the paper's transient, closed-loop DTM method, the extraction's own steady_2d_relevant=false, and the essential physical mismatch it lists. Any steady 2D reproduction would not be the paper's scenario. Generated shelf coordinates and constant power rows would be illustrative assumptions, not a reproduction.",
+        "locator": "extraction.experiment.kind vs scenario.steady_2d_relevant and physical_mismatches[0]; paper pp. 6-10"
+      },
+      {
+        "field": "experiment.floorplan / power_w",
+        "reason": "The floorplan and power lists are empty. No per-core power, no coordinates, and no total chip power are available, so no block has same-scenario power. The paper's McPAT power is not published (p.8-10), so power rows cannot be supported.",
+        "locator": "extraction.experiment; evidence core_power_w, core_x_m, core_y_m; PDF pp. 8-10"
+      },
+      {
+        "field": "paper_thermal_observable 10.8 C aggregation",
+        "reason": "The extraction asserts that the 10.8 C is the 'maximum across thresholds' and that peak is 'taken over the cores'. The p.15 text says only 'the average peak temperature is reduced by 10.8 C' with no 'up to'; the abstract says 'up to 10.8'. The paper also defines Tmax as the 90th percentile of transient temperature (p.12), not a true peak. The aggregation across thresholds and cores is inferred, and the per-threshold Figure 10 bars were not verified.",
+        "locator": "thermal_observable.aggregation; PDF p.1 abstract, p.12, p.13 Fig 10, p.15 para 1"
+      },
+      {
+        "field": "Figure 10/11/12 verification",
+        "reason": "The decisive figures (Figure 10 temperature/slowdown bars, Figure 11 transients, Figure 12 OSP comparison) are available only as pdftotext axis text. No images or digitization were supplied, so no visual verification of the decisive figure data is possible.",
+        "locator": "PDF pp. 13-15; checked_assets empty"
+      },
+      {
+        "field": "original_setup.solver / physical_mismatches[2] CBGA package",
+        "reason": "The extraction states the HotSpot model uses a CBGA package stack with a ceramic substrate and printed board. The paper shows this only as 'a typical CBGA package (adapted from Figure 2 in [37])' (Fig 6) and Table 4 gives only silicon, spreader, TIM, and sink parameters. There is no confirmation that the simulated package included the ceramic substrate or printed board, and no layer dimensions are given.",
+        "locator": "PDF p.10 Fig 6 caption; p.11 Table 4"
+      },
+      {
+        "field": "scenario.architecture '2D planar die'",
+        "reason": "The paper never says 'monolithic 2D planar die'. This is an inference from the lack of any 3D stacking. It is not an explicit statement.",
+        "locator": "scenario.architecture; no supporting page"
+      },
+      {
+        "field": "scenario.pdf_page",
+        "reason": "The scenario is cited to pdf_page 10, but Table 4 is on p.11, Figure 10 on p.13, and Figure 4 on p.9. The page locator is imprecise for the scenario as stated.",
+        "locator": "scenario.pdf_page vs PDF pp. 9, 11, 13"
+      },
+      {
+        "field": "safe_margin_epsilon / OSP parameters",
+        "reason": "The extraction notes eps = 0.5 and Δf = 200 without units for the OSP comparison. These are unresolved and conflict with eps = 5 C and 200 MHz in the main scenario, so the controller parameters are scenario-dependent.",
+        "locator": "PDF p.10 vs p.15 para 3"
+      },
+      {
+        "field": "code/assets",
+        "reason": "The assets array is empty and no paper-linked repository or supplementary material was found. Claims about code or configs cannot be verified.",
+        "locator": "packet.assets=[]; PDF pp. 16-18"
+      },
+      {
+        "field": "paper internal inconsistency",
+        "reason": "The paper says migration is one-way (active to dark), but the conclusion says task migration works 'by swapping tasks among active and dark cores' (p.15-16). Table 1 uses Δf and Algorithm 1 uses ζ, and line 20 uses M[ti] versus Q. The controller specification is therefore ambiguous and not safely implementable from the text.",
+        "locator": "PDF pp. 6-8, 15-16"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      18
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3109296144",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No paper-linked URLs, repositories, supplementary data or code were found (artifact search: checked, no links); the packet contains no pinned assets (assets array empty), so no config, floorplan or thermal-config files could be inspected.",
+      "Per-core power values in W (McPAT outputs) and power time series or traces are not published.",
+      "Absolute x_m and y_m placement coordinates of the cores (Figure 4 shows only a schematic floorplan) are missing.",
+      "Chip total die dimensions and the L3 cache block size and location are not given.",
+      "The HotSpot floorplan, HotSpot control period, and package dimensions (spreader and sink area) are missing; Table 4 gives only material and convection parameters.",
+      "Digitized numerical values of Tmax/Tavg/Tmin per threshold from Figure 10 and the transient traces from Figure 11 are not provided.",
+      "Details of the Studio package and material assumptions bundled with the runner were not supplied in the packet.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The paper's result depends on dynamic transient control: closed-loop DTaPO task migration and DVFS, with a 100 us wake-up latency, 1000-cycle migration penalty and cache cold-start effects. A steady-state 2D Studio solve with a fixed placement and a one-row power trace cannot reproduce the controller behavior or the dynamic thermal results.",
+        "essential": true
+      },
+      {
+        "reason": "The paper publishes no per-core or per-block power values, only that McPAT was used. Per-core power cannot be split from a total, since no total chip power or splitting rule is given. Core absolute coordinates are also not published; only the core size (2.95 mm x 2.95 mm) and the chessboard pattern are given.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's solver is the coupled Sniper/McPAT/HotSpot/LifeSim toolchain with a CBGA package: heat spreader, heat sink with R = 0.1 K/W, TIM, ceramic substrate and printed board. A Studio solver with different package/cooling assumptions would not match it. The 3D, interposer and chiplet aspects are not applicable, because the paper uses a monolithic 2D planar die.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer and workload are architecture-level: DVFS levels, task mapping and multi-threaded benchmarks over time-varying power. No optimizer is involved in the Studio setup and no placement optimization is performed. The paper also covers no reliability analysis and no 3D stacking.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "6a1ec8ce3ce7abe37a49ded98287d8df6153f68e9303c2493ebdcd3744436b13",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable. The deterministic gate failed (input_gate_pass=false, scientific_gate_pass=false, simulation_allowed=false), so Studio did not run: simulation status is skipped, no artifacts exist, and comparison_valid=false. The scenario is the DTaPO threshold sweep on a 64-core 22 nm many-core chip with 32 active and 32 dark cores. It was extracted as a custom_2d_steady experiment, but with no floorplan blocks and no power_w, so it fails the 1–128 block and power_w input requirement. This is not a bundled EV6/GCC adaptation, and no pinned Ascend910 or ATPlace sizes, powers or source commit are involved. There is no generated placement, no illustrative input.flp and no one-row input.ptrace. Because a custom 2D steady run has no transient trace, it could not represent the paper's closed-loop transient behavior anyway. The paper's observable is a 10.8 degC reduction in average peak temperature of DTaPO versus DVFS-only. It is a delta, taken as the maximum across the 60-85 degC thresholds, from transient HotSpot results averaged over 10 runs. Since no Studio result exists, no numerical comparison is made and exact replication is not claimed. Qualitatively, the paper reports that task migration to dark cores, with DVFS as a fallback, lowers peak temperature relative to DVFS alone. This is a dynamic-control effect that a steady 2D solve with fixed placement and fixed power cannot test.",
+    "limitations": [
+      "Studio did not run. The gate blocked it because the custom experiment has no blocks and no power_w, and the verdict is not_2d_applicable.",
+      "comparison_valid is false. No Studio temperatures exist, and the paper's 10.8 degC delta (and the separate 13.6 degC vs OSP) cannot be compared numerically.",
+      "Regime mismatch: the paper uses transient closed-loop DTaPO control (task migration, DVFS, 100 us wake-up, 1000-cycle migration penalty), while a custom 2D steady run has no transient trace and no controller.",
+      "Power inputs are missing: the McPAT per-core power values and total chip power are not published, and no power split rule exists. The 42 W TDP applies only to the OSP comparison and must not be split among cores.",
+      "Placement inputs are missing: absolute core coordinates, total die size and L3 block size and location are not published. Only the 2.95 mm core size and the chessboard pattern are given, and any generated placement would be illustrative only.",
+      "Location and aggregation mismatch: the paper's value is a peak over cores, averaged over 10 runs, as a reduction between two control policies and the maximum across thresholds, with Tmax/Tmin taken as 90th/10th percentiles. This is not a steady-state absolute temperature.",
+      "Boundary and package mismatch: the paper uses a HotSpot CBGA stack with heat sink R=0.1 K/W and 318.15 K ambient, but the spreader and sink dimensions and Studio's bundled package assumptions were not supplied.",
+      "No paper-linked code, data or assets were found. Adversarial methods, code, config and data checks are unresolved, independent review is pending, and Figure 10 and Figure 11 values are not digitized.",
+      "No bundled EV6/GCC adaptation or pinned Ascend910/ATPlace source commit applies to this scenario.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No paper-linked URLs, repositories, supplementary data or code were found (artifact search: checked, no links); the packet contains no pinned assets (assets array empty), so no config, floorplan or thermal-config files could be inspected.",
+      "Per-core power values in W (McPAT outputs) and power time series or traces are not published.",
+      "Absolute x_m and y_m placement coordinates of the cores (Figure 4 shows only a schematic floorplan) are missing.",
+      "Chip total die dimensions and the L3 cache block size and location are not given.",
+      "The HotSpot floorplan, HotSpot control period, and package dimensions (spreader and sink area) are missing; Table 4 gives only material and convection parameters.",
+      "Digitized numerical values of Tmax/Tavg/Tmin per threshold from Figure 10 and the transient traces from Figure 11 are not provided.",
+      "Details of the Studio package and material assumptions bundled with the runner were not supplied in the packet.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The paper's result depends on dynamic transient control: closed-loop DTaPO task migration and DVFS, with a 100 us wake-up latency, 1000-cycle migration penalty and cache cold-start effects. A steady-state 2D Studio solve with a fixed placement and a one-row power trace cannot reproduce the controller behavior or the dynamic thermal results.",
+      "The paper publishes no per-core or per-block power values, only that McPAT was used. Per-core power cannot be split from a total, since no total chip power or splitting rule is given. Core absolute coordinates are also not published; only the core size (2.95 mm x 2.95 mm) and the chessboard pattern are given.",
+      "The paper's solver is the coupled Sniper/McPAT/HotSpot/LifeSim toolchain with a CBGA package: heat spreader, heat sink with R = 0.1 K/W, TIM, ceramic substrate and printed board. A Studio solver with different package/cooling assumptions would not match it. The 3D, interposer and chiplet aspects are not applicable, because the paper uses a monolithic 2D planar die.",
+      "The optimizer and workload are architecture-level: DVFS levels, task mapping and multi-threaded benchmarks over time-varying power. No optimizer is involved in the Studio setup and no placement optimization is performed. The paper also covers no reliability analysis and no 3D stacking."
+    ]
+  }
+}

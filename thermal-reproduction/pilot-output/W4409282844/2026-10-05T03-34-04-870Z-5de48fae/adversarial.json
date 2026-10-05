@@ -1,0 +1,94 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The paper text on pp.2-6 supports the method claims: HotSpot 6.0 golden simulator on a 64x64 grid, compact Green's-function model with 2N+3 parameters, MILP initialization, CGD optimization, MILP legalization, Optuna tuning. Steady-state worst-case power is stated on p.2. The extraction correctly says there is no transient or controller. However, the packet's custom_2d_steady experiment is not a reproduction of this 3D layered package with a compact model and optimizer."
+    },
+    "code": {
+      "status": "missing",
+      "note": "Only reproduce.py was pinned. It imports src/ATPLACE.PlaceFlow, Params, Chiplet, System and the parsers, none of which are in the packet. The paper (p.6) says the model uses PyTorch, Optuna and Gurobi, but the solver kernel is not inspectable, and the extraction's own note says the final placement comes from an encrypted kernel. reproduce.py's compact-model class is consistent in spirit with Eq. 12, but the packet does not show it is the paper's trained model. The optimizer and placement code cannot be checked."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Case 3 geometry and power are plausible: 4 CPUs at 8x9 mm and 4 DRAMs at 9x9 mm match the Fig. 5 caption, with 150 W and 20 W per block. But the paper's 0.1 K/W heatsink resistance conflicts with 0.01 K/W in the pinned hotspot.config. Spreader and sink sizes (30 mm, 60 mm) differ from the paper's 2x-interposer rule. The packet has no paper-stated per-chiplet powers; the paper gives only a density range of 2e5 to 3e6 W/m^2, so the 150/20 W values are not paper-verified. CPU power density is 150/72e-6 = 2.08e6 W/m^2 and DRAM is 20/81e-6 = 2.5e5 W/m^2, which fit the range. Layer thicknesses and conductivities inherited from refs [6,36] are missing. The optimizer hyperparameters (lambda, lr, epsilon) are missing."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "The pinned hotspot.config contradicts the paper on several points: r_convec 0.01 vs 0.1 K/W, model_type block vs grid-based usage, model_secondary 0, and silicon-only chip layers. These do not represent the paper's interposer/microbump/epoxy stack. The packet has no package.config or grid layer file and no params.json. The Tmax of 92.3 degC cannot be reproduced under a config that disagrees with the paper. The Studio custom_2d_steady configuration omits the vertical stack, the 2x spreader and sink, and the heatsink boundary."
+    },
+    "data": {
+      "status": "contradicted",
+      "note": "Case3.pl holds only placeholder (0,0) coordinates, so the paper's final placement is not published. The shelf coordinates in experiment.floorplan are generated assumptions, not published data. They span 36 mm (4 x 9 mm, with CPU/DRAM x offsets inconsistent across rows) and do not match the Fig. 5(e) layout. All 8 blocks have same-scenario power and dimensions from Case3. Case3.nets and the microbump offsets are missing. Fig. 5 and Fig. 6 are not shown as images in the packet, so none of the figure-based claims (layouts, Pareto fronts) were visually verified. The Tmax values 92.3 and 94.1 from Table 6 on p.7 are verified as text, but the Table 3 whitespace '0.6' under a '%' label is ambiguous."
+    }
+  },
+  "findings": [
+    {
+      "field": "heatsink_convective_resistance",
+      "reason": "Paper p.3 gives 0.1 K/W but pinned hotspot.config has -r_convec 0.01 K/W. The 10x discrepancy is unresolved and affects Tmax directly.",
+      "locator": "PDF p.3 Sec. 2.3 vs thermal/hotspot.config:r_convec"
+    },
+    {
+      "field": "spreader_sink_size",
+      "reason": "Paper says spreader and sink edges are 2x the interposer, but the config has s_spreader 0.03 m and s_sink 0.06 m, which are smaller than the 39 mm interposer scale rule.",
+      "locator": "PDF p.2-3 vs thermal/hotspot.config:s_spreader,s_sink"
+    },
+    {
+      "field": "x_m,y_m (floorplan)",
+      "reason": "The final Case 3 placement is not published. Case3.pl is all (0,0). The generated shelf coordinates are an illustrative assumption, not the paper's placement, so the experiment is not a 2D reproduction of the paper's Tmax.",
+      "locator": "cases/Case3/Case3.pl:1-8; experiment.floorplan"
+    },
+    {
+      "field": "physical_assumption: 2D vs 3D stack",
+      "reason": "The paper's decisive thermal model is a layered 3D package (interposer, TSV, microbump, epoxy, TIM, spreader, heatsink) with HotSpot grid solver. The 2D custom steady experiment omits the vertical stack and cooling and cannot be called a reproduction.",
+      "locator": "PDF p.1 Fig. 1; PDF p.2-3 Sec. 2.1, 2.3"
+    },
+    {
+      "field": "power_w",
+      "reason": "The paper (p.6) reports only a power density range (2e5 to 3e6 W/m^2). The per-block 150/20 W values come solely from a pinned repository file with the unit W inferred, not from the paper. Case3.power is not tied to the figures verified in the PDF.",
+      "locator": "cases/Case3/Case3.power:1-8; PDF p.6 Sec. 4.1"
+    },
+    {
+      "field": "unit conversion (um)",
+      "reason": "All block-size values rely on an inferred um unit from reproduce.py and not from the Case3.blocks file. The CPU orientation is 8x9 in the file but 9x8 in the Fig. 5 caption.",
+      "locator": "cases/Case3/Case3.blocks:5-12; PDF p.8 Fig. 5 caption"
+    },
+    {
+      "field": "figure verification",
+      "reason": "Fig. 4, Fig. 5, Fig. 6 and Fig. 8 were not supplied as images, only as extracted text. No figure value or layout was visually verified. Fig. 5 layouts for Case 3 are unavailable for checking the shelf placement.",
+      "locator": "PDF p.7 Fig. 4; PDF p.8 Figs. 5-8"
+    },
+    {
+      "field": "interposer_size_cross_check",
+      "reason": "reproduce.py CASE_INTERPOSER_SIZE disagrees with Table 3 for Case2 (32x32 vs 55x52 mm), Case4 (37x37 vs 57x59 mm) and Case5 (57x59 vs 37x37 mm), which weakens the reliability of the pinned code as a mirror of the paper. Case 3 matches (39 mm).",
+      "locator": "reproduce.py:CASE_INTERPOSER_SIZE; PDF p.6 Table 3"
+    },
+    {
+      "field": "code_availability",
+      "reason": "The ATPLACE source modules, params.json, nets and package.config are not pinned. The linked_assets list has only DOI and third-party tool URLs, and the packet found no paper-supplied repository link. The pinned repo is attached externally.",
+      "locator": "reproduce.py imports; extraction.linked_assets"
+    },
+    {
+      "field": "hotspot model_type",
+      "reason": "The config has -model_type block while the paper uses a 64x64 grid. The extraction notes this but leaves it unreconciled.",
+      "locator": "thermal/hotspot.config:model_type vs PDF p.3"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "checked_assets": [
+    "ref_atplace_blocks",
+    "ref_atplace_power",
+    "ref_atplace_placement",
+    "ref_atplace_hotspot_config",
+    "ref_atplace_reproduce"
+  ]
+}

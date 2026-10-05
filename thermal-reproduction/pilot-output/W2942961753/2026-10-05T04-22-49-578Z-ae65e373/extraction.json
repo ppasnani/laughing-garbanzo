@@ -1,0 +1,236 @@
+{
+  "paper_id": "W2942961753",
+  "paper_title": "A Survey of Chip-level Thermal Simulators",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 16,
+    "figure_or_table": "Fig. 6 (Modeling technique of HotSpot)",
+    "description": "Survey illustration of the HotSpot flow: a floorplan plus a per-block power profile (figure labels 0.2 W, 0.2 W, 1 W, 3 W, 2 W, 2 W, 1 W) is turned into an RC circuit and solved for a per-block temperature profile (figure labels 46 C, 46.1 C, 51 C, 62 C, 57 C, 55 C, 49 C). The paper gives no block names, block coordinates or dimensions, no explicit mapping of powers to blocks, and no package or material parameters for this example. It is a schematic only, not a complete experiment, and is not a published benchmark. The packet contains no pinned assets and the paper links no code, config or data repositories.",
+    "architecture": "Generic 2D chip modeled with HotSpot: a four-layer thermal RC network (die, heat spreader, heat sink, convective layer to ambient), per the text on pp. 15-16 of the survey. No chip-specific architecture is given.",
+    "workload": "None specified. The figure shows an illustrative power profile only, not a benchmark or workload.",
+    "operating_point": "Steady-state temperature profile for the illustrated power profile. The survey text on p. 16 states HotSpot uses a constant convection resistance of 0.8 K/W and, for its original validation, an ambient of 45 C. It does not state that these apply to the Fig. 6 example.",
+    "steady_2d_relevant": true
+  },
+  "original_setup": {
+    "solver": "HotSpot: thermal RC network built from the floorplan and per-block power, solved with a 4th-order Runge-Kutta ODE solver (transient) or as a steady-state RC circuit. The four layers are die, heat spreader, heat sink and a convective layer to ambient (survey pp. 15-16, Fig. 6 on p. 16).",
+    "optimizer": "None for the Fig. 6 schematic. The survey only mentions HotSpot being used inside other works' floorplanning optimizers (simulated annealing, genetic algorithms), which are not part of this scenario (p. 16).",
+    "controller": "None. Fig. 6 shows no thermal-management controller or runtime policy.",
+    "benchmark": "None. Fig. 6 is an illustrative schematic with a floorplan, a power profile and a temperature profile. It is not a published benchmark or workload, and the packet has no pinned assets or linked repositories."
+  },
+  "thermal_observable": {
+    "value": 62,
+    "unit": "degC",
+    "location": "Illustrative per-block temperature in the Fig. 6 schematic. The figure labels do not map to named blocks or coordinates, so the location is unspecified. The 62 C label is the highest value shown.",
+    "aggregation": "Maximum of the seven digitized per-block steady-state labels in Fig. 6 (46, 46.1, 51, 62, 57, 55, 49 C). The paper reports no formal aggregation, so this is a figure-label reading, not a validated result.",
+    "pdf_page": 16
+  },
+  "physical_mismatches": [
+    {
+      "reason": "Fig. 6 is only a schematic with no named blocks, coordinates, dimensions or explicit power-to-block mapping. Block geometry and per-block power cannot be extracted, so no floorplan can be built from paper-derived facts.",
+      "essential": true
+    },
+    {
+      "reason": "No package or material parameters are given for the Fig. 6 example (die, spreader, sink thicknesses or conductivities, TIM, heat-sink dimensions). The 0.8 K/W convection resistance and 45 C ambient on p. 16 come from HotSpot's general description and original validation, and are not stated for this example.",
+      "essential": true
+    },
+    {
+      "reason": "The Fig. 6 temperatures and powers are illustrative labels with no tie to any chip, workload or benchmark. Any Studio result would not be numerically comparable to the 46-62 C labels.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is steady-state 2D and has no 3D stacking, interposer, microchannel or TSV modeling, so those survey topics do not apply. HotSpot's transient RK4 solver and its 3D extensions (HS3D) are not used for Fig. 6.",
+      "essential": false
+    },
+    {
+      "reason": "No controller, optimizer or reliability model is part of the Fig. 6 scenario. The survey explicitly excludes thermal-management policies from its scope (p. 10).",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "Named block list with x_m, y_m, width_m and height_m for the Fig. 6 floorplan (no coordinates or dimensions published)",
+    "Explicit mapping of the seven power labels (0.2, 0.2, 1, 3, 2, 2, 1 W) to named blocks (the figure gives values but no block names or locations)",
+    "Mapping of the seven temperature labels to blocks, and any uncertainty from digitizing them",
+    "Die, spreader, TIM and heat-sink dimensions and material properties for the example",
+    "Cooling and ambient conditions for the Fig. 6 example (p. 16 gives 0.8 K/W and 45 C only for HotSpot's validation, not this example)",
+    "Power time series (only a single illustrative power profile is shown, with no transient trace)",
+    "Pinned packet assets such as code, config or data: the packet lists no assets and the paper links no repositories (artifact search: checked_no_links)"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "scenario_selection",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6 (Modeling technique of HotSpot), PDF page 16",
+      "provenance": "Schematic only. It shows a floorplan, a power profile, an RC circuit and a temperature profile. It gives no block names, coordinates, dimensions or power-to-block mapping. The packet has no pinned assets and the paper links no repositories (artifact search: checked_no_links). No complete experiment exists, so the floorplan and power_rows are empty.",
+      "uncertainty": "Digitized figure labels; the label-to-block association is not given."
+    },
+    {
+      "field": "power_label",
+      "block_name": null,
+      "source_value": 0.2,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 0.2,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Power profile label (first 0.2W), PDF page 16",
+      "provenance": "Illustrative power label in the schematic; not mapped to a named block.",
+      "uncertainty": "Block association unknown; read from pdftotext of the figure, so the label placement is uncertain."
+    },
+    {
+      "field": "power_label",
+      "block_name": null,
+      "source_value": 0.2,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 0.2,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Power profile label (second 0.2W), PDF page 16",
+      "provenance": "Illustrative power label in the schematic; not mapped to a named block.",
+      "uncertainty": "Block association unknown."
+    },
+    {
+      "field": "power_label",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 1,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Power profile label (1W, first occurrence), PDF page 16",
+      "provenance": "Illustrative power label in the schematic; not mapped to a named block.",
+      "uncertainty": "Block association unknown."
+    },
+    {
+      "field": "power_label",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 3,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Power profile label (3W), PDF page 16",
+      "provenance": "Illustrative power label in the schematic; not mapped to a named block.",
+      "uncertainty": "Block association unknown."
+    },
+    {
+      "field": "power_label",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 2,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Power profile label (2W, first occurrence), PDF page 16",
+      "provenance": "Illustrative power label in the schematic; not mapped to a named block.",
+      "uncertainty": "Block association unknown."
+    },
+    {
+      "field": "power_label",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 2,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Power profile label (2W, second occurrence), PDF page 16",
+      "provenance": "Illustrative power label in the schematic; not mapped to a named block.",
+      "uncertainty": "Block association unknown."
+    },
+    {
+      "field": "power_label",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 1,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Power profile label (1W, second occurrence), PDF page 16",
+      "provenance": "Illustrative power label in the schematic; not mapped to a named block.",
+      "uncertainty": "Block association unknown."
+    },
+    {
+      "field": "thermal_observable_max_temperature_label",
+      "block_name": null,
+      "source_value": 62,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 62,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6, Temperature profile label '62 C', PDF page 16",
+      "provenance": "Highest of the seven per-block temperature labels in the schematic (46, 46.1, 51, 62, 57, 55, 49 C). It is an illustrative figure label, not a validated result, and has no named location.",
+      "uncertainty": "Digitized from the figure text. Label-to-block mapping is unspecified, and aggregation as a maximum is an inference."
+    },
+    {
+      "field": "hotspot_convection_resistance",
+      "block_name": null,
+      "source_value": 0.8,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.8,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Section 5.2.2, text 'The convection resistance is taken to be a constant value of 0.8 K/W', PDF page 16",
+      "provenance": "General HotSpot description in the survey; not stated for the Fig. 6 example.",
+      "uncertainty": "Applicability to the Fig. 6 schematic is not stated."
+    },
+    {
+      "field": "hotspot_validation_ambient_temperature",
+      "block_name": null,
+      "source_value": 45,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 45,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Section 5.2.2, text 'The ambient temperature was taken to be 45 C', PDF page 16",
+      "provenance": "Stated for HotSpot's original validation against FloWorks; not stated for the Fig. 6 example.",
+      "uncertainty": "Applicability to the Fig. 6 schematic is not stated."
+    },
+    {
+      "field": "original_solver_architecture",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 15,
+      "asset_id": null,
+      "locator": "Section 5.2.2, PDF pages 15-16",
+      "provenance": "HotSpot RC model with four layers (die, heat spreader, heat sink, convective layer). Differential equations are solved with 4th-order Runge-Kutta (p. 16). No optimizer or controller is part of Fig. 6; the benchmark is none (an illustrative schematic).",
+      "uncertainty": null
+    },
+    {
+      "field": "missing_inputs",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 16,
+      "asset_id": null,
+      "locator": "Fig. 6 and Section 5.2.2, PDF pages 15-16; packet assets list is empty",
+      "provenance": "Missing: block names, x_m, y_m, width_m and height_m; power-to-block mapping; package and material parameters; power time series; pinned assets. The paper links no repositories, so there is nothing to claim about repository inputs.",
+      "uncertainty": null
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "paper_id": "W2946670511",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Coordinates (x_m, y_m) of the four upper-tier hot spots and the bottom-tier center hot spot, as the paper only says center and, for other scenarios, quadrant centers.",
+    "Per-block power rows (named watts); only power densities are published (hot spot 750 W/cm2, backgrounds 25 and 30 W/cm2).",
+    "HotSpot configuration files, layer stack thicknesses and material properties, heat sink, heat spreader and ambient parameters (no linked code, config or repository was found; artifact_search_status checked_no_links).",
+    "Layer files (floorplan files per layer) and the power trace files used in HotSpot.",
+    "Exact numeric thermal map data for Figure 4 (only approximate values in the text; any digitized figure values would carry uncertainty).",
+    "No pinned packet assets are supplied (assets list is empty), so there are no RLPlanner or ATPlace2.5D files or thermal configs.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "3D stacked two-tier Mono3D and TSV-based structure (thin tiers, ILD or bonding layer, vertical inter-tier coupling and heat sink on top of the bottom tier). A 2D single-layer Studio model cannot reproduce vertical inter-tier heat flow, the upper-tier vs bottom-tier temperature difference, or TSV and MIV effects.",
+      "essential": true
+    },
+    {
+      "reason": "The paper models TSV arrays (4 arrays of 5 mm x 200 um x 33 um) and metal layers 1-8 with interconnect Joule heating (5% of tier power, 20% of which to TSVs). A 2D Studio model has no equivalent interconnect or TSV heating.",
+      "essential": true
+    },
+    {
+      "reason": "Hot spot coordinates for the four upper-tier hot spots and the per-block watts are not published, so no complete same-scenario floorplan and power set exists. Only dimensions (400 um x 400 um) and power densities are given (hot spot watts could be derived as density x area, but positions are missing).",
+      "essential": true
+    },
+    {
+      "reason": "The cooling configuration (heat sink and heat spreader parameters, convection resistance, ambient temperature) is not specified in the paper, and the paper's heat path runs through the bottom tier. A Studio package with a different cooling stack would give different temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's solver is HotSpot-6.0 with multi-layer heterogeneous grids. The Studio solver and its grid and material treatment differ, so temperatures cannot be compared numerically.",
+      "essential": true
+    },
+    {
+      "reason": "The selected scenario is steady-state only, with no transient power trace, controller, optimizer or reliability analysis. A transient one-row trace would be purely illustrative.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Any Studio run would be a separate illustrative 2D placement built from the published dimensions (10 mm x 10 mm die, 400 um x 400 um hot spots) and power densities, with generated coordinates kept distinct from paper-derived facts.",
+    "Studio's bundled package and material assumptions (default silicon, TIM, heat spreader/sink, ambient and convection settings) are used instead of the paper's HotSpot-6.0 stack, whose parameters are not published.",
+    "Power would be a one-row constant (steady-state) trace.",
+    "Studio results would not be numerically compared with the paper's ~77 degC and ~109 degC values.",
+    "No exact replication of the paper is claimed."
+  ],
+  "evidence_sha256": "ce110c70a3afe9df243941df54fab116223904a858fd2d73f53ce9a5de8208e3",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

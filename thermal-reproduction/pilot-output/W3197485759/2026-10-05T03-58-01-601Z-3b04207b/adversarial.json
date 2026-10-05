@@ -1,0 +1,95 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The gem5 + McPAT + HotSpot 6.0 pipeline, the Algorithm 1 and 2 policies, the 0.33 us thermal interval and the 2M-cycle way-shutdown interval are described in the supplied text (pp.5-6, 8-11, 13). The extraction correctly says this is a transient, architectural, policy-driven study and not a steady 2D case. Paper-level inconsistencies remain: the 13 ns regulator time disagrees with 20 mV/ns, and 500 thermal stamps span only about 165 us versus a 2M-cycle interval."
+    },
+    "code": {
+      "status": "missing",
+      "note": "All 25 pages were read and no repository, availability statement or supplementary link was found. The assets list is empty. No gem5 Ruby patch, McPAT input, HotSpot config or floorplan file can be cited."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Table 1 values for V/F, ambient, DRAM latency, thresholds, interval, 20 mV/ns and regulator watts match pp.13-14. The L2 capacity claim does not: the extraction gives 1MB 16-way per bank and an 8MB total, but 16 tiles x 1MB = 16MB, and the paper also tests 4MB and 16MB. The 80M-cycle page locator is wrong. The Fig. 20 label interpretation is also unsupported."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The HotSpot 6.0 package, heat spreader, sink, TIM, convection and die-thickness configuration is not published. Only 47 C ambient is given. The HotFloorPlan output and McPAT config are absent, so no same-scenario Studio configuration can be verified."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no block coordinates or dimensions, no per-block power for any scenario, and no power traces. The empty floorplan and power_w are consistent with that. Decisive figures (Fig. 16, 20, 29) were available only as pdftotext output with no images, so none were visually verified. Headline numbers rest on Table 3 text only. The Fig. 20 numbers are not per-block data."
+    }
+  },
+  "findings": [
+    {
+      "field": "architecture.l2_bank_size / scenario.architecture (8MB total LLC)",
+      "reason": "The extraction states 1MB 16-way per bank and 8MB total. With 16 tiles each holding one L2 bank, 1MB per bank gives 16MB, and Sec. 5.4 treats 16MB as a separate larger LLC. The paper never shows how 8MB maps onto 16 banks (0.5MB each?). The 8MB headline scenario is therefore not reconciled with Table 1 and Figs. 2, 4, 5 (1MB banks).",
+      "locator": "PDF p.13 Table 1 'L2 1MB, 16-way'; p.6 Fig. 2/3 captions; p.14 Sec. 5.1; p.18 Sec. 5.4; p.22 Table 3 caption"
+    },
+    {
+      "field": "thermal_observable.figure20_baseline_hottest_label / figure20_WaFFLe_hottest_label / missing_inputs item on Fig. 20",
+      "reason": "The values 373.83, 368.20, 362.58, 356.95, 351.33, 345.70, 340.08, 336.33 (and 366.59, 361.69, 356.80, 351.90, 347.01, 342.11, 337.22, 333.96) are evenly spaced about 5.6 K apart and 4.9 K apart. They are autoscaled colorbar ticks, not per-block temperatures or a verified hottest-block reading. The extraction's claim that per-block values such as 373.83 K are legible is unsupported. Treating the top tick difference (7.24) as the peak reduction is an inference without visual verification, and the units are not printed.",
+      "locator": "PDF p.16 Fig. 20(a)/(b) pdftotext layout"
+    },
+    {
+      "field": "thermal_observable.figure20 workload attribution",
+      "reason": "The Fig. 20 caption says 'for Black', but the text says 'Figure 20 shows spatial thermal variation for Body'. The workload and time-stamp behind the '7 C' statement are ambiguous. The extraction flags this but still pairs the labels with a 7 C reduction.",
+      "locator": "PDF p.16 Fig. 20 caption and following paragraph"
+    },
+    {
+      "field": "thermal_observable.peak_temperature_reduction_8MB_LLC (location/aggregation)",
+      "reason": "The 8.4 and 6.2 values are supported by Table 3 and the abstract. The claim that the location is the 'hottest on-chip point over cores and caches' is not stated: the paper does not define the peak location or the averaging, and the application giving 8.4 is not named. Fig. 16 and Fig. 17 (per-application bars) were not visually verified, so the 6.5-8.4 and 5.0-6.2 per-app attribution relies on text alone.",
+      "locator": "PDF p.22 Table 3; p.14-15 Sec. 5.1; p.14 Figs. 16-17"
+    },
+    {
+      "field": "decisive figures not visually verified",
+      "reason": "No images or assets were supplied, and the packet has only pdftotext output. Fig. 13 (floorplan), Fig. 16/17 (peak/average temperature), Fig. 20 and Fig. 29 could not be inspected, so tile geometry, block adjacency and per-app results are unverified. The packet assets list is empty and no figure was digitized.",
+      "locator": "PDF pp.12, 14, 16, 20; assets=[]"
+    },
+    {
+      "field": "workload.simulated_cycles",
+      "reason": "The evidence cites pdf_page 14 and 'Sec. 4 p.14' for 80M cycles. The 80M-clock-cycle statement for the ratio range is on p.13, and 80M cycles also appears on pp.5 and 10, while p.9 says 80M instructions. The locator and the page-14 attribution are imprecise and the cycles-vs-instructions ambiguity is real.",
+      "locator": "PDF p.13 (Fig. 15 paragraph), p.14 (RoI sentence), p.9 Sec. 3.2.2, p.5 Sec. 3.1.2"
+    },
+    {
+      "field": "controller.regulator_switching_speed",
+      "reason": "The 20 mV/ns value is supported, but the paper's derived t_vr is about 13 ns for 1.12 V to 0.76 V. At 20 mV/ns, 0.36 V takes 18 ns. The 42-44 ns low-V/F dwell plus 2 x t_vr within the 70 ns stall does not reconcile either. The paper's own timing and energy claims (86-94 nJ, 44 nJ switching) are internally inconsistent and cannot be taken as verified.",
+      "locator": "PDF p.10 Sec. 3.2.2 (13 ns, 42-44 ns, 44 nJ); p.14 Sec. 4 (20 mV/ns)"
+    },
+    {
+      "field": "controller.way_shutdown_interval vs thermal traces",
+      "reason": "A 2M-cycle way-shutdown interval at 3 GHz is about 0.67 ms, but Fig. 19 shows only 500 stamps x 0.33 us, about 165 us, so a way-gating decision and its thermal effect cannot be seen in that window. The paper's transient claims depend on its unpublished gem5/McPAT/HotSpot traces. Any 2D steady reproduction would not reproduce them.",
+      "locator": "PDF p.13 Sec. 4; p.15 Fig. 19 paragraph"
+    },
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is declared custom_2d_steady with an empty floorplan and empty power_w while steady_2d_relevant is false and the mismatches are essential (transient, DVFS/way-gating dynamics, no block geometry or power, unpublished package). It must not be treated as a 2D reproduction. Any generated 2D placement or constant power row would be an illustrative assumption, not published data.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant; physical_mismatches"
+    },
+    {
+      "field": "power.core_stall_energy_baseline / regulator power",
+      "reason": "337 nJ per 70 ns stall and 0.106/0.168 W regulator overheads are correctly not used as block power rows. They are supported (pp.10, 14), but no same-scenario power exists for any floorplan block (cores, L1, L2 banks, routers), so power coverage of every block cannot be verified.",
+      "locator": "PDF p.10 Sec. 3.2.2; p.14 Sec. 4; p.13 Sec. 4"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    5,
+    6,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    22
+  ],
+  "checked_assets": []
+}

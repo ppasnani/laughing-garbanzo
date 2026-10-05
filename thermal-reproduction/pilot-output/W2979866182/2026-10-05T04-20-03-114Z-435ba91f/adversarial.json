@@ -1,0 +1,86 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text-level method claims match the PDF: T-WFD (Algorithm 1, p.13), co-scheduling with inversion budgets (Algorithm 2, p.14), the lumped RC coupling model (Eq. 6-9, p.9), and the hardware and measurement setup (p.17-18). The extraction correctly says this is not a spatial 2D or 3D solver. None of this supports a 2D steady reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The assets list is empty. The only linked URLs are the publisher DOI, the Linux CFS documentation and the cpuburn page, none of which is RT-TAS code, a config, or experiment data. No implementation was supplied, so no code claim can be verified."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Table 2 (p.18), the 1.15 C/W resistance, the 15 W rating and the 65 C threshold match the PDF text. Ambient temperature, package, spreader, die size and materials are not stated. The Table 1 coupling matrix is core-level, not geometric, so a spatial model cannot be parameterised from the paper."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "The experiment is labelled kind=custom_2d_steady with an empty floorplan and empty power_w. The same extraction says steady_2d_relevant=false and that the workload is transient, scheduling-driven and measured on hardware. No floorplan block has same-scenario power because no blocks or coordinates exist. Any generated shelf coordinates or constant power rows would be illustrative only."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The in-text values 60.7/66.7/72.9 C and the Table 2 powers match the extracted PDF text. No figure was visually verified: only pdftotext output was supplied, and Figures 1 and 5-9 are captions without image content. No numeric traces or digitization exist, and the text discrepancy in the RT-TAS peak (60.7 vs 61.5 C) is not reconciled."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is custom_2d_steady although the extraction itself records steady_2d_relevant=false, a transient scheduling workload, a hardware measurement and no block geometry. This invites a 2D reproduction claim that the evidence cannot support.",
+      "locator": "extraction.experiment.kind vs scenario.steady_2d_relevant and physical_mismatches; PDF p.18-20"
+    },
+    {
+      "field": "thermal_observable_peak_temperature_RT-TAS",
+      "reason": "p.18 gives an RT-TAS maximum of 60.7 C. p.20 gives the peak under co-scheduling as 61.5 C at 217 s (63.6 C without co-scheduling). The extraction notes the 61.5 vs 63.6 C pair but does not flag that 61.5 conflicts with 60.7 for the same method. Figures 6 and 8 were not visually verified, so the 60.7 C observable is not confirmed.",
+      "locator": "PDF p.18 Section 7.2 para 3 vs PDF p.20 Figure 8 discussion"
+    },
+    {
+      "field": "figure_verification",
+      "reason": "Only pdftotext output of the PDF was supplied, with no rendered figure images. Figures 1, 5, 6, 7, 8 and 9 were not visually verified. The qualitative claim that Fig. 1 contains no dimensions and the Figure 6 peaks cannot be confirmed from captions alone.",
+      "locator": "PDF p.4 Fig. 1; p.19 Fig. 5-7; p.20 Fig. 8-9"
+    },
+    {
+      "field": "floorplan",
+      "reason": "No block names, x/y/width/height or die size exist. The empty floorplan is consistent with the paper, but this means there is no same-scenario per-block power and no 2D thermal setup to approve.",
+      "locator": "extraction.experiment.floorplan=[]; PDF p.4, p.10"
+    },
+    {
+      "field": "power_w",
+      "reason": "Table 2 powers are per-task (task-level CPU/GPU) average values, not per-floorplan-block power. Mapping them to blocks or splitting the 15 W rating would be an unsupported assumption. Any constant power rows would be illustrative, not published transient traces.",
+      "locator": "PDF p.18 Table 2; PDF p.17 Section 7.1"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "The three linked assets are a DOI, CFS documentation and a stress-tool page. None is code, config or data for the paper's experiment, and none was fetched or inspected. A bare URL is not evidence of reproducibility.",
+      "locator": "extraction.linked_assets; PDF p.1, p.25 refs [20],[23]"
+    },
+    {
+      "field": "task_naming",
+      "reason": "The text on p.5 calls the task 'image stabilizer' while Table 2 and Section 7.1 call it 'video stabilizer'. Example 6.2 (p.11) utilizations (0.2, 0.1, 0.05, 0.05) do not match Table 2 execution times/400 ms periods, so Example 6.2 should not be used as Table 2 data.",
+      "locator": "PDF p.5 Fig. 2 discussion; p.11 Example 6.2; p.18 Table 2"
+    },
+    {
+      "field": "transient_and_cooling_features",
+      "reason": "The decisive features are transient: co-scheduling, priority-inversion budgets, DVFS throttling from 1.7 to 0.5 GHz at 65 C, and a fan-off setup with only an aggregate chip resistance. None of them maps to a steady 2D floorplan reproduction, and the paper gives no cooling or package detail.",
+      "locator": "PDF p.14-16 Algorithm 2; p.18 Section 7.1-7.2; p.17 Section 7.1"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    4,
+    5,
+    7,
+    9,
+    10,
+    11,
+    13,
+    14,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    25
+  ],
+  "checked_assets": []
+}

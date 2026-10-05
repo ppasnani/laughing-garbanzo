@@ -1,0 +1,89 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Text-level method claims match the paper: 3D-ICE v3.0.0, Sniper ROB model, modified McPAT v1.2, Definition 1 on p5 (Tth 80C, MLTD 25C, radius 1mm), TUH definition on p8, and the absence of a controller or optimizer. The extraction correctly says the TUH observable is transient and not reproducible by a steady 2D run. The Fig. 6 algorithm and Figs. 9-11 are only in extracted text, with no visual verification. The no-controller and no-interposer claims are inferred from absence, not stated."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No assets are pinned. The GitHub repo and Zenodo DOIs 5523504 and 5523535 are bare links on p1 and p13, so they were not inspected and prove nothing about scripts, inputs or versions."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Table I and p3 text values were reconfirmed: core areas 5/2.5/1.25 mm2, 7 cores, 5 GHz, 1.4 V, 100 um grid, 1M-cycle step, 200M-instruction ROI, Table II and IV values, and unit conversions all correct. However the paper has an unflagged internal contradiction on L3 (Table I says 16 MiB, p3 text says 512 KiB 4-way), and an ambiguity between a ~5 mm2 die and a 5 mm2 per-core area at 14nm. The extraction repeats these inconsistently. Core-orientation of the 3x2 aspect ratio is unspecified."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No 3D-ICE stack description file, floorplan file or thermal config is supplied. Fig. 5 is an image, so no numeric block names or coordinates are verified. The active/bulk silicon split thickness, heatsink convection coefficient and the warmup initial temperature field are unknown. The floorplan is correctly left empty."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There is no per-block power in the paper and no same-scenario power for any floorplan block. Fig. 10 percentiles come from the caption only. Figs. 9, 10 and 11 were not visually verified or digitized. There is no idle-warmup trace and no per-benchmark TUH values. Constant power rows or generated shelf coordinates would be illustrative assumptions only."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is declared custom_2d_steady with empty floorplan and power_w. This contradicts the transient 3D-ICE TUH observable and steady_2d_relevant=false. Any 2D steady run would not reproduce Fig. 10, and no floorplan or power is available to run one.",
+      "locator": "extraction.experiment; PDF p8 Fig. 10, p4 Sec. III-C"
+    },
+    {
+      "field": "physical_mismatches/vertical stack",
+      "reason": "The decisive features are transient, 3D layered and cooling-dependent: 3D-ICE, solder TIM, Cu spreader, grease, HS483-ND heatsink with fan at 6000 rpm, and non-uniform initial temperature. These cannot be called a 2D reproduction.",
+      "locator": "PDF p4 Fig. 4, Table II, Sec. III-C"
+    },
+    {
+      "field": "floorplan_block_coordinates_and_dimensions",
+      "reason": "There are no numeric block names, x/y/width/height, or 7-core die layout. Fig. 5 is image-only and was not visually verified or digitized, so no geometry is verified.",
+      "locator": "PDF p4 Fig. 5; assets: []"
+    },
+    {
+      "field": "per_block_power_rows",
+      "reason": "No same-scenario per-block power exists for any floorplan block. Only a >8 W/mm2 bzip2 lower bound (node unspecified) and TDP estimates from a 60C budget are given, and neither can be split into block watts.",
+      "locator": "PDF p2 Sec. II-A; p5 Table IV"
+    },
+    {
+      "field": "approximate_die_area / core_area_14nm",
+      "reason": "p3 says an approximately 5 mm2 die with 3x2 cores, while Table I gives 5 mm2 per core, which implies about 35 mm2 for 7 cores at 14nm. The extraction's 'about 5 mm2 core area at 14nm' for a monolithic die conflates core and die area. The ambiguity is flagged but unresolved.",
+      "locator": "PDF p3 Sec. III-A and Table I"
+    },
+    {
+      "field": "architecture L3",
+      "reason": "The scenario cites a shared 16 MiB ring L3 per Table I but does not flag that p3 text says the shared L3 is 512 KiB, 4-way, 64B lines. This is an unresolved contradiction within the paper.",
+      "locator": "PDF p3 Table I vs Sec. III-A"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "The 0.2 ms value is only the 7nm 5th percentile across benchmarks and cores after idle warmup, taken from the caption. It equals one 1M-cycle (0.2 ms) time step. Fig. 10 itself was not visually checked, and the value is not a per-scenario or per-block observable.",
+      "locator": "PDF p8 Fig. 10 caption; p3 Sec. III-A"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "The GitHub, Zenodo 5523504 and Zenodo 5523535 links are unpinned and uninspected, so contents and versions cannot be checked. Zenodo 5523535 has no full URL. Artifact links are not evidence of input data.",
+      "locator": "PDF p1 abstract; p13 Appendix B; assets: []"
+    },
+    {
+      "field": "physical_mismatches/interposer-3D-chiplet",
+      "reason": "The claim that interposer, 3D stacking and chiplets are not modeled is an inference. The paper does not state it, and 3D-ICE is a 3D IC tool. It is non-essential but unsupported.",
+      "locator": "extraction.physical_mismatches[5]; PDF p4"
+    },
+    {
+      "field": "original_setup.controller",
+      "reason": "The statement that no closed-loop controller is simulated is inferred from absence. The paper only discusses throttling as a consequence and does not explicitly say it is not simulated.",
+      "locator": "PDF p7-8 Sec. IV"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    13
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,581 @@
+{
+  "paper_id": "W3021197939",
+  "paper_title": "TRIC: A Thermal Resistance and Impedance Calculator for Electronic Packages",
+  "manifest_status": "downloaded",
+  "source_url": "https://mdpi-res.com/d_attachment/energies/energies-13-02252/article_deploy/energies-13-02252.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "32da4e3b8ba3965fbfaafa485cd95f9d902e8ed86e65f62d70263970d96eed21",
+  "pdf_pages": 16,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:10:30.319Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3021197939",
+    "paper_title": "TRIC: A Thermal Resistance and Impedance Calculator for Electronic Packages",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 12,
+      "figure_or_table": "Section 4.4, Figure 13 and Table 1 (multi-source eQFN, four layouts)",
+      "description": "Static multi-source analysis of a 9 x 9 mm2 eQFN package with a 5 x 5 mm2 epad and a 4 x 4 mm2 die. The die has four 1 x 1 mm2 active areas (heat sources), each dissipating 0.5 W, in four layouts (#1 to #4). Layout positions appear only in the Figure 13 sketch. Table 1 reports temperature rises over ambient (K) at the four heat-source centers, the die center, and the die maximum.",
+      "architecture": "Exposed-pad quad flat no-leads (eQFN) package, 9 x 9 mm2 body (0.9 mm thick per Section 2), 5 x 5 mm2 epad, 4 x 4 mm2 die with four 1 x 1 mm2 heat sources. Simulated with a purely conductive parametric detailed thermal model.",
+      "workload": "Four 1 x 1 mm2 heat sources, each dissipating a constant 0.5 W (2 W total).",
+      "operating_point": "Static (steady-state) temperature rise over ambient. The ambient and boundary conditions for this case are not stated explicitly in Section 4.4.",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "TRIC: a projection-based model-order-reduction solver. It reduces a purely conductive parametric detailed thermal model (Cartesian finite-volume mesh, multigrid iterative solves) to a compact thermal model. Section 4.4 reports static temperature rises for the multi-source eQFN case (PDF page 12).",
+      "optimizer": "None. The four heat-source layouts are compared by hand; no optimizer is used.",
+      "controller": "None. The case is static with constant power per source, so there is no controller or time-varying power profile.",
+      "benchmark": "Section 4.4 and Table 1 (PDF page 12): a 9 x 9 mm2 eQFN with a 5 x 5 mm2 epad and a 4 x 4 mm2 die. The die has four 1 x 1 mm2 heat sources of 0.5 W each, in four layouts. The paper says the maxima agree with FloTHERM to within 3%, but the FloTHERM maps are not shown. Section 4.3 (PDF page 10) separately reports a general TRIC vs FloTHERM comparison."
+    },
+    "thermal_observable": {
+      "value": 57.06,
+      "unit": "K (temperature rise over ambient)",
+      "location": "Maximum over the whole die for Layout #1 (Table 1, column dTmax). Layout #1 is chosen because its row is cleanly legible in the packet text; the layout #2 row is garbled in the extracted text. The exact heat-source positions appear only in the Figure 13 sketch.",
+      "aggregation": "Spatial maximum over the die of the static (steady-state) temperature rise over ambient. It is a single value per layout, with no time averaging.",
+      "pdf_page": 12
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The original model is a 3D detailed thermal model of a molded eQFN package (die, die attach, epad, pins, mold, board). A 2D chip-level Studio placement cannot reproduce the vertical heat paths through the die attach, epad and board.",
+        "essential": true
+      },
+      {
+        "reason": "The paper uses JEDEC-style boundary conditions for the junction-to-ambient environment, with a board modelled as one parallelepiped of adjusted conductivity and pins as a homogenised block. Section 4.4 does not state the ambient or cooling boundary conditions for this case, so Studio cooling cannot be matched.",
+        "essential": true
+      },
+      {
+        "reason": "The solver differs. The paper uses a parametric projection-based compact model validated against FloTHERM finite-volume results, while Studio uses its own solver, so numerical results are not directly comparable.",
+        "essential": true
+      },
+      {
+        "reason": "The eQFN package has no interposer or 3D stacking, so those mismatches are not applicable, but the package-level geometry is not equivalent to a chiplet or interposer layout.",
+        "essential": false
+      },
+      {
+        "reason": "The paper has no optimizer, controller, reliability analysis or transient behaviour in this scenario (static case). Studio's optimizer or controller features therefore have no counterpart in the original setup.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete paper-derived floorplan can be built because the heat-source positions are available only in a figure sketch. Any Studio run would use a separate, illustrative 2D placement whose coordinates are generated by the runner and are not paper facts.",
+      "If an illustrative case is built, the published dimensions are the 4 x 4 mm2 die and four 1 x 1 mm2 sources, with 0.5 W each (2 W total, stated explicitly in the paper). No power is split by an unpublished rule.",
+      "Studio's bundled package and material assumptions would replace the paper's STMicroelectronics eQFN materials, pin and board homogenisation, and JEDEC boundary conditions. Temperatures from such a run must not be compared numerically with Table 1."
+    ],
+    "missing_inputs": [
+      "Exact x/y coordinates of the four 1 x 1 mm2 heat sources for each layout (only in the Figure 13 sketch).",
+      "Die position and thickness, die attach, epad thickness, pin and board geometry, and material conductivities for the eQFN case.",
+      "Ambient temperature, heat transfer coefficients and board boundary conditions for the Section 4.4 simulation.",
+      "The FloTHERM temperature maps for the multi-source case (stated as not shown).",
+      "No paper-linked repositories, code, config files or supplementary data were found; the linked assets list is empty and no pinned assets were supplied.",
+      "Numeric values for layout #2 of Table 1 are garbled in the extracted text, so the layout #2 row is unreliable."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "package_width_m",
+        "block_name": "eQFN_package",
+        "source_value": 9,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.009,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: '9 x 9 mm2 eQFN package'",
+        "provenance": "Published text; the same body size is used in all four layouts of Figure 13 and Table 1",
+        "uncertainty": null
+      },
+      {
+        "field": "package_height_m",
+        "block_name": "eQFN_package",
+        "source_value": 9,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.009,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: '9 x 9 mm2 eQFN package'",
+        "provenance": "Published text; square body, second horizontal dimension",
+        "uncertainty": null
+      },
+      {
+        "field": "package_thickness_m",
+        "block_name": "eQFN_package",
+        "source_value": 0.9,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0009,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Section 2, eQFN bullet: thickness 0.9 mm 'adopted for the simulations in Section 4'",
+        "provenance": "Published text, general statement for the Section 4 eQFN simulations; not restated in Section 4.4",
+        "uncertainty": "Inferred to apply to the Section 4.4 package; not explicitly restated there"
+      },
+      {
+        "field": "epad_width_m",
+        "block_name": "epad",
+        "source_value": 5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.005,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: '5 x 5 mm2 epad'",
+        "provenance": "Published text",
+        "uncertainty": null
+      },
+      {
+        "field": "epad_height_m",
+        "block_name": "epad",
+        "source_value": 5,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.005,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: '5 x 5 mm2 epad'",
+        "provenance": "Published text; square epad, second dimension",
+        "uncertainty": null
+      },
+      {
+        "field": "die_width_m",
+        "block_name": "die",
+        "source_value": 4,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.004,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: '4 x 4 mm2 die'",
+        "provenance": "Published text",
+        "uncertainty": null
+      },
+      {
+        "field": "die_height_m",
+        "block_name": "die",
+        "source_value": 4,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.004,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: '4 x 4 mm2 die'",
+        "provenance": "Published text; square die, second dimension",
+        "uncertainty": null
+      },
+      {
+        "field": "die_x_m",
+        "block_name": "die",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Figure 13 sketch and Section 4.4 text",
+        "provenance": "The die position inside the package is not published numerically; only a sketch is available",
+        "uncertainty": "Missing; no pinned asset supplies it and the sketch was not digitized"
+      },
+      {
+        "field": "die_thickness_m",
+        "block_name": "die",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4 (no die thickness stated for the eQFN case)",
+        "provenance": "Section 2 lists die thickness options only for the eQFP family; no value is stated for this eQFN case",
+        "uncertainty": "Missing input"
+      },
+      {
+        "field": "heat_source_width_m",
+        "block_name": "HS1-HS4",
+        "source_value": 1,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.001,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: 'four 1 x 1 mm2 active areas (i.e., HSs)'",
+        "provenance": "Published text; applies to all four heat sources",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_source_height_m",
+        "block_name": "HS1-HS4",
+        "source_value": 1,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.001,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: 'four 1 x 1 mm2 active areas (i.e., HSs)'",
+        "provenance": "Published text; second dimension of the square sources",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_source_x_y_m",
+        "block_name": "HS1-HS4",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Figure 13 (four layouts sketch)",
+        "provenance": "Heat-source positions appear only in the Figure 13 sketch and are not published numerically",
+        "uncertainty": "Not digitized; positions are unknown, so no paper-derived floorplan coordinates can be given"
+      },
+      {
+        "field": "power_W",
+        "block_name": "HS1",
+        "source_value": 0.5,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.5,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: 'each dissipating 0.5 W'",
+        "provenance": "Published text; constant power for each heat source",
+        "uncertainty": null
+      },
+      {
+        "field": "power_W",
+        "block_name": "HS2",
+        "source_value": 0.5,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.5,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: 'each dissipating 0.5 W'",
+        "provenance": "Published text; constant power for each heat source",
+        "uncertainty": null
+      },
+      {
+        "field": "power_W",
+        "block_name": "HS3",
+        "source_value": 0.5,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.5,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: 'each dissipating 0.5 W'",
+        "provenance": "Published text; constant power for each heat source",
+        "uncertainty": null
+      },
+      {
+        "field": "power_W",
+        "block_name": "HS4",
+        "source_value": 0.5,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.5,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4, first paragraph: 'each dissipating 0.5 W'",
+        "provenance": "Published text; constant power for each heat source",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_delta_T1_layout1",
+        "block_name": "HS1",
+        "source_value": 56.31,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 56.31,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 1, row Layout #1, column ΔT1",
+        "provenance": "Published TRIC static temperature rise over ambient at the HS1 center",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_delta_T2_layout1",
+        "block_name": "HS2",
+        "source_value": 56.31,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 56.31,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 1, row Layout #1, column ΔT2",
+        "provenance": "Published TRIC static temperature rise over ambient at the HS2 center",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_delta_T3_layout1",
+        "block_name": "HS3",
+        "source_value": 56.31,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 56.31,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 1, row Layout #1, column ΔT3",
+        "provenance": "Published TRIC static temperature rise over ambient at the HS3 center",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_delta_T4_layout1",
+        "block_name": "HS4",
+        "source_value": 56.31,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 56.31,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 1, row Layout #1, column ΔT4",
+        "provenance": "Published TRIC static temperature rise over ambient at the HS4 center",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_delta_T_center_layout1",
+        "block_name": "die",
+        "source_value": 57.06,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 57.06,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 1, row Layout #1, column ΔTcenter",
+        "provenance": "Published TRIC static temperature rise over ambient at the die center",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_delta_T_max_layout1",
+        "block_name": "die",
+        "source_value": 57.06,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 57.06,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Table 1, row Layout #1, column ΔTmax; text: 'in layout #1 ΔTcenter = ΔTmax'",
+        "provenance": "Published TRIC static maximum temperature rise over ambient across the whole die; chosen as the thermal observable",
+        "uncertainty": "The paper reports agreement with FloTHERM within 3% for the maxima (discrepancy <3%), but the FloTHERM maps are not shown"
+      },
+      {
+        "field": "ambient_temperature_section44",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section 4.4 (no ambient or boundary conditions stated for the multi-source case)",
+        "provenance": "Tamb = 20 °C is stated only for the Figure 11 eTQFP maps (page 10), not for the Section 4.4 case",
+        "uncertainty": "Missing input; the 20 °C value must not be assumed for this scenario"
+      },
+      {
+        "field": "linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 16,
+        "asset_id": null,
+        "locator": "Pages 1-16 (no availability statement, repository URL, supplementary data or code link; the packet asset list is empty)",
+        "provenance": "Packet assets array is empty; the paper cites only FloTHERM v12.2 (ref. 25) and its own conference paper (ref. 24), neither as a data or code repository",
+        "uncertainty": "No pinned assets are available, so none can be inspected"
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The paper's method is a purely conductive 3D parametric detailed thermal model reduced by projection (pp. 3, 5-7). The extraction's own solver description matches that. Its mismatch list also marks the 3D vertical paths through die attach, epad and board as essential, and steady_2d_relevant is false. Yet the experiment kind is custom_2d_steady. A 2D Studio run cannot reproduce this 3D package model, so no 2D reproduction claim is supportable."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No code, repository, supplementary data or availability statement appears on pages 1-16, and the assets list is empty. Reference 24 is a conference paper and ref. 25 is FloTHERM, neither a code artifact. TRIC's internals and the FloTHERM model are not inspectable."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Verified in text on p.12: 9x9 mm2 package, 5x5 mm2 epad, 4x4 mm2 die, four 1x1 mm2 sources at 0.5 W each. The 0.9 mm thickness is inferred from the general Section 2 statement (p.4), not stated in Section 4.4. Missing or unpublished: heat-source coordinates (Figure 13 sketch only), die position, die thickness, die attach, epad thickness, pin and board geometry, and all material conductivities. Layout #2 values are garbled in the extracted text."
+      },
+      "config": {
+        "status": "missing",
+        "note": "Section 4.4 states no ambient temperature or boundary conditions for the multi-source case. The 20 C ambient belongs only to the Figure 11 eTQFP maps, so it must not be assumed here. The experiment floorplan is empty and power_w is empty, so no Studio floorplan, block names or per-block power mapping can be checked. No scenario-matched block-to-power mapping exists for any 2D block, and generated 2D coordinates would be illustrative only."
+      },
+      "data": {
+        "status": "missing",
+        "note": "Table 1 Layout #1 (56.31 x4, 57.06 center, 57.06 max) is legible in the pdftotext output on p.12, and the text confirms ΔTcenter = ΔTmax for layout #1. However, only pdftotext was supplied. Figures 13 and 14 and the Table 1 rendering were never visually verified, and the Table 1 text is duplicated and garbled. The Layout #2 row is unreliable. Layout #1 was chosen for legibility rather than relevance, and its heat-source geometry is not digitized, so the observable cannot be tied to a reconstructable geometry. FloTHERM maps for this case are not shown, so the <3% claim cannot be checked."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The experiment kind is custom_2d_steady, but the same extraction sets steady_2d_relevant=false and lists essential 3D, boundary-condition and solver mismatches. The package is a 3D conductive model with vertical heat paths and board/pin homogenisation, so calling it a 2D reproduction contradicts the stated mismatches.",
+        "locator": "experiment.kind vs scenario.steady_2d_relevant and physical_mismatches; pp.3,12"
+      },
+      {
+        "field": "experiment.floorplan / power_w",
+        "reason": "The floorplan and power_w are empty. Powers for HS1-HS4 (0.5 W each) exist only in evidence rows with no corresponding floorplan blocks, so same-scenario block-to-power matching cannot be verified.",
+        "locator": "experiment.floorplan=[]; evidence power_W rows; p.12"
+      },
+      {
+        "field": "heat_source_x_y_m / die_x_m",
+        "reason": "Heat-source and die positions exist only in the Figure 13 sketch, and the supplied evidence contains no rendered image and no digitization. The decisive layout geometry is not visually verified.",
+        "locator": "Figure 13, p.12"
+      },
+      {
+        "field": "thermal_observable (layout #1 dTmax=57.06 K)",
+        "reason": "The value is read from garbled pdftotext (page 12 contains duplicated and overlapping Table 1 text) with no visual check of the table. It is a TRIC output with unspecified boundary conditions, and layout #1 was selected for legibility. Without ambient or boundary conditions it cannot be compared with any 2D result.",
+        "locator": "Table 1, p.12"
+      },
+      {
+        "field": "package_thickness_m",
+        "reason": "The 0.9 mm value comes from the general Section 2 eQFN statement about simulations in Section 4. Section 4.4 does not restate it, so it is an inference rather than a scenario-specific fact.",
+        "locator": "Section 2 eQFN bullet, p.4; Section 4.4, p.12"
+      },
+      {
+        "field": "ambient_temperature_section44 / boundary conditions",
+        "reason": "No ambient or boundary conditions are stated for the Section 4.4 case. The extraction correctly notes the gap, but it remains an unresolved decisive config item, along with missing die thickness and material properties.",
+        "locator": "Section 4.4, p.12; Figure 11 text, p.10"
+      },
+      {
+        "field": "linked_resources",
+        "reason": "No code, config or data assets were found or pinned, so the code, config and data checks cannot be resolved from artifacts. Only the published text is available.",
+        "locator": "assets=[]; pp.1-16"
+      }
+    ],
+    "checked_pdf_pages": [
+      3,
+      4,
+      6,
+      10,
+      11,
+      12,
+      16
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3021197939",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Exact x/y coordinates of the four 1 x 1 mm2 heat sources for each layout (only in the Figure 13 sketch).",
+      "Die position and thickness, die attach, epad thickness, pin and board geometry, and material conductivities for the eQFN case.",
+      "Ambient temperature, heat transfer coefficients and board boundary conditions for the Section 4.4 simulation.",
+      "The FloTHERM temperature maps for the multi-source case (stated as not shown).",
+      "No paper-linked repositories, code, config files or supplementary data were found; the linked assets list is empty and no pinned assets were supplied.",
+      "Numeric values for layout #2 of Table 1 are garbled in the extracted text, so the layout #2 row is unreliable.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The original model is a 3D detailed thermal model of a molded eQFN package (die, die attach, epad, pins, mold, board). A 2D chip-level Studio placement cannot reproduce the vertical heat paths through the die attach, epad and board.",
+        "essential": true
+      },
+      {
+        "reason": "The paper uses JEDEC-style boundary conditions for the junction-to-ambient environment, with a board modelled as one parallelepiped of adjusted conductivity and pins as a homogenised block. Section 4.4 does not state the ambient or cooling boundary conditions for this case, so Studio cooling cannot be matched.",
+        "essential": true
+      },
+      {
+        "reason": "The solver differs. The paper uses a parametric projection-based compact model validated against FloTHERM finite-volume results, while Studio uses its own solver, so numerical results are not directly comparable.",
+        "essential": true
+      },
+      {
+        "reason": "The eQFN package has no interposer or 3D stacking, so those mismatches are not applicable, but the package-level geometry is not equivalent to a chiplet or interposer layout.",
+        "essential": false
+      },
+      {
+        "reason": "The paper has no optimizer, controller, reliability analysis or transient behaviour in this scenario (static case). Studio's optimizer or controller features therefore have no counterpart in the original setup.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete paper-derived floorplan can be built because the heat-source positions are available only in a figure sketch. Any Studio run would use a separate, illustrative 2D placement whose coordinates are generated by the runner and are not paper facts.",
+      "If an illustrative case is built, the published dimensions are the 4 x 4 mm2 die and four 1 x 1 mm2 sources, with 0.5 W each (2 W total, stated explicitly in the paper). No power is split by an unpublished rule.",
+      "Studio's bundled package and material assumptions would replace the paper's STMicroelectronics eQFN materials, pin and board homogenisation, and JEDEC boundary conditions. Temperatures from such a run must not be compared numerically with Table 1."
+    ],
+    "evidence_sha256": "2d5f49f11e9e636e8d7ab5d6dbda5a984c97613aef3dab374a1d26eca5b0249f",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable (input_gate_pass=false, scientific_gate_pass=false, independently_verified=false). Studio did not run: simulation status is 'skipped', simulation_allowed=false, and no artifacts were produced. The scenario is the static multi-source 9x9 mm eQFN case in Section 4.4 (Figure 13, Table 1) of the TRIC paper, extracted as a custom_2d_steady experiment with an empty floorplan and empty power_w. The gate blocked it because a custom experiment needs 1-128 blocks and a power_w object. Further blockers include a missing cited observable and regime in the gate record, unresolved adversarial checks, and a pending independent page/asset review. Because this is a custom 2D steady run, there is no transient trace. It is not a bundled EV6/GCC adaptation, and no Ascend910 or ATPlace pinned sizes/powers were supplied, so no input.flp or one-row input.ptrace was generated and no source commit or generated-placement assumption applies. No paper-linked assets or pinned commits exist. The paper's published inputs are the 4x4 mm die, four 1x1 mm sources, and 0.5 W each (2 W total). Heat-source coordinates exist only in the Figure 13 sketch and were not digitized. The reference observable is the Layout #1 die-maximum steady temperature rise of 57.06 K over ambient (TRIC; the paper says it agrees with FloTHERM within 3%, but the FloTHERM maps are not shown). No Studio temperature exists, so no numerical comparison is made and comparison_valid=false. Even if a Studio run were later made, the location, aggregation, regime and boundary assumptions would not match: the paper uses a 3D molded-package compact model with unstated ambient and boundary conditions for this case, while Studio would use a 2D placement with its own package, materials and cooling. Only qualitative sensitivity discussion (for example, that source layout and spacing affect the die maximum) would be defensible. No exact replication is claimed and the final verdict is not_2d_applicable.",
+    "limitations": [
+      "Studio did not run; there is no Studio temperature, so no numerical comparison with the 57.06 K reference is possible.",
+      "Gate outcome not_2d_applicable with comparison_valid=false; the gate fixes the final verdict and this assessment does not override it.",
+      "Custom 2D steady experiment has empty floorplan and power_w; the input is invalid (needs 1-128 blocks and a power_w object).",
+      "Heat-source coordinates for the four layouts exist only in the Figure 13 sketch and were not digitized; any placement would be generated and illustrative, not a paper fact.",
+      "No Ascend910/ATPlace pinned sizes or powers, no generated input.flp or input.ptrace, and no source commit; no bundled EV6/GCC adaptation was used.",
+      "No transient trace exists; the paper case is static only, so no transient behavior can be assessed.",
+      "Essential physical mismatches: 3D molded eQFN package with die attach, epad, pins and board versus a 2D chip-level placement; different solver (TRIC projection-based compact model vs Studio); unstated ambient and boundary conditions for Section 4.4 (the 20 °C ambient applies only to the Figure 11 case and must not be assumed).",
+      "Missing inputs: die position and thickness, die attach, epad thickness, pin/board geometry, material conductivities, heat transfer coefficients, FloTHERM maps; Layout #2 values are garbled in the extracted text.",
+      "Package thickness of 0.9 mm comes from Section 2 and is only inferred to apply to Section 4.4.",
+      "Reference value, location (die maximum), aggregation (spatial maximum of steady rise) and regime (steady) would not match a Studio output under different boundary conditions; the gate also records the observable and regime as not cited.",
+      "No paper-linked repositories, code or data were found; adversarial methods/code/parameters/config/data checks are unresolved and independent page/asset review is pending.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Exact x/y coordinates of the four 1 x 1 mm2 heat sources for each layout (only in the Figure 13 sketch).",
+      "Die position and thickness, die attach, epad thickness, pin and board geometry, and material conductivities for the eQFN case.",
+      "Ambient temperature, heat transfer coefficients and board boundary conditions for the Section 4.4 simulation.",
+      "The FloTHERM temperature maps for the multi-source case (stated as not shown).",
+      "No paper-linked repositories, code, config files or supplementary data were found; the linked assets list is empty and no pinned assets were supplied.",
+      "Numeric values for layout #2 of Table 1 are garbled in the extracted text, so the layout #2 row is unreliable.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The original model is a 3D detailed thermal model of a molded eQFN package (die, die attach, epad, pins, mold, board). A 2D chip-level Studio placement cannot reproduce the vertical heat paths through the die attach, epad and board.",
+      "The paper uses JEDEC-style boundary conditions for the junction-to-ambient environment, with a board modelled as one parallelepiped of adjusted conductivity and pins as a homogenised block. Section 4.4 does not state the ambient or cooling boundary conditions for this case, so Studio cooling cannot be matched.",
+      "The solver differs. The paper uses a parametric projection-based compact model validated against FloTHERM finite-volume results, while Studio uses its own solver, so numerical results are not directly comparable.",
+      "The eQFN package has no interposer or 3D stacking, so those mismatches are not applicable, but the package-level geometry is not equivalent to a chiplet or interposer layout.",
+      "The paper has no optimizer, controller, reliability analysis or transient behaviour in this scenario (static case). Studio's optimizer or controller features therefore have no counterpart in the original setup.",
+      "No complete paper-derived floorplan can be built because the heat-source positions are available only in a figure sketch. Any Studio run would use a separate, illustrative 2D placement whose coordinates are generated by the runner and are not paper facts.",
+      "If an illustrative case is built, the published dimensions are the 4 x 4 mm2 die and four 1 x 1 mm2 sources, with 0.5 W each (2 W total, stated explicitly in the paper). No power is split by an unpublished rule.",
+      "Studio's bundled package and material assumptions would replace the paper's STMicroelectronics eQFN materials, pin and board homogenisation, and JEDEC boundary conditions. Temperatures from such a run must not be compared numerically with Table 1."
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "paper_id": "W4387010219",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No pinned packet assets were supplied (assets list is empty), so no config, geometry or power files could be inspected.",
+    "2D floorplan block coordinates (x_m, y_m, width_m, height_m) are only referenced to ref [38], which is not in the packet.",
+    "Per-block power in watts for the same 2D scenario. Only the 40 W total and the Fig. 3 percentage breakdown with an ambiguous legend mapping are available. No published rule splits the total.",
+    "HotSpot configuration (grid resolution, boundary and package parameters beyond Table I, material file), the 2D die thickness and conductivity, and the exact location of the 46 C hotspot.",
+    "Any power time series or workload trace. Only steady-state full-workload TDP is given.",
+    "The bundled Studio package/material assumptions are not provided in the packet, so they cannot be recorded.",
+    "The linked repositories (HotSpot GitHub, MemPool-3D arXiv DOI, ref [38] DOI, all on PDF page 9) are not pinned assets and do not prove that the inputs exist.",
+    "Linked asset hotspot_github is not pinned and available",
+    "Linked asset mempool3d_arxiv_doi is not pinned and available",
+    "Linked asset prior_work_tvlsi_2022_doi is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Package is a full flip-chip stack: TIM 100 um at 7 W/mK, heat spreader 5.92 x 5.92 mm, heatsink 7.9 x 7.9 mm with Rconv 0.17 K/W, C4 bumps, substrate, solder balls, underfill and a PCB with 50 K/W natural convection. A simplified Studio thermal stack may not reproduce this path or the 46 C result.",
+      "essential": true
+    },
+    {
+      "reason": "The 2D floorplan is not in this paper (only referenced to ref [38]). No block coordinates or per-block watts are published. Only the die size, tile size, tile count and the 40 W total are given.",
+      "essential": true
+    },
+    {
+      "reason": "The tile power breakdown (cores, I$, SPM, interconnects, others) appears only as percentages in Fig. 3, and the legend-to-slice mapping is ambiguous. Splitting the 40 W total would need a published rule, so it cannot be treated as paper-derived watts per block.",
+      "essential": true
+    },
+    {
+      "reason": "HotSpot assumes uniform power density within each block, so intra-block hotspots are not resolved.",
+      "essential": false
+    },
+    {
+      "reason": "The paper's main subject is 3D (MoL/LoM) stacking: F2F bonding, a BEOL layer at 1.2 W/mK, a thinned 5 um logic die. None of this applies to the selected 2D baseline, and the 3D results (55/57 C) must not be mixed with it.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is steady state only. There is no transient or power-trace data, no controller or DTM, no optimizer, and no reliability analysis in the selected scenario.",
+      "essential": false
+    },
+    {
+      "reason": "The 2D die silicon thickness and thermal conductivity, and the 2D-specific layer stack, are not tabulated. Table I lists 3D memory/logic die layers only.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "8dfcd6c7267f32db555c7e56a49f0ac90813e90d42fcd575c59006ba67cc4d9d",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

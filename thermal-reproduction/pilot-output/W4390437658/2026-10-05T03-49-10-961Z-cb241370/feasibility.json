@@ -1,0 +1,92 @@
+{
+  "paper_id": "W4390437658",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": true,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [],
+  "blocking_facts": [
+    "Evidence 30 lacks a valid page or pinned asset locator",
+    "Evidence 34 lacks a valid page or pinned asset locator",
+    "Evidence 35 lacks a valid page or pinned asset locator",
+    "Evidence 39 lacks a valid page or pinned asset locator",
+    "Evidence 40 lacks a valid page or pinned asset locator",
+    "Evidence 44 lacks a valid page or pinned asset locator",
+    "Evidence 45 lacks a valid page or pinned asset locator",
+    "Evidence 49 lacks a valid page or pinned asset locator",
+    "Evidence 50 lacks a valid page or pinned asset locator",
+    "Evidence 54 lacks a valid page or pinned asset locator",
+    "Evidence 55 lacks a valid page or pinned asset locator",
+    "Evidence 59 lacks a valid page or pinned asset locator",
+    "Evidence 60 lacks a valid page or pinned asset locator",
+    "No cited, normalized x_m for chiplet_1",
+    "No cited, normalized y_m for chiplet_1",
+    "No cited, normalized x_m for chiplet_2",
+    "No cited, normalized y_m for chiplet_2",
+    "No cited, normalized x_m for chiplet_3",
+    "No cited, normalized y_m for chiplet_3",
+    "No cited, normalized x_m for chiplet_4",
+    "No cited, normalized y_m for chiplet_4",
+    "No cited, normalized x_m for chiplet_5",
+    "No cited, normalized y_m for chiplet_5",
+    "No cited, normalized x_m for chiplet_6",
+    "No cited, normalized y_m for chiplet_6",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Final chiplet placement coordinates (x_m, y_m) for the Ascend 910 RLPlanner result: not in the paper or in config/Ascend910.cfg, which gives only widths, heights, powers and connections.",
+    "Workload or power time series: only static powers (256, 14, 20, 20, 20, 20 W) in the pinned config are available. The chiplet names/roles are not given (config lists indices only), and the config has no x/y positions.",
+    "HotSpot configuration: interposer size and thickness, package layers, material properties, heat-sink and cooling boundary conditions, ambient temperature, grid resolution.",
+    "Reward hyperparameters (lambda, mu, T0, alpha) and the fast thermal model self/mutual resistance tables used for the Ascend 910 case.",
+    "Repository URL: the paper only says 'More details can be found at the github' with no URL in the extracted text. The pinned config is the only asset evidence, and a repository does not prove that a final placement exists.",
+    "Content of paper reference [6] (ServeTheHome Ascend 910 article) is not a pinned asset, so its dimension and power provenance is unverified.",
+    "Bundled Studio package and material assumptions are not provided in the packet.",
+    "Per-chiplet temperatures and the temperature field for the Ascend 910 system: only the single maximum temperature is reported in Table I.",
+    "Published final chiplet coordinates are unavailable.",
+    "Linked asset ref6_servethehome_ascend910 is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper's 77.12 degC is a peak temperature for an RL-optimized final placement that is not published, so it cannot be reproduced or numerically compared with a separately generated illustrative placement.",
+      "essential": true
+    },
+    {
+      "reason": "The original thermal evaluation uses HotSpot and an LTI self/mutual-resistance fast model for 2.5D chiplets on an interposer. The interposer, package, heat-spreader and cooling parameters are not given in the paper or pinned config, so the original cooling boundary conditions cannot be matched.",
+      "essential": true
+    },
+    {
+      "reason": "The original method is an RL floorplanner (PPO plus RND) that co-optimizes wirelength and temperature with microbump assignment. A thermal-only Studio run has no optimizer, wirelength or microbump assignment, so that part cannot be replicated.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's workload is a static steady-state power per chiplet, with no transient behaviour, power time series, controller or reliability analysis. Any one-row power trace is a steady-state surrogate only.",
+      "essential": false
+    },
+    {
+      "reason": "The paper's fast thermal model is an LTI approximation with a reported MAE of about 0.25 K vs HotSpot. A different solver will differ in numerical details.",
+      "essential": false
+    },
+    {
+      "reason": "The system is 2.5D (chiplets on an interposer), not 3D stacked, so no vertical stacking mismatch applies. Any Studio 2D model must still represent the interposer layer.",
+      "essential": false
+    },
+    {
+      "reason": "Final chiplet coordinates are not supplied by the reference files; generated shelf positions illustrate a 2D power snapshot, not the published placement.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [
+    "Pinned weiweihook/RLPlanner@a75abf0b167a316dc5e2dd8b8d3d926114039271",
+    "RLPlanner publishes Ascend910 chiplet sizes and powers, but this config has no placement, power time series, or HotSpot configuration.",
+    "The power trace is one constant row made from source per-chiplet watts."
+  ],
+  "evidence_sha256": "f15d87900a8aff55547e87ee4c9d5a2d2a7e7fb060db24d8d3eecd31477cb204",
+  "simulation_allowed": true,
+  "comparison_valid": false,
+  "reason": "The caveated scientific suitability verdict permits an exploratory Studio run; evidence and physical mismatches remain visible."
+}

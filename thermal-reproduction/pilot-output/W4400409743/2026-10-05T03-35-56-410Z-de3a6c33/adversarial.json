@@ -1,0 +1,95 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The extraction describes a 3D steady implicit CFD model with realizable k-epsilon. Table 2 (PDF p.3) also lists the solver type as 'Steady, Axisymmetric, Implicit', which contradicts the 3D claim and is not reported in the extraction. Sec. 2.1 (PDF p.6) lists 'laminar flow' among the assumptions while the model is realizable k-epsilon (turbulent), so the physics is internally contradictory. The extraction also asserts that the Table 5 Rosli case is 'different' from the Table 6 case. The paper says the Rosli comparison uses the same 6x6, 0.4 cm gap layout, yet the temperatures differ by about 20 C (106.47 vs 126.97 C), so that explanation is an unsupported inference. The extraction correctly states that no optimizer or controller exists and that the setup is a 3D forced-air conjugate model, so it cannot be a 2D reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, Icepak project, repository or supplementary files are linked. The Data availability statement says 'No data was used' (PDF p.11), and the packet assets list is empty. Nothing could be inspected, and the extraction correctly records this."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "The transcribed values match the pdftotext of Table 1, Table 3 and Table 6: chip 2.2x2.2x0.1 cm, cabinet 6x5x2 cm, 36 fins, 8 W, 0.1 m/s, 298 K and 126.97 C. They do not resolve the paper's own conflicts. Table 1 gives a 4x4x1.7 cm heat sink and a 0.2 cm fin diameter, while the text (PDF p.5) gives a 3x3.5x2 cm base, 1.5 cm fins and a 0.16 cm radius. The Fig. 9 text shows about 295 K at the inlet against Tin = 298 K. Table 7 pressure drop has no units. The 8 W heat location (chip vs heat sink bottom wall) is ambiguous. The geometry is therefore not usable as a single consistent parameter set."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no machine-readable configuration. The experiment has an empty floorplan and empty power_w. No block placement coordinates exist, and Fig. 1 is a schematic that was not visually verified. Substrate, solid material properties, and the fin spacing and positions for the 6x6 inline layout are not given. Studio package and material assumptions are unspecified. Generated 2D shelf coordinates would be illustrative only."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The only data are scalar values in Tables 5-7. The reported observable (126.97 C, Table 6, PDF p.11) is text-verified only. The decisive figures (Fig. 1, 6, 7, 8, 9, 12) were not rendered or visually checked, because only pdftotext output was supplied. No same-scenario per-block power table exists, since only a single 8 W for one chip is given. There is no transient trace, and no pinned assets or digitized data."
+    }
+  },
+  "findings": [
+    {
+      "field": "solver dimensionality",
+      "reason": "Table 2 states the solver is 'Steady, Axisymmetric, Implicit' while the model is called 3D. The extraction ignores the axisymmetric entry, which contradicts the 3D and 36-pin geometry.",
+      "locator": "PDF p.3, Table 2 'Solver type'; PDF p.6 assumptions"
+    },
+    {
+      "field": "flow regime",
+      "reason": "Sec. 2.1 assumes laminar flow but the model uses realizable k-epsilon with standard wall functions. The regime is contradictory and the extraction does not flag it.",
+      "locator": "PDF p.6, assumption list 'Laminar flow' vs PDF p.3 Table 2 'Realisable k-epsilon'"
+    },
+    {
+      "field": "validation scenario (Table 5 vs Table 6)",
+      "reason": "The extraction says the Table 5 values (106.474 C IA) belong to 'a different, Rosli-comparison case'. The paper says the comparison uses the same six-row, six-column design with a 0.4 cm gap, so it is unexplained why the same IA circular case gives 106.474 C in Table 5 and 126.97 C in Table 6. This is a possible internal contradiction in the paper's observable, and the extraction's explanation is unsupported.",
+      "locator": "PDF p.6 Table 5; PDF p.8 Sec. 2.4; PDF p.11 Table 6"
+    },
+    {
+      "field": "heat sink geometry",
+      "reason": "Table 1 (4x4x1.7 cm; fin D 0.2 cm) conflicts with the text (3x3.5x2 cm base; fin radius 0.16 cm; fin height 1.5 cm). The extraction records both but gives no resolved geometry, so a floorplan cannot be built from the paper alone.",
+      "locator": "PDF p.3 Table 1; PDF p.5 Sec. 2.1 bullets"
+    },
+    {
+      "field": "x_m/y_m placement and floorplan",
+      "reason": "The chip, heat sink and cabinet have no published coordinates. The experiment floorplan and power_w are empty, so there is no same-scenario floorplan block with power. Any 2D placement would be a generated illustrative assumption.",
+      "locator": "PDF p.3 Fig. 1 (schematic only); experiment.floorplan = []"
+    },
+    {
+      "field": "physical mismatch / steady_2d_relevant",
+      "reason": "The case is a 3D forced-convection pin-fin conjugate CFD problem with pressure drop and velocity fields. A 2D conduction model cannot reproduce it, so it must not be called a 2D reproduction. The extraction correctly flags this as essential.",
+      "locator": "PDF p.3 Table 2; PDF p.7 Sec. 2.2"
+    },
+    {
+      "field": "thermal observable definition",
+      "reason": "Table 6 is labeled 'Source Temp', while Eq. 7-8 and the text define the maximum temperature on the fin base. The observable location is ambiguous. The 126.97 C was read from pdftotext and not visually checked against Fig. 7, 8 and 12.",
+      "locator": "PDF p.6 Eq. 7-8; PDF p.11 Table 6"
+    },
+    {
+      "field": "pressure drop units",
+      "reason": "Table 7 gives 0.12 for circular IA with no units, so no conversion is possible. The text also cites 'Tables 4 and 6' for pressure and temperature data, but Table 4 is mesh data, which is a mis-citation.",
+      "locator": "PDF p.11 Table 7 and Sec. 3.4 text"
+    },
+    {
+      "field": "validation figure",
+      "reason": "The claim of under 3.68% deviation from Adhikari rests on Fig. 6, which was not visually verified. The case is a rectangular-fin experiment, not this geometry.",
+      "locator": "PDF p.6 Fig. 6; PDF p.8 Sec. 2.4"
+    },
+    {
+      "field": "assets/code/data",
+      "reason": "There are no linked or pinned assets, and the data statement says no data was used. No code, config or data can be verified.",
+      "locator": "PDF p.11 Data availability; assets = []"
+    },
+    {
+      "field": "inlet temperature",
+      "reason": "Fig. 9 text says the temperature upstream of the heat sink is 295 K, against the stated 298 K inlet, and refers to a 0.01 cm distance. The inconsistency is unresolved.",
+      "locator": "PDF p.8 Sec. 3.1; PDF p.4 Table 3"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "checked_assets": []
+}

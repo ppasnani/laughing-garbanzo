@@ -1,0 +1,277 @@
+{
+  "paper_id": "W4414900343",
+  "paper_title": "Cool-3D: An End-to-End Thermal-Aware Framework for Early-Phase Design Space Exploration of Microfluidic-Cooled 3DICs",
+  "artifact_search_status": "checked_links_found",
+  "linked_assets": [
+    {
+      "id": "cool3d_github_footnote",
+      "url": "https://github.com/iCAS-SJTU/Cool-3D",
+      "kind": "code repository (framework release stated as in process)",
+      "paper_page": 1
+    },
+    {
+      "id": "cool3d_github_conclusion",
+      "url": "https://github.com/iCAS-SJTU/Cool-3D",
+      "kind": "code repository (framework release stated as in process)",
+      "paper_page": 13
+    },
+    {
+      "id": "ref40_gem5mcpat_parser",
+      "url": "https://github.com/saideeptiku/Gem5McPatParser/blob/master/Gem5McPATParser.py",
+      "kind": "third-party gem5-to-McPAT parser script (reference [40])",
+      "paper_page": 14
+    },
+    {
+      "id": "ref41_gem5mcpat_parser",
+      "url": "https://github.com/Hardik44/Gem5toMcPat parser/blob/master/Program.py",
+      "kind": "third-party gem5-to-McPAT parser script (reference [41]; URL as printed, wrapped in text extraction)",
+      "paper_page": 14
+    },
+    {
+      "id": "ref42_mcpat_calib_parser",
+      "url": "https://github.com/zhaijw18/mcpat-calib-public/blob/main/parser/gem5-mcpat-parser.py",
+      "kind": "third-party gem5-to-McPAT parser script (reference [42])",
+      "paper_page": 14
+    },
+    {
+      "id": "ref46_splash2_benchmark",
+      "url": "https://github.com/liuyix/splash2benchmark",
+      "kind": "benchmark suite source (Splash2; URL as printed, wrapped in text extraction)",
+      "paper_page": 14
+    }
+  ],
+  "scenario": {
+    "pdf_page": 10,
+    "figure_or_table": "Fig. 9 (baseline chip, Splash2-fft heat maps; baseline configuration in Table VI on PDF page 9)",
+    "description": "Baseline 3-layer Cool-3D stack with the Splash2 fft benchmark, steady-state HotSpot 7.0 heat maps of the core layer and two memory layers, passive heat sink and no microfluidic cooling. Per-layer maximum temperatures: 395.52 K (bottom core layer), 392.83 K (middle memory layer, banks 0-15), 390.57 K (top memory layer, banks 16-31).",
+    "architecture": "Baseline 3D chip: 4 out-of-order 8-issue cores at 2 GHz, L1 I/D 4KB/8KB 2-way, shared 2MB L2, 8GB memory with 32 banks. Stack: bottom core layer (cores 0-3, 2x2), middle memory layer (banks 0-15, 4x4), top memory layer (banks 16-31, 4x4). Passive heat sink, no microfluidic cooling. Toolchain: gem5 + McPAT/CACTI-3DD + HotSpot 7.0.",
+    "workload": "Splash2 fft benchmark, default problem size",
+    "operating_point": "Steady-state thermal simulation (final Cool-3D step) of the baseline stack; 2 GHz cores; temperatures in K as digitized from the Fig. 9 heat-map color-bar labels",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "HotSpot 7.0 (steady-state thermal simulation) in the Cool-3D toolchain: gem5 performance model, McPAT power model for cores and caches, CACTI-3DD memory power calculator, then HotSpot 7.0 with 3D stacking and microfluidic cooling support (PDF pages 5-6, 9)",
+    "optimizer": "None. The paper performs manual what-if design space exploration over stacking order, cooling pattern and L2 size. Optimization algorithms such as RL are listed as future work (PDF pages 4, 10-13).",
+    "controller": "None. No dynamic thermal management or control policy is used. The baseline uses a passive heat sink with no active cooling (PDF page 9, Table VI).",
+    "benchmark": "Splash2 suite at default problem size. The selected scenario is baseline 3-layer stack (core layer at bottom, two memory layers above) running fft, shown in Fig. 9 on PDF page 10 (baseline configuration in Table VI, PDF page 9)."
+  },
+  "thermal_observable": {
+    "value": 395.52,
+    "unit": "K",
+    "location": "Maximum temperature in the bottom core layer (cores 0-3) of the baseline 3-layer stack running Splash2 fft. The other layers peak at 392.83 K (middle memory layer) and 390.57 K (top memory layer).",
+    "aggregation": "Spatial maximum over the layer heat map from a steady-state HotSpot 7.0 simulation. This is read from the printed Fig. 9 heat-map titles, not from a table.",
+    "pdf_page": 10
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a 3D stack of three dies (cores, memory banks, memory banks) with vertical heat coupling between layers. A generic 2D single-layer Studio thermal model cannot capture inter-layer coupling, the stack ordering effect or per-layer temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling is a passive heat sink on a 3D stack, with the core layer at the bottom far from the heat sink. A Studio 2D package with its own cooling and boundary conditions does not reproduce this thermal path. Microfluidic cooling is used in later cases of the paper but not in this baseline.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's power comes from a gem5, McPAT and CACTI-3DD pipeline over the fft workload. Per-block power values are not published, only heat maps, so no power rows can be taken from the paper.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's solver is HotSpot 7.0 with a 3D layered floorplan and cooling configuration. Studio uses a different solver and material stack, so numerical agreement cannot be claimed.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives no block coordinates or dimensions in numeric form. The floorplan appears only as Fig. 9 heat-map images with unit labels such as C0_IALU and B_0, and the floorplan files are not in the packet.",
+      "essential": true
+    },
+    {
+      "reason": "The paper uses no optimizer or controller in the selected scenario, so there is nothing to mismatch there. Transient behavior is not studied, since the result is steady state, and reliability is not evaluated.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "Block-level floorplan geometry (x, y, width, height in meters) for all core-layer units and memory banks. It is only shown graphically in Fig. 9 without numeric dimensions or die area.",
+    "Per-block power in watts for the fft baseline run. Total chip or layer power is also not stated.",
+    "HotSpot 7.0 configuration for the stack: layer thicknesses, material properties, heat sink and convection parameters, ambient temperature, grid resolution and interface materials.",
+    "Cool-3D framework code, floorplan files and experiment data. The GitHub repository (PDF pages 1 and 13) is described as 'in the process of being released', and no pinned packet assets were supplied.",
+    "Numeric tabulation of the thermal results. Only the heat-map figure titles give maximum temperatures. No tables or files give per-block temperatures.",
+    "Gem5 and McPAT outputs (statistics, power traces) for the fft benchmark on the baseline chip.",
+    "Memory and cooling details beyond Table VI, such as die area, die thickness, TSV and bonding layer properties, and CACTI-3DD memory power per bank."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "thermal_observable.max_temperature_bottom_core_layer",
+      "block_name": "bottom layer, core 0-3",
+      "source_value": 395.52,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 395.52,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Fig. 9 heat-map title 'bottom layer, core 0-3 Maximum Temperature = 395.52'",
+      "provenance": "Printed maximum temperature in the figure title for the baseline chip running Splash2 fft (steady-state HotSpot 7.0); read from extracted figure text, not a table.",
+      "uncertainty": "Read from figure text; the paper does not state the aggregation beyond 'Maximum Temperature'. Treated as spatial maximum over the layer."
+    },
+    {
+      "field": "thermal_observable.max_temperature_middle_memory_layer",
+      "block_name": "middle layer, mem bank 0-15",
+      "source_value": 392.83,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 392.83,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Fig. 9 heat-map title 'middle layer, mem bank 0-15 Maximum Temperature = 392.83'",
+      "provenance": "Printed maximum temperature in the figure title for the baseline chip running Splash2 fft.",
+      "uncertainty": "Read from figure text; layer-wise spatial maximum."
+    },
+    {
+      "field": "thermal_observable.max_temperature_top_memory_layer",
+      "block_name": "top layer, mem bank 16-31",
+      "source_value": 390.57,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 390.57,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Fig. 9 heat-map title 'top layer, mem bank 16-31 Maximum Temperature = 390.57'",
+      "provenance": "Printed maximum temperature in the figure title for the baseline chip running Splash2 fft.",
+      "uncertainty": "Read from figure text; layer-wise spatial maximum."
+    },
+    {
+      "field": "architecture.core_count_and_frequency",
+      "block_name": "cores 0-3",
+      "source_value": 4,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Core Model row: 4 cores, 2GHz, out-of-order, 8-issue",
+      "provenance": "Baseline chip configuration table; core clock 2 GHz, 8-issue out-of-order.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.core_frequency",
+      "block_name": "cores 0-3",
+      "source_value": 2,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 2000000000,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Core Model row",
+      "provenance": "Baseline configuration; converted from GHz to Hz.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.l2_cache_capacity",
+      "block_name": "L2_shared",
+      "source_value": 2,
+      "source_unit": "MB",
+      "conversion_factor": 1048576,
+      "normalized_value": 2097152,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, L2 Cache row: shared L2 cache, 2MB",
+      "provenance": "Baseline configuration; converted MB to bytes with binary MB.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.memory_banks",
+      "block_name": "memory banks",
+      "source_value": 32,
+      "source_unit": "banks",
+      "conversion_factor": 1,
+      "normalized_value": 32,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, Memory row: 8GB, 32 banks, 8 banks per rank",
+      "provenance": "Baseline configuration table.",
+      "uncertainty": null
+    },
+    {
+      "field": "architecture.stack_layers",
+      "block_name": null,
+      "source_value": 3,
+      "source_unit": "layers",
+      "conversion_factor": 1,
+      "normalized_value": 3,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Table VI, 3D Related Parameters, Stacking: 3 layers; top mem banks 16-31, middle mem banks 0-15, bottom cores 0-3",
+      "provenance": "Stack order: core layer at the bottom, two memory layers above. Passive heat sink, no microfluidic cooling.",
+      "uncertainty": null
+    },
+    {
+      "field": "workload",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Sec. IV-A Experimental Setup and Sec. IV-B Baseline Analysis; Fig. 9 caption (PDF page 10)",
+      "provenance": "Splash2 benchmark suite at default problem size; fft benchmark is used for the Fig. 9 heat maps. Steady-state thermal simulation is the final Cool-3D step.",
+      "uncertainty": "No numeric workload value; descriptive only."
+    },
+    {
+      "field": "floorplan.geometry",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Fig. 9 unit labels (C0_IALU, B_0 etc.) with no numeric dimensions",
+      "provenance": "Floorplan appears only as heat-map images. No x, y, width or height values are published in text or tables, and no pinned asset was supplied (assets list is empty).",
+      "uncertainty": "Digitizing the figure would give only relative layout; no scale is provided."
+    },
+    {
+      "field": "power_rows",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Sec. IV-B and Fig. 9; no per-block power table in the paper",
+      "provenance": "Per-block and total power are not published for the baseline fft run; the paper only says the power comes from McPAT and CACTI-3DD and shows heat maps.",
+      "uncertainty": "No power can be assigned to any block without inventing it."
+    },
+    {
+      "field": "resource.cool3d_github_repository",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 1,
+      "asset_id": null,
+      "locator": "Abstract footnote 1: https://github.com/iCAS-SJTU/Cool-3D; also PDF page 13 conclusion",
+      "provenance": "Paper-linked code repository; the paper states the framework and data are 'in the process of being released'. No pinned packet asset was supplied, so inputs are not shown to exist.",
+      "uncertainty": "Release status unverified."
+    },
+    {
+      "field": "resource.third_party_parsers_and_benchmark",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 14,
+      "asset_id": null,
+      "locator": "References [40]-[42] gem5-to-McPAT parser URLs and [46] Splash2 benchmark URL",
+      "provenance": "Paper-linked third-party scripts and benchmark sources; none is a floorplan or power input for the selected scenario and none is in the pinned assets.",
+      "uncertainty": null
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Page text supports the POD method: Eqs. (1)-(8), method of snapshots, Galerkin projection onto POD modes, FEniCS DNS, adiabatic boundaries with a Robin boundary at the substrate bottom, and a 0 C ambient. It is a 3D transient POD-vs-FEM comparison with no optimizer or controller. The packet states steady_2d_relevant=false but still gives experiment.kind=custom_2d_steady, which does not fit the method. Only text was reviewed, not the figures."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The assets array is empty. No FEniCS script, POD code or HotSpot floorplan file is pinned. fenicsproject.org, the HotSpot website and the microprocessor-trend-data repository are general or background links and do not prove the paper's code exists."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Text-supported parameters are 3.333 us, 10k cycles, 3 GHz, 3 ms, 0 C, a 129x129x7 mesh, and 3 and 5 modes. The power watts for A/B/C, pulse amplitude and duty cycle, material properties, layer thicknesses, the Robin coefficient, and block dimensions are all absent. The hot-spot temperature is null. The meaning of 3.333 us is ambiguous: it is called a pulse period but is described as the averaging window of 10k cycles at 3 GHz."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No pinned solver config, mesh file, time step, or POD snapshot-sampling settings. The scenario is transient 3D with a Robin bottom boundary. The extraction's own kind=custom_2d_steady with empty floorplan and empty power_w contradicts that, and a 2D steady setup would not be a reproduction."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no numeric floorplan coordinates, no per-block power for A, B and C, and no digitized Fig. 4(a)-(c) or Fig. 2 values. Fig. 1 through Fig. 4 were not visually verified because only pdftotext output was supplied, with no page images or figure crops. Block identities for A, B and C in the EV6 floorplan are unconfirmed."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind / experiment.floorplan / experiment.power_w",
+      "reason": "The experiment is labeled custom_2d_steady with an empty floorplan and empty power map. The paper is a 3D transient pulsed-power study with a 7-layer z mesh and a Robin bottom boundary, and the packet says steady_2d_relevant=false. Calling this any 2D steady reproduction would be unsupported. Blocks A, B and C have no same-scenario power.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant; page 2 Sec. III.A"
+    },
+    {
+      "field": "block_geometry_x_y_width_height",
+      "reason": "The EV6 floorplan geometry exists only in the Fig. 1(a) graphic. No numeric coordinates or block names are supplied, no HotSpot file is pinned, and the figure was not visually verified. Generated coordinates would be illustrative assumptions, not paper facts.",
+      "locator": "Page 2 Fig. 1(a); assets=[]"
+    },
+    {
+      "field": "power_watts_unit_A/B/C",
+      "reason": "No power values, amplitudes or duty cycles are given. The mapping of A, B and C to EV6 functional units is unknown. Every floorplan block would lack same-scenario power.",
+      "locator": "Page 2 Sec. III.A 'A, B and C are the locations...'"
+    },
+    {
+      "field": "pulse_period / workload description",
+      "reason": "The text says 'Each power source with a period of 3.333μs represents an average, over 10k cycles at 3 GHz.' The extraction's mismatch note treats this as a fast pulse train with a 3.333 us period. Whether it is a pulse period or an averaging window is ambiguous, and the waveform shape is not stated. 'Pulse train' is an interpretation.",
+      "locator": "Page 2 Sec. III.A; physical_mismatches[2]"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "The decisive observable, the unit C hot-spot temperature rise in Fig. 4(a)-(c), has value null with no digitization. The figures were not visually inspected in the supplied evidence, so it cannot be treated as verified.",
+      "locator": "Page 3 Fig. 4(a)-(c); thermal_observable"
+    },
+    {
+      "field": "scenario.pdf_page",
+      "reason": "The scenario cites pdf_page 3 but lists Fig. 1 as page 2. The page attribution is mixed. Fig. 1 (page 2) and Figs. 2-4 (page 3) were never checked as images.",
+      "locator": "scenario.pdf_page; Fig. 1 on page 2"
+    },
+    {
+      "field": "mesh_nx/ny/nz",
+      "reason": "The 129x129x7 values are text-supported. Whether they are cells or nodes is unspecified, and the physical chip dimensions and layer thicknesses are unknown, so the mesh cannot be mapped to geometry.",
+      "locator": "Page 2 Sec. III.A"
+    },
+    {
+      "field": "robin_boundary_heat_transfer_coefficient / material_properties",
+      "reason": "The Robin coefficient, k, rho, C and layer thicknesses are not given. The cooling configuration cannot be reproduced or mapped to any Studio package.",
+      "locator": "Page 2 Sec. III.A, Eq. (5), Fig. 1(b)"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "The three linked URLs are not pinned, inspectable assets. The FEniCS and HotSpot sites provide no paper-specific code, config or floorplan evidence. The microprocessor-trend-data link is background only. A bare URL is not evidence.",
+      "locator": "Page 4 refs [1], [19], [22]"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "checked_assets": []
+}

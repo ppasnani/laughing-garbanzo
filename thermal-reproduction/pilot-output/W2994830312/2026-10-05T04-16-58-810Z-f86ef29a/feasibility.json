@@ -1,0 +1,65 @@
+{
+  "paper_id": "W2994830312",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Core block coordinates (x_m, y_m) and core width/height or chip dimensions in meters. Only a 4x4 layout with a 20x20 grid and 25 grids per core is given, and Fig. 3 geometry is not provided numerically.",
+    "Per-core dynamic and leakage power in watts, or any published rule for splitting total power. Only a 60 W step on core11 in the MOR accuracy test and 'several watts per core' are mentioned.",
+    "The Wattch/SPEC power time series, benchmark identities, and the random core assignment.",
+    "Package layer thicknesses, material properties, TIM, heat sink and convection boundary conditions for the package structure in Fig. 3, plus the thermal R/C matrices.",
+    "Leakage polynomial coefficients and the leakage current and voltage values.",
+    "The Kalman filter and MPC weights (R matrix) and the Taylor point and switching-time values.",
+    "Pinned packet assets. The packet contains no assets (assets list empty), and the only linked resources are the PTM model library page (http://ptm.asu.edu, pdf page 9) and the author-hosted paper PDF (pdf page 1). The paper has no code, config or data availability statement.",
+    "The bundled Studio package and material assumptions are not supplied in the packet and are not stated here.",
+    "Linked asset ptm_asu_7nm_ptm_mg_models is not pinned and available",
+    "Linked asset paper_source_pdf is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper's problem is a closed-loop transient DTM problem with 1 s control steps, MPC power recommendations, a Kalman filter and rising/falling trajectories. It is not a steady-state placement or thermal-map problem, so a steady 2D static thermal run cannot reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The experiment is about temperature-dependent leakage feedback, using a polynomial 7 nm FinFET leakage model and PWL linearization. A fixed-power thermal run omits this nonlinearity.",
+      "essential": true
+    },
+    {
+      "reason": "The packaged multi-core plant has a TIM/package structure shown in Fig. 3 and a 1612-order thermal model. Package layers, materials, cooling and boundary details are not given as numbers in the text and cannot be mapped to a bare 2D Studio model.",
+      "essential": true
+    },
+    {
+      "reason": "The controller (PWL-model MPC with DVFS/task-migration-style power recommendations) and the ESN and linear-MPC baselines are not part of a plain Studio thermal solve. Their results cannot be compared numerically with Studio temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The workload is randomly assigned Wattch/SPEC dynamic power traces, with golden leakage computed iteratively. Neither the per-core powers nor the time series are published, so no same-scenario power rows exist.",
+      "essential": true
+    },
+    {
+      "reason": "The NoC power is ignored by the authors (less than 2 mW per router). This is a minor simplification in the original setup.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "4edbda892cddc73679d92863d8bb3ab298298a6ba9a428ea83f694bbd2742990",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

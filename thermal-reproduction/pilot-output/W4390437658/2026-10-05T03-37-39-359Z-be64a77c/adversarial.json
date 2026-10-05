@@ -1,0 +1,79 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "Method descriptions (PPO + RND, shared CNN encoder, LTI self/mutual thermal resistance model, TAP-2.5D baselines) match PDF p.1-2. However, the extraction contradicts itself on RND: it says the paper does not state which RLPlanner variant the 'RLPlanner' row is, yet Table I has separate RLPlanner and RLPlanner(RND) rows and the text credits the 20.28% gain to RLPlanner with RND. The extraction also says 'RLPlanner (PPO RL agent with RND bonus)' in the setup but calls the Table I row ambiguous. The claim that the speedup is 127x is supported by Table II, and the abstract's 120x is consistent. The 'steady-state' and 'LTI' claims are supported, but whether Table I temperatures come from HotSpot or the fast model is unresolved."
+    },
+    "code": {
+      "status": "missing",
+      "note": "Only config/Ascend910.cfg from the pinned repo was supplied. No RLPlanner code, thermal model, HotSpot interface, or placement output was inspected. The paper's 'github' mention has no URL, so the repo link is not paper-verified. The 'weiweihook/RLPlanner' repo identity is unverified against the paper."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Reward weights λ, µ, α, T0, RL hyperparameters, thermal-model table resolution, and HotSpot material/package parameters are not in the packet. Power and size values are present in the config but units (mm, W) are assumed, not stated in the cfg. Per-chiplet pairing by index is assumed. The Ascend 910 reference [6] was not supplied, so the dimensions/powers are not independently verified against the paper."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "Pinned config values (widths, heights, powers, count) match the extraction numerically, but there is no HotSpot/thermal config, no interposer/heat sink/ambient, and no final placement. The extraction's block naming is internally inconsistent: first evidence uses chiplet_0..chiplet_5 while the experiment floorplan and later evidence use chiplet_1..chiplet_6. Evidence lists config line numbers (e.g. :6, :7, :8, :9) although the packet locator is only config/Ascend910.cfg:1 and the config has chiplet_count on line 5 after a blank line under the file's CRLF layout; the cited lines are not verified. Floorplan geometry is an illustrative shelf layout, not paper data. Shelf geometry: chiplet_3 at x=0.025 and chiplet_4 at 0.03275 on y=0 stand next to chiplet_2 (x 0.0145 to 0.025), and chiplet_5/6 at y=0.0314 are fine, but the layout is generated, not published. The connection matrix (200/256 wires) was also not used."
+    },
+    "data": {
+      "status": "contradicted",
+      "note": "Table I values for Ascend 910 RLPlanner (reward -7.4063, wirelength 18130 mm, temperature 77.12 C, runtime 7773 s) are present in the PDF text layer and match, but column alignment in the pdftotext output was read manually and no page image was visually verified. The wirelength 18130 'mm' with a normalization to 18.13 m is a unit conversion of a table-header unit that is ambiguous in the text layer. The Table I row label is ambiguous between RLPlanner and RLPlanner(RND). Table II MAE (0.2523 K) is from synthetic systems, not Ascend 910. Power is present for all 6 floorplan blocks from the same cfg (same scenario), but the 256 W die is assigned by index only. A duplicate evidence entry for chiplet_1 has height source_value 31.399999999999995, a floating-point artifact versus the config's 31.4. No transient, 3D, or cooling features are claimed as 2D reproduction, but 2.5D stack/interposer/cooling are omitted, so the 77.12 C observable cannot be matched by a 2D steady run."
+    }
+  },
+  "findings": [
+    {
+      "field": "block_name",
+      "reason": "Inconsistent block naming: evidence uses chiplet_0..chiplet_5 for config-derived values while the floorplan/power_w and later evidence use chiplet_1..chiplet_6, so mapping of config index to floorplan block is not consistently established.",
+      "locator": "extraction.evidence (chiplet_0..chiplet_5 entries) vs experiment.floorplan chiplet_1..chiplet_6"
+    },
+    {
+      "field": "height_m (chiplet_1 duplicate)",
+      "reason": "Evidence has source_value 31.399999999999995 mm versus config 31.4; floating-point artifact and a duplicated/conflicting evidence entry for the same field.",
+      "locator": "extraction.evidence height_m chiplet_1, config/Ascend910.cfg:8"
+    },
+    {
+      "field": "thermal_observable / RLPlanner variant",
+      "reason": "The extraction states the paper does not say which RLPlanner variant the 77.12 C row is, but Table I has distinct RLPlanner and RLPlanner(RND) rows; also the text-layer column alignment for Table I was only read manually, not visually verified. The 77.12 C maps to the plain RLPlanner row per the text layer, but this decisive table was not visually confirmed.",
+      "locator": "PDF p.2 Table I, Ascend 910 System column"
+    },
+    {
+      "field": "config line numbers",
+      "reason": "Evidence cites config lines 6-9 for fields, but the only supplied locator is config/Ascend910.cfg:1 and line numbers are self-counted; unverifiable.",
+      "locator": "ref_ascend910_cfg evidence locators :6-:9"
+    },
+    {
+      "field": "unit assumptions",
+      "reason": "mm and W units for the cfg are assumed, not stated in the config or paper text for this file; the ServeTheHome reference was not supplied, so dimensions and powers are not independently verified against the paper.",
+      "locator": "config/Ascend910.cfg:7-9; PDF p.2 ref [6]"
+    },
+    {
+      "field": "wirelength unit",
+      "reason": "Reported wirelength 18130 'mm' is converted to 18.13 m; the value is implausibly large for a floorplan of ~40 mm span and the unit/column alignment is not visually verified; this is a unit conversion that is not supported.",
+      "locator": "PDF p.2 Table I Ascend 910 Wirelength column"
+    },
+    {
+      "field": "floorplan x_m/y_m",
+      "reason": "All coordinates are a generated shelf layout, not the published RLPlanner placement; they are illustrative assumptions and cannot reproduce the paper's 77.12 C.",
+      "locator": "experiment.floorplan; evidence x_m/y_m entries"
+    },
+    {
+      "field": "code/thermal config",
+      "reason": "No RLPlanner source, HotSpot config, interposer/TIM/sink/ambient parameters, T0, λ, µ, α were supplied; the paper's 'github' mention has no URL and the repo identity is not verified by the paper.",
+      "locator": "PDF p.2 Section II-C; missing_inputs"
+    },
+    {
+      "field": "physical model",
+      "reason": "The paper's thermal model is a 2.5D chiplet-on-interposer HotSpot stack with unreported cooling; a custom 2D steady run omits decisive vertical-stack and cooling features, so no quantitative scenario match with 77.12 C exists.",
+      "locator": "physical_mismatches; PDF p.2 Section II-C"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2
+  ],
+  "checked_assets": [
+    "ref_ascend910_cfg"
+  ]
+}

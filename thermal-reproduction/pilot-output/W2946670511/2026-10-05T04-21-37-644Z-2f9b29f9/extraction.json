@@ -1,0 +1,284 @@
+{
+  "paper_id": "W2946670511",
+  "paper_title": "An Overview of Thermal Challenges and Opportunities for Monolithic 3D ICs",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 4,
+    "figure_or_table": "Section 3.1 text and Figure 4 (thermal maps of TSV-based 3D IC and Mono3D IC with four upper-tier hot spots and one bottom-tier hot spot)",
+    "description": "Two-tier flip-chip Mono3D IC compared with a similarly sized two-tier TSV-based 3D IC in HotSpot-6.0. The 10 mm x 10 mm chip has one 400 um x 400 um hot spot at the center of the bottom tier and four 400 um x 400 um hot spots in the upper tier. Background power densities are 25 W/cm2 (bottom tier) and 30 W/cm2 (upper tier). Interconnects receive 5% of total tier power, 20% of which goes to the TSVs. Each hot spot has a power density of 750 W/cm2. Hot spot coordinates and per-block watts are not published.",
+    "architecture": "Two-tier flip-chip Mono3D IC (thin tiers, ILD, MIVs not modeled) versus TSV-based 3D IC (4 TSV arrays of 5 mm x 200 um x 33 um, bonding layer), with the heat sink mounted on top of the bottom tier; 10 mm x 10 mm die",
+    "workload": "Synthetic steady-state hot spot power-density maps (not an application workload); background plus hot spot power densities",
+    "operating_point": "Steady-state; hot spots 750 W/cm2, background 25 W/cm2 (bottom) and 30 W/cm2 (upper); maximum on-chip temperature kept below 110 C; TSV-based upper-tier hot spots about 109 C, bottom tier about 38 C cooler; Mono3D hot spots about 77 C with a roughly 4 C difference between tiers",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "HotSpot-6.0 architectural-level steady-state thermal simulator (grid-based, with heterogeneous in-layer modeling used for TSVs; 100 x 100 grids per layer cited in Section 3.3), PDF page 4",
+    "optimizer": "None. The paper is an overview and simulation study with no placement or floorplan optimizer in the selected scenario; floorplanning and partitioning optimizers are only discussed as related work or future opportunities (PDF pages 3 and 6-7).",
+    "controller": "None. No runtime thermal controller is used in the selected scenario; runtime task allocation and operating-mode control are mentioned only qualitatively as opportunities (PDF page 7).",
+    "benchmark": "Synthetic hot spot power-density scenario (PDF page 4, Section 3.1, Figure 4). The 10 mm x 10 mm two-tier flip-chip Mono3D IC is compared with a TSV-based 3D IC. There is one 400 um x 400 um hot spot at the center of the bottom tier and four in the upper tier, each at 750 W/cm2. Background power density is 25 W/cm2 for the bottom tier and 30 W/cm2 for the upper tier. Interconnects get 5% of tier power, 20% of which goes to the TSVs. This is not an application workload."
+  },
+  "thermal_observable": {
+    "value": 77,
+    "unit": "degC",
+    "location": "Hot spot locations on the bottom tier of the two-tier Mono3D IC (approximate, from the text describing Figure 4c/4d). The upper-tier hot spot value for the TSV-based 3D IC is about 109 degC.",
+    "aggregation": "Approximate hot spot temperature read from steady-state HotSpot thermal maps (maximum or hot spot level), reported as ~77 degC in the text. The tier-to-tier variation in the Mono3D IC is about 4 degC, versus up to 38 degC in the TSV-based IC.",
+    "pdf_page": 4
+  },
+  "physical_mismatches": [
+    {
+      "reason": "3D stacked two-tier Mono3D and TSV-based structure (thin tiers, ILD or bonding layer, vertical inter-tier coupling and heat sink on top of the bottom tier). A 2D single-layer Studio model cannot reproduce vertical inter-tier heat flow, the upper-tier vs bottom-tier temperature difference, or TSV and MIV effects.",
+      "essential": true
+    },
+    {
+      "reason": "The paper models TSV arrays (4 arrays of 5 mm x 200 um x 33 um) and metal layers 1-8 with interconnect Joule heating (5% of tier power, 20% of which to TSVs). A 2D Studio model has no equivalent interconnect or TSV heating.",
+      "essential": true
+    },
+    {
+      "reason": "Hot spot coordinates for the four upper-tier hot spots and the per-block watts are not published, so no complete same-scenario floorplan and power set exists. Only dimensions (400 um x 400 um) and power densities are given (hot spot watts could be derived as density x area, but positions are missing).",
+      "essential": true
+    },
+    {
+      "reason": "The cooling configuration (heat sink and heat spreader parameters, convection resistance, ambient temperature) is not specified in the paper, and the paper's heat path runs through the bottom tier. A Studio package with a different cooling stack would give different temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's solver is HotSpot-6.0 with multi-layer heterogeneous grids. The Studio solver and its grid and material treatment differ, so temperatures cannot be compared numerically.",
+      "essential": true
+    },
+    {
+      "reason": "The selected scenario is steady-state only, with no transient power trace, controller, optimizer or reliability analysis. A transient one-row trace would be purely illustrative.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Any Studio run would be a separate illustrative 2D placement built from the published dimensions (10 mm x 10 mm die, 400 um x 400 um hot spots) and power densities, with generated coordinates kept distinct from paper-derived facts.",
+    "Studio's bundled package and material assumptions (default silicon, TIM, heat spreader/sink, ambient and convection settings) are used instead of the paper's HotSpot-6.0 stack, whose parameters are not published.",
+    "Power would be a one-row constant (steady-state) trace.",
+    "Studio results would not be numerically compared with the paper's ~77 degC and ~109 degC values.",
+    "No exact replication of the paper is claimed."
+  ],
+  "missing_inputs": [
+    "Coordinates (x_m, y_m) of the four upper-tier hot spots and the bottom-tier center hot spot, as the paper only says center and, for other scenarios, quadrant centers.",
+    "Per-block power rows (named watts); only power densities are published (hot spot 750 W/cm2, backgrounds 25 and 30 W/cm2).",
+    "HotSpot configuration files, layer stack thicknesses and material properties, heat sink, heat spreader and ambient parameters (no linked code, config or repository was found; artifact_search_status checked_no_links).",
+    "Layer files (floorplan files per layer) and the power trace files used in HotSpot.",
+    "Exact numeric thermal map data for Figure 4 (only approximate values in the text; any digitized figure values would carry uncertainty).",
+    "No pinned packet assets are supplied (assets list is empty), so there are no RLPlanner or ATPlace2.5D files or thermal configs."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "chip_width",
+      "block_name": "chip",
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, paragraph 'To study the thermal behavior of the two ICs, we model a 10 mm x 10 mm chip'",
+      "provenance": "Published text; dimension of the modeled two-tier chip in the selected scenario (Figure 4 case)",
+      "uncertainty": null
+    },
+    {
+      "field": "chip_height",
+      "block_name": "chip",
+      "source_value": 10,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.01,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'we model a 10 mm x 10 mm chip'",
+      "provenance": "Published text; chip footprint in the selected scenario",
+      "uncertainty": null
+    },
+    {
+      "field": "hot_spot_width",
+      "block_name": "hot_spot (bottom center and four upper-tier)",
+      "source_value": 400,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.0004,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'All of the hot spots are of size 400 um x 400 um'",
+      "provenance": "Published text; hot spot size in the selected scenario",
+      "uncertainty": null
+    },
+    {
+      "field": "hot_spot_height",
+      "block_name": "hot_spot (bottom center and four upper-tier)",
+      "source_value": 400,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.0004,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'All of the hot spots are of size 400 um x 400 um'",
+      "provenance": "Published text; hot spot size in the selected scenario",
+      "uncertainty": null
+    },
+    {
+      "field": "hot_spot_power_density",
+      "block_name": "hot_spot",
+      "source_value": 750,
+      "source_unit": "W/cm2",
+      "conversion_factor": 10000,
+      "normalized_value": 7500000,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'we assign each hot spot a power density of 750 W/cm2'",
+      "provenance": "Published text; the power density is given, per-block watts are not published. Converted to W/m2 (1 W/cm2 = 10000 W/m2).",
+      "uncertainty": "Per-block watts not published; could only be derived as density x area (not asserted here)."
+    },
+    {
+      "field": "background_power_density_bottom_tier",
+      "block_name": "bottom tier background",
+      "source_value": 25,
+      "source_unit": "W/cm2",
+      "conversion_factor": 10000,
+      "normalized_value": 250000,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'bottom and upper tiers consume a background power density of 25 and 30 W/cm2'",
+      "provenance": "Published text; background power density for the bottom tier",
+      "uncertainty": null
+    },
+    {
+      "field": "background_power_density_upper_tier",
+      "block_name": "upper tier background",
+      "source_value": 30,
+      "source_unit": "W/cm2",
+      "conversion_factor": 10000,
+      "normalized_value": 300000,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'bottom and upper tiers consume a background power density of 25 and 30 W/cm2'",
+      "provenance": "Published text; background power density for the upper tier",
+      "uncertainty": null
+    },
+    {
+      "field": "interconnect_power_fraction",
+      "block_name": "interconnects",
+      "source_value": 5,
+      "source_unit": "percent of total tier power",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.05,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'we assign 5% of the total power consumed by the tiers to the interconnects'",
+      "provenance": "Published text; interconnect power share (20% of it assigned to the TSVs)",
+      "uncertainty": null
+    },
+    {
+      "field": "tsv_power_fraction_of_interconnect",
+      "block_name": "TSVs",
+      "source_value": 20,
+      "source_unit": "percent of interconnect power",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.2,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'Of that 5%, we assign 20% to the TSVs'",
+      "provenance": "Published text; applies to the TSV-based IC",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_mono3d_hot_spot_temperature",
+      "block_name": "Mono3D bottom tier hot spots",
+      "source_value": 77,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 77,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, text describing Figures 4c and 4d, 'reaching a temperature of ~77 C'; Figure 4 on PDF page 5",
+      "provenance": "Published approximate text value from HotSpot-6.0 steady-state thermal maps; hot spot level temperature in the Mono3D IC",
+      "uncertainty": "Approximate ('~77 C') text value; aggregation (max or hot spot level) not exactly defined; no digitization of the figure performed."
+    },
+    {
+      "field": "thermal_observable_tsv_upper_tier_hot_spot_temperature",
+      "block_name": "TSV-based 3D IC upper tier hot spots",
+      "source_value": 109,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 109,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'hot spots in the upper tier reach very high temperatures (~109 C) in the TSV-based 3D IC'",
+      "provenance": "Published approximate text value from HotSpot-6.0 steady-state thermal maps (Figure 4a,b on PDF page 5)",
+      "uncertainty": "Approximate text value; hot spot-level aggregation not strictly defined."
+    },
+    {
+      "field": "thermal_observable_tsv_tier_difference",
+      "block_name": "TSV-based 3D IC bottom vs upper tier",
+      "source_value": 38,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 38,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'same locations on the bottom tier are approximately 38 C cooler'",
+      "provenance": "Published approximate text value; temperature difference between tiers at the same locations in the TSV-based IC",
+      "uncertainty": "Approximate ('approximately 38 C'); text value only."
+    },
+    {
+      "field": "thermal_observable_mono3d_tier_difference",
+      "block_name": "Mono3D IC bottom vs upper tier",
+      "source_value": 4,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'temperature distribution among the two tiers varies up to only ~4 C'",
+      "provenance": "Published approximate text value; maximum inter-tier temperature variation in the Mono3D IC",
+      "uncertainty": "Approximate ('~4 C'); text value only."
+    },
+    {
+      "field": "tsv_array_dimensions",
+      "block_name": "TSV arrays (4)",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'we model the TSVs as 4 TSV arrays, each of dimension 5 mm x 200 um x 33 um (length x width x height)'",
+      "provenance": "Published geometry for the TSV-based comparison IC (5 mm x 200 um x 33 um per array); it is a 3D structure feature, not mapped to a 2D floorplan block and not used as a floorplan value",
+      "uncertainty": "Three-dimensional TSV geometry; no position given."
+    },
+    {
+      "field": "hot_spot_positions",
+      "block_name": "four upper-tier hot spots and bottom-tier center hot spot",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1, 'place a hot spot at the center of the bottom tier and 4 hot spots in the upper tier' (upper-tier coordinates not given; Figure 3 on PDF page 4 shows top view only)",
+      "provenance": "Only the bottom-tier center location is described in text; the upper-tier hot spot x_m, y_m coordinates are not published numerically, so no floorplan coordinates are asserted.",
+      "uncertainty": "Missing source values; Figure 3 would require digitization and was not digitized."
+    },
+    {
+      "field": "per_block_power_watts",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "PDF page 4, Section 3.1; no per-block watts published; PDF page 1-7 contain no repository, code or supplementary links; no pinned packet assets supplied",
+      "provenance": "Searched all 7 PDF pages; the paper gives only power densities. Total chip power is not split, and no watts are invented.",
+      "uncertainty": "Missing source values."
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The CMO optimizer (Eqs. 1-3, Algorithms 1-3, alpha=0.5, C++) is described on PDF pages 5-10. But experiment.kind is custom_2d_steady with an empty floorplan, while the paper models a 2.5-D stack (organic substrate, C4, TSV interposer, microbumps, TIM, spreader, forced-air fin heatsink) in HotSpot 7.0. The extraction itself marks the 3D stack, cooling, solver and optimizer mismatches as essential. The steady-state versus transient mode is never stated on page 3 or 10, yet operating_point calls it 'steady-state-style'. That wording is an inference."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository or pinned asset exists. The paper only says the algorithm uses C++ (PDF page 10), and the assets list is empty. The Data Availability Statement (PDF page 12) points back to the article. HotSpot 7.0 files are not supplied. Algorithm listings are garbled pseudocode with apparent errors (L1/W1 undefined, mapp[] versus map[]) and the unexplained constant 0.186, which is not in the extraction."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The scalar HotSpot values are confirmed in the PDF page 3 text: ambient 318.5 K, spreader 5 mm, heatsink 20 mm, fin height 30 mm, fin width 1 mm, fan radius 10 cm, 5000 rpm, alpha=0.5 (page 8). Layer thicknesses, materials, TSV/bump dimensions, chiplet thickness and convection coefficients are not given. Spreader 5 mm and heatsink 20 mm are physically doubtful against a 12-chiplet array with 4.5-7.5 mm chiplets, and the extraction notes this. Figure 1 labels were not visually resolved. The Table 2 per-chiplet powers were not verified."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There are no HotSpot config or floorplan files, no numeric chiplet coordinates for Figure 9b, and no boundary-condition files. The Studio configuration is unspecified. The floorplan is empty and no power_w is provided, so no block has same-scenario power, which fails the requirement that every floorplan block have a power value. The absence of a placement is accurately flagged, but nothing reproducible is built."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The 373.58 K, 381.41 K, 794.59 uJ and 1026.72 uJ values are confirmed by page 10 text. Figure 9b (page 11) was not visually verified or digitized, so no per-chiplet temperatures and no layout exist. The Table 2 name-to-power alignment on page 5 is garbled and unconfirmed, so no power evidence is recorded. The reported 8.34 K reduction conflicts with the stated temperatures. The paper's inconsistency between average (abstract) and maximum (Section 4) temperature is unresolved."
+    }
+  },
+  "findings": [
+    {
+      "field": "reported_peak_temperature_reduction",
+      "reason": "The paper states a reduction of 8.34 K, but 381.41 K - 373.58 K = 7.83 K. The extraction records both values and the normalized 373.58 K without flagging the arithmetic contradiction, so which number is correct is unresolved. The communication reduction does check out (1026.72 - 794.59 = 232.13).",
+      "locator": "PDF page 10 Section 4 paragraph on Figure 9; PDF page 1 abstract; PDF page 12 conclusions"
+    },
+    {
+      "field": "thermal_observable aggregation",
+      "reason": "The abstract says 'average temperature' and Section 4 says 'maximum temperature'. The extraction picks peak but the paper does not resolve this, so the observable definition is not verified. It is also unclear whether 381.41 K is peak or average.",
+      "locator": "PDF page 1 abstract; PDF page 10 Section 4"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "The floorplan and power_w are empty, so there is no per-block same-scenario power and no geometry. Figure 9b coordinates are not published numerically and were not visually digitized. Any generated 2D shelf placement with constant power would be illustrative only, not the paper's layout.",
+      "locator": "PDF page 11 Figure 9b; extraction.experiment"
+    },
+    {
+      "field": "per_chiplet_power_name_mapping",
+      "reason": "The Table 2 text extraction on page 5 is interleaved and garbled, and the claimed power values (5-70 W) cannot be assigned to chiplet names without viewing the page image. No supplied image evidence confirms row alignment.",
+      "locator": "PDF page 5 Table 2"
+    },
+    {
+      "field": "chiplet actual sizes (other than blend)",
+      "reason": "Only the blend 2.5 x 2.5 mm size is confirmed by prose (page 4). The Table 2 sizes for other chiplets are garbled and unverified, and the table header labels them mm² while the entries are lengths in mm.",
+      "locator": "PDF pages 4-5 Table 2"
+    },
+    {
+      "field": "experiment.kind custom_2d_steady",
+      "reason": "Calling this a 2D steady-state reproduction contradicts the paper's HotSpot 7.0 2.5-D stack with TSV/bump layers and fin-channel forced-air cooling. The extraction itself lists these mismatches as essential. The paper also never states a steady-state setting, and the reported numbers cannot be reproduced.",
+      "locator": "PDF page 3 Section 3.1 and Figure 1; extraction.physical_mismatches"
+    },
+    {
+      "field": "heat_spreader_edge_size / heatsink_edge_size",
+      "reason": "A 5 mm spreader and 20 mm heatsink edge are implausible for a 12-chiplet array and may be misread or inconsistent with Figure 1 labels (1/5/20/30 mm). The page 3 text is garbled and the figure was not visually resolved, so the unit and geometry meaning is unverified.",
+      "locator": "PDF page 3 Section 3.1 and Figure 1"
+    },
+    {
+      "field": "assets / artifacts",
+      "reason": "No pinned assets, code, HotSpot config, or data were supplied. A bare statement that the data are in the article is not evidence of reproducible configuration. The 3D stack parameters were never given.",
+      "locator": "PDF page 12 Data Availability Statement; packet.assets=[]"
+    },
+    {
+      "field": "operating_point",
+      "reason": "The extraction characterizes the run as 'steady-state-style' and states a static power assumption, but the paper only says HotSpot solves transient differential equations by Runge-Kutta. Neither the mode nor the power trace is stated, so this is an unsupported inference.",
+      "locator": "PDF page 3 Section 3 and Section 3.1; PDF page 10 Section 4"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    3,
+    4,
+    5,
+    8,
+    10,
+    11,
+    12
+  ],
+  "checked_assets": []
+}

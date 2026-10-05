@@ -1,0 +1,71 @@
+{
+  "paper_id": "W4361199658",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Numeric x_m, y_m placement coordinates of the 12 chiplets for Figure 9b (alpha = 0.5). Only a figure image and the grid description are given.",
+    "Unambiguous name-to-power mapping for Table 2. The text extraction of PDF page 5 interleaves sizes and powers (the values include 10, 40, 70, 30, 20, 50, 5 W), so the row alignment must be verified against the PDF.",
+    "Per-layer thicknesses and materials, TSV, C4 and microbump dimensions, interposer and substrate sizes, and chiplet thickness. The paper says they were defined in HotSpot but does not list them.",
+    "HotSpot configuration and floorplan files, convection and heat-transfer parameters, and the steady versus transient mode setting.",
+    "Per-chiplet temperatures, or the temperature map values of Figure 9b.",
+    "Paper-linked code, data or repository. Artifact search found no links, and the Data Availability Statement says the data are in the article. No pinned packet assets were supplied.",
+    "The bundled Studio package and material specification, needed to record its assumptions explicitly.",
+    "Resolution of the Figure 1 dimension labels (1 mm, 5 mm, 20 mm, 30 mm), which are ambiguous in the extraction.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper models a 2.5-D stack with a passive silicon interposer, TSVs, microbumps, C4 bumps and an organic FR-4 substrate. A simplified 2D steady-state runner cannot reproduce this vertical conduction path, so its temperatures would not be physically equivalent.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling in the paper is a fin-channel forced-air heatsink (fan radius 10 cm, 5000 rpm, lateral airflow, 30 mm fins) plus a spreader and TIM. A simplified Studio boundary condition cannot be assumed to match this.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's optimizer (CMO heuristic with a communication-energy objective) is not part of the Studio thermal runner. Only the thermal evaluation of a given placement can be approximated, not the optimization itself.",
+      "essential": true
+    },
+    {
+      "reason": "The final chiplet coordinates of Figure 9b are published only as an image and not as numeric x/y values. Any Studio placement would be an illustrative construction, not the paper's layout.",
+      "essential": true
+    },
+    {
+      "reason": "The solver differs: the paper uses HotSpot 7.0 with its own layer, material and bump parameters, most of which are not listed. A different solver cannot be compared numerically with 373.58 K.",
+      "essential": true
+    },
+    {
+      "reason": "The paper has no transient workload or controller, and no reliability analysis beyond a mention of judging reliability from temperature. A one-row power trace is therefore not a paper-derived time series.",
+      "essential": false
+    },
+    {
+      "reason": "The paper assumes uniform power per chiplet and a chiplet surface temperature equal to the overall temperature. It also uses theoretical sizes (actual size plus spacing grid) for placement. These conventions may differ from a Studio geometry.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "The paper-derived facts are the Table 2 chiplet dimensions and powers (PDF page 5), the HotSpot settings, and the 373.58 K peak value. Any coordinates produced by the runner are separate illustrative 2D placement values, not paper-derived.",
+    "Total chip power is not split by any rule. Only the per-chiplet powers in Table 2 are used, and dimensions and powers come from the same MWD scenario.",
+    "If dimensions and powers alone are used, the runner builds a separate illustrative 2D placement and a one-row (constant) power trace.",
+    "The Studio package, material and cooling assumptions are not specified in the supplied packet and must be recorded from the bundled Studio configuration. They should not be presumed to equal the paper's silicon interposer, TIM and forced-air heatsink stack.",
+    "Studio temperatures are not compared numerically to the paper's 373.58 K and do not claim exact replication."
+  ],
+  "evidence_sha256": "24e62106ca3e6d78e9fa5f895cc6d95997e0a0d074259c9d867199182d8f5c6b",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

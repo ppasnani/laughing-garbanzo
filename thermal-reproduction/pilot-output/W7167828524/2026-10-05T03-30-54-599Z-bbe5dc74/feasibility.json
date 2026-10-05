@@ -1,0 +1,63 @@
+{
+  "paper_id": "W7167828524",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No linked assets, repositories, supplementary data or code. The artifact search found no links and the packet asset list is empty.",
+    "Per-block x_m, y_m, width_m and height_m for the selected design (5x4 cores in 1x2 chiplets, 2.3 mm ICS). Fig. 10 shows only an area breakdown and thermal map with no coordinates.",
+    "Per-block power_rows (name and watts) for the selected design. Only total energy (59.8 mJ) and delay (2.01 ms) are published, with no published rule for splitting power across blocks.",
+    "Material properties and package parameters (TIM, heat spreader, heat sink dimensions and conductivities). These are cited to TESA [12] but not given in the packet.",
+    "Compute die area, I/O die area and interposer layout details for the 2-chiplet design.",
+    "Time-resolved power trace or per-network power breakdown.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The original model is a 2.5D multi-chiplet system on an interposer with NoP/D2D links, die-to-die spacing (ICS 2.3 mm) and a TIM/heat spreader/heat sink stack. A simple 2D single-die runner cannot reproduce the inter-chiplet lateral coupling, interposer heat spreading or NoP power distribution.",
+      "essential": true
+    },
+    {
+      "reason": "The power input is an average derived from analytical energy/latency models over a sequential multi-DNN workload. It is not a transient power trace, and the paper models no transient thermal behavior, only steady state.",
+      "essential": true
+    },
+    {
+      "reason": "The paper does not publish per-block floorplan coordinates, block dimensions or per-block power for the selected design. Only aggregate parameters are given: core/chiplet counts, ICS, buffer size, systolic array size, and total energy and delay. A block-level replication is therefore impossible.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer is TED+SCBO Bayesian optimization co-optimizing architecture and task mapping, with no runtime controller. A Studio runner has no equivalent optimizer, so only the thermal solve could be exercised.",
+      "essential": false
+    },
+    {
+      "reason": "The cooling model (convection resistance 0.4 K/W, 45 C ambient, TESA material properties) and the HotSpot 6.0 package stack may differ from the Studio's bundled material and package assumptions.",
+      "essential": true
+    },
+    {
+      "reason": "Reliability is not modeled beyond the 75 C peak limit. Yield is modeled analytically from die area and is unrelated to thermal reliability.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No paper-derived floorplan exists, so any runner placement would be a separately generated illustrative 2D layout with generated coordinates kept distinct from paper facts.",
+    "Studio uses its own bundled package and material stack, which is not guaranteed to match the paper's HotSpot 6.0 interposer/TIM/spreader/heat-sink configuration (TESA properties).",
+    "Studio runs a 2D thermal solve, not the paper's 2.5D interposer model.",
+    "Any one-row power trace would be illustrative only, and Studio temperatures must not be compared numerically to the paper's 74.8 C."
+  ],
+  "evidence_sha256": "9575b6745ac2e78dc49ebc4684b4ed61533edabc67f73d13a38746c28756b1fe",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

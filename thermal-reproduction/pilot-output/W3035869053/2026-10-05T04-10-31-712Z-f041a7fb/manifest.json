@@ -1,0 +1,456 @@
+{
+  "paper_id": "W3035869053",
+  "paper_title": "A Spectral Approach to Scalable Vectorless Thermal Integrity Verification",
+  "manifest_status": "downloaded",
+  "source_url": "https://par.nsf.gov/servlets/purl/10174293",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "c67f3b0e6575fccabb0617f5e76cbdb2288aae22792cb94ef7ee783850184a1f",
+  "pdf_pages": 6,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:11:46.860Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3035869053",
+    "paper_title": "A Spectral Approach to Scalable Vectorless Thermal Integrity Verification",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "cholmod_url",
+        "url": "http://www.cise.ufl.edu/research/sparse/cholmod/",
+        "kind": "third-party solver reference (CHOLMOD Cholesky library); not a paper artifact with inputs",
+        "paper_page": 5
+      },
+      {
+        "id": "gurobi_url",
+        "url": "www.gurobi.com",
+        "kind": "third-party solver reference (Gurobi LP optimizer); not a paper artifact with inputs",
+        "paper_page": 6
+      }
+    ],
+    "scenario": {
+      "pdf_page": 5,
+      "figure_or_table": "Table I (Processor A column) with Table II cases T1-T7 and Figure 3",
+      "description": "Processor A is one of two microprocessor designs from the paper's vectorless thermal integrity verification experiments. The paper gives only aggregate statistics: 28 W total power, 195 mm2 die area, 4 metal layers and 11 material layers. It models heat conduction with equivalent heat transfer coefficients of 3.3e3 W/m2K for the heat sink and 2.0e3 W/m2K for the package. It publishes no block-level floorplan coordinates or per-block power, so no complete 2D experiment can be reconstructed. The thermal observable is the worst-case temperature distribution over thermal grid node index, shown in Figure 3 as digitizable plots without numeric values in the text.",
+      "architecture": "Processor A: single microprocessor die with 4 metal layers and 11 material layers, modeled as a 3D mesh thermal grid (from the model of Li et al., ref [8]). Cooling is a heat sink at 3.3e3 W/m2K and a package path at 2.0e3 W/m2K, both as equivalent heat transfer coefficients.",
+      "workload": "Vectorless worst-case verification under local per-source and global per-block power-density bound constraints. No specific workload vector or time series is published.",
+      "operating_point": "28 W total chip power, 195 mm2 die area, steady-state thermal grid solve T x = b. Grid sizes in Table II range from 25K to 2.0M nodes. Original solver: Cholesky (CHOLMOD) for the direct single-level method. Optimizer: Gurobi LP. Proposed method: spectral sparsification with iterative edge weight scaling, solution refinement and multilevel verification. Benchmark: two-level scheme on Table II cases T1-T7, compared against the single-level direct method.",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "Steady-state 3D thermal grid solve T x = b (thermal model from Li et al., ref [8]). The direct single-level baseline uses CHOLMOD sparse Cholesky factorization. The proposed method replaces it with spectral sparsification, iterative edge weight scaling, Jacobi-style solution refinement, and a multilevel AMG-based framework, implemented in MATLAB and C++.",
+      "optimizer": "Gurobi LP solver, used to maximize each node temperature (sum of sensitivity times source power) under local per-source and global per-block power bound constraints. No design or placement optimizer is used.",
+      "controller": "None. This is static vectorless worst-case verification with no thermal controller or DVFS and no transient behavior.",
+      "benchmark": "Processor A (28 W, 195 mm2, 4 metal layers, 11 material layers; heat sink 3.3e3 W/m2K, package 2.0e3 W/m2K, Table I, PDF page 5). Table II cases T1-T7 (25K to 2.0M thermal grid nodes, PDF page 6) use the two-level scheme, comparing single-level direct, multilevel without sparsification, and multilevel with sparsification. Worst-case temperature distributions are in Figure 3 (PDF page 6)."
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "",
+      "location": "Worst-case temperature distribution over thermal grid node index for Processor A (Figure 3, three methods a-c). No numeric temperatures or axis units are available in the extracted text.",
+      "aggregation": "Per-node worst-case (maximum) temperature obtained by solving one LP per node over all power vectors satisfying the local and global power-density constraints, then T_wst = T^-1 b_wst. Reported as a distribution over nodes, not a single scalar.",
+      "pdf_page": 6
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The paper models a full 3D mesh thermal grid with 11 material layers and 4 metal layers. A 2D Studio model cannot reproduce this vertical stack, so the 3D mismatch is decisive.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's output is a worst-case temperature over an ensemble of power vectors from LP-based vectorless verification. A Studio run uses a single fixed power vector, so the observables are not equivalent.",
+        "essential": true
+      },
+      {
+        "reason": "Cooling is represented only by equivalent heat transfer coefficients (heat sink 3.3e3 and package 2.0e3 W/m2K) with no interposer, TIM or package geometry. It cannot be mapped to a Studio package model without added assumptions.",
+        "essential": true
+      },
+      {
+        "reason": "No block-level floorplan, block dimensions, or per-block powers are published, so no same-scenario geometry and power set exists. Only 28 W total and 195 mm2 total die area are given, and total power cannot be split without a published rule.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's solver (CHOLMOD Cholesky with spectral sparsification and multilevel AMG), optimizer (Gurobi LP), and benchmarks (runtime and error on grids of 25K to 2M nodes) differ from a Studio thermal solver. The paper's temperature outputs are method-comparison artifacts, so a Studio run is not a replication.",
+        "essential": true
+      },
+      {
+        "reason": "The setup is steady-state with no transient, controller or reliability simulation. Thermal integrity verification is only motivated qualitatively and no reliability model is used.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No bundled Studio package/material assumptions are supplied in the packet, so none are asserted or attributed to the paper.",
+      "Since the paper publishes only aggregate power and die area, any Studio run would be a separate illustrative construction at best. Its coordinates and powers would be runner-generated, kept distinct from paper-derived facts, and not compared numerically to the paper's temperatures."
+    ],
+    "missing_inputs": [
+      "Block-level floorplan (named blocks with x_m, y_m, width_m, height_m) for Processor A",
+      "Per-block power_rows (name and watts) for Processor A; only the 28 W total is published",
+      "Die aspect ratio and die dimensions (only the 195 mm2 area is given)",
+      "Material layer thicknesses and conductivities for the 11 material layers and 4 metal layers",
+      "Thermal grid geometry and discretization used for T1-T7, and the ambient temperature",
+      "Numeric values for Figure 3 worst-case temperatures (digitization needed, with temperature units and axis scale)",
+      "Local and global power-density bound values (b_L, b_U, B_L, B_U) and the global block partition matrix M",
+      "Any paper-linked repository, code, config or pinned asset (the packet assets list is empty; CHOLMOD and Gurobi links are third-party solver references only)",
+      "Power time series or workload trace (none published; the paper is vectorless and steady-state)"
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "total_power_W",
+        "block_name": null,
+        "source_value": 28,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 28,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5, Table I, row 'Power Consumption (W)', Processor A column",
+        "provenance": "Published aggregate chip power for Processor A. It is not split by block, and no per-block power is given.",
+        "uncertainty": null
+      },
+      {
+        "field": "die_area_m2",
+        "block_name": null,
+        "source_value": 195,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.000195,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5, Table I, row 'Die Area (mm2)', Processor A column",
+        "provenance": "Published total die area for Processor A. No width or height is given, so no block geometry can be derived.",
+        "uncertainty": null
+      },
+      {
+        "field": "num_metal_layers",
+        "block_name": null,
+        "source_value": 4,
+        "source_unit": "layers",
+        "conversion_factor": 1,
+        "normalized_value": 4,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5, Table I, row 'Num. of Metal Layers', Processor A column",
+        "provenance": "Published stack statistic for Processor A; the 3D layered structure is a decisive mismatch for a 2D Studio model.",
+        "uncertainty": null
+      },
+      {
+        "field": "num_material_layers",
+        "block_name": null,
+        "source_value": 11,
+        "source_unit": "layers",
+        "conversion_factor": 1,
+        "normalized_value": 11,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5, Table I, row 'Num. of Material Layers', Processor A column",
+        "provenance": "Published stack statistic for Processor A. Layer thicknesses and conductivities are not given.",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_sink_heat_transfer_coefficient",
+        "block_name": null,
+        "source_value": 3.3,
+        "source_unit": "1e3 W/m2K",
+        "conversion_factor": 1000,
+        "normalized_value": 3300,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5, Table I, row 'Equivalent Heat Transfer Coefficients (10^3 W/m2K)', value '3.3 (heat sink)'",
+        "provenance": "Published equivalent heat transfer coefficient for the heat sink path of Processor A, which also applies to Processor B.",
+        "uncertainty": null
+      },
+      {
+        "field": "package_heat_transfer_coefficient",
+        "block_name": null,
+        "source_value": 2,
+        "source_unit": "1e3 W/m2K",
+        "conversion_factor": 1000,
+        "normalized_value": 2000,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5, Table I, row 'Equivalent Heat Transfer Coefficients (10^3 W/m2K)', value '2.0 (package)'",
+        "provenance": "Published equivalent heat transfer coefficient for the package path of Processor A. No interposer or TIM geometry is given.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_grid_nodes_Table_II_T1_smallest",
+        "block_name": null,
+        "source_value": 25000,
+        "source_unit": "nodes",
+        "conversion_factor": 1,
+        "normalized_value": 25000,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF page 6, Table II, column N.#, case T1 ('25K')",
+        "provenance": "Benchmark grid size for the smallest case, T1. Table II does not state which cases belong to Processor A versus B.",
+        "uncertainty": "The assignment of Table II cases to Processor A is not stated."
+      },
+      {
+        "field": "thermal_grid_nodes_Table_II_T7_largest",
+        "block_name": null,
+        "source_value": 2000000,
+        "source_unit": "nodes",
+        "conversion_factor": 1,
+        "normalized_value": 2000000,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF page 6, Table II, column N.#, case T7 ('2.0M')",
+        "provenance": "Benchmark grid size for the largest case, T7.",
+        "uncertainty": "The assignment of Table II cases to Processor A is not stated."
+      },
+      {
+        "field": "thermal_observable_worst_case_temperature_distribution",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "PDF page 6, Fig. 3 (a)-(c), worst-case temperature distributions of processor A versus Node Index",
+        "provenance": "The observable is a per-node worst-case temperature, obtained from one LP per node under local and global power constraints and then T_wst = T^-1 b_wst. It is plotted over node index. The extracted text contains no numeric values, units, or axis scale, so none were digitized.",
+        "uncertainty": "The figure is not digitizable from the extracted text. Its units and scale are unknown, so there is no numeric value."
+      },
+      {
+        "field": "floorplan_block_geometry",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Whole PDF pages 1-6 and an empty assets list",
+        "provenance": "No block names, x_m, y_m, width_m or height_m are published, and no pinned assets were supplied. The floorplan is empty and no complete experiment exists.",
+        "uncertainty": null
+      },
+      {
+        "field": "per_block_power_rows",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5, Table I gives only the 28 W total for Processor A",
+        "provenance": "No per-block power is published and no splitting rule is given, so total power must not be divided among blocks. power_rows is empty.",
+        "uncertainty": null
+      },
+      {
+        "field": "paper_linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "PDF page 5 reference [1], CHOLMOD URL http://www.cise.ufl.edu/research/sparse/cholmod/; PDF page 6 reference [10], Gurobi www.gurobi.com",
+        "provenance": "The only paper-linked resources are third-party solver references: the CHOLMOD Cholesky library and the Gurobi LP optimizer. No code, config, or data repository for this paper's inputs is linked, and the packet assets list is empty.",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The paper's method description matches the extraction: vectorless LP verification (Eqs. 2-3), spectral sparsification, edge scaling (Alg. 1), Jacobi refinement (Alg. 2), a multilevel AMG framework (Alg. 3), and a 3D mesh grid. But the extraction sets experiment.kind to custom_2d_steady with an empty floorplan while also marking steady_2d_relevant false and listing 3D, ensemble-LP and cooling mismatches as essential. A 2D steady label contradicts that. The paper has no 2D steady scenario."
+      },
+      "code": {
+        "status": "missing",
+        "note": "Packet assets are empty. The only links are the third-party CHOLMOD and Gurobi references. The paper says the method is implemented in MATLAB and C++ but links no code. No paper code is verified."
+      },
+      "parameters": {
+        "status": "verified",
+        "note": "Table I (PDF p5) text for Processor A supports 28 W, 195 mm2, 4 metal layers, 11 material layers, and 3.3 and 2.0 (x10^3 W/m2K) for heat sink and package. The mm2-to-m2 conversion (1e-6) and the 1e3 scaling are correct. These are aggregate scalars only. No local or global bound values, ambient temperature, layer properties or grid geometry are published."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No solver config, partition matrix M, bound values b_L/b_U/B_L/B_U, sparsification tolerance or beta values, or gmin/gamma/Nmax settings are published or supplied. No pinned config asset exists. Table II does not state which cases belong to Processor A."
+      },
+      "data": {
+        "status": "missing",
+        "note": "No block floorplan or per-block power exists, and no same-scenario power set exists for any block. Figure 3 (PDF p6) was only available as a pdftotext layout with no image or digitization, so the decisive observable was not visually verified and has no numeric values or axis units. No generated 2D shelf coordinates or constant powers may stand in for published data."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The extraction labels the experiment custom_2d_steady with empty floorplan and power_w. That implies a 2D reproduction, but the paper is a 3D vectorless ensemble verification and the extraction itself says no 2D experiment can be reconstructed. The label is contradictory or unsupported.",
+        "locator": "extraction.experiment vs steady_2d_relevant=false and physical_mismatches"
+      },
+      {
+        "field": "thermal_observable_worst_case_temperature_distribution",
+        "reason": "Figure 3 is the decisive observable, but only extracted text was supplied, with no rendered page image and no numeric values. It was not visually verified, and its units and scale are unknown.",
+        "locator": "PDF page 6, Fig. 3 (a)-(c); packet assets empty"
+      },
+      {
+        "field": "scenario.operating_point / Table II attribution",
+        "reason": "The Processor A operating point includes the 25K-2.0M node range and cases T1-T7. Table II does not assign cases to Processor A or B, and the extraction's own uncertainty notes concede this. Presenting them as Processor A benchmark data is unsupported.",
+        "locator": "PDF page 6, Table II; extraction.scenario.operating_point and original_setup.benchmark"
+      },
+      {
+        "field": "thermal_observable.aggregation",
+        "reason": "The extraction says the observable is a per-node worst case from one LP per node over all nodes. Table II times are summed over only 100 randomly chosen nodes, and the paper does not say whether Figure 3 covers all nodes or a subset. The aggregation claim is partly inferred.",
+        "locator": "PDF page 5 (Table II discussion, '100 randomly chosen nodes'); PDF page 6 Fig. 3"
+      },
+      {
+        "field": "floorplan_block_geometry / per_block_power_rows",
+        "reason": "No block names, coordinates, dimensions or per-block powers exist in the PDF. The 28 W total and 195 mm2 area are aggregates only. Nothing may be split or generated and presented as paper-derived.",
+        "locator": "PDF pages 1-6; Table I"
+      },
+      {
+        "field": "paper_linked_resources",
+        "reason": "The CHOLMOD and Gurobi links are third-party solvers. They are not reproducibility artifacts for code, config or data. Artifact availability for the paper's own implementation is not established.",
+        "locator": "PDF page 5 ref [1]; PDF page 6 ref [10]; assets: []"
+      },
+      {
+        "field": "heat_transfer_coefficients",
+        "reason": "The two coefficients appear in a merged row in the text-layout extraction. Reading 3.3 as heat sink and 2.0 as package for Processor A relies on pdftotext layout alone, without a visual check of the table cell alignment.",
+        "locator": "PDF page 5, Table I"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3035869053",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "Block-level floorplan (named blocks with x_m, y_m, width_m, height_m) for Processor A",
+      "Per-block power_rows (name and watts) for Processor A; only the 28 W total is published",
+      "Die aspect ratio and die dimensions (only the 195 mm2 area is given)",
+      "Material layer thicknesses and conductivities for the 11 material layers and 4 metal layers",
+      "Thermal grid geometry and discretization used for T1-T7, and the ambient temperature",
+      "Numeric values for Figure 3 worst-case temperatures (digitization needed, with temperature units and axis scale)",
+      "Local and global power-density bound values (b_L, b_U, B_L, B_U) and the global block partition matrix M",
+      "Any paper-linked repository, code, config or pinned asset (the packet assets list is empty; CHOLMOD and Gurobi links are third-party solver references only)",
+      "Power time series or workload trace (none published; the paper is vectorless and steady-state)",
+      "Linked asset cholmod_url is not pinned and available",
+      "Linked asset gurobi_url is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The paper models a full 3D mesh thermal grid with 11 material layers and 4 metal layers. A 2D Studio model cannot reproduce this vertical stack, so the 3D mismatch is decisive.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's output is a worst-case temperature over an ensemble of power vectors from LP-based vectorless verification. A Studio run uses a single fixed power vector, so the observables are not equivalent.",
+        "essential": true
+      },
+      {
+        "reason": "Cooling is represented only by equivalent heat transfer coefficients (heat sink 3.3e3 and package 2.0e3 W/m2K) with no interposer, TIM or package geometry. It cannot be mapped to a Studio package model without added assumptions.",
+        "essential": true
+      },
+      {
+        "reason": "No block-level floorplan, block dimensions, or per-block powers are published, so no same-scenario geometry and power set exists. Only 28 W total and 195 mm2 total die area are given, and total power cannot be split without a published rule.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's solver (CHOLMOD Cholesky with spectral sparsification and multilevel AMG), optimizer (Gurobi LP), and benchmarks (runtime and error on grids of 25K to 2M nodes) differ from a Studio thermal solver. The paper's temperature outputs are method-comparison artifacts, so a Studio run is not a replication.",
+        "essential": true
+      },
+      {
+        "reason": "The setup is steady-state with no transient, controller or reliability simulation. Thermal integrity verification is only motivated qualitatively and no reliability model is used.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No bundled Studio package/material assumptions are supplied in the packet, so none are asserted or attributed to the paper.",
+      "Since the paper publishes only aggregate power and die area, any Studio run would be a separate illustrative construction at best. Its coordinates and powers would be runner-generated, kept distinct from paper-derived facts, and not compared numerically to the paper's temperatures."
+    ],
+    "evidence_sha256": "0d538a4572260b2457c2f52f4cc8ba81b5322c676b9eaabd19f9642065256e8b",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable, and the deterministic gate blocked the run. Studio did not run: simulation status is skipped, simulation_allowed is false, and no artifacts were produced. The stated reason is that a custom experiment needs 1-128 blocks and a power_w object, but the extracted floorplan and power_w are empty. The scenario is Processor A from the paper, with 28 W total power, 195 mm2 die area, 4 metal layers, 11 material layers, a heat sink at 3.3e3 W/m2K and a package at 2.0e3 W/m2K. The paper's experiment is a steady-state 3D thermal grid solve with vectorless worst-case verification by LP, using CHOLMOD, Gurobi, spectral sparsification and multilevel AMG. It is not a Studio-style 2D problem. The experiment kind is custom_2d_steady, so even if it had run there would be no transient trace. This is not a bundled EV6/GCC adaptation, and no Ascend910 or ATPlace pinned sizes were used, so there is no generated input.flp or one-row input.ptrace and no source commit or placement assumption to report. No Studio temperature exists, and the paper's observable is the Figure 3 per-node worst-case temperature distribution, which has no extracted numeric values or units. comparison_valid is false, so no numerical comparison is made. The two results differ in location (per-node distribution vs. none), aggregation (LP worst case over power ensembles vs. a single power vector), regime (3D steady vectorless vs. no run), and boundary conditions (equivalent heat transfer coefficients vs. an unmapped Studio package). Only a qualitative statement is supportable: the paper's worst-case temperatures depend on the power-bound constraints and the 3D stack and cooling, which a fixed-power 2D run could not reproduce. The final verdict is no replication and no validated comparison, and nothing here claims exact replication.",
+    "limitations": [
+      "Studio did not run (status skipped); there is no simulated output of any kind.",
+      "Verdict is not_2d_applicable: the paper is a 3D mesh with 11 material and 4 metal layers, which a 2D model cannot reproduce.",
+      "No block-level floorplan, per-block power, die dimensions, layer thicknesses/conductivities, ambient temperature, or power-bound parameters are published; only 28 W and 195 mm2 aggregates are available.",
+      "The paper's observable is a per-node worst-case temperature over LP-derived power ensembles (Figure 3); no numeric values or units were extracted, so it cannot be compared to a single-power-vector result.",
+      "Cooling is given only as equivalent heat transfer coefficients with no package, TIM or interposer geometry, so it cannot be mapped to a Studio package without extra assumptions.",
+      "The paper's contribution is solver runtime and error on 25K to 2.0M node grids (CHOLMOD, Gurobi, spectral sparsification, multilevel AMG), not a thermal result a Studio run could replicate.",
+      "The linked CHOLMOD and Gurobi URLs are third-party solver references, not pinned input assets; no paper repository, code or config is available.",
+      "Gate input errors include evidence lacking a valid page or asset locator, missing cited observable and regime, and unresolved adversarial and independent checks; independently_verified is false.",
+      "No numerical comparison is valid and exact replication is not claimed; any future Studio run would be an illustrative construction with runner-generated geometry and power.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "Block-level floorplan (named blocks with x_m, y_m, width_m, height_m) for Processor A",
+      "Per-block power_rows (name and watts) for Processor A; only the 28 W total is published",
+      "Die aspect ratio and die dimensions (only the 195 mm2 area is given)",
+      "Material layer thicknesses and conductivities for the 11 material layers and 4 metal layers",
+      "Thermal grid geometry and discretization used for T1-T7, and the ambient temperature",
+      "Numeric values for Figure 3 worst-case temperatures (digitization needed, with temperature units and axis scale)",
+      "Local and global power-density bound values (b_L, b_U, B_L, B_U) and the global block partition matrix M",
+      "Any paper-linked repository, code, config or pinned asset (the packet assets list is empty; CHOLMOD and Gurobi links are third-party solver references only)",
+      "Power time series or workload trace (none published; the paper is vectorless and steady-state)",
+      "Linked asset cholmod_url is not pinned and available",
+      "Linked asset gurobi_url is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The paper models a full 3D mesh thermal grid with 11 material layers and 4 metal layers. A 2D Studio model cannot reproduce this vertical stack, so the 3D mismatch is decisive.",
+      "The paper's output is a worst-case temperature over an ensemble of power vectors from LP-based vectorless verification. A Studio run uses a single fixed power vector, so the observables are not equivalent.",
+      "Cooling is represented only by equivalent heat transfer coefficients (heat sink 3.3e3 and package 2.0e3 W/m2K) with no interposer, TIM or package geometry. It cannot be mapped to a Studio package model without added assumptions.",
+      "No block-level floorplan, block dimensions, or per-block powers are published, so no same-scenario geometry and power set exists. Only 28 W total and 195 mm2 total die area are given, and total power cannot be split without a published rule.",
+      "The paper's solver (CHOLMOD Cholesky with spectral sparsification and multilevel AMG), optimizer (Gurobi LP), and benchmarks (runtime and error on grids of 25K to 2M nodes) differ from a Studio thermal solver. The paper's temperature outputs are method-comparison artifacts, so a Studio run is not a replication.",
+      "The setup is steady-state with no transient, controller or reliability simulation. Thermal integrity verification is only motivated qualitatively and no reliability model is used.",
+      "No bundled Studio package/material assumptions are supplied in the packet, so none are asserted or attributed to the paper.",
+      "Since the paper publishes only aggregate power and die area, any Studio run would be a separate illustrative construction at best. Its coordinates and powers would be runner-generated, kept distinct from paper-derived facts, and not compared numerically to the paper's temperatures."
+    ]
+  }
+}

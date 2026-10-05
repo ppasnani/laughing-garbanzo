@@ -1,0 +1,55 @@
+{
+  "paper_id": "W3161169265",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-module x_m, y_m, width_m and height_m for FP1 and FP2 of n100 on each of the 4 layers (only total floorplan areas of 0.319 mm2 and 0.326 mm2 are given)",
+    "Per-module power_rows (name, watts) for the scenario; only the random power-density range 1e5-1e7 W/m2 is stated, not the assigned values",
+    "Layer thicknesses, material properties, TIM, TSV island parameters and HotSpot configuration. The text says only 'default parameters', and Figure 1 thicknesses are not given as numbers in the text.",
+    "Heat sink and ambient boundary conditions beyond 'heat sink on top of the stack'",
+    "Any linked code, data repository, supplementary material or availability statement. The packet shows no links (artifact_search_status checked_no_links) and no pinned assets.",
+    "Power time series or workload trace (none exists; the analysis is steady-state with random power densities)",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a 4-layer TSV-based 3D IC with vertical heat conduction through the active Si, BEOL SiO2 and TIM layers. A 2D, single-layer Studio model cannot represent inter-layer heat transfer, TSV islands (treated as zero-power modules), or layer 0 being farthest from the heat sink.",
+      "essential": true
+    },
+    {
+      "reason": "The original thermal metric is a power-based TGV (a sum of 2x2 sub-grid power densities adjusted for neighbor cells) alongside HotSpot peak temperature. It is not a finite-difference temperature solution, so the Studio solver cannot reproduce the paper's TGV or its HotSpot-vs-TGV correlation and success-rate analysis.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's optimizer is an evolutionary 3D floorplanner generating many floorplans, and its goal is ranking floorplan pairs, not optimizing a single design. The selected FP1/FP2 comparison involves no controller, transient behaviour or reliability analysis, so any Studio optimizer or controller is not part of the original experiment.",
+      "essential": true
+    },
+    {
+      "reason": "Module coordinates, dimensions and powers for FP1/FP2 are not published. Power densities were randomly assigned (1e5-1e7 W/m2) and no per-module watts exist, so a faithful geometry and power input cannot be built. Cooling is described only as a heat sink on top, with no HotSpot package parameters beyond 'default'.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [
+    "No complete experiment is reproducible. The floorplan must stay empty (no paper-derived blocks, coordinates or power_rows). Total chip power is not split among modules.",
+    "Any bundled Studio package, material and cooling assumptions are Studio-side. They are not taken from the paper and are not equivalent to the HotSpot default 3D stack with a top-mounted heat sink.",
+    "If a runner builds a separate illustrative 2D placement and one-row power trace from dimensions and powers, its generated coordinates are distinct from paper facts. Its temperatures must not be compared numerically to 564 K or 567 K.",
+    "The paper's only published numeric facts for this scenario are the FP1/FP2 areas and HotSpot peak temperatures (pdf page 6), and no complete set of geometry, power and boundary data accompanies them."
+  ],
+  "evidence_sha256": "f1f5d4fdd12efa07ea81f9d585d970dc6e1561f1acd0f87ecb6284708e663f06",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

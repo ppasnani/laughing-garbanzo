@@ -1,0 +1,95 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "Paper methods (pp.2-6) are verified: HotSpot 6.0 steady state, 64x64 grid, analytical Green's-function compact model (Eq. 12), MILP init, CGD, MILP legalization. But the experiment is a custom_2d_steady shelf layout, which does not match the paper's 3D-layered 2.5D stack (interposer/TSV/RDL/microbump/TIM/spreader/heatsink) or its placement optimizer. Calling it a reproduction of the 92.3 C Case 3 result is contradicted."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The pinned repo contains reproduce.py, but its compact model and placeflow_core are in files outside the supplied excerpts, and the repo states the final placement comes from an encrypted kernel. No paper-linked code availability statement exists in the PDF, and a bare repo URL is not evidence. Nothing shows that the code reproduces Table 6 Case 3."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Paper: r_convec 0.1 K/W, spreader/heatsink 2x interposer edge. Pinned hotspot.config: r_convec 0.01, s_spreader 0.03 m, s_sink 0.06 m, model_type block, model_secondary 0. These conflict and the authoritative value is unresolved. Layer properties are only inherited from refs [6,36], which are not supplied. Ambient 45 C and 64x64 grid do match the paper."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "hotspot.config disagrees with the paper (0.01 vs 0.1 K/W, 30 mm spreader smaller than the 39 mm interposer, block vs 64x64 grid). The Studio floorplan (a 4x2 shelf, 32 mm x 18 mm bounding box on a 39 mm interposer) is a generated illustrative layout, not the published Fig. 5 placement. Case3.pl is all (0,0) placeholders. No Studio material/package spec is supplied."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Block dimensions (8x9 mm CPU, 9x9 mm DRAM) and per-block powers (150 W x4, 20 W x4) cover all 8 blocks in the same Case3 scenario, and the p.8 Fig. 5 caption partly cross-checks them. But units (um, W) are inferred rather than stated in the files. The final placement coordinates, nets file, bump offsets, layer-wise properties, and per-chiplet temperatures are unavailable. Fig. 5 is image-only, was not visually verified, and cannot be digitized. Tmax 92.3 C (Table 6) is verified as text, but the layer is unspecified. Powers are constant, steady, and not a published trace."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.floorplan x_m/y_m",
+      "reason": "Shelf coordinates are generated, not paper-derived. Case3.pl is placeholder (0,0) and Fig. 5 is not digitized, so the 92.3 C result cannot be tied to this geometry.",
+      "locator": "cases/Case3/Case3.pl:1-8; PDF p.8 Fig. 5"
+    },
+    {
+      "field": "heatsink convective resistance",
+      "reason": "The paper says 0.1 K/W but the pinned config sets r_convec 0.01 K/W, a 10x contradiction with an unresolved authority.",
+      "locator": "PDF p.3 Sec. 2.3; thermal/hotspot.config -r_convec"
+    },
+    {
+      "field": "spreader/heatsink size",
+      "reason": "The paper states 2x scaling relative to the interposer (39 mm), but the config uses 30 mm spreader and 60 mm sink, so the spreader is smaller than the interposer.",
+      "locator": "PDF p.2 Sec. 2.3; thermal/hotspot.config -s_spreader/-s_sink"
+    },
+    {
+      "field": "thermal model type",
+      "reason": "The paper uses a 64x64 grid HotSpot, but the config has model_type block and model_secondary 0. Whether the published numbers used this config is unproven.",
+      "locator": "PDF p.3; thermal/hotspot.config -model_type"
+    },
+    {
+      "field": "unit conversions",
+      "reason": "The um unit for blocks and W for power are inferred (not stated in files). The conversion factor 8000.000000000001 appears in a duplicate entry (a float artifact).",
+      "locator": "cases/Case3/Case3.blocks:5-12; cases/Case3/Case3.power:1-8"
+    },
+    {
+      "field": "3D/layered physics",
+      "reason": "A 2D steady model cannot represent the paper's through-thickness TSV/RDL/microbump/epoxy/TIM/heatsink stack, which is a decisive feature of the reported Tmax.",
+      "locator": "PDF p.2 Sec. 2.1, Fig. 1"
+    },
+    {
+      "field": "optimizer and compact model",
+      "reason": "The paper's placement result comes from CGD with a fitted compact model and MILP/Optuna. A fixed-layout 2D thermal evaluation is not a reproduction of the placement or Pareto behavior.",
+      "locator": "PDF pp.4-6; Table 6 p.7"
+    },
+    {
+      "field": "code availability",
+      "reason": "The PDF has no code/data availability statement, the repo notes an encrypted kernel, and a pinned repo URL alone does not establish that the final inputs exist.",
+      "locator": "PDF p.1, p.9; reproduce.py"
+    },
+    {
+      "field": "visual verification",
+      "reason": "Only pdftotext output was provided. Figures (Figs. 4-8) and table layouts were not visually verified, and Fig. 5 is the only source of the Case 3 layout.",
+      "locator": "PDF pp.7-8 Figs. 4-8"
+    },
+    {
+      "field": "Table 3 whitespace",
+      "reason": "The column is headed '%' but Case 3 reads 0.6, a unit ambiguity. Case 2 interposer is 55x52 mm in the paper vs 32x32 mm in reproduce.py, and Case 4 is 57x59 vs 37x37, indicating script/paper mismatches.",
+      "locator": "PDF p.6 Table 3; reproduce.py CASE_INTERPOSER_SIZE"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "checked_assets": [
+    "ref_atplace_blocks",
+    "ref_atplace_power",
+    "ref_atplace_placement",
+    "ref_atplace_hotspot_config",
+    "ref_atplace_reproduce"
+  ]
+}

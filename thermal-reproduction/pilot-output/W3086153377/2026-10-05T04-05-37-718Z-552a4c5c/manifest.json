@@ -1,0 +1,588 @@
+{
+  "paper_id": "W3086153377",
+  "paper_title": "A Thermal-Aware On-Line Fault Tolerance Method for TSV Lifetime Reliability in 3D-NoC Systems",
+  "manifest_status": "downloaded",
+  "source_url": "https://ieeexplore.ieee.org/ielx7/6287639/8948470/09189765.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "7e4c2531fadcb36a91e28c5fad6891eac6f30c1a283d52c971e869f9249ddd98",
+  "pdf_pages": 16,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T04:07:07.280Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3086153377",
+    "paper_title": "A Thermal-Aware On-Line Fault Tolerance Method for TSV Lifetime Reliability in 3D-NoC Systems",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "ref41_nangate_45nm",
+        "url": "http://www.nangate.com/",
+        "kind": "reference URL: NanGate Open Cell Library 45 nm (design library)",
+        "paper_page": 15
+      },
+      {
+        "id": "ref42_freepdk3d45",
+        "url": "http://www.eda.ncsu.edu/wiki/FreePDK3D45:Contents",
+        "kind": "reference URL: NCSU FreePDK3D45 3D-IC process design kit",
+        "paper_page": 15
+      },
+      {
+        "id": "ref47_parsec",
+        "url": "https://parsec.cs.princeton.edu/publications/bienia11benchmarking.pdf",
+        "kind": "reference URL: PARSEC benchmark publication",
+        "paper_page": 15
+      },
+      {
+        "id": "ref49_hotspot6",
+        "url": "https://www.cs.virginia.edu/~skadron/Papers/HotSpot60_TR.pdf",
+        "kind": "reference URL: HotSpot 6.0 technical report (thermal solver)",
+        "paper_page": 15
+      },
+      {
+        "id": "ref24_jpl_reliability",
+        "url": "https://trs.jpl.nasa.gov/handle/2014/40791",
+        "kind": "reference URL: JPL microelectronics reliability report",
+        "paper_page": 15
+      }
+    ],
+    "scenario": {
+      "pdf_page": 13,
+      "figure_or_table": "Figure 9 (Section IV-F, text on PDF pages 12-13)",
+      "description": "Thermal-aware empirical redundant-TSV insertion in a 3D-NoC. Router power is derived from PARSEC switching activity, and HotSpot 6.0 gives per-router temperature. Black's-model normalized fault rates, referenced to the coolest area, set 0, 1 or 2 redundant TSVs per group via thresholds found by grid search. Results are compared at target MTTF of 1.5x, 2x and 2.5x the MTTF at the reference temperature. The paper publishes no block coordinates, dimensions or per-block watts in the text, so the scenario is a 3D reliability study, not a complete 2D thermal experiment.",
+      "architecture": "3D mesh NoC with Garnet in gem5, 64 cores (4x4x4). Each router has IaSiG fault detection and correction on its UP and DOWN ports. Each vertical connection uses 36 TSVs, built from four clusters of 8 TSVs plus a synchronization TSV. Designed in NanGate 45nm with FreePDK3D45 TSV.",
+      "workload": "PARSEC benchmarks, using switching activities extracted under gem5.",
+      "operating_point": "Reference temperature is the coolest area of the 3D-IC. Target MTTF is 1.5x, 2x or 2.5x MTTF at Tref (Figure 9a-c). No absolute temperatures or powers were identified in the text.",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "HotSpot 6.0 (steady-state vs transient mode not stated) predicts per-router temperature in a 3D NoC; gem5 with Garnet NoC supplies switching activity; Synopsys CAD tools give energy per bit; Black's-model normalized fault rate is computed from the temperatures (PDF pages 12-13, Eq. 18 on page 8)",
+      "optimizer": "Grid search over two fault-rate thresholds (theta1, theta2) that set 0, 1 or 2 redundant TSVs per TSV group (Eq. 19, PDF pages 8 and 12-14)",
+      "controller": "No thermal controller. IaSiG (Isolation and Shift in Group) is an on-line hardware TSV fault detection and correction controller built on parity check and shifting redundancy (PDF pages 4-7)",
+      "benchmark": "PARSEC benchmarks on gem5 with a 3D mesh Garnet NoC of 64 cores (4x4x4); results at target MTTF of 1.5x, 2x and 2.5x the MTTF at the reference temperature (Figure 9, PDF pages 12-13)"
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "",
+      "location": "Per-router temperature from HotSpot 6.0, used to compute the normalized TSV-group fault rate relative to the coolest area (reference temperature). No absolute temperature is reported in the text; the Figure 9 outputs are redundancy counts and MTTF relative to target.",
+      "aggregation": "Per-router and per-TSV-group temperature; normalized fault rate relative to the coolest area (Eq. 18). The system MTTF is compared with a target of 1.5x, 2x or 2.5x MTTF at Tref. No peak, mean or other numeric temperature aggregate is published.",
+      "pdf_page": 13
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The paper is a 3D-IC (4x4x4 TSV-based stack) TSV lifetime-reliability study, not a 2D chiplet or interposer thermal experiment. A 2D steady-state Studio model cannot represent the vertical layer coupling, inter-layer temperature differences or TSV thermal paths.",
+        "essential": true
+      },
+      {
+        "reason": "The paper publishes no floorplan: no block coordinates, dimensions or per-block or per-router watts. The power map and floorplan used for HotSpot are not given in the text (Step 2 on PDF page 12 only mentions them), so no same-scenario geometry and power rows can be built.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is derived from PARSEC switching activity from gem5 and varies over time and by benchmark, while the thermal result is only a relative fault rate; no absolute temperature is published to compare against.",
+        "essential": true
+      },
+      {
+        "reason": "The principal contributions are the IaSiG hardware fault-detection method (parity check, isolation and shift) and the grid-search redundancy insertion. These are digital reliability mechanisms with WCET in cycles, not thermal management controllers or optimizers, and do not map to a Studio thermal controller or placement optimizer.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling configuration, package and HotSpot 6.0 parameters (layer stack, TSV thermal modelling, heat sink, ambient) are not published in the paper. The paper notes TSV insertion slightly changes temperature but ignores it.",
+        "essential": true
+      },
+      {
+        "reason": "The reliability metric (Black's-model normalized fault rate and MTTF, Eq. 17-18) and its parameters (Ea, current density exponent) are outside a thermal solver and are not reproduced by a steady-state temperature calculation.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "Router and block placement coordinates (x_m, y_m) for the 4x4x4 3D NoC floorplan",
+      "Router and block dimensions (width_m, height_m) and layer thickness",
+      "Per-router power in watts for any PARSEC benchmark; only the average energy per bit is mentioned and no numeric value is given in the text",
+      "HotSpot 6.0 configuration: layer stack, materials, TSV thermal modelling, heat sink and cooling, ambient temperature",
+      "Absolute temperatures and the reference temperature (Tref) value; Figure 9 results are not numerically tabulated in the text",
+      "Black's-model parameters (activation energy Ea, current density exponent n, current density J) and the thresholds theta1 and theta2 found by grid search",
+      "Pinned packet assets: the packet lists no assets (assets array empty), so no config or case files could be inspected",
+      "Paper-linked resources are only reference URLs (NanGate 45nm, FreePDK3D45, PARSEC publication, HotSpot 6.0 report, JPL reliability report, PDF page 15). No code, repository or data availability statement for this work was found, so no inputs are proven to exist",
+      "Power time series or workload trace for the PARSEC runs"
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "noc_core_count",
+        "block_name": null,
+        "source_value": 64,
+        "source_unit": "cores",
+        "conversion_factor": 1,
+        "normalized_value": 64,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section IV-F, paragraph 1: 'gem5 simulator with 3D mesh topology of Garnet NoC (64 cores: 4 x 4 x 4)'",
+        "provenance": "Paper text; architecture of the selected 3D-NoC scenario (Figure 9 empirical redundancy insertion)",
+        "uncertainty": null
+      },
+      {
+        "field": "noc_mesh_dimension_x",
+        "block_name": null,
+        "source_value": 4,
+        "source_unit": "routers",
+        "conversion_factor": 1,
+        "normalized_value": 4,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section IV-F: 'Garnet NoC (64 cores: 4 x 4 x 4)'",
+        "provenance": "Paper text; 4x4x4 mesh. The assignment of axes to x, y and layers is not stated explicitly.",
+        "uncertainty": "Axis assignment is inferred from the 4x4x4 notation"
+      },
+      {
+        "field": "noc_mesh_dimension_y",
+        "block_name": null,
+        "source_value": 4,
+        "source_unit": "routers",
+        "conversion_factor": 1,
+        "normalized_value": 4,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section IV-F: 'Garnet NoC (64 cores: 4 x 4 x 4)'",
+        "provenance": "Paper text; 4x4x4 mesh",
+        "uncertainty": "Axis assignment is inferred from the 4x4x4 notation"
+      },
+      {
+        "field": "noc_mesh_layers",
+        "block_name": null,
+        "source_value": 4,
+        "source_unit": "layers",
+        "conversion_factor": 1,
+        "normalized_value": 4,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section IV-F: 'Garnet NoC (64 cores: 4 x 4 x 4)'",
+        "provenance": "Paper text; the vertical dimension of the 3D mesh is inferred as the third factor",
+        "uncertainty": "The third factor is inferred to be the number of stacked layers"
+      },
+      {
+        "field": "tsvs_per_vertical_connection",
+        "block_name": null,
+        "source_value": 36,
+        "source_unit": "TSVs",
+        "conversion_factor": 1,
+        "normalized_value": 36,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Section III-C.1, right column: 'IaSiG uses 36 TSVs for each vertical connection'",
+        "provenance": "Paper text; 32-bit data plus parity, two spare TSVs and one synchronization TSV",
+        "uncertainty": null
+      },
+      {
+        "field": "tsv_cluster_size_per_vertical_connection",
+        "block_name": null,
+        "source_value": 8,
+        "source_unit": "TSVs per cluster (four clusters)",
+        "conversion_factor": 1,
+        "normalized_value": 8,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Section III-C.1: 'each connection is divided into four clusters of 8 TSVs (s_TSV is independent)'",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "redundant_tsvs_in_router_integration",
+        "block_name": null,
+        "source_value": 2,
+        "source_unit": "spare TSVs",
+        "conversion_factor": 1,
+        "normalized_value": 2,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Section III-C.1: 'We add only two spare TSVs (r_TSVs) and one synchronization TSV (s_TSV)'",
+        "provenance": "Paper text; baseline IaSiG router integration. The empirical method varies redundancy per group between 0, 1 and 2 (Eq. 19, PDF page 10).",
+        "uncertainty": null
+      },
+      {
+        "field": "worst_case_execution_time_iasig_32bit",
+        "block_name": null,
+        "source_value": 5152,
+        "source_unit": "cycles",
+        "conversion_factor": 1,
+        "normalized_value": 5152,
+        "pdf_page": 1,
+        "asset_id": null,
+        "locator": "Abstract: 'worst-case execution time (WCET) of 5,152 cycles' for 32-bit, eight groups, two redundancies",
+        "provenance": "Paper text; digital fault-detection latency, not a thermal observable",
+        "uncertainty": null
+      },
+      {
+        "field": "test_transmissions_K_baseline",
+        "block_name": null,
+        "source_value": 32,
+        "source_unit": "cycles per test",
+        "conversion_factor": 1,
+        "normalized_value": 32,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section IV-E, paragraph after Table 4: 'in this work we confirm that 32 cycles provide the best results'; also Section IV-D, PDF page 11",
+        "provenance": "Paper text; parameter K of the fault detection algorithm",
+        "uncertainty": null
+      },
+      {
+        "field": "target_MTTF_multiplier_case_a",
+        "block_name": null,
+        "source_value": 1.5,
+        "source_unit": "x MTTF at Tref",
+        "conversion_factor": 1,
+        "normalized_value": 1.5,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Section IV-F, paragraph 2: 'we choose 1.5x, 2x and 2.5x the corresponding MTTF of the system at Tref'; Figure 9(a)",
+        "provenance": "Paper text; operating point of the empirical method. The Figure 9 bar values are not numerically tabulated.",
+        "uncertainty": null
+      },
+      {
+        "field": "target_MTTF_multiplier_case_b",
+        "block_name": null,
+        "source_value": 2,
+        "source_unit": "x MTTF at Tref",
+        "conversion_factor": 1,
+        "normalized_value": 2,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Section IV-F: 'Figure 9(b) illustrates ... MTTFtarget = 2 x MTTFTref'",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "target_MTTF_multiplier_case_c",
+        "block_name": null,
+        "source_value": 2.5,
+        "source_unit": "x MTTF at Tref",
+        "conversion_factor": 1,
+        "normalized_value": 2.5,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Section IV-F: 'Figures 9(a) and 9(c) ... 2.5x'; Figure 9(c)",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "technology_node",
+        "block_name": null,
+        "source_value": 45,
+        "source_unit": "nm",
+        "conversion_factor": 1e-9,
+        "normalized_value": 4.5e-8,
+        "pdf_page": 10,
+        "asset_id": null,
+        "locator": "Section IV-A: 'NANGATE 45nm library [41] and NCSU FreePDK TSV [42]'",
+        "provenance": "Paper text; design technology for hardware area and power, not a thermal geometry input",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_normalized_fault_rate",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "dimensionless (normalized fault rate NFR_T)",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section III-E, Eq. 18: NFR_T = pi_T / pi_Tref = exp[(Ea/kB)(1/Tref - 1/T)]; Section IV-F, PDF page 12-13",
+        "provenance": "Paper text; per-router and per-TSV-group temperature from HotSpot 6.0 converted to a fault rate relative to the coolest area. No numeric value is published.",
+        "uncertainty": "No numeric temperature or fault-rate values are given in the text; Figure 9 is the only presentation of the results"
+      },
+      {
+        "field": "reference_temperature_Tref",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "K",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section III-E Step 2 (PDF page 9) and Section IV-F (PDF page 12): the coolest area of the 3D-IC is used as the reference temperature",
+        "provenance": "Paper text defines Tref as the coolest region; no numeric value is given",
+        "uncertainty": "Numeric Tref is not published"
+      },
+      {
+        "field": "router_power_per_block",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "W",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section IV-F: power per router is derived from average energy per bit and PARSEC switching activities, but no numeric watts are given",
+        "provenance": "Missing input; per-router power is not published, so no same-scenario power_rows can be built",
+        "uncertainty": "No power values are available; the total chip power must not be split"
+      },
+      {
+        "field": "block_geometry_x_y_width_height",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "m",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 9,
+        "asset_id": null,
+        "locator": "Section III-E Step 2 (PDF page 9) mentions a floor-plan used for temperature estimation but publishes no coordinates or dimensions",
+        "provenance": "Missing input; no x_m, y_m, width_m or height_m is published for any block",
+        "uncertainty": "The floorplan is absent from the paper, so no blocks can be listed"
+      },
+      {
+        "field": "hotspot_configuration",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "Section IV-F: 'emulate the temperature using HotSpot 6.0 [49]'; reference [49] on PDF page 15",
+        "provenance": "Missing input; HotSpot 6.0 is named, but no layer stack, materials, TSV model, heat sink or ambient is published. The mode (steady or transient) is not stated.",
+        "uncertainty": "The HotSpot configuration is unknown"
+      },
+      {
+        "field": "pinned_assets",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Packet assets array is empty; no RLPlanner or ATPlace2.5D files or thermal config were supplied",
+        "provenance": "No pinned packet assets were available to inspect",
+        "uncertainty": "Asset evidence is unavailable"
+      },
+      {
+        "field": "paper_linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 15,
+        "asset_id": null,
+        "locator": "References [24], [41], [42], [47], [49] on PDF page 15: JPL reliability report, NanGate 45nm, FreePDK3D45, PARSEC publication, HotSpot 6.0 report. PDF pages 1-14 contain no code or data availability statement.",
+        "provenance": "Reference URLs only; none proves that inputs for this work exist, and no code or repository for this work was found",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "missing",
+        "note": "The method text is supported: HotSpot 6.0 on gem5/Garnet PARSEC activity, then Black's-model NFR (Eq. 18), then a grid search over theta1/theta2 giving 0/1/2 redundancies (Eq. 19). HotSpot steady/transient mode, layer stack, TSV thermal model and package are not stated. Eq. 17-19 and Step 2 are mis-paged in the extraction. The study is a 3D TSV reliability study, so it is not a 2D thermal reproduction. No decisive 2D thermal method is verified."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The packet has no assets. Pages 1-14 contain no code or data availability statement. The only links are reference URLs (NanGate, FreePDK3D45, PARSEC paper, HotSpot TR, JPL report), which do not prove any executable inputs for this work exist. The IaSiG RTL, gem5/HotSpot scripts and grid-search code are not available."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Verified scalars from text: 64 cores (4x4x4, axis assignment inferred), 36 TSVs per connection, 2 spares, K=32, WCET 5,152 cycles, target MTTF 1.5x/2x/2.5x, 45nm. Not published: Tref, Ea, n, J, theta1/theta2, absolute temperatures, per-router watts, energy per bit. The scalars are digital or reliability parameters, not thermal-model inputs, and the thermal observable is null."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No HotSpot configuration (materials, layers, heat sink, ambient), no gem5/Garnet config, no cooling description and no pinned config file. The extraction's own experiment kind is custom_2d_steady with an empty floorplan, which is unsupported for a 4-layer 3D scenario. Figure 9 was not visually inspected, since only pdftotext output was supplied."
+      },
+      "data": {
+        "status": "missing",
+        "note": "There is no floorplan: no block names, coordinates or dimensions. There is no same-scenario power for any router block, and the power row set is empty, so floorplan/power matching cannot be checked. Figure 9 values are not tabulated and no figure image was supplied, so no decisive figure was verified. Any generated 2D shelf coordinates or constant power rows would be illustrative assumptions, not published data."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment / floorplan / power_w",
+        "reason": "The extraction labels the experiment custom_2d_steady but supplies an empty floorplan and no power. The paper is a 4x4x4 3D-NoC TSV reliability study with no published geometry or per-router power. It cannot be called a 2D reproduction, and there is no same-scenario floorplan/power data.",
+        "locator": "Section IV-F, PDF pp.12-13; experiment field"
+      },
+      {
+        "field": "thermal_observable",
+        "reason": "The observable is null: no absolute temperature, Tref, NFR value or MTTF number is published. Figure 9 outputs are relative redundancy counts and MTTF bars that were not visually verified or digitized.",
+        "locator": "Fig. 9, PDF p.13; thermal_observable"
+      },
+      {
+        "field": "pdf_page for Eq. 17-19 / Step 2 / Eq. 19 location",
+        "reason": "Eq. 17-19 and the Step 1-3 text are on PDF p.9. The extraction cites Eq. 18 on p.8 and Eq. 19 on pp.8, 10 and 12-14, and puts Step 2 on p.12 in one place and p.9 in another. These locators are inconsistent and incorrect.",
+        "locator": "evidence thermal_observable_normalized_fault_rate; original_setup; physical_mismatches; PDF p.9"
+      },
+      {
+        "field": "technology_node pdf_page",
+        "reason": "The NanGate 45nm / FreePDK TSV sentence is in Section IV-A at the end of PDF p.9, not p.10.",
+        "locator": "Section IV-A, PDF p.9"
+      },
+      {
+        "field": "architecture: four clusters of 8 TSVs plus a synchronization TSV",
+        "reason": "This implies 33 TSVs, which does not match the paper's 36 per connection. The 36 comes from 32 data bits plus parity, 2 spares and 1 sync (an inference). The paper elsewhere says the codeword is 35 bits and that a '4-TSV cluster' consists of parity, spare and sync. The cluster composition is ambiguous and unreconciled.",
+        "locator": "Section III-C.1, PDF pp.7-8; Section IV-B, PDF p.10"
+      },
+      {
+        "field": "noc_mesh_dimension_x / noc_mesh_dimension_y / noc_mesh_layers",
+        "reason": "The paper gives only '4 x 4 x 4'. The axis-to-layer assignment is inferred, and the floorplan and layer stack are not given.",
+        "locator": "Section IV-F, PDF p.12"
+      },
+      {
+        "field": "linked_assets / code availability",
+        "reason": "Reference URLs are not evidence of runnable code or data. Packet assets are empty, so nothing was inspected.",
+        "locator": "References [24],[41],[42],[47],[49], PDF p.15; assets: []"
+      },
+      {
+        "field": "steady_2d_relevant / scenario regime",
+        "reason": "The workload is time-varying PARSEC activity, and HotSpot's steady/transient mode is not stated. No regime match to a 2D steady thermal model can be established.",
+        "locator": "Section IV-F, PDF p.12"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      15
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3086153377",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "Router and block placement coordinates (x_m, y_m) for the 4x4x4 3D NoC floorplan",
+      "Router and block dimensions (width_m, height_m) and layer thickness",
+      "Per-router power in watts for any PARSEC benchmark; only the average energy per bit is mentioned and no numeric value is given in the text",
+      "HotSpot 6.0 configuration: layer stack, materials, TSV thermal modelling, heat sink and cooling, ambient temperature",
+      "Absolute temperatures and the reference temperature (Tref) value; Figure 9 results are not numerically tabulated in the text",
+      "Black's-model parameters (activation energy Ea, current density exponent n, current density J) and the thresholds theta1 and theta2 found by grid search",
+      "Pinned packet assets: the packet lists no assets (assets array empty), so no config or case files could be inspected",
+      "Paper-linked resources are only reference URLs (NanGate 45nm, FreePDK3D45, PARSEC publication, HotSpot 6.0 report, JPL reliability report, PDF page 15). No code, repository or data availability statement for this work was found, so no inputs are proven to exist",
+      "Power time series or workload trace for the PARSEC runs",
+      "Linked asset ref41_nangate_45nm is not pinned and available",
+      "Linked asset ref42_freepdk3d45 is not pinned and available",
+      "Linked asset ref47_parsec is not pinned and available",
+      "Linked asset ref49_hotspot6 is not pinned and available",
+      "Linked asset ref24_jpl_reliability is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The paper is a 3D-IC (4x4x4 TSV-based stack) TSV lifetime-reliability study, not a 2D chiplet or interposer thermal experiment. A 2D steady-state Studio model cannot represent the vertical layer coupling, inter-layer temperature differences or TSV thermal paths.",
+        "essential": true
+      },
+      {
+        "reason": "The paper publishes no floorplan: no block coordinates, dimensions or per-block or per-router watts. The power map and floorplan used for HotSpot are not given in the text (Step 2 on PDF page 12 only mentions them), so no same-scenario geometry and power rows can be built.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is derived from PARSEC switching activity from gem5 and varies over time and by benchmark, while the thermal result is only a relative fault rate; no absolute temperature is published to compare against.",
+        "essential": true
+      },
+      {
+        "reason": "The principal contributions are the IaSiG hardware fault-detection method (parity check, isolation and shift) and the grid-search redundancy insertion. These are digital reliability mechanisms with WCET in cycles, not thermal management controllers or optimizers, and do not map to a Studio thermal controller or placement optimizer.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling configuration, package and HotSpot 6.0 parameters (layer stack, TSV thermal modelling, heat sink, ambient) are not published in the paper. The paper notes TSV insertion slightly changes temperature but ignores it.",
+        "essential": true
+      },
+      {
+        "reason": "The reliability metric (Black's-model normalized fault rate and MTTF, Eq. 17-18) and its parameters (Ea, current density exponent) are outside a thermal solver and are not reproduced by a steady-state temperature calculation.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "2fc32395f60a2786b441fa10f0dcae8341b69d1bf42a1d0c95ea72e0d6ec2fb3",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "2D screening label: not_2d_applicable. Studio did not run (simulation status: skipped), so there are no Studio outputs, no transient trace and no numerical comparison. The selected scenario is Figure 9 of W3086153377, a thermal-aware redundant-TSV insertion study for a 4x4x4 (64-core) 3D-NoC. Per-router HotSpot 6.0 temperatures feed a Black's-model normalized fault rate relative to the coolest area, and results are given as redundancy counts and MTTF relative to targets of 1.5x, 2x and 2.5x MTTF at Tref. The extraction proposed a custom_2d_steady experiment with an empty floorplan and empty power_w, which fails the input gate (needs 1-128 blocks and a power_w object). The paper has no bundled EV6/GCC adaptation, and no pinned Ascend910 or ATPlace sizes and powers were used. No generated placement, input.flp or input.ptrace was produced, so there is no source commit or placement assumption to report. The deterministic gate set simulation_allowed=false and comparison_valid=false, so the final verdict is that this paper cannot be assessed with the 2D Studio. The paper reports no absolute temperature, so no paper value exists to compare against even in principle. Only qualitative reasoning is possible: hotter routers have a higher normalized fault rate and need more redundant TSVs. This is a 3D reliability study, not a 2D thermal experiment, and no exact replication is claimed.",
+    "limitations": [
+      "Studio was not run; no simulated temperatures, steady-state results or transient trace exist for this paper.",
+      "Essential mismatch: a 4x4x4 TSV-based 3D stack cannot be represented by a 2D steady-state model, which lacks vertical layer coupling, inter-layer gradients and TSV thermal paths.",
+      "Essential mismatch: the paper publishes no floorplan, block coordinates or dimensions, and no per-router watts, so no valid blocks or power_w could be constructed.",
+      "The HotSpot 6.0 setup (layer stack, TSV model, heat sink, ambient, steady vs transient mode) is not published, so the boundary conditions and regime cannot be matched.",
+      "The paper gives no numeric temperature, Tref or fault rate; Figure 9 is not tabulated. The thermal observable has no value, location or aggregation that could be compared numerically.",
+      "The workload is PARSEC switching activity from gem5, which varies over time and by benchmark, and no power trace is available.",
+      "The main contributions (IaSiG fault detection and grid-search thresholds theta1/theta2) are digital reliability mechanisms, not thermal controllers or placement optimizers, and do not map to Studio features.",
+      "Black's-model parameters (Ea, current density exponent, J) and the thresholds are not published, and MTTF and fault rate are outside what a thermal solver computes.",
+      "No pinned assets exist; the linked URLs are reference citations only (NanGate 45nm, FreePDK3D45, PARSEC, HotSpot 6.0 report, JPL report) and prove no usable inputs. Several adversarial and independent reviews are unresolved, and some evidence lacks a valid locator.",
+      "No Ascend910 or ATPlace generated-placement illustration was used; if it had been, it would be an illustrative input only, not paper evidence.",
+      "Because comparison_valid is false, none of this supports any claim of replication of the paper's results.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "Router and block placement coordinates (x_m, y_m) for the 4x4x4 3D NoC floorplan",
+      "Router and block dimensions (width_m, height_m) and layer thickness",
+      "Per-router power in watts for any PARSEC benchmark; only the average energy per bit is mentioned and no numeric value is given in the text",
+      "HotSpot 6.0 configuration: layer stack, materials, TSV thermal modelling, heat sink and cooling, ambient temperature",
+      "Absolute temperatures and the reference temperature (Tref) value; Figure 9 results are not numerically tabulated in the text",
+      "Black's-model parameters (activation energy Ea, current density exponent n, current density J) and the thresholds theta1 and theta2 found by grid search",
+      "Pinned packet assets: the packet lists no assets (assets array empty), so no config or case files could be inspected",
+      "Paper-linked resources are only reference URLs (NanGate 45nm, FreePDK3D45, PARSEC publication, HotSpot 6.0 report, JPL reliability report, PDF page 15). No code, repository or data availability statement for this work was found, so no inputs are proven to exist",
+      "Power time series or workload trace for the PARSEC runs",
+      "Linked asset ref41_nangate_45nm is not pinned and available",
+      "Linked asset ref42_freepdk3d45 is not pinned and available",
+      "Linked asset ref47_parsec is not pinned and available",
+      "Linked asset ref49_hotspot6 is not pinned and available",
+      "Linked asset ref24_jpl_reliability is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The paper is a 3D-IC (4x4x4 TSV-based stack) TSV lifetime-reliability study, not a 2D chiplet or interposer thermal experiment. A 2D steady-state Studio model cannot represent the vertical layer coupling, inter-layer temperature differences or TSV thermal paths.",
+      "The paper publishes no floorplan: no block coordinates, dimensions or per-block or per-router watts. The power map and floorplan used for HotSpot are not given in the text (Step 2 on PDF page 12 only mentions them), so no same-scenario geometry and power rows can be built.",
+      "The workload is derived from PARSEC switching activity from gem5 and varies over time and by benchmark, while the thermal result is only a relative fault rate; no absolute temperature is published to compare against.",
+      "The principal contributions are the IaSiG hardware fault-detection method (parity check, isolation and shift) and the grid-search redundancy insertion. These are digital reliability mechanisms with WCET in cycles, not thermal management controllers or optimizers, and do not map to a Studio thermal controller or placement optimizer.",
+      "The cooling configuration, package and HotSpot 6.0 parameters (layer stack, TSV thermal modelling, heat sink, ambient) are not published in the paper. The paper notes TSV insertion slightly changes temperature but ignores it.",
+      "The reliability metric (Black's-model normalized fault rate and MTTF, Eq. 17-18) and its parameters (Ea, current density exponent) are outside a thermal solver and are not reproduced by a steady-state temperature calculation."
+    ]
+  }
+}

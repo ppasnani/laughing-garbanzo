@@ -1,0 +1,93 @@
+{
+  "paper_id": "W4390437658",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": true,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [],
+  "blocking_facts": [
+    "Evidence 33 lacks a valid page or pinned asset locator",
+    "Evidence 34 lacks a valid page or pinned asset locator",
+    "Evidence 38 lacks a valid page or pinned asset locator",
+    "Evidence 39 lacks a valid page or pinned asset locator",
+    "Evidence 43 lacks a valid page or pinned asset locator",
+    "Evidence 44 lacks a valid page or pinned asset locator",
+    "Evidence 48 lacks a valid page or pinned asset locator",
+    "Evidence 49 lacks a valid page or pinned asset locator",
+    "Evidence 53 lacks a valid page or pinned asset locator",
+    "Evidence 54 lacks a valid page or pinned asset locator",
+    "Evidence 58 lacks a valid page or pinned asset locator",
+    "Evidence 59 lacks a valid page or pinned asset locator",
+    "No cited, normalized x_m for chiplet_1",
+    "No cited, normalized y_m for chiplet_1",
+    "No cited, normalized x_m for chiplet_2",
+    "No cited, normalized y_m for chiplet_2",
+    "No cited, normalized x_m for chiplet_3",
+    "No cited, normalized y_m for chiplet_3",
+    "No cited, normalized x_m for chiplet_4",
+    "No cited, normalized y_m for chiplet_4",
+    "No cited, normalized x_m for chiplet_5",
+    "No cited, normalized y_m for chiplet_5",
+    "No cited, normalized x_m for chiplet_6",
+    "No cited, normalized y_m for chiplet_6",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Final RLPlanner placement coordinates (x_m, y_m) for the Ascend 910 system; not in the paper or pinned config.",
+    "Chiplet names/roles in the Ascend 910 config; the pinned config is unnamed and index-ordered.",
+    "Time-varying power trace or workload definition; only static per-chiplet watts are available.",
+    "Interposer, substrate, TIM, heat spreader, heat sink and ambient/boundary condition parameters used in the HotSpot or fast thermal model.",
+    "Temperature limit T0 and the reward weights λ, µ and α used for the Ascend 910 case.",
+    "Whether the Table I temperature came from HotSpot or the fast thermal model, and the number of runs or seeds.",
+    "The paper says 'More details can be found at the github' without a URL; only the pinned config was supplied, and no HotSpot config or thermal config assets were provided.",
+    "The ServeTheHome reference (ref [6]) was not supplied as an asset, so the original source of the Ascend 910 dimensions and powers is unverified.",
+    "Published final chiplet coordinates are unavailable.",
+    "Linked asset ref_servethehome_ascend910 is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Studio models a simple 2D steady-state placement. The paper's HotSpot and fast thermal model describe a 2.5D chiplet-on-interposer stack with package layers, and the packet gives no interposer, TIM, heat spreader or heat sink parameters. A 2D representation omits vertical stack and interposer lateral spreading effects.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling and boundary conditions (heat sink, convection, ambient temperature) are not published in the packet. The paper's 77.12 C therefore cannot be reproduced or numerically compared to Studio results.",
+      "essential": true
+    },
+    {
+      "reason": "The final RLPlanner placement coordinates for the Ascend 910 are not published, so x_m and y_m of each chiplet are unknown. Any Studio placement would be a separate illustrative layout, not the paper's floorplan.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's temperature comes from RL-optimized placement co-optimized with wirelength and a temperature-limit reward. The fast thermal model has about 0.25 K MAE relative to HotSpot, and it is unclear which solver produced the Table I temperatures. Studio's solver differs from both.",
+      "essential": false
+    },
+    {
+      "reason": "The paper has no transient behavior or time-series power. The one-row static power trace is consistent with the steady-state paper observable, but there is no controller or reliability analysis to compare.",
+      "essential": false
+    },
+    {
+      "reason": "Final chiplet coordinates are not supplied by the reference files; generated shelf positions illustrate a 2D power snapshot, not the published placement.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [
+    "Any Studio run would use a separately constructed illustrative 2D placement, with generated coordinates kept distinct from paper-derived facts.",
+    "Powers would be a one-row static trace from the pinned Ascend910.cfg: 256, 14, 20, 20, 20, 20 W.",
+    "Chiplet dimensions would come from the pinned config, converted from mm to m (conversion factor 0.001): widths 14.5, 10.5, 7.75, 7.75, 7.75, 7.75 mm and heights 31.4, 16, 11.87, 11.87, 11.87, 11.87 mm.",
+    "Chiplet names are not given in the config, so generic indexed names would be used, with the order assumed to match the config lists. Which chiplet is the 256 W compute die is inferred from the largest power and size, not stated.",
+    "Studio's own package, material and cooling assumptions apply and are not specified in the packet. Studio temperatures are not numerically compared to the paper's 77.12 C.",
+    "Pinned weiweihook/RLPlanner@a75abf0b167a316dc5e2dd8b8d3d926114039271",
+    "RLPlanner publishes Ascend910 chiplet sizes and powers, but this config has no placement, power time series, or HotSpot configuration.",
+    "The power trace is one constant row made from source per-chiplet watts."
+  ],
+  "evidence_sha256": "4954e9c1233e05b778041ba116d0f395063d82ed231640e39514832f9ef0b98c",
+  "simulation_allowed": true,
+  "comparison_valid": false,
+  "reason": "The caveated scientific suitability verdict permits an exploratory Studio run; evidence and physical mismatches remain visible."
+}

@@ -1,0 +1,71 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper's method description matches the extraction: vectorless LP verification (Eqs. 2-3), spectral sparsification, edge scaling (Alg. 1), Jacobi refinement (Alg. 2), a multilevel AMG framework (Alg. 3), and a 3D mesh grid. But the extraction sets experiment.kind to custom_2d_steady with an empty floorplan while also marking steady_2d_relevant false and listing 3D, ensemble-LP and cooling mismatches as essential. A 2D steady label contradicts that. The paper has no 2D steady scenario."
+    },
+    "code": {
+      "status": "missing",
+      "note": "Packet assets are empty. The only links are the third-party CHOLMOD and Gurobi references. The paper says the method is implemented in MATLAB and C++ but links no code. No paper code is verified."
+    },
+    "parameters": {
+      "status": "verified",
+      "note": "Table I (PDF p5) text for Processor A supports 28 W, 195 mm2, 4 metal layers, 11 material layers, and 3.3 and 2.0 (x10^3 W/m2K) for heat sink and package. The mm2-to-m2 conversion (1e-6) and the 1e3 scaling are correct. These are aggregate scalars only. No local or global bound values, ambient temperature, layer properties or grid geometry are published."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No solver config, partition matrix M, bound values b_L/b_U/B_L/B_U, sparsification tolerance or beta values, or gmin/gamma/Nmax settings are published or supplied. No pinned config asset exists. Table II does not state which cases belong to Processor A."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No block floorplan or per-block power exists, and no same-scenario power set exists for any block. Figure 3 (PDF p6) was only available as a pdftotext layout with no image or digitization, so the decisive observable was not visually verified and has no numeric values or axis units. No generated 2D shelf coordinates or constant powers may stand in for published data."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The extraction labels the experiment custom_2d_steady with empty floorplan and power_w. That implies a 2D reproduction, but the paper is a 3D vectorless ensemble verification and the extraction itself says no 2D experiment can be reconstructed. The label is contradictory or unsupported.",
+      "locator": "extraction.experiment vs steady_2d_relevant=false and physical_mismatches"
+    },
+    {
+      "field": "thermal_observable_worst_case_temperature_distribution",
+      "reason": "Figure 3 is the decisive observable, but only extracted text was supplied, with no rendered page image and no numeric values. It was not visually verified, and its units and scale are unknown.",
+      "locator": "PDF page 6, Fig. 3 (a)-(c); packet assets empty"
+    },
+    {
+      "field": "scenario.operating_point / Table II attribution",
+      "reason": "The Processor A operating point includes the 25K-2.0M node range and cases T1-T7. Table II does not assign cases to Processor A or B, and the extraction's own uncertainty notes concede this. Presenting them as Processor A benchmark data is unsupported.",
+      "locator": "PDF page 6, Table II; extraction.scenario.operating_point and original_setup.benchmark"
+    },
+    {
+      "field": "thermal_observable.aggregation",
+      "reason": "The extraction says the observable is a per-node worst case from one LP per node over all nodes. Table II times are summed over only 100 randomly chosen nodes, and the paper does not say whether Figure 3 covers all nodes or a subset. The aggregation claim is partly inferred.",
+      "locator": "PDF page 5 (Table II discussion, '100 randomly chosen nodes'); PDF page 6 Fig. 3"
+    },
+    {
+      "field": "floorplan_block_geometry / per_block_power_rows",
+      "reason": "No block names, coordinates, dimensions or per-block powers exist in the PDF. The 28 W total and 195 mm2 area are aggregates only. Nothing may be split or generated and presented as paper-derived.",
+      "locator": "PDF pages 1-6; Table I"
+    },
+    {
+      "field": "paper_linked_resources",
+      "reason": "The CHOLMOD and Gurobi links are third-party solvers. They are not reproducibility artifacts for code, config or data. Artifact availability for the paper's own implementation is not established.",
+      "locator": "PDF page 5 ref [1]; PDF page 6 ref [10]; assets: []"
+    },
+    {
+      "field": "heat_transfer_coefficients",
+      "reason": "The two coefficients appear in a merged row in the text-layout extraction. Reading 3.3 as heat sink and 2.0 as package for Processor A relies on pdftotext layout alone, without a visual check of the table cell alignment.",
+      "locator": "PDF page 5, Table I"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

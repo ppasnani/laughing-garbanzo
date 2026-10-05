@@ -1,0 +1,331 @@
+{
+  "paper_id": "W3036764451",
+  "paper_title": "Thermal-Cycling-aware Dynamic Reliability Management in Many-Core System-on-Chip",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 5,
+    "figure_or_table": "Section V experimental setup and Fig. 5 / Fig. 6 (MTTF results)",
+    "description": "Simulated 8x8 NoC-based many-core system (16nm, 109 mm^2 squared floorplan, TDP 90 W) running 25 randomly selected multi-threaded PARSEC applications under the proposed thermal-cycling-aware resource manager (mapping, scheduling, DPM) compared with a nominal baseline, MOC, and reliability-aware mapping. The reported observable is per-core thermal-cycling MTTF (years), summarized as MIN, STD and AVG. Only total chip area and TDP are published; no per-block coordinates, dimensions or per-block power values are given.",
+    "architecture": "8x8 homogeneous mesh NoC many-core, Niagara2-like SPARC cores, private L1 and distributed shared L2, four memory controllers, per-core DVFS and PCPG, per-core temperature sensors",
+    "workload": "Multi-threaded PARSEC benchmarks, 25 randomly selected application executions issued at runtime",
+    "operating_point": "TDP 90 W, 16nm, chip area 109 mm^2; thermal cycling model EaTC=0.42 eV, b=2.35, Tth=1 C, A_TC fitted for MTTF_TC=10 years at deltaT=20 C, Tmax=70 C, 1 hour, m=10; temperature sampling about 1 s",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "Noculator (shared-memory NoC-based many-core simulator built on Intel PIN) with McPAT/Lumos power and scaling parameters, and HotSpot steady-state thermal model integrated; thermal-cycling reliability computed via rainflow counting, Miner's rule and Coffin-Manson (Eqs. 1-3) (PDF p.2, p.5)",
+    "optimizer": "Heuristic reliability-aware runtime resource management: RAF affinity-based mapping extending MapPro (Algorithm 2), temperature-deviation-sorted round-robin thread scheduling (Algorithm 3), and DPM extending MOC with a thermal-cycling metric avgAmplitude x maxT (PDF p.3-5)",
+    "controller": "Global feedback controller with reliability analysis unit (about 1 s sampling, 1-2 h long-term period), reliability-aware mapping, thread scheduling (few ms period), and DPM with PID stage plus multi-objective control of per-core DVFS and PCPG under 90 W TDP (PDF p.3-5)",
+    "benchmark": "8x8 homogeneous many-core (Niagara2/SPARC cores, 16nm, 109 mm^2, TDP 90 W) running 25 randomly selected multi-threaded PARSEC application executions, compared against nominal baseline, MOC and reliability-aware mapping [2] (PDF p.5)"
+  },
+  "thermal_observable": {
+    "value": null,
+    "unit": "years (per-core thermal-cycling MTTF)",
+    "location": "Per core of the 8x8 many-core; Fig. 5 per-core MTTF snapshot and Fig. 6 summary (MIN, STD, AVG); no numeric values are given in the text, only relative improvements (min MTTF +54%, +51%, +39%; avg +40%, +21%, +20% vs baseline, MOC, RA-mapping)",
+    "aggregation": "Per-core MTTF_TC from rainflow cycles and Miner's rule over the run; summarized as minimum, standard deviation and average across cores after 25 application executions",
+    "pdf_page": 6
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The study is a system-level reliability and resource-management evaluation: the observable is thermal-cycling MTTF (years), not a steady-state temperature field, so it cannot be compared directly to a steady 2D thermal solve.",
+      "essential": true
+    },
+    {
+      "reason": "Transient, workload-driven dynamics are essential (temperature traces sampled about 1 s, rainflow cycle extraction, ms-scale scheduling, 1-2 h control epochs, random application arrivals); a single-row steady power trace cannot reproduce the thermal-cycling amplitude and frequency.",
+      "essential": true
+    },
+    {
+      "reason": "The controller (PID plus multi-objective DPM, mapping unit, scheduler, PCPG and DVFS) and the heuristic optimizer are not representable in a static placement or thermal solve.",
+      "essential": true
+    },
+    {
+      "reason": "Original thermal solver is HotSpot steady-state with unspecified package, cooling and material parameters; the cooling and interposer are not described, and no 3D stacking is involved.",
+      "essential": false
+    },
+    {
+      "reason": "No per-core or per-block geometry (x, y, width, height) and no per-block power are published; only total chip area 109 mm^2, an 8x8 squared floorplan and a 90 W TDP, so splitting power would require an unpublished rule.",
+      "essential": true
+    },
+    {
+      "reason": "Reliability results (MTTF fitted so MTTF_TC=10 years at deltaT=20 C, Tmax=70 C) depend on the Coffin-Manson model parameters, which the Studio does not model.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "Per-core block names, x/y positions and widths/heights (only 8x8 mesh, squared floorplan, 109 mm^2 total area published)",
+    "Per-core or per-block power values and power time series (only 90 W TDP total given)",
+    "Numeric per-core MTTF values for Fig. 5 and Fig. 6 (only relative percentage improvements in text; figures not digitized)",
+    "HotSpot configuration: package, heat spreader, heat sink, convection resistance, ambient temperature, material properties",
+    "Linked code, data, configuration or repository assets (artifact search found no links; packet assets list is empty)",
+    "Fitted A_TC constant value and PARSEC application list/mix and arrival sequence",
+    "Selected ATPlace2.5D or RLPlanner Ascend910 configuration files (not supplied and not applicable to this paper)"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "chip_area",
+      "block_name": null,
+      "source_value": 109,
+      "source_unit": "mm^2",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000109,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, experimental setup paragraph: 'a chip area of 109mm2 in 16nm technology, and TDP of 90W'",
+      "provenance": "Published total chip area for the 8x8 squared floorplan. This is a total, not a per-block dimension, and no per-core width or height is given.",
+      "uncertainty": null
+    },
+    {
+      "field": "total_power_TDP",
+      "block_name": null,
+      "source_value": 90,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 90,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, experimental setup paragraph: 'TDP of 90W'",
+      "provenance": "Published chip-level thermal design power. It must not be split across cores because the paper gives no splitting rule.",
+      "uncertainty": null
+    },
+    {
+      "field": "technology_node",
+      "block_name": null,
+      "source_value": 16,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 1.6e-8,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, experimental setup paragraph: '16nm technology'",
+      "provenance": "Published technology node.",
+      "uncertainty": null
+    },
+    {
+      "field": "core_array_size",
+      "block_name": null,
+      "source_value": 8,
+      "source_unit": "cores per row and column (8x8 mesh)",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'realistic 8x8 architecture with a squared floorplan'; also Section II motivating example and Fig. 1 on PDF page 2",
+      "provenance": "Published 8x8 homogeneous mesh. No per-core x/y coordinates or dimensions are given.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_cycling_activation_energy_EaTC",
+      "block_name": null,
+      "source_value": 0.42,
+      "source_unit": "eV",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'EaTC = 0.42eV, b = 2.35, Tth = 1 C, k = 8.62e-5 eV/K'",
+      "provenance": "Coffin-Manson model parameter, used for the MTTF observable and not a thermal solver input.",
+      "uncertainty": null
+    },
+    {
+      "field": "coffin_manson_exponent_b",
+      "block_name": null,
+      "source_value": 2.35,
+      "source_unit": "dimensionless",
+      "conversion_factor": 1,
+      "normalized_value": 2.35,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'b = 2.35'; Eq. 1 on PDF page 2",
+      "provenance": "Coffin-Manson exponent used in the reliability model.",
+      "uncertainty": null
+    },
+    {
+      "field": "inelastic_deformation_threshold_Tth",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 1,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'Tth = 1 C'",
+      "provenance": "Reliability model parameter.",
+      "uncertainty": null
+    },
+    {
+      "field": "reference_MTTF_TC_fit",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "years",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'fitted ATC to have a MTTF_TC = 10 years in a steady state condition with deltaT = 20 C, TMax = 70 C, DeltaT = 1 hour and m = 10'",
+      "provenance": "Calibration condition for the A_TC constant. The fitted A_TC value itself is not published.",
+      "uncertainty": null
+    },
+    {
+      "field": "calibration_cycle_amplitude_deltaT",
+      "block_name": null,
+      "source_value": 20,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 20,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'deltaT = 20 C'",
+      "provenance": "Steady-state calibration cycle amplitude for A_TC fitting, not a measured result.",
+      "uncertainty": null
+    },
+    {
+      "field": "calibration_max_temperature_TMax",
+      "block_name": null,
+      "source_value": 70,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 70,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'TMax = 70 C'",
+      "provenance": "Calibration maximum temperature for A_TC fitting, not a measured result.",
+      "uncertainty": null
+    },
+    {
+      "field": "calibration_characteristic_run_duration",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "hour",
+      "conversion_factor": 3600,
+      "normalized_value": 3600,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'DeltaT = 1 hour and m = 10'",
+      "provenance": "Calibration run duration, with m = 10 cycles.",
+      "uncertainty": null
+    },
+    {
+      "field": "temperature_sampling_period",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "s (approximately)",
+      "conversion_factor": 1,
+      "normalized_value": 1,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section IV, Reliability Analysis unit: 'fixed sampling period (approximately 1 second)'",
+      "provenance": "Controller sensor sampling period.",
+      "uncertainty": "The paper says 'approximately'."
+    },
+    {
+      "field": "long_term_control_period",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": "hours (1-2 hours, range)",
+      "conversion_factor": 3600,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section IV: 'long-term control period (lasting 1-2 hours)'",
+      "provenance": "Published as a range, so no single source value is recorded.",
+      "uncertainty": "Range of 1-2 h, 3600-7200 s."
+    },
+    {
+      "field": "workload_application_count",
+      "block_name": null,
+      "source_value": 25,
+      "source_unit": "application executions",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'simulation is lasted until completing 25 application executions randomly selected from the PARSEC multi-threaded suite'",
+      "provenance": "Workload size. The application list, mix and arrival sequence are not published.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_min_MTTF_improvement_vs_baseline",
+      "block_name": null,
+      "source_value": 54,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.54,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V, text describing Fig. 6: 'improves the minimum MTTF ... by 54%, 51%, and 39%'; abstract and introduction on PDF page 1 also give 54% and 39%",
+      "provenance": "Published relative improvement of the minimum per-core thermal-cycling MTTF (years) over the nominal baseline. The other two values are 51% vs MOC and 39% vs RA-mapping [2]. No absolute MTTF values are given in the text.",
+      "uncertainty": "Text value. Figures 5 and 6 are not digitized, so absolute per-core MTTF values are unavailable."
+    },
+    {
+      "field": "thermal_observable_avg_MTTF_improvement_vs_baseline",
+      "block_name": null,
+      "source_value": 40,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.4,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'average MTTF by 40%, 21%, and 20% w.r.t. the nominal baseline, MOC, and reliability-aware mapping'",
+      "provenance": "Published relative improvement of the average per-core MTTF across cores over the baseline. The other two values are 21% vs MOC and 20% vs RA-mapping.",
+      "uncertainty": "Text value. The figure is not digitized."
+    },
+    {
+      "field": "thermal_observable_MTTF_std_improvement_vs_baseline",
+      "block_name": null,
+      "source_value": 55,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.55,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: 'standard deviation ... 55%, 43% and 38% improvement'",
+      "provenance": "Published relative improvement in the MTTF standard deviation across cores over the baseline. The other two values are 43% vs MOC and 38% vs RA-mapping.",
+      "uncertainty": "Text value. The figure is not digitized."
+    },
+    {
+      "field": "per_block_geometry_and_power",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V setup, PDF pages 1-6",
+      "provenance": "No per-core or per-block x_m, y_m, width_m, height_m or watts are published. Only the total area (109 mm^2), TDP (90 W) and an 8x8 squared floorplan are given, so the floorplan and power_rows stay empty.",
+      "uncertainty": "Power cannot be split across cores because no published rule exists."
+    },
+    {
+      "field": "paper_linked_resources_and_pinned_assets",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "All PDF pages 1-6, plus packet assets list (empty)",
+      "provenance": "The packet lists no pinned assets. The paper has no availability statement, code or data URL, and no supplementary data. The only URLs are the ITRS website in reference [17] on PDF page 6 and the packet-level source PDF URL. Nothing relevant to a HotSpot configuration, ATPlace2.5D case or RLPlanner Ascend910 config is supplied.",
+      "uncertainty": null
+    },
+    {
+      "field": "original_solver_and_controller",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section V: Noculator simulator, McPAT and Lumos [20] power parameters, HotSpot [18] steady-state thermal model; Section IV on PDF pages 3-5: mapping, scheduling and DPM with PID",
+      "provenance": "The original solver is Noculator with HotSpot steady-state. The optimizer is a heuristic RAF mapping, temperature-deviation scheduling and a thermal-cycling DPM extending MOC. The benchmark is 25 PARSEC applications. HotSpot package, cooling and material parameters are not published.",
+      "uncertainty": "Qualitative descriptors only."
+    }
+  ]
+}

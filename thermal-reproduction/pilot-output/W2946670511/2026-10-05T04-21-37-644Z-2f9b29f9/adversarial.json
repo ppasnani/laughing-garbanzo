@@ -1,0 +1,77 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The text supports HotSpot-6.0 steady-state simulation of a 10x10 mm two-tier flip-chip Mono3D IC against a TSV-based IC (PDF p.4). The extraction's own mismatch list marks the 3D tier stack, bonding layer/ILD, TSVs and heat sink on the bottom tier as essential. The experiment kind is custom_2d_steady, so a 2D reproduction would contradict the decisive vertical-coupling mechanism. The extraction also mixes Section 3.3 details (metal layers 1-8, 100x100 grids) into the Section 3.1 scenario."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, supplementary link or pinned asset exists in the 7 PDF pages. The assets list is empty, and the HotSpot layer files and scripts used are not available."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Text-stated values match PDF p.4: 10 mm chip, 400 um hot spots, 750 W/cm2, backgrounds 25/30 W/cm2, 5% interconnect power with 20% to TSVs, TSV array 5mm x 200um x 33um, ~109/~77/~38/~4 C. The unit conversions are arithmetically correct. Still missing: hot spot coordinates, per-block watts, layer thicknesses and materials, and the TSV positions. The ~77 C value is ambiguous (bottom-tier hot spots vs both tiers) and approximate. The Figure 4 values were not visually verified."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The heat sink, spreader, convection resistance, ambient temperature, layer stack and HotSpot config/grid settings for the Section 3.1 run are not published. The 100x100 grid and metal layers 1-8 come from Section 3.3 (p.6) and are not shown to apply to Figure 4."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no same-scenario floorplan blocks or per-block power rows (floorplan and power_w are empty). Upper-tier hot spot positions are not numeric, and Figure 3/4 images are not supplied. Generated 2D shelf coordinates and constant power rows would be illustrative assumptions, not published placement or transient traces."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment (custom_2d_steady)",
+      "reason": "The decisive observables (inter-tier coupling, ~38 C vs ~4 C tier difference, TSV/bonding-layer effects) are 3D phenomena. A 2D reproduction would contradict the paper's physics, and the extraction itself flags this as essential.",
+      "locator": "PDF p.4 Section 3.1; physical_mismatches"
+    },
+    {
+      "field": "solver (100 x 100 grids per layer)",
+      "reason": "The 100x100 grid figure appears only in the Section 3.3 runtime remark. Attributing it to the Section 3.1 Figure 4 scenario with a p.4 locator is unsupported.",
+      "locator": "PDF p.6 Section 3.3 vs extraction original_setup.solver (cites p.4)"
+    },
+    {
+      "field": "physical_mismatches (metal layers 1-8)",
+      "reason": "Metal layers 1-8 and linear interconnect power distribution belong to Section 3.3. Section 3.1 says only that all metal layers are modeled, so mixing the two is a scenario mismatch.",
+      "locator": "PDF p.4 Section 3.1 vs p.6 Section 3.3"
+    },
+    {
+      "field": "thermal_observable_mono3d_hot_spot_temperature",
+      "reason": "The text says hot spots on the upper tier lead to similar hot spots on the bottom tier reaching ~77 C, which is ambiguous about which tier and which aggregation. Figure 4c/4d was not visually verified and the value is approximate, so the observable is not decisively verified.",
+      "locator": "PDF p.4 Section 3.1; Figure 4 on p.5 (image not supplied)"
+    },
+    {
+      "field": "hot_spot_positions / floorplan",
+      "reason": "Upper-tier hot spot coordinates were not digitized from Figure 3, and the floorplan list and power_w are empty. No block has same-scenario power, so floorplan completeness is not satisfied.",
+      "locator": "PDF p.4 Figure 3; experiment.floorplan=[]"
+    },
+    {
+      "field": "tsv_array_dimensions",
+      "reason": "The source_value and unit fields are null although the dimensions are published in the text (5 mm x 200 um x 33 um). The record is internally inconsistent, and the TSV positions are unknown.",
+      "locator": "PDF p.4 Section 3.1"
+    },
+    {
+      "field": "cooling configuration",
+      "reason": "The heat sink, spreader, convection and ambient settings are not specified in the paper. Any cooling stack used would be an assumption, so temperatures cannot be compared with the paper's.",
+      "locator": "PDF p.4 Section 3.1 and Figure 2 on p.4"
+    },
+    {
+      "field": "checked_assets",
+      "reason": "No pinned assets or figure images were supplied. Figures 3, 4 and 5-8 contain only garbled pdftotext axis labels, so no decisive figure was visually verified.",
+      "locator": "packet.assets=[]; PDF pp.4-6"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "checked_assets": []
+}

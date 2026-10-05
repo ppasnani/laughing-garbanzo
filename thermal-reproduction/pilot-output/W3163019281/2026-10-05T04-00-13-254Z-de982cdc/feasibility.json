@@ -1,0 +1,62 @@
+{
+  "paper_id": "W3163019281",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "Thermal observable needs a valid page, unit, location, and aggregation",
+    "No cited steady/transient regime",
+    "Per-core and per-block floorplan coordinates and dimensions for the 256-core SCC-based chip (not in the paper text).",
+    "Per-block power values (name and watts) for the selected power profile (only the 216.6 W/cm2 hot spot density and the Eris et al. source are given).",
+    "Table III contents (grid resolution, die size, heat sink specification), not extractable from the text.",
+    "Table IV and any temperature results for this scenario (not extractable).",
+    "Pinned packet assets: the assets list is empty, so there is no config, geometry or thermal file.",
+    "Linked resources (PACT GitHub repository, PDF page 2; OpenSTA repository, PDF page 7) are not pinned, and their URLs do not prove that the inputs exist.",
+    "Power trace time series (only a single selected profile is mentioned).",
+    "Linked asset pact_github_repo is not pinned and available",
+    "Linked asset opensta_github_repo is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper gives no per-block floorplan (x, y, width, height) and no per-block watts for the 256-core SCC chip. Only a hot spot power density of 216.6 W/cm2 is stated, so no complete experiment can be reconstructed. The power profile comes from prior work (Eris et al.), which is not packaged.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario reports simulation speed (Table IV). Its temperature results are not available in the extractable text, so no paper thermal observable value exists for comparison. The ~90 degC maximum and ~9 degC gradient quoted on page 11 belong to the separate OpenROAD MPSoC scenario.",
+      "essential": true
+    },
+    {
+      "reason": "The original solver is a compact RC netlist solved by Xyce on an MPI cluster, with a medium-cost heat spreader and heat sink, and the grid resolution is given only in Table III. A Studio solver, package and cooling model will differ in discretization and boundary conditions, so temperatures are not directly comparable.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario has no optimizer and no controller, and the power trace is a single selected profile. The original does not exercise any optimizer or controller behavior to replicate.",
+      "essential": false
+    },
+    {
+      "reason": "The paper's monolithic 3-D, liquid-microchannel and 2.5-D PNoC cases are separate scenarios and are not used. The selected case is 2-D with a conventional heat sink, so no 3-D or interposer mismatch applies to the selected scenario.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No Studio package or material assumptions are supplied in the packet, so none can be recorded as paper-derived. Any Studio default stack, materials and heat sink would differ from the paper's medium-cost heat sink.",
+    "Any placement the runner generates would be illustrative and separate from paper facts, and its temperatures must not be numerically compared to the paper."
+  ],
+  "evidence_sha256": "9cad8251b9601ec30ddf517db01f9c66181369ff0b1bb957aefc05cb30661fba",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

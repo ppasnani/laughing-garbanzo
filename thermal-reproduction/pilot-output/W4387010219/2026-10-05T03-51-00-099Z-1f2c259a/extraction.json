@@ -1,0 +1,432 @@
+{
+  "paper_id": "W4387010219",
+  "paper_title": "Impact of 3-D Integration on Thermal Performance of RISC-V MemPool Multicore SOC",
+  "artifact_search_status": "checked_links_found",
+  "linked_assets": [
+    {
+      "id": "hotspot_github",
+      "url": "https://github.com/uvahotspot/HotSpot",
+      "kind": "repository (HotSpot v7.0 thermal simulator, ref. [45])",
+      "paper_page": 9
+    },
+    {
+      "id": "mempool3d_arxiv_doi",
+      "url": "https://doi.org/10.48550/arXiv.2112.01168",
+      "kind": "preprint DOI (MemPool-3D, ref. [41], source of 3D footprint and power data)",
+      "paper_page": 9
+    },
+    {
+      "id": "prior_work_tvlsi_2022_doi",
+      "url": "https://doi.org/10.1109/TVLSI.2022.3207553",
+      "kind": "journal article DOI (Thermal Performance Analysis of Mempool RISC-V Multicore SoC, ref. [38], source of 2D floorplan and tile activity patterns)",
+      "paper_page": 9
+    }
+  ],
+  "scenario": {
+    "pdf_page": 3,
+    "figure_or_table": "Fig. 4(a) with Table I and Section II/III text (MemPool-2D baseline); compared against Fig. 4(b) MemPool-3D MoL",
+    "description": "Steady-state HotSpot v7.0 thermal simulation of the baseline MemPool-2D SOC (4.8 x 4.8 mm die, 64 tiles of 425 x 425 um, 50% tile utilization, 40 W TDP) in a flip-chip package with TIM, heat spreader, heatsink, C4 bumps, substrate, solder balls, underfill and PCB. The paper reports Tmax of 46 C above ambient. The detailed 2D floorplan is only referenced to prior work [38] and is not given in this paper.",
+    "architecture": "MemPool 256-core 32-bit RISC-V many-core SOC with 64 tiles (4 cores per tile, 16 KiB SPM blocks, 2 KiB I$ per tile), shared L1 SPM of 1 MiB, commercial 28 nm technology, 2D baseline",
+    "workload": "Full workload at the 2D-SOC thermal design power of 40 W (larger workload baseline); the tile power breakdown is shown as percentages only (cores, I$, SPM, interconnects, others) in Fig. 3",
+    "operating_point": "Steady state, ambient 27 C, results reported as temperature above ambient; Tmax,2D = 46 C; heatsink-to-ambient Rconv 0.17 K/W; PCB-to-ambient natural convection Rconv 50 K/W; 3D MemPool-3D comparison case (not selected): Tmax 55 C memory die and 57 C logic die",
+    "steady_2d_relevant": true
+  },
+  "original_setup": {
+    "solver": "HotSpot v7.0 steady-state block/grid RC thermal model (finite-difference). The paper says it was validated against ANSYS and a thermal test chip. It assumes uniform power density within each block. Ambient is 27 C. (PDF pages 3-4)",
+    "optimizer": "None. The paper reports no optimizer for the selected MemPool-2D baseline. It only compares four fixed tile-activity patterns P1-P4 from ref [38], which is a separate sweep and not part of this scenario.",
+    "controller": "None. No DTM or runtime controller is simulated. DTM techniques appear only as background in the introduction.",
+    "benchmark": "MemPool-2D baseline: 256-core 32-bit RISC-V many-core SOC with 64 tiles, 4 cores per tile, 16 KiB SPM blocks and 2 KiB I$ per tile, 1 MiB shared L1 SPM, commercial 28 nm. Die is 4.8 x 4.8 mm, tiles are 425 x 425 um at 50% utilization, TDP is 40 W (full workload), steady state. Source: Section II and Fig. 4(a), PDF page 3."
+  },
+  "thermal_observable": {
+    "value": 46,
+    "unit": "deg C above ambient (ambient 27 C)",
+    "location": "Maximum on-chip temperature of the MemPool-2D die, Fig. 4(a) thermal map",
+    "aggregation": "Steady-state maximum over the die (Tmax, junction to ambient), HotSpot v7.0, single value for full workload at 40 W",
+    "pdf_page": 3
+  },
+  "physical_mismatches": [
+    {
+      "reason": "Package is a full flip-chip stack: TIM 100 um at 7 W/mK, heat spreader 5.92 x 5.92 mm, heatsink 7.9 x 7.9 mm with Rconv 0.17 K/W, C4 bumps, substrate, solder balls, underfill and a PCB with 50 K/W natural convection. A simplified Studio thermal stack may not reproduce this path or the 46 C result.",
+      "essential": true
+    },
+    {
+      "reason": "The 2D floorplan is not in this paper (only referenced to ref [38]). No block coordinates or per-block watts are published. Only the die size, tile size, tile count and the 40 W total are given.",
+      "essential": true
+    },
+    {
+      "reason": "The tile power breakdown (cores, I$, SPM, interconnects, others) appears only as percentages in Fig. 3, and the legend-to-slice mapping is ambiguous. Splitting the 40 W total would need a published rule, so it cannot be treated as paper-derived watts per block.",
+      "essential": true
+    },
+    {
+      "reason": "HotSpot assumes uniform power density within each block, so intra-block hotspots are not resolved.",
+      "essential": false
+    },
+    {
+      "reason": "The paper's main subject is 3D (MoL/LoM) stacking: F2F bonding, a BEOL layer at 1.2 W/mK, a thinned 5 um logic die. None of this applies to the selected 2D baseline, and the 3D results (55/57 C) must not be mixed with it.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is steady state only. There is no transient or power-trace data, no controller or DTM, no optimizer, and no reliability analysis in the selected scenario.",
+      "essential": false
+    },
+    {
+      "reason": "The 2D die silicon thickness and thermal conductivity, and the 2D-specific layer stack, are not tabulated. Table I lists 3D memory/logic die layers only.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "No pinned packet assets were supplied (assets list is empty), so no config, geometry or power files could be inspected.",
+    "2D floorplan block coordinates (x_m, y_m, width_m, height_m) are only referenced to ref [38], which is not in the packet.",
+    "Per-block power in watts for the same 2D scenario. Only the 40 W total and the Fig. 3 percentage breakdown with an ambiguous legend mapping are available. No published rule splits the total.",
+    "HotSpot configuration (grid resolution, boundary and package parameters beyond Table I, material file), the 2D die thickness and conductivity, and the exact location of the 46 C hotspot.",
+    "Any power time series or workload trace. Only steady-state full-workload TDP is given.",
+    "The bundled Studio package/material assumptions are not provided in the packet, so they cannot be recorded.",
+    "The linked repositories (HotSpot GitHub, MemPool-3D arXiv DOI, ref [38] DOI, all on PDF page 9) are not pinned assets and do not prove that the inputs exist."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "die_width_m",
+      "block_name": "MemPool-2D die",
+      "source_value": 4.8,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0048,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II, right column text: '2D-SOC footprint is 4.8 x 4.8 mm2'",
+      "provenance": "Paper text, MemPool-2D baseline die footprint. Used as die width. No coordinates are published.",
+      "uncertainty": "The text prints 'mm2' for a 4.8 x 4.8 dimension. It is read as a 4.8 mm square edge. Not a digitized figure."
+    },
+    {
+      "field": "die_height_m",
+      "block_name": "MemPool-2D die",
+      "source_value": 4.8,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0048,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II, right column text: '2D-SOC footprint is 4.8 x 4.8 mm2'",
+      "provenance": "Paper text, MemPool-2D baseline die footprint. Used as die height.",
+      "uncertainty": "Same unit-typo ambiguity as die width."
+    },
+    {
+      "field": "tile_width_m",
+      "block_name": "MemPool-2D tile",
+      "source_value": 425,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000425,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II: 'each tile size of 425 x 425 um2 on the silicon die'",
+      "provenance": "Paper text. Tile dimension only. The tile x/y placement is not given in this paper.",
+      "uncertainty": "Stated as um2 in the text; read as a 425 um edge. No tile positions are published."
+    },
+    {
+      "field": "tile_height_m",
+      "block_name": "MemPool-2D tile",
+      "source_value": 425,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000425,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II: 'each tile size of 425 x 425 um2 on the silicon die'",
+      "provenance": "Paper text. Tile dimension only.",
+      "uncertainty": "Same unit ambiguity as tile width."
+    },
+    {
+      "field": "tile_count",
+      "block_name": "MemPool-2D",
+      "source_value": 64,
+      "source_unit": "tiles",
+      "conversion_factor": 1,
+      "normalized_value": 64,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section II, first paragraph: 'there are 64 tiles with each tile containing 4 cores'",
+      "provenance": "Paper text describing the MemPool architecture.",
+      "uncertainty": null
+    },
+    {
+      "field": "cores_per_tile",
+      "block_name": "MemPool tile",
+      "source_value": 4,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section II, first paragraph: '256-core ... 64 tiles with each tile containing 4 cores'",
+      "provenance": "Paper text. 256 cores in total.",
+      "uncertainty": null
+    },
+    {
+      "field": "tile_utilization",
+      "block_name": "MemPool-2D die",
+      "source_value": 50,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.5,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II: 'The utilization of tiles within the die is 50%'",
+      "provenance": "Paper text.",
+      "uncertainty": null
+    },
+    {
+      "field": "total_power_W",
+      "block_name": "MemPool-2D total chip",
+      "source_value": 40,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 40,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II: 'thermal design power (TDP) of the 2D-SOC is 40 W (for larger workloads)'",
+      "provenance": "Paper text. Only a total chip TDP is published. It is not split per block and no splitting rule is published, so no per-block watts are derived.",
+      "uncertainty": "The total is a TDP baseline for larger workloads. It is not a measured power trace."
+    },
+    {
+      "field": "per_block_power_rows",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Fig. 3 'Breakdown of the thermal design power (TDP) within the MemPool tile' (percent slices 39%, 27%, 13%, 11%, 10%; legend: cores, I$, SPM, interconnects, others)",
+      "provenance": "Fig. 3 gives only percentages of tile power. The legend-to-slice mapping is ambiguous and the per-block watts are not published. The detailed floorplan and power are referenced to ref [38], which is not in the packet.",
+      "uncertainty": "Figure percentages are not digitized into watts. The slice-to-component mapping is unclear."
+    },
+    {
+      "field": "floorplan_block_coordinates",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II: 'The detailed floorplan information of the Memopool 2D-SOC architecture is given in [38]'",
+      "provenance": "The 2D block x_m, y_m, width_m and height_m are not given in this paper. They are deferred to ref [38], which is not in the packet.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_Tmax_2D",
+      "block_name": "MemPool-2D die",
+      "source_value": 46,
+      "source_unit": "deg C above ambient",
+      "conversion_factor": 1,
+      "normalized_value": 46,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Fig. 4(a) label 'Tmax,2D=46 oC'; page 4 Section III-A text: 'maximum temperature (Tmax) with respect to ambient is 46 C for 2D-SOC'",
+      "provenance": "Steady-state HotSpot v7.0 maximum on-chip temperature rise above the 27 C ambient. Single value over the die for the 40 W baseline.",
+      "uncertainty": "Read from the figure label and text. The hotspot location in the 2D die is not stated."
+    },
+    {
+      "field": "ambient_temperature",
+      "block_name": null,
+      "source_value": 27,
+      "source_unit": "deg C",
+      "conversion_factor": 1,
+      "normalized_value": 27,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section III, first paragraph: 'ambient temperature is 27 C ... values above the ambient'",
+      "provenance": "Paper text.",
+      "uncertainty": null
+    },
+    {
+      "field": "solver",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section III (pages 3-4): 'we have used HOTSPOT v7.0 [45],[46] to perform steady state thermal modeling'; validated against ANSYS [47] and a thermal test chip [48]",
+      "provenance": "The original solver is HotSpot v7.0 steady-state, with an RC network at block/grid level solved by finite differences. It assumes uniform power density within each block. The ambient is 27 C.",
+      "uncertainty": "The grid resolution and configuration files are not given."
+    },
+    {
+      "field": "heatsink_to_ambient_resistance",
+      "block_name": "Heatsink",
+      "source_value": 0.17,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.17,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II: 'convective resistance (Rconv) of 0.17 K/W between the heatsink and the ambient'",
+      "provenance": "Paper text, cooling boundary condition.",
+      "uncertainty": "Stated for the package model; whether it applies identically to the 2D case is inferred."
+    },
+    {
+      "field": "pcb_to_ambient_resistance",
+      "block_name": "PCB",
+      "source_value": 50,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 50,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Section II: 'natural convection with Rconv of 50 K/W between printed circuit board (PCB) and the ambient'",
+      "provenance": "Paper text, secondary heat path boundary condition.",
+      "uncertainty": null
+    },
+    {
+      "field": "tim_thickness_and_conductivity",
+      "block_name": "TIM",
+      "source_value": 100,
+      "source_unit": "um (thickness); conductivity 7 W/m-K",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.0001,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table I row 'TIM': 3.95 x 3.95 mm2, 100 um, 7 W m-1 K-1",
+      "provenance": "Table I package layer. Normalized value is the thickness in m; conductivity is 7 W/m-K.",
+      "uncertainty": "Table I is listed for the 3D stack with 3.95 mm dies. The 2D case with a 4.8 mm die is not tabulated."
+    },
+    {
+      "field": "heat_spreader_geometry",
+      "block_name": "Heat spreader",
+      "source_value": 200,
+      "source_unit": "um (thickness); size 5.92 x 5.92 mm; conductivity 400 W/m-K",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.0002,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table I row 'Heat spreader': 5.92 x 5.92 mm2, 200 um, 400 W m-1 K-1",
+      "provenance": "Table I package layer. Normalized value is the thickness in m.",
+      "uncertainty": "Table I is for the 3D configuration. Applicability to the 2D baseline is assumed but not stated."
+    },
+    {
+      "field": "heatsink_geometry",
+      "block_name": "Heatsink",
+      "source_value": 1000,
+      "source_unit": "um (thickness); size 7.9 x 7.9 mm; conductivity 400 W/m-K",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.001,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table I row 'Heatsink': 7.9 x 7.9 mm2, 1000 um, 400 W m-1 K-1",
+      "provenance": "Table I package layer. Normalized value is the thickness in m.",
+      "uncertainty": "Table I is for the 3D configuration."
+    },
+    {
+      "field": "pcb_geometry",
+      "block_name": "PCB",
+      "source_value": 2000,
+      "source_unit": "um (thickness); size 15 x 15 mm; conductivity 3 W/m-K",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.002,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table I row 'PCB': 15 x 15 mm2, 2000 um, 3 W m-1 K-1",
+      "provenance": "Table I package layer. Normalized value is the thickness in m.",
+      "uncertainty": null
+    },
+    {
+      "field": "package_other_layers",
+      "block_name": "C4 bumps, package substrate, solder balls, underfill",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table I rows: C4 micro bumps 3.95x3.95 mm, 10 um, 1.25; Package substrate 10x10 mm, 100 um, 2; Solder balls 10x10 mm, 940 um, 16.67; Under fill 10x10 mm, 940 um, 33.33",
+      "provenance": "Package layers are listed in Table I with no single scalar value. They are recorded here by locator only.",
+      "uncertainty": "The 2D die thickness and conductivity are not tabulated. Table I lists only the 3D memory die (100 um, 140 W/m-K), BEOL (2.85 um, 1.2 W/m-K) and logic die (5 um, 100 W/m-K)."
+    },
+    {
+      "field": "architecture_workload_operating_point",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Section II, paragraph 1 (page 2) and paragraph on TDP (page 3)",
+      "provenance": "Architecture is the 256-core 32-bit RISC-V MemPool with shared L1 SPM, 16 KiB SPM blocks and 2 KiB I$ per tile, in 28 nm. Workload is the 40 W full-workload TDP baseline. The operating point is steady state, with 1 MiB SPM in the 2D baseline. There is no controller or optimizer, and the benchmark is the MemPool-2D vs 3D comparison.",
+      "uncertainty": "The 1 MiB SPM capacity for the 2D baseline is inferred from Section IV and Fig. 10 normalization to 2D 1 MiB."
+    },
+    {
+      "field": "non_selected_3D_comparison_Tmax",
+      "block_name": "MemPool-3D MoL (logic and memory dies)",
+      "source_value": 57,
+      "source_unit": "deg C above ambient (logic die); memory die 55",
+      "conversion_factor": 1,
+      "normalized_value": 57,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Section III-A text and Fig. 4(b): 'Tmax is 55 C in the memory die and 57 C in the logic die'",
+      "provenance": "3D comparison case, not the selected scenario. It must not be combined with the 2D dimensions and power. Its stack has F2F bonding, a 2.85 um BEOL and a 5 um thinned logic die. The paper also gives a 3D power scale of 0.913x and a power density of 1.37x.",
+      "uncertainty": "Recorded only as a physical mismatch. It is not used for the 2D experiment."
+    },
+    {
+      "field": "linked_resource_hotspot",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "References, ref [45]: https://github.com/uvahotspot/HotSpot",
+      "provenance": "A paper-linked repository for the HotSpot simulator. It is not a pinned packet asset and does not prove that the experiment inputs exist.",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_mempool3d",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "References, ref [41]: https://doi.org/10.48550/arXiv.2112.01168",
+      "provenance": "A paper-linked preprint DOI for MemPool-3D, the source of the 3D footprint and power data. It is not a pinned asset.",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_prior_work",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "References, ref [38]: https://doi.org/10.1109/TVLSI.2022.3207553 (IEEE TVLSI vol. 30, no. 11)",
+      "provenance": "A paper-linked prior-work DOI. The 2D floorplan and tile activity patterns are referenced to it. It is not a pinned asset.",
+      "uncertainty": null
+    },
+    {
+      "field": "pinned_assets",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "Packet field 'assets': empty list",
+      "provenance": "No pinned packet assets were supplied, so no config, geometry or power file was available. Studio package/material assumptions are not provided.",
+      "uncertainty": null
+    }
+  ]
+}

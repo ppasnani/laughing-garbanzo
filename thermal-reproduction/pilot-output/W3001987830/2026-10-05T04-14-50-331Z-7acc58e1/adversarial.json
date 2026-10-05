@@ -1,0 +1,80 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Page 5 text supports the FloTHERM transient 3D simulation of an IGBT module on a cold plate (50 um TIM; 0.2, 1 and 4 W/mK; HTC 3000 W/m2K; uniform die-surface power step; Ch0-Ch4 monitors). The extraction correctly says no optimizer or controller exists. The paper gives no mesh, time step or ambient settings, which the extraction lists as missing. The scenario is correctly labelled transient 3D multilayer, not a steady 2D chiplet problem."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet asset list is empty. No FloTHERM model, script, config or solver input is supplied. The URLs on pdf page 28 are tool, standard and datasheet pages, not code. No code is verified."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "The 11.2 x 11.2 mm die, 0.3 mm silicon, 50 um TIM and HTC 3000 W/m2K are supported on pdf pages 5 and 26. The power is contradicted: the page 5 text says a 100 W step and the Figure 4 caption on page 6 says 50 W. The extraction keeps both without resolving them. Zth and RthJA are normalized by power, so the value cannot be fixed unambiguously. Ambient temperature is not given."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no config or geometry file. The floorplan is empty and power_w is empty, so no block has same-scenario coordinates or power. The Figure 3 and A1 sketches give no numeric placement for the powered or unpowered IGBT, nor any other chips. Table A2 gives only stack layer sizes. The experiment kind 'custom_2d_steady' with an empty floorplan cannot be run, and steady_2d_relevant is false."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The RthJA values 0.52, 0.36 and 0.28 K/W are stated in text on pdf page 7 and repeated on pages 8 and 10. The decisive curves are figures only (Figures 4, 6, 7, 9, 10), and the supplied evidence is pdftotext output with garbled, duplicated text. No figure was visually verified or digitized. The Figure 6 labels conflict with the text RthJC values, and the Figure 4 power caption conflicts with the text. No power trace or temperature field is available."
+    }
+  },
+  "findings": [
+    {
+      "field": "power_W",
+      "reason": "The text says 100 W and the Figure 4 caption says 50 W. The extraction records both without a resolution, and no same-scenario power is verified. The scenario cannot be matched to a power input.",
+      "locator": "pdf page 5 text 'at a 100 W power step'; pdf page 6 Figure 4 caption 'at 50 W'"
+    },
+    {
+      "field": "floorplan/power_w",
+      "reason": "The floorplan and power_w are empty. There are no x_m or y_m coordinates for any block, and no per-block power for the powered IGBT, the other IGBT or any other element. The experiment cannot be reproduced even as an illustrative 2D layout.",
+      "locator": "extraction.experiment; Figure 3 (pdf page 5); Figure A1 (pdf page 26)"
+    },
+    {
+      "field": "assets/code/config",
+      "reason": "The packet assets list is empty. No code, model, geometry file or data repository is supplied, and the reference URLs are not evidence of reproducible inputs.",
+      "locator": "packet.assets = []; reference list pdf page 28"
+    },
+    {
+      "field": "figure_verification",
+      "reason": "The decisive figures (Figures 4, 6, 7, 9, 10) were not visually verified, since only pdftotext output was supplied. The Zth and structure-function curve values, divergence points and timing claims are therefore unverified.",
+      "locator": "pdf pages 6-10; extraction_method pdftotext -layout"
+    },
+    {
+      "field": "Figure 6 vs text RthJC",
+      "reason": "The text gives RthJC 0.45 K/W for the probe touching the TIM (0.2 W/mK) and 0.28 K/W (1 W/mK). The Figure 6 labels appear as 0.32 and 0.12 for 'A=0-2'. The extracted text is garbled, so this cannot be reconciled without viewing the figure. The extraction does not note the discrepancy.",
+      "locator": "pdf page 7 text below Figure 6; pdf page 8 Figure 6a-b labels"
+    },
+    {
+      "field": "Table A2 scenario mapping",
+      "reason": "The Table A2 caption says 'example in Section 4', while the text assigns the stack to the Section 3 simulation. The scenario mapping is an inference. Table A2 also shows 2.9 mm Al base plate and a 105 x 42 mm cold-plate stack, but none of these are mapped to blocks or boundaries in the extraction.",
+      "locator": "pdf page 26 Table A2 caption; pdf page 4 text referring to Appendix A Tables A1-A2"
+    },
+    {
+      "field": "solver settings",
+      "reason": "The mesh, time step, ambient temperature, TIM side boundary conditions and cold plate geometry details beyond Table A2 are not published. The FloTHERM model is not reproducible from the paper.",
+      "locator": "pdf page 5 Section 3 text; reference [19] pdf page 28"
+    },
+    {
+      "field": "scenario fit",
+      "reason": "The scenario is a transient 3D multilayer power module with a single-point junction observable and a cold-plate HTC boundary. Calling it a 2D steady reproduction would be unsupported. The extraction states this and does not claim reproduction, but no usable 2D scenario remains.",
+      "locator": "Section 3, pdf pages 4-11; extraction physical_mismatches"
+    }
+  ],
+  "checked_pdf_pages": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    26,
+    28,
+    29
+  ],
+  "checked_assets": []
+}

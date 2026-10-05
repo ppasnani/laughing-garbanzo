@@ -1,0 +1,526 @@
+{
+  "paper_id": "W4400409743",
+  "paper_title": "A computational search for the optimal microelectronic heat sink using ANSYS Icepak",
+  "manifest_status": "downloaded",
+  "source_url": "https://faculty.uobasrah.edu.iq/uploads/publications/1736548601.pdf",
+  "manifest_sha256": "a83d2a2b2c52b0670d40bff7d066b62fc07b50ed2f1046718fd6c11329ce6d00",
+  "pdf_sha256": "a8c1ce6f4bd9c4f3c45fb26258ffc07b6da54043d8156673d0ee2f628de85ad0",
+  "pdf_pages": 12,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "reference_inputs": null,
+  "independent_review": null,
+  "graph_sha256": "87afb9dcb5d91a327d0e3a4062c1a3fcd49f6d0149c8dadb397179104eab91c3",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T03:49:09.679Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W4400409743",
+    "paper_title": "A computational search for the optimal microelectronic heat sink using ANSYS Icepak",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 11,
+      "figure_or_table": "Table 6 (with Table 1, Table 3 and Fig. 7)",
+      "description": "Staggered-arrangement (SA) circular pin-fin aluminium heat sink cooling a single chip. This is the published case with the lowest peak source temperature, 125.50 C (Table 6). The Data availability statement says no data was used, and no repository, code or supplementary links appear on any of the 12 pages. The paper reports no chip placement coordinates and no power time series.",
+      "architecture": "Single 2.2 x 2.2 x 0.1 cm chip on a substrate board under an aluminium heat sink with 36 circular pin fins (D = 0.2 cm) in a 6 x 5 x 2 cm cabinet. Heat sink dimensions are inconsistent in the paper: 4 x 4 x 1.7 cm in Table 1 versus 3 x 3.5 x 2 cm in the text.",
+      "workload": "Constant 8 W heat load on the single chip, applied as a steady source on the heat sink bottom wall.",
+      "operating_point": "Air inlet velocity 0.1 m/s, inlet temperature 298 K, pressure outlet, all other cabinet surfaces insulated; steady 3D ANSYS Icepak (FLUENT) with realizable k-epsilon.",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "ANSYS Icepak (FLUENT solver), steady 3D, pressure-based, implicit, realizable k-epsilon turbulence with standard wall functions, hexahedral mesh (285,155 nodes / 265,075 cells for circular fins), air coolant, velocity inlet and pressure outlet (PDF pages 3-5, Tables 2 and 4)",
+      "optimizer": "None. The paper does a parametric comparison of fin cross-section (circular vs conical) and arrangement (inline vs staggered) over four cases; no automated optimizer is used (PDF pages 4-11)",
+      "controller": "None. Constant 8 W heat load, inlet velocity 0.1 m/s and inlet temperature 298 K, with no control loop (PDF pages 4, 5, 7)",
+      "benchmark": "Validated against the Adhikari et al. experiment (max temperature vs inlet velocity, deviation under 3.68%, Fig. 6, PDF page 8) and the Rosli et al. numerical study (Table 5: IA 107.43 vs 106.474 C, SA 101.85 vs 101.662 C, PDF page 8). Selected scenario: staggered-arrangement circular pin-fin heat sink, Table 6, PDF page 11"
+    },
+    "thermal_observable": {
+      "value": 125.5,
+      "unit": "degC",
+      "location": "Chip/heat source maximum temperature (reported as 'Source Temp') for the staggered-arrangement circular pin-fin case",
+      "aggregation": "Maximum over the source from the steady-state CFD solution, no time averaging",
+      "pdf_page": 11
+    },
+    "physical_mismatches": [
+      {
+        "reason": "Full 3D conjugate CFD of an air-cooled pin-fin heat sink in a cabinet, with a 3D solid heat sink, fins and a fluid domain. A 2D steady chip floorplan model cannot represent fin geometry, forced convection, pressure drop or flow-path effects.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling solution is forced-air convection (0.1 m/s inlet, turbulence model, pressure outlet) through a finned aluminium sink. A conduction-only or generic Studio package/cooling model does not reproduce this.",
+        "essential": true
+      },
+      {
+        "reason": "The paper models a single chip with a single 8 W source, so there is no multi-chiplet floorplan, no interposer and no stacked-die structure. Chiplet or interposer placement optimisation is not applicable.",
+        "essential": true
+      },
+      {
+        "reason": "No optimizer or controller exists in the source; the study compares four fixed designs. Optimizer and controller behaviour cannot be replicated or compared.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is steady and constant, with no transient behaviour and no power time series, so a transient trace is not the paper's setup.",
+        "essential": false
+      },
+      {
+        "reason": "The heat sink dimensions are inconsistent within the paper (Table 1: 4x4x1.7 cm; text: 3x3.5x2 cm; fin height 1.5 cm and radius 0.16 cm in the text vs D=0.2 cm in Table 1). The geometry is therefore ambiguous.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's own text conflicts on the flow regime: the assumptions list laminar flow but the model uses realizable k-epsilon. The paper also states constant properties, no radiation and no gravity. The reported solver/model is thus internally ambiguous, and no reliability analysis is performed.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No Studio package/material assumption is taken from the paper, because no Studio bundle was supplied in the packet. Any bundled Studio package/material stack (e.g. layer materials, TIM, heat sink or ambient boundary) is a separate assumption and is not derived from the paper.",
+      "Any 2D placement or one-row power trace built by the runner would be illustrative only: its coordinates and the 8 W power would be kept separate from paper-derived facts, and its temperatures must not be compared numerically with the paper's 125.50 C.",
+      "The paper provides only the chip footprint (2.2 x 2.2 x 0.1 cm) and total power (8 W), with no placement coordinates for a floorplan, so a complete floorplan with x_m/y_m is not paper-derived; the floorplan is left empty."
+    ],
+    "missing_inputs": [
+      "No linked assets, repositories, code, config files, supplementary data or URLs appear on any of the 12 PDF pages; the Data availability statement on PDF page 11 says no data was used, and the packet assets list is empty.",
+      "No chip placement coordinates (x_m, y_m) on the substrate or heat sink are published, so no floorplan block can be given with evidence.",
+      "No power time series is published; only a constant 8 W total on a single chip (PDF pages 4 and 5).",
+      "Heat sink base and fin dimensions are inconsistent between Table 1 and the text (PDF pages 3 and 5), so a single consistent geometry cannot be fixed.",
+      "No material property values (aluminium k, air properties, substrate board) or substrate board dimensions are given.",
+      "No pinned RLPlanner Ascend910 or ATPlace2.5D case files or thermal config were supplied; they are not applicable to this paper.",
+      "Figure-only quantities (temperature contours, Fig. 9 line profile, Fig. 12 thermal resistance) are not given as digitizable numeric values. The only numeric observable used is the Table 6 value of 125.50 C."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "chip_width_m",
+        "block_name": "chip",
+        "source_value": 2.2,
+        "source_unit": "cm",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.022,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 1, row 'Source' (2.2 × 2.2 × 0.1 cm); also PDF page 5 Heat Source bullet",
+        "provenance": "Published chip footprint width; paper gives dimension only and no placement coordinates",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_height_m",
+        "block_name": "chip",
+        "source_value": 2.2,
+        "source_unit": "cm",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.022,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 1, row 'Source' (2.2 × 2.2 × 0.1 cm); also PDF page 5 Heat Source bullet",
+        "provenance": "Published chip footprint length, mapped to the 2D height; paper gives dimension only and no placement coordinates",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_thickness_m",
+        "block_name": "chip",
+        "source_value": 0.1,
+        "source_unit": "cm",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.001,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 1, row 'Source' (2.2 × 2.2 × 0.1 cm)",
+        "provenance": "Published chip thickness; a 3D quantity not usable in a 2D floorplan",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_power_W",
+        "block_name": "chip",
+        "source_value": 8,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 8,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 3 'Power 8 W'; PDF page 5 Section 2.1 'constant heat load of 8.0 W'; PDF page 7 Section 2.2",
+        "provenance": "Published constant total power for the single chip in the selected SA circular case; no power time series published",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_x_m",
+        "block_name": "chip",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "All 12 PDF pages; Fig. 1 schematic shows no numeric coordinates",
+        "provenance": "No chip placement coordinates are published, so none are invented",
+        "uncertainty": null
+      },
+      {
+        "field": "chip_y_m",
+        "block_name": "chip",
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "All 12 PDF pages; Fig. 1 schematic shows no numeric coordinates",
+        "provenance": "No chip placement coordinates are published, so none are invented",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_source_temperature_SA_circular",
+        "block_name": "chip",
+        "source_value": 125.5,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 125.5,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Table 6, row 'Staggered (SA)', column 'Source Temp (Circular)'",
+        "provenance": "Published maximum source (chip) temperature from steady CFD for the selected SA circular case; the aggregation is the maximum over the source, with no time averaging",
+        "uncertainty": null
+      },
+      {
+        "field": "inlet_velocity",
+        "block_name": null,
+        "source_value": 0.1,
+        "source_unit": "m/s",
+        "conversion_factor": 1,
+        "normalized_value": 0.1,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 3 'Vin 0.1 m/s'; PDF page 7 Section 2.2",
+        "provenance": "Published operating point (air inlet velocity)",
+        "uncertainty": null
+      },
+      {
+        "field": "inlet_temperature",
+        "block_name": null,
+        "source_value": 298,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 298,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 3 'Tin 298 K'; PDF page 7 Section 2.2",
+        "provenance": "Published operating point (air inlet temperature)",
+        "uncertainty": "The text on PDF page 9 describes the profile upstream of the heat sink as 295 K, which is inconsistent with 298 K."
+      },
+      {
+        "field": "cabinet_dimensions",
+        "block_name": "cabinet",
+        "source_value": null,
+        "source_unit": "cm",
+        "conversion_factor": 0.01,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 1 'Cabinet 6×5×2'; PDF page 5 Cabinet bullet",
+        "provenance": "Published as three dimensions (6 × 5 × 2 cm), not a single value, so no single numeric value is recorded",
+        "uncertainty": null
+      },
+      {
+        "field": "heat_sink_dimensions_inconsistent",
+        "block_name": "heat_sink",
+        "source_value": null,
+        "source_unit": "cm",
+        "conversion_factor": 0.01,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 1 'Heat sink 4 × 4 × 1.7' versus PDF page 5 text 'heat sink base ... 3 cm × 3.5 cm × 2 cm'",
+        "provenance": "Two conflicting published geometries (4×4×1.7 vs 3×3.5×2 cm), so no consistent value is recorded",
+        "uncertainty": "Geometry is ambiguous. Fin height 1.5 cm and radius 0.16 cm in the text conflict with D = 0.2 cm in Table 1."
+      },
+      {
+        "field": "fin_count",
+        "block_name": "heat_sink",
+        "source_value": 36,
+        "source_unit": "count",
+        "conversion_factor": 1,
+        "normalized_value": 36,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 1 'Number of fins=36'",
+        "provenance": "Published fin count for circular and conical staggered and inline cases",
+        "uncertainty": null
+      },
+      {
+        "field": "circular_fin_diameter",
+        "block_name": "heat_sink",
+        "source_value": 0.2,
+        "source_unit": "cm",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.002,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 1 'Cross section Circular (D = 0.2)'",
+        "provenance": "Published circular fin diameter",
+        "uncertainty": "The text on PDF page 5 gives a radius of 0.16 cm, which conflicts with D = 0.2 cm."
+      },
+      {
+        "field": "mesh_cells_circular",
+        "block_name": null,
+        "source_value": 265075,
+        "source_unit": "cells",
+        "conversion_factor": 1,
+        "normalized_value": 265075,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table 4 'Circular fins Number of cells 265,075'",
+        "provenance": "Published mesh size for circular fins (nodes 285,155)",
+        "uncertainty": null
+      },
+      {
+        "field": "paper_linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 11,
+        "asset_id": null,
+        "locator": "Data availability statement 'No data was used for the research described in the article.'",
+        "provenance": "No repository, code, supplementary data or config links appear in the 12 pages; the packet assets list is empty, so there are no pinned assets to cite. The only URLs are the DOI, the publisher open-access license and the source PDF.",
+        "uncertainty": null
+      },
+      {
+        "field": "original_solver",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section 2.1 'ANSYS-Icepak ... utilises the FLUENT solver'; Table 2 on PDF page 3",
+        "provenance": "Steady 3D ANSYS Icepak/FLUENT, pressure-based, realizable k-epsilon with standard wall functions. The paper does not state its own validation or optimizer beyond a fixed four-case comparison, and has no controller.",
+        "uncertainty": "The assumptions list says laminar flow, while the model uses realizable k-epsilon, so the paper is internally inconsistent."
+      },
+      {
+        "field": "validation_benchmark_rosli",
+        "block_name": null,
+        "source_value": 101.662,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 101.662,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 5 row 'Staggered (SA)', column 'Source Temperature (Current Study)'",
+        "provenance": "Validation case against Rosli et al. [24] (reference 101.85 C, error 0.180%); this is a different 6x6 geometry with 0.4 cm gaps and is not the selected scenario's thermal observable",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The paper is a steady 3D conjugate ANSYS Icepak/FLUENT study of an air-cooled pin-fin sink, so it cannot be reproduced as a 2D floorplan. The extraction labels the experiment kind custom_2d_steady while its own physical_mismatches mark the 3D, forced-air, single-chip and no-optimizer features as essential. The paper is itself inconsistent: p.6 assumes laminar flow but Table 2 uses realizable k-epsilon, and Table 2 lists 'Axisymmetric' for a 3D model. The extraction omits the axisymmetric entry."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No code, repository, supplementary file or link appears on any page. The Data availability statement on p.11 says no data was used, and the asset list is empty. Nothing is pinned, so no code claim can be verified."
+      },
+      "parameters": {
+        "status": "contradicted",
+        "note": "Table 1 and the text on p.5 give conflicting heat sink and fin geometry: 4x4x1.7 cm vs 3x3.5x2 cm, and D=0.2 cm vs radius 0.16 cm with fin height 1.5 cm. Inlet temperature is 298 K in Table 3, but the p.8 text says the pre-sink profile is 295 K. The 8 W power, 0.1 m/s inlet, chip size 2.2x2.2x0.1 cm and Table 6 value of 125.50 C are supported by the text. Eq. 8 defines Ts as the maximum fin-base temperature, while Table 6 calls it 'Source Temp'. Material properties and substrate dimensions are not given."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No runnable configuration, Icepak project file or Studio bundle was supplied. The extraction's empty floorplan and empty power_w do not match the evidence list, which carries an 8 W chip entry. The chip x/y coordinates are null. A custom_2d_steady experiment with no floorplan blocks is not a valid configuration, and the 'steady_2d_relevant: false' flag contradicts that kind."
+      },
+      "data": {
+        "status": "missing",
+        "note": "The Table 6 value of 125.50 C (SA circular) is a text table and matches the page-text excerpt. It conflicts with the Table 5 'current study' SA value of 101.662 C for what the paper describes as the same 6x6, 0.4 cm-gap structure, and the paper does not explain the difference. No chip placement or power time series is published. The figures (Fig. 1, 6, 9, 12) exist only as pdftotext output with no images or digitization, so no figure claim is visually verified."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind / floorplan / power_w",
+        "reason": "The experiment kind is custom_2d_steady with an empty floorplan and an empty power_w, even though the extraction says steady_2d_relevant is false and lists essential 3D, forced-convection and single-chip mismatches. Calling this a 2D reproduction is unsupported. Any generated 2D placement or constant power row would be an illustrative assumption only.",
+        "locator": "extraction.experiment; extraction.scenario.steady_2d_relevant; extraction.physical_mismatches"
+      },
+      {
+        "field": "thermal_observable (125.5 C) vs validation_benchmark_rosli (101.662 C)",
+        "reason": "The paper says the present and reference designs both had a 6x6 structure with 0.4 cm gaps. Table 5 gives SA 101.662 C for the current study, while Table 6 gives 125.50 C for SA circular. The extraction asserts the Table 5 case is 'a different 6x6 geometry', which the text does not support. The paper does not explain the 24 C discrepancy, so the scenario match is unresolved.",
+        "locator": "PDF p.8 Section 2.4 and Table 5; PDF p.11 Table 6"
+      },
+      {
+        "field": "thermal_observable definition",
+        "reason": "Eq. 8 on p.6 defines Ts as the maximum temperature on the fin base, but Table 6 labels the value 'Source Temp'. The extraction treats it as the chip maximum without support. Aggregation and location are ambiguous.",
+        "locator": "PDF p.6 Eq. 7-8; PDF p.11 Table 6"
+      },
+      {
+        "field": "inlet_temperature uncertainty locator",
+        "reason": "The 295 K statement is on PDF p.8 (Section 3.1, text before Fig. 9), not p.9 as the extraction says. The 295 K vs 298 K inconsistency is real but the locator is wrong.",
+        "locator": "PDF p.8 Section 3.1 vs PDF p.7 Table 3"
+      },
+      {
+        "field": "original_solver",
+        "reason": "Table 2 lists the solver type as 'Steady, Axisymmetric, Implicit' alongside 'Dimension 3D'. The extraction reports only steady, 3D, pressure-based and implicit, omitting the axisymmetric entry that contradicts 3D. It notes only the laminar vs k-epsilon conflict.",
+        "locator": "PDF p.3 Table 2; PDF p.6 assumptions list"
+      },
+      {
+        "field": "chip_x_m / chip_y_m / 'Fig. 1 shows no numeric coordinates'",
+        "reason": "Fig. 1(c,d) is described as showing boundary conditions and dimensions, but only pdftotext output was supplied and the figure was never visually inspected. The claim that Fig. 1 contains no numeric dimensions or coordinates is unverified. The absence of chip placement is therefore also unverified.",
+        "locator": "PDF p.3 Fig. 1 caption"
+      },
+      {
+        "field": "figure-only quantities",
+        "reason": "The claims that Fig. 6 (deviation under 3.68%), Fig. 9 and Fig. 12 have no digitizable values, and that Fig. 7-11 contours do not contain relevant values, rest on caption text only. No figure image was reviewed.",
+        "locator": "PDF p.8 Fig. 6 and Fig. 8; PDF p.9 Fig. 9; PDF p.10 Fig. 12"
+      },
+      {
+        "field": "paper-internal reporting error",
+        "reason": "The conclusion says the analysis is based on 'Tables 4 and 6', but Table 4 is the mesh table. The abstract also states the circular maximum temperature is '0.46% of' the cone value, while the conclusion says '0.46% lower'. Percentages are computed on Celsius values. These ambiguities weaken the use of the paper's derived percentages as observables.",
+        "locator": "PDF p.1 abstract; PDF p.11 Section 3.4 and Conclusion"
+      },
+      {
+        "field": "geometry (heat_sink_dimensions_inconsistent, circular_fin_diameter)",
+        "reason": "The geometry is left unresolved: 4x4x1.7 cm vs 3x3.5x2 cm for the sink, and D=0.2 cm vs radius 0.16 cm for the fins. No consistent geometry exists to anchor any model. The heat sink also exceeds or crowds the 2.2 cm chip and the stated fin height and base values do not add up consistently.",
+        "locator": "PDF p.3 Table 1; PDF p.5 Section 2.1 bullets"
+      }
+    ],
+    "checked_pdf_pages": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W4400409743",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No linked assets, repositories, code, config files, supplementary data or URLs appear on any of the 12 PDF pages; the Data availability statement on PDF page 11 says no data was used, and the packet assets list is empty.",
+      "No chip placement coordinates (x_m, y_m) on the substrate or heat sink are published, so no floorplan block can be given with evidence.",
+      "No power time series is published; only a constant 8 W total on a single chip (PDF pages 4 and 5).",
+      "Heat sink base and fin dimensions are inconsistent between Table 1 and the text (PDF pages 3 and 5), so a single consistent geometry cannot be fixed.",
+      "No material property values (aluminium k, air properties, substrate board) or substrate board dimensions are given.",
+      "No pinned RLPlanner Ascend910 or ATPlace2.5D case files or thermal config were supplied; they are not applicable to this paper.",
+      "Figure-only quantities (temperature contours, Fig. 9 line profile, Fig. 12 thermal resistance) are not given as digitizable numeric values. The only numeric observable used is the Table 6 value of 125.50 C.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "Full 3D conjugate CFD of an air-cooled pin-fin heat sink in a cabinet, with a 3D solid heat sink, fins and a fluid domain. A 2D steady chip floorplan model cannot represent fin geometry, forced convection, pressure drop or flow-path effects.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling solution is forced-air convection (0.1 m/s inlet, turbulence model, pressure outlet) through a finned aluminium sink. A conduction-only or generic Studio package/cooling model does not reproduce this.",
+        "essential": true
+      },
+      {
+        "reason": "The paper models a single chip with a single 8 W source, so there is no multi-chiplet floorplan, no interposer and no stacked-die structure. Chiplet or interposer placement optimisation is not applicable.",
+        "essential": true
+      },
+      {
+        "reason": "No optimizer or controller exists in the source; the study compares four fixed designs. Optimizer and controller behaviour cannot be replicated or compared.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is steady and constant, with no transient behaviour and no power time series, so a transient trace is not the paper's setup.",
+        "essential": false
+      },
+      {
+        "reason": "The heat sink dimensions are inconsistent within the paper (Table 1: 4x4x1.7 cm; text: 3x3.5x2 cm; fin height 1.5 cm and radius 0.16 cm in the text vs D=0.2 cm in Table 1). The geometry is therefore ambiguous.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's own text conflicts on the flow regime: the assumptions list laminar flow but the model uses realizable k-epsilon. The paper also states constant properties, no radiation and no gravity. The reported solver/model is thus internally ambiguous, and no reliability analysis is performed.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No Studio package/material assumption is taken from the paper, because no Studio bundle was supplied in the packet. Any bundled Studio package/material stack (e.g. layer materials, TIM, heat sink or ambient boundary) is a separate assumption and is not derived from the paper.",
+      "Any 2D placement or one-row power trace built by the runner would be illustrative only: its coordinates and the 8 W power would be kept separate from paper-derived facts, and its temperatures must not be compared numerically with the paper's 125.50 C.",
+      "The paper provides only the chip footprint (2.2 x 2.2 x 0.1 cm) and total power (8 W), with no placement coordinates for a floorplan, so a complete floorplan with x_m/y_m is not paper-derived; the floorplan is left empty."
+    ],
+    "evidence_sha256": "48925357acb287d51647b84a1058fbeadcb34c1a0921c3a40752bb7dea6e2e3b",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "2D screening label: not_2d_applicable. Studio did not run (simulation status skipped; simulation_allowed=false). The gate failed on input validity: a custom experiment needs 1-128 blocks and a power_w object, but the floorplan is empty and power_w is {}. The scenario is a custom 2D steady request for a paper whose source is steady 3D conjugate CFD (ANSYS Icepak/FLUENT, realizable k-epsilon) of a staggered circular pin-fin aluminium heat sink cooling a single 2.2 x 2.2 x 0.1 cm chip at a constant 8 W, with 0.1 m/s inlet air at 298 K. Because it is steady, there is no transient trace and no power time series. No bundled EV6/GCC adaptation, pinned Ascend910 or ATPlace case, source commit, or generated-placement input.flp/input.ptrace was used or produced. comparison_valid=false, so no numerical comparison with the paper's 125.50 degC Table 6 maximum source temperature is made, and nothing here replicates the paper. Qualitatively, the paper's temperature is governed by fin geometry, arrangement, forced-convection flow and the heat sink path, which a 2D chip-floorplan conduction model cannot represent. Any Studio result would show only sensitivity to its own package and boundary assumptions, not the paper's. The mismatches that block comparison are: the paper's 3D conjugate forced-air CFD versus a 2D Studio model; the paper's finned-sink convective boundary versus an unspecified Studio cooling and package stack; the paper's single chip with no placement coordinates versus a required floorplan; the paper's maximum over the source versus any Studio aggregation; and the paper's steady regime, which is the same regime a custom 2D steady run would use, though its geometry and flow are not representable. Independent review items (page/asset locators, methods, code, parameters, config and data checks) are also unresolved, and no linked assets exist.",
+    "limitations": [
+      "Studio was not run, so no simulated temperatures exist and nothing can be compared with the paper's 125.50 degC.",
+      "The final verdict is not_2d_applicable and comparison_valid is false. The gate prohibits numerical comparison and any claim of exact replication.",
+      "The custom experiment input is invalid: floorplan is empty, power_w is {}, and no chip placement coordinates are published, so none were invented.",
+      "The paper's setup is steady 3D forced-air CFD with a pin-fin heat sink; a 2D steady chip floorplan model cannot represent fin geometry, convection, pressure drop or flow-path effects.",
+      "Heat sink geometry is internally inconsistent (4x4x1.7 cm in Table 1 versus 3x3.5x2 cm in the text; fin D=0.2 cm versus radius 0.16 cm), and the text conflicts on laminar versus realizable k-epsilon flow and on 298 K versus 295 K inlet.",
+      "No material properties, substrate dimensions, power time series, code, data or supplementary links are available; the paper's data availability statement says no data was used.",
+      "No optimizer or controller exists in the paper, so optimizer or controller behaviour cannot be compared.",
+      "Evidence entries for chip placement lack valid locators, and no thermal observable or regime was cited; adversarial and independent reviews are unresolved or pending.",
+      "No bundled EV6/GCC adaptation or pinned Ascend910/ATPlace case was used, so there is no source commit or placement assumption to report. Any such illustrative input would not be paper-derived or numerically comparable.",
+      "The Rosli validation values (e.g. 101.662 degC) come from a different geometry and are not the selected scenario's observable.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No linked assets, repositories, code, config files, supplementary data or URLs appear on any of the 12 PDF pages; the Data availability statement on PDF page 11 says no data was used, and the packet assets list is empty.",
+      "No chip placement coordinates (x_m, y_m) on the substrate or heat sink are published, so no floorplan block can be given with evidence.",
+      "No power time series is published; only a constant 8 W total on a single chip (PDF pages 4 and 5).",
+      "Heat sink base and fin dimensions are inconsistent between Table 1 and the text (PDF pages 3 and 5), so a single consistent geometry cannot be fixed.",
+      "No material property values (aluminium k, air properties, substrate board) or substrate board dimensions are given.",
+      "No pinned RLPlanner Ascend910 or ATPlace2.5D case files or thermal config were supplied; they are not applicable to this paper.",
+      "Figure-only quantities (temperature contours, Fig. 9 line profile, Fig. 12 thermal resistance) are not given as digitizable numeric values. The only numeric observable used is the Table 6 value of 125.50 C.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "Full 3D conjugate CFD of an air-cooled pin-fin heat sink in a cabinet, with a 3D solid heat sink, fins and a fluid domain. A 2D steady chip floorplan model cannot represent fin geometry, forced convection, pressure drop or flow-path effects.",
+      "The cooling solution is forced-air convection (0.1 m/s inlet, turbulence model, pressure outlet) through a finned aluminium sink. A conduction-only or generic Studio package/cooling model does not reproduce this.",
+      "The paper models a single chip with a single 8 W source, so there is no multi-chiplet floorplan, no interposer and no stacked-die structure. Chiplet or interposer placement optimisation is not applicable.",
+      "No optimizer or controller exists in the source; the study compares four fixed designs. Optimizer and controller behaviour cannot be replicated or compared.",
+      "The workload is steady and constant, with no transient behaviour and no power time series, so a transient trace is not the paper's setup.",
+      "The heat sink dimensions are inconsistent within the paper (Table 1: 4x4x1.7 cm; text: 3x3.5x2 cm; fin height 1.5 cm and radius 0.16 cm in the text vs D=0.2 cm in Table 1). The geometry is therefore ambiguous.",
+      "The paper's own text conflicts on the flow regime: the assumptions list laminar flow but the model uses realizable k-epsilon. The paper also states constant properties, no radiation and no gravity. The reported solver/model is thus internally ambiguous, and no reliability analysis is performed.",
+      "No Studio package/material assumption is taken from the paper, because no Studio bundle was supplied in the packet. Any bundled Studio package/material stack (e.g. layer materials, TIM, heat sink or ambient boundary) is a separate assumption and is not derived from the paper.",
+      "Any 2D placement or one-row power trace built by the runner would be illustrative only: its coordinates and the 8 W power would be kept separate from paper-derived facts, and its temperatures must not be compared numerically with the paper's 125.50 C.",
+      "The paper provides only the chip footprint (2.2 x 2.2 x 0.1 cm) and total power (8 W), with no placement coordinates for a floorplan, so a complete floorplan with x_m/y_m is not paper-derived; the floorplan is left empty."
+    ]
+  }
+}

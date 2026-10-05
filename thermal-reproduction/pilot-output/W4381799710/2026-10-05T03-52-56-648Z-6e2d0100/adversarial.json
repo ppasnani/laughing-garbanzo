@@ -1,0 +1,76 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text on pages 3-7 supports the GA task assignment, Eqs. 10-13, the HotSpot-fed hyper-period loop, and the gem5/McPAT/HotSpot toolchain. Page 3 supports the lumped RC model. The extraction wrongly cites page 4 and page 10 for HotSpot, and it does not flag that EDF is combined with tasks the paper calls non-real-time (page 4). The abstract's 8 C figure is stated as a maximum, but the first hyper-period is excluded."
+    },
+    "code": {
+      "status": "missing",
+      "note": "There are no assets, repository, or availability statement. The only URLs are the authors' LinkedIn and academic pages (page 12). No code claim can be verified."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Algorithm 1 names Np, iter, k, rho_c and rho_m but gives no values (page 7). Also missing are the hyper-period length, task periods, HotSpot R and C, package properties, and the task-to-core mapping."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There is no HotSpot floorplan or config, gem5/McPAT config files, or pinned assets. The experiment block is custom_2d_steady with an empty floorplan and empty power_w, which contradicts steady_2d_relevant=false and the claim that no 2D experiment is identifiable. Only the Section 5.1 text settings are verified."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The text values (initial temperatures, 45 C ambient, 2 GHz, 10 hyper-periods, about 14 s, 4 cores) match pages 7-10. Table 1 gives per-task power with no per-block or per-core mapping. Figures 9 and 10 exist only as pdftotext output, so no figure was visually verified or digitized, and no numeric trace data is supplied. The 8 C observable rests only on the text 'slightly 8 C'."
+    }
+  },
+  "findings": [
+    {
+      "field": "thermal_observable.location",
+      "reason": "The extraction says the 8 C value is 'read approximately from Figure 10', but the evidence entry says Figure 10 was not digitized. The supplied pages contain only extracted text with no figure image, so the figure-based claim is unsupported. Only the text claim 'slightly 8 C' is supported.",
+      "locator": "thermal_observable; evidence paper_thermal_observable_max_inter_core_temperature_difference; PDF page 10 Figure 10"
+    },
+    {
+      "field": "experiment",
+      "reason": "The experiment is declared custom_2d_steady with an empty floorplan and no power rows, while the extraction states steady_2d_relevant=false. A decisive transient, task-scheduling scenario must not be labelled a 2D steady reproduction, and no floorplan block has same-scenario power.",
+      "locator": "experiment; scenario.steady_2d_relevant; PDF pages 8-10"
+    },
+    {
+      "field": "original_setup.solver",
+      "reason": "HotSpot is cited to PDF pages 4, 7 and 10, but pages 4 and 10 only mention gem5 and McPAT (page 10 only in the conclusion). HotSpot appears on pages 1, 5 and 7.",
+      "locator": "original_setup.solver; PDF pages 4, 5, 7, 10"
+    },
+    {
+      "field": "paper_observable_consistency",
+      "reason": "The paper gives 8 C in the abstract and conclusion, but 'nearly 9 C' for the equal-initial case (page 9). The 8 C figure holds only after the first hyper-period (page 10). Without the figure data, which value corresponds to the selected scenario is not verified.",
+      "locator": "PDF pages 1, 9, 10, 11; Figures 8 and 10"
+    },
+    {
+      "field": "workload.EDF",
+      "reason": "The extraction pairs 'non-real-time' tasks with EDF scheduling without noting the paper's inconsistency. Section 3.2 says non-real-time tasks, while the abstract claims no deadlines are lost under EDF. No task deadlines or periods are published.",
+      "locator": "PDF page 1 abstract; page 4 Section 3.2; page 7"
+    },
+    {
+      "field": "floorplan_and_power",
+      "reason": "There is no published floorplan geometry, per-block power, or per-hyper-period task mapping, and no linked assets exist. Any 2D coordinates or constant power rows would be illustrative generated assumptions, not paper data.",
+      "locator": "Table 1 (page 8); Figure 6 (page 8); empty assets list"
+    },
+    {
+      "field": "physical_assumption",
+      "reason": "The quad-core transient HotSpot simulation with scheduling feedback and unreported package and cooling parameters cannot be called a 2D steady-state reproduction.",
+      "locator": "PDF pages 7, 9, 10"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "checked_assets": []
+}
