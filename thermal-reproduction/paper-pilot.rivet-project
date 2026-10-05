@@ -27,12 +27,16 @@ data:
               Select one identifiable published scenario before deciding feasibility. Read every PDF page
               and inspect availability statements, URLs, repositories, supplementary data, methods,
               benchmark setup, code, parameters, config, geometry, power, boundary conditions, and
-              thermal observables. Record all paper-linked resources with their PDF page. Use only
-              packet assets at pinned versions for asset evidence; missing or broken assets go in
+              thermal observables. Record all paper-linked resources with their PDF page. Inspect
+              pinned packet assets, including the RLPlanner Ascend910 chiplet config or the selected
+              ATPlace2.5D case files and thermal config when supplied. These sources contain
+              dimensions and watts but may not contain a final placement or a power time series.
+              Use only pinned packet assets for asset evidence; missing or broken assets go in
               missing_inputs. For each block, give named x_m, y_m, width_m, height_m and same-scenario
               power_rows (name and watts). Every numeric value needs a cited evidence item with source_value, source_unit,
               conversion_factor, normalized_value, block_name, PDF page or asset_id, exact locator,
-              provenance, and uncertainty for digitized figures. Record architecture, workload,
+              provenance, and uncertainty for digitized figures. Provenance may be concise descriptive
+              text; always include an exact PDF page or pinned asset file locator. Record architecture, workload,
               operating point, original solver, optimizer, controller, and benchmark. Use null for
               missing source values. Do not split total chip power without
               a published rule or combine dimensions and powers from different scenarios. Cite a
@@ -40,7 +44,10 @@ data:
               interposer, cooling, transient, controller, optimizer, reliability, or solver mismatches.
               Record the bundled Studio package/material assumptions explicitly. If no complete
               experiment exists, return an empty floorplan and describe missing inputs. Do not claim
-              exact replication or that a repository URL proves its inputs exist.
+              exact replication or that a repository URL proves its inputs exist. If only dimensions
+              and powers are published, the runner may construct a separate illustrative 2D
+              placement and one-row power trace. Keep its generated coordinates distinct from
+              paper-derived facts and do not compare its temperatures numerically to the paper.
             normalizeLineEndings: true
           outgoingConnections:
             - output->"Extraction arguments" extraction-arguments/input2
@@ -73,7 +80,8 @@ data:
               default, missing page, or unverified digitization is not evidence. Check that every
               floorplan block has same-scenario power and that no decisive 3D/transient/cooling feature
               is being called a 2D reproduction. List each contradiction or unsupported claim as a
-              finding with a locator. Set approved true only if every extraction claim is supported,
+              finding with a locator. Generated 2D shelf coordinates and constant power rows are
+              illustrative assumptions, not published final placement or transient traces. Set approved true only if every extraction claim is supported,
               every decisive figure was visually verified in the supplied evidence, and all five checks
               are resolved. Your approval is not the required human second-reader signoff.
             normalizeLineEndings: true
@@ -119,7 +127,9 @@ data:
             text: >-
               Assess the selected paper scenario and Studio result conservatively. State the 2D
               screening label and whether Studio ran. A custom 2D steady run has no transient trace.
-              A bundled EV6/GCC run is only an adapted demonstration. Compare numerical values only
+              A bundled EV6/GCC run is only an adapted demonstration. Pinned Ascend910 or ATPlace
+              sizes and powers with generated placement produce an illustrative input.flp and
+              one-row input.ptrace. Report their source commit and placement assumption. Compare numerical values only
               when the same physical location, aggregation, regime, and boundary assumptions match;
               otherwise discuss qualitative sensitivity and enumerate mismatches. The deterministic
               gate uses the feasibility verdict and Studio input validity. Candidate, conditional,

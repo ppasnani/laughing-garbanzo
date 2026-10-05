@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { runGraphInFile } from '@ironclad/rivet-node';
 import { sha256, reviewFeasibility, suitableVerdict, validateExperiment, CHECKS } from './screening.mjs';
+import { referenceSelection, loadReferenceInputs, referenceExperiment,
+  applyReferenceInputs, referenceConfig, loadEv6Example } from './reference-inputs.mjs';
 
 const execFileAsync = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -273,7 +275,7 @@ function bundledReview(packet, adversarial) {
 
 export async function execute({ row, packet, config, outputDir, runType, allowAdapted = false,
   fixture = null, reusedAudit = null, independentReview = null, baseUrl = 'http://127.0.0.1:8000',
-  graph = GRAPH, fetchImpl = fetch }) {
+  graph = GRAPH, fetchImpl = fetch, reference = null, preparedReference = null }) {
   await mkdir(outputDir, { recursive: true });
   const save = async (name, value) => {
     await jsonFile(join(outputDir, name + '.json'), value);
@@ -283,8 +285,14 @@ export async function execute({ row, packet, config, outputDir, runType, allowAd
     extractPaper: async (_context, input, systemPrompt) => {
       if (!systemPrompt?.trim()) throw Error('Extraction instructions are empty');
       const source = reusedAudit?.extraction ?? fixture?.extraction ??
-        await anthropicExtraction({ system: systemPrompt, packet: input, fetchImpl });
-      const result = normalizeExtraction(source);
+        await anthropicExtraction({ system: systemPrompt + (reference?.kind !== 'ev6' && reference
+          ? `\nFor this run select ${reference.kind === 'ascend910' ? 'the Ascend 910 System' : reference.caseName}
+            as the paper scenario. The packet includes pinned ${reference.repo} reference files.
+            Distinguish their published dimensions and powers from any unpublished final placement.`
+          : ''), packet: input, fetchImpl });
+      const result = runType === 'custom'
+        ? applyReferenceInputs(normalizeExtraction(source), reference, preparedReference)
+        : normalizeExtraction(source);
       return save('extraction', result);
     },
     adversarialReview: async (_context, extraction, systemPrompt) => {
@@ -362,6 +370,7 @@ export async function execute({ row, packet, config, outputDir, runType, allowAd
         user: JSON.stringify({ extraction, feasibility, simulation }), schema: ASSESSMENT_SCHEMA,
         fetchImpl });
       const limitations = [...(proposed.limitations || []), ...feasibility.blocking_facts.map(String),
+        ...(feasibility.physical_mismatches || []).map(item => item.reason),
         ...(feasibility.studio_assumptions || [])];
       if (simulation.sensitivity && !simulation.sensitivity.passed) {
         limitations.push('Power-direction check did not pass: ' +
@@ -397,6 +406,7 @@ export async function execute({ row, packet, config, outputDir, runType, allowAd
     manifest_sha256: packet.manifest_sha256, pdf_sha256: packet.pdf_sha256,
     pdf_pages: packet.page_count, extraction_method: packet.extraction_method,
     linked_assets: (packet.assets || []).map(({ text, ...meta }) => meta),
+    reference_inputs: output.extraction.value.reference_inputs || null,
     independent_review: independentReview, graph_sha256: sha256(await readFile(graph)),
     rubric_sha256: sha256(await readFile(join(HERE, '2D_SNAPSHOT_SCREENING_PROTOCOL.md'))),
     run_type: runType, studio_base_url: baseUrl, generated_at: new Date().toISOString(),
@@ -425,6 +435,15 @@ async function main() {
   if (row.status !== 'downloaded') throw Error('Paper ' + paperId + ' has no local PDF: ' + row.notes);
   if (runType === 'bundled' && paperId !== DEFAULT_PAPER) throw Error('Bundled pilot is only mapped to W4206159291');
   const packet = await paperPacket(row, { assetsFile: value('--assets-file') });
+  const selection = runType === 'custom' && !args.includes('--no-reference-inputs')
+    ? referenceSelection(row, value('--reference-case')) : null;
+  const reference = selection ? await loadReferenceInputs(selection)
+    : runType === 'custom' && args.includes('--illustrative-ev6') ? await loadEv6Example() : null;
+  const preparedReference = reference && referenceExperiment(reference);
+  if (reference) packet.assets.push(...reference.assets);
+  if (new Set(packet.assets.map(asset => asset.id)).size !== packet.assets.length) {
+    throw Error('Evidence asset IDs must be unique, including pinned reference inputs');
+  }
   packet.manifest_sha256 = sha256(manifestBytes);
   const outputDir = resolve(HERE, 'pilot-output', paperId,
     new Date().toISOString().replace(/[:.]/g, '-') + '-' + randomUUID().slice(0, 8));
@@ -442,9 +461,12 @@ async function main() {
   }
   const reviewFile = value('--review-file');
   const independentReview = reviewFile ? JSON.parse(await readFile(reviewFile, 'utf8')) : null;
-  const config = await readFile(value('--config-file') || resolve(ROOT, 'hotspot-studio/dist/example.config'), 'utf8');
+  const requestedConfig = value('--config-file');
+  const baseConfig = await readFile(requestedConfig || resolve(ROOT, 'hotspot-studio/dist/example.config'), 'utf8');
+  const config = requestedConfig ? baseConfig : referenceConfig(baseConfig, reference, preparedReference);
   const result = await execute({ row, packet, config, outputDir, runType,
     allowAdapted: args.includes('--allow-adapted'), fixture, reusedAudit, independentReview,
+    reference, preparedReference,
     baseUrl: process.env.HOTSPOT_BASE_URL || 'http://127.0.0.1:8000' });
   console.log(JSON.stringify({ output_dir: outputDir, verdict: result.assessment.verdict,
     comparison_valid: result.assessment.comparison_valid,

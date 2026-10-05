@@ -1,0 +1,47 @@
+{
+  "ascend910": {
+    "repo": "weiweihook/RLPlanner",
+    "commit": "a75abf0b167a316dc5e2dd8b8d3d926114039271",
+    "files": {
+      "config/Ascend910.cfg": "4cc8009d5e0b0fe5fa5f02f3486234a3b78de7f50aa23e005090271d7e257fa4"
+    }
+  },
+  "atplace": {
+    "repo": "PKU-IDEA/ATPlace_pub",
+    "commit": "782b89ba6fe494bd50f075dff8019971133ec7c5",
+    "files": {
+      "thermal/hotspot.config": "4b918570e6af27a011c06efad99f21f915df1b3609c0236cf2474255327c2260",
+      "reproduce.py": "47093653a677d40723ab9eceff26438eb7ecfd571a1ec90b6d526e31b4466bcf",
+      "cases/Case1/Case1.blocks": "08b048c6f27ba3057df12b06be9bf1f83927b936db26f2ed0dc9e7aa10fcbcbb",
+      "cases/Case1/Case1.power": "48332cac2e68c74e14cf33810ae8d8c3da0b2e04d665b31829ec04cc1a727375",
+      "cases/Case1/Case1.pl": "ffb0ae4b98760b81f102b75ec2752106346251ec19b103ce2ac1b97a18158cfe",
+      "cases/Case2/Case2.blocks": "8c91eb6eb30c822c452b2c6b7c71d8faa839943a0d21939e990652a508da4d43",
+      "cases/Case2/Case2.power": "42f0690a1aac23c9b6f58b7e7216c14b3f59455595e934f694f867e59a2f5486",
+      "cases/Case2/Case2.pl": "9c18c4aa36e9021ca114eb309125b46a2d174aceaca048462d3425defa11b2c8",
+      "cases/Case3/Case3.blocks": "17f3a3e27c37fc99877a76d4b2a078e53d4a725edfc8e843ec2c48baf0a719bb",
+      "cases/Case3/Case3.power": "fa641474b526b3540c071bffa0578640af615c23499fa74cf1f24e266ea79384",
+      "cases/Case3/Case3.pl": "bf183fe8e93377c568ff2b32bb7a373052805982452c0c970da4cf72b6170161",
+      "cases/Case4/Case4.blocks": "b3f1b7749ebf80847e667f4119dbafd5e54e2a560ed282c6ede84159c00b1211",
+      "cases/Case4/Case4.power": "9c1f08b613617da10decf765577851045fdcad92bddcd1cbc223c0b0c4fa1dd9",
+      "cases/Case4/Case4.pl": "9a87838533ca9bcf19c18e8e3759ac64bf50397df077e5b41d3afe97dad637c9",
+      "cases/Case5/Case5.blocks": "c6eee958bc88be852bd0f650e41d2b53b6211f8911ef5023586e9f2a504ccc8f",
+      "cases/Case5/Case5.power": "faf040963bb2ed79a7ee77c4d6b65bb553c259a01c750ad3c108a1aa4aa81427",
+      "cases/Case5/Case5.pl": "f23442c0809a566f69fb8d86b43d50be2ddce4ea5b7873d66a4aab6339ee403b",
+      "cases/Case6/Case6.blocks": "ffb796b22edc78eafe7c39f8da0d94a1b892650c8a26b5fd8a13ee731a27cf21",
+      "cases/Case6/Case6.power": "cdbcb481f2ca4cb49826a3ee2cf5284007bafe6a9a4b68b70b8ea225dea6ab70",
+      "cases/Case6/Case6.pl": "d4fa668d5e80d0bb7d996989d5d2c3342a6be2163452dfbdafa1d9f287147953",
+      "cases/Case7/Case7.blocks": "34d082c081a60511209abd8e10883fce4bb181556ba93fbcac30c99c5e9ea791",
+      "cases/Case7/Case7.power": "e5361c4358d7e8f602157ec57a4871767e6fb643da1eabd4f896948b2ef49090",
+      "cases/Case7/Case7.pl": "00589b585e285402f2972f493312ba1ec0236253f2db0ef62839d9c7743fc5d2",
+      "cases/Case8/Case8.blocks": "c411287913ba7b704423cd1f3694fe2a0319a6d961ca7795ec5b14ff4ef86f09",
+      "cases/Case8/Case8.power": "b4942216166281e150846d8e5353ab107a7a8db285a2dfdea6e4e88e31d164dd",
+      "cases/Case8/Case8.pl": "0f2df1312fe89bfb7d46b64bb67e8d4230ec8baf4111fa234fa9b034a0a2461a",
+      "cases/Case9/Case9.blocks": "23036a1a3e2f22d35db9c7929eca6e81d69970787754642cbabec41a4a5c1071",
+      "cases/Case9/Case9.power": "f420b236b3b8a8d1658714b0b0f65a88346697737776d8ae5082b64b31c3e6f8",
+      "cases/Case9/Case9.pl": "f681f9fa35ad083722f6c7b8d448246034f50554063773900d6d54ff07efcaca",
+      "cases/Case10/Case10.blocks": "6e4aacc05a2672f8e2fb3c62641bfe2e96348977d21670b764f0fd0a8c957775",
+      "cases/Case10/Case10.power": "09c5c7a18d6c340bf5edc55ad8faedf5e80e35784776ac6026ff33959dd64e64",
+      "cases/Case10/Case10.pl": "cf12bebd45a89a75c30ca218bfc7900aefffc5ae6db6b6977e3bf9e30dda7bc5"
+    }
+  }
+}
