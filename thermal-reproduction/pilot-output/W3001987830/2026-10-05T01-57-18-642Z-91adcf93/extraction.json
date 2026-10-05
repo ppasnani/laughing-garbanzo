@@ -1,0 +1,524 @@
+{
+  "paper_id": "W3001987830",
+  "paper_title": "On the Reproducibility of Thermal Measurements and of Related Thermal Metrics in Static and Transient Tests of Power Devices",
+  "artifact_search_status": "checked_links_found",
+  "linked_assets": [
+    {
+      "id": "flotherm_tool",
+      "url": "https://www.mentor.com/products/mechanical/flotherm/flotherm/",
+      "kind": "simulation software product page (original solver, not a model or input file)",
+      "paper_page": 28
+    },
+    {
+      "id": "t3ster_tool",
+      "url": "http://www.mentor.com/products/mechanical/products/t3ster",
+      "kind": "measurement instrument product page",
+      "paper_page": 28
+    },
+    {
+      "id": "power_tester_1500a",
+      "url": "https://www.mentor.com/products/mechanical/micred/power-tester-1500a/",
+      "kind": "measurement instrument product page",
+      "paper_page": 28
+    },
+    {
+      "id": "rjc_test_fixture",
+      "url": "http://analysistech.com/semiconductor-thermal-tester/rjc-liquid-test-fixture/",
+      "kind": "commercial test fixture page",
+      "paper_page": 28
+    },
+    {
+      "id": "huf75639_datasheet",
+      "url": "https://www.onsemi.com/pub/Collateral/HUF75639S3S-D.PDF",
+      "kind": "device datasheet (Section 8 MOSFET case study)",
+      "paper_page": 28
+    },
+    {
+      "id": "delphi4led_round_robin_report",
+      "url": "https://delphi4led.org/pydio/public/2f72dd",
+      "kind": "round-robin test report (LEDs)",
+      "paper_page": 28
+    },
+    {
+      "id": "jedec_jesd51_14",
+      "url": "www.jedec.org/sites/default/files/docs/JESD51-14_1.pdf",
+      "kind": "standard document",
+      "paper_page": 28
+    },
+    {
+      "id": "jedec_jesd51",
+      "url": "https://www.jedec.org/standards-documents/docs/jesd-51",
+      "kind": "standard document",
+      "paper_page": 28
+    },
+    {
+      "id": "ecpe_aqg324",
+      "url": "https://www.ecpe.org/research/working-groups/automotive-aqg-324/",
+      "kind": "guideline page",
+      "paper_page": 28
+    }
+  ],
+  "scenario": {
+    "pdf_page": 5,
+    "figure_or_table": "Figure 3 and Appendix A Tables A1/A2, Figures A1/A2 (PDF pages 4-6 and 26-27); Zth results in Figures 6-9",
+    "description": "Section 3 simulation experiment: an IGBT module (two 11.2 mm x 11.2 mm x 0.3 mm silicon dies, one powered, on a die attach, copper, AlN ceramic, copper, solder and aluminum base plate stack) mounted on a cold plate through a 50 um thermal grease layer. The study examines how TIM quality, probe lateral displacement and probe penetration affect two-point RthJC versus the TDIM structure-function RthJC. The package stack dimensions are in Table A2, but no per-block x/y floorplan coordinates are published and the power is a single uniform die-surface source. Text states a 100 W step while the Figure 4 caption says 50 W. Insufficient for a complete 2D floorplan experiment.",
+    "architecture": "Power IGBT module (silicon die on die attach, copper, AlN ceramic, copper, solder compound, aluminum base plate) on a water-cooled aluminum cold plate with a 50 um TIM layer, modelled as a layered 3D stack",
+    "workload": "Power step (heating) uniformly distributed on the powered die surface, simulated as a transient in FloTHERM; Zth curves, structure functions and steady-state temperature profile (Figure 5) derived",
+    "operating_point": "Stated 100 W power step in text (Figure 4 caption says 50 W); cold plate modelled with a constant heat transfer coefficient of 3000 W/m2K; TIM conductivity 0.2, 1 or 4 W/mK; resulting RthJA 0.52, 0.36 and 0.28 K/W; steady state reached at about 140 s, 50 s and 30 s respectively",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "FloTHERM (Mentor/Siemens) 3D transient thermal simulation, per Section 3 and reference [19] (PDF pages 4 and 28)",
+    "optimizer": "None. The paper reports a one-off simulation experiment with TIM conductivity varied over 0.2, 1 and 4 W/mK, and no optimization is described.",
+    "controller": "None. The input is an open-loop power step (heating) spread uniformly over the powered die surface, with a constant cold-plate heat transfer coefficient of 3000 W/m2K. No thermal controller is described.",
+    "benchmark": "IGBT module (two 11.2 mm x 11.2 mm x 0.3 mm silicon dies, one powered; die attach, copper, AlN ceramic, copper, solder and aluminum base plate) on a water-cooled aluminum cold plate, with a 50 um grease TIM. Two-point RthJC at monitor points Ch0-Ch4 is compared against the TDIM structure-function RthJC (Section 3, Figures 3-10, Appendix A Tables A1/A2)."
+  },
+  "thermal_observable": {
+    "value": 0.52,
+    "unit": "K/W",
+    "location": "Junction-to-ambient thermal resistance RthJA, measured at Ch0 (centre of the top of the powered semiconductor die, in the dissipating layer), for the 0.2 W/mK TIM case",
+    "aggregation": "Endpoint of the Zth(t) curve and structure function (Zth = delta T_J / P) at steady state, taken at the single junction monitor point Ch0. The 1 W/mK and 4 W/mK cases give 0.36 and 0.28 K/W.",
+    "pdf_page": 7
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a layered 3D stack (die, die attach, Cu/AlN/Cu laminate, solder, Al base plate, TIM, cold plate) with vertical heat spreading. Table A2 gives only stack thickness and lateral size, with no 2D in-plane block placement, so a steady 2D chip floorplan cannot represent it.",
+      "essential": true
+    },
+    {
+      "reason": "The observable is transient and structure-function based (Zth curves, Cauer/Foster networks, TDIM divergence threshold epsilon). A steady-state 2D floorplan solver does not produce these metrics.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling boundary is a cold plate with a constant HTC of 3000 W/m2K and a 50 um TIM layer of varied conductivity. The simulation also uses virtual probe points Ch1-Ch4 at TIM interfaces that have no counterpart in a chip-package model.",
+      "essential": true
+    },
+    {
+      "reason": "The power is internally inconsistent in the paper: the text states a 100 W step uniformly on the die, while the Figure 4 caption states 50 W. Power in a same-scenario power row therefore cannot be assigned without ambiguity.",
+      "essential": true
+    },
+    {
+      "reason": "The paper contains no optimizer, controller or reliability component to compare against. The comparison is between measurement methodologies (two-point probe versus TDIM), not an optimization or control study.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "No linked asset (FloTHERM model, geometry, config or data file) is included in the packet; the assets list is empty and only commercial product pages, a datasheet and standards are cited.",
+    "No per-block x_m and y_m placement coordinates are published for the powered or unpowered die, copper, ceramic and base plate, so no complete floorplan can be built. Table A2 gives only size and thickness, and the Figure A1/A2 sketches are not dimensioned for positions.",
+    "Per-block power_rows are not published. The only power is a single uniform source on the powered die, stated as 100 W in the text and 50 W in the Figure 4 caption.",
+    "The Studio package and material assumptions are not stated anywhere in the packet.",
+    "FloTHERM mesh, solver settings, ambient temperature, cold-plate internal model and the second (unpowered) die position are not provided.",
+    "Exact figure-digitized values (Figures 5-10) with provenance and uncertainty are not recorded here. The Zth and structure-function values come from text and annotations only."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "scenario_selection",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 3, Figure 3 and Appendix A Tables A1/A2",
+      "provenance": "Selected the Section 3 simulation of an IGBT module on a cold plate with a 50 um TIM. It is a layered 3D stack with no published x/y block placement, and the power is one uniform die source stated as 100 W in the text and 50 W in the Figure 4 caption. No complete floorplan experiment exists, so floorplan and power_rows are empty.",
+      "uncertainty": null
+    },
+    {
+      "field": "die_width",
+      "block_name": "Silicon",
+      "source_value": 11.2,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0112,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 3 text 'The IGBT chips were 11.2 mm x 11.2 mm in size'; Table A2 Silicon x/z size (PDF p.26)",
+      "provenance": "Paper text and Appendix A Table A2. This is a lateral size only, with no x_m/y_m position published.",
+      "uncertainty": null
+    },
+    {
+      "field": "die_height_lateral",
+      "block_name": "Silicon",
+      "source_value": 11.2,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0112,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Table A2, Silicon row, z size",
+      "provenance": "Appendix A Table A2",
+      "uncertainty": null
+    },
+    {
+      "field": "die_thickness",
+      "block_name": "Silicon",
+      "source_value": 0.3,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0003,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Table A2, Silicon row, y size",
+      "provenance": "Appendix A Table A2",
+      "uncertainty": null
+    },
+    {
+      "field": "layer_thickness",
+      "block_name": "Die attach",
+      "source_value": 0.1,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0001,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Table A2, Die attach row, y size (11.2 x 11.2 mm lateral)",
+      "provenance": "Appendix A Table A2. Material properties are marked as estimated from literature.",
+      "uncertainty": null
+    },
+    {
+      "field": "layer_lateral_size_x",
+      "block_name": "Copper (upper)",
+      "source_value": 15,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.015,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Table A2, first Copper row, x size (z 23.4 mm, y 0.3 mm)",
+      "provenance": "Appendix A Table A2",
+      "uncertainty": null
+    },
+    {
+      "field": "layer_lateral_size_x",
+      "block_name": "AlN ceramics",
+      "source_value": 32,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.032,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Table A2, AlN ceramics row, x size (z 30 mm, y 0.3 mm)",
+      "provenance": "Appendix A Table A2",
+      "uncertainty": null
+    },
+    {
+      "field": "layer_lateral_size_x",
+      "block_name": "Aluminum base plate",
+      "source_value": 105,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.105,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Table A2, first Aluminum row, x size (z 42 mm, y 2.9 mm)",
+      "provenance": "Appendix A Table A2",
+      "uncertainty": null
+    },
+    {
+      "field": "layer_lateral_size_x",
+      "block_name": "Cold plate (Aluminum)",
+      "source_value": 500,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.5,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Table A2, last Aluminum row, x size (z 140 mm, y 20 mm)",
+      "provenance": "Appendix A Table A2",
+      "uncertainty": null
+    },
+    {
+      "field": "tim_thickness",
+      "block_name": "Thermal grease",
+      "source_value": 50,
+      "source_unit": "um",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.00005,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 3 text 'a 50 um TIM layer was inserted between the module and the cold plate'; Table A2 gives 0.05 mm",
+      "provenance": "Paper text and Appendix A Table A2",
+      "uncertainty": null
+    },
+    {
+      "field": "tim_conductivity_case",
+      "block_name": "Thermal grease",
+      "source_value": 0.2,
+      "source_unit": "W/mK",
+      "conversion_factor": 1,
+      "normalized_value": 0.2,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 3, TIM conductivities 0.2, 1, 4 W/mK",
+      "provenance": "Paper text. Three cases are simulated (0.2, 1 and 4 W/mK, the latter two as grease qualities).",
+      "uncertainty": null
+    },
+    {
+      "field": "cold_plate_htc",
+      "block_name": "Cold plate (Aluminum)",
+      "source_value": 3000,
+      "source_unit": "W/m2K",
+      "conversion_factor": 1,
+      "normalized_value": 3000,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 3 text 'constant heat transfer coefficient (HTC) of 3000 W/m2K'",
+      "provenance": "Paper text",
+      "uncertainty": null
+    },
+    {
+      "field": "power_step_text",
+      "block_name": "Silicon",
+      "source_value": 100,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 100,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 3 text 'at a 100 W power step (heating), uniformly distributed on the die surface'",
+      "provenance": "Paper text. This conflicts with the Figure 4 caption (50 W), so no power_row is emitted.",
+      "uncertainty": "Conflicts with the 50 W in the Figure 4 caption; the powered scenario is ambiguous."
+    },
+    {
+      "field": "power_step_caption",
+      "block_name": "Silicon",
+      "source_value": 50,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 50,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Figure 4 caption 'Simulated temperature change at 50 W'",
+      "provenance": "Paper figure caption",
+      "uncertainty": "Conflicts with the 100 W in the text."
+    },
+    {
+      "field": "thermal_observable_RthJA_TIM_0.2",
+      "block_name": "Silicon",
+      "source_value": 0.52,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.52,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3 text after Figure 6 'RthJA ... is 0.52 K/W' (Ch0 junction, Zth endpoint)",
+      "provenance": "Paper text. Junction-to-ambient resistance from the end of the Zth(t) curve at steady state, measured at Ch0 (centre of the powered die top) for TIM 0.2 W/mK.",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_RthJA_TIM_1",
+      "block_name": "Silicon",
+      "source_value": 0.36,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.36,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3 text, TIM 1 W/mK, 'RthJA is 0.36 K/W'",
+      "provenance": "Paper text",
+      "uncertainty": null
+    },
+    {
+      "field": "thermal_observable_RthJA_TIM_4",
+      "block_name": "Silicon",
+      "source_value": 0.28,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.28,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3 text, TIM 4 W/mK, 'RthJA is now 0.28 K/W'",
+      "provenance": "Paper text",
+      "uncertainty": null
+    },
+    {
+      "field": "two_point_RthJC_probe_penetrating_TIM_0.2",
+      "block_name": "Silicon",
+      "source_value": 0.13,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.13,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3 text 'RthJC = 0.13 K/W ... if the probe penetrates the TIM'; Figure 6a 'B=0-1'",
+      "provenance": "Paper text, Ch0-Ch1 two-point result",
+      "uncertainty": null
+    },
+    {
+      "field": "two_point_RthJC_probe_touching_TIM_0.2",
+      "block_name": "Silicon",
+      "source_value": 0.45,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.45,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 3 text 'RthJC = 0.45 K/W if the probe just touches the lower surface'; Figure 6a 'A=0-2'",
+      "provenance": "Paper text, Ch0-Ch2 two-point result",
+      "uncertainty": null
+    },
+    {
+      "field": "TDIM_RthJC_divergence",
+      "block_name": "Silicon",
+      "source_value": 0.17,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.17,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 3 text on Figure 9 'diverge after 0.17 K/W'; Figure 10 reads 0.18 K/W",
+      "provenance": "Paper text. Structure-function divergence point with CthJC about 30 J/K; the Figure 10 annotation reads 0.18 K/W.",
+      "uncertainty": "The threshold epsilon choice gives 0.17 to 0.19 K/W; values read from the figure."
+    },
+    {
+      "field": "steady_state_time_TIM_0.2",
+      "block_name": null,
+      "source_value": 140,
+      "source_unit": "s",
+      "conversion_factor": 1,
+      "normalized_value": 140,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Section 3 text 'steady state was approximately reached at 140 s, 50 s, and 30 s'",
+      "provenance": "Paper text; 140 s is for TIM 0.2 W/mK, with 50 s and 30 s for 1 and 4 W/mK.",
+      "uncertainty": null
+    },
+    {
+      "field": "original_solver",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 3 'simulated in the FloTHERM tool [19]'",
+      "provenance": "Paper text. Original solver is FloTHERM 3D transient. No optimizer or controller is described. The benchmark compares two-point probe and TDIM RthJC.",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_flotherm",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [19] https://www.mentor.com/products/mechanical/flotherm/flotherm/",
+      "provenance": "Commercial solver product page; contains no model or input files.",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_t3ster",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [20] http://www.mentor.com/products/mechanical/products/t3ster",
+      "provenance": "Measurement instrument product page",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_power_tester",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [21] https://www.mentor.com/products/mechanical/micred/power-tester-1500a/",
+      "provenance": "Measurement instrument product page",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_rjc_fixture",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [25] http://analysistech.com/semiconductor-thermal-tester/rjc-liquid-test-fixture/",
+      "provenance": "Commercial test fixture page",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_huf75639_datasheet",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [28] https://www.onsemi.com/pub/Collateral/HUF75639S3S-D.PDF",
+      "provenance": "Device datasheet for the Section 8 MOSFET case study, not the Section 3 scenario",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_delphi4led",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [27] https://delphi4led.org/pydio/public/2f72dd",
+      "provenance": "LED round-robin report, not relevant to the selected scenario",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_jedec_jesd51_14",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [13] www.jedec.org/sites/default/files/docs/JESD51-14_1.pdf",
+      "provenance": "Standard document",
+      "uncertainty": null
+    },
+    {
+      "field": "linked_resource_ecpe_aqg324",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 28,
+      "asset_id": null,
+      "locator": "Reference [16] https://www.ecpe.org/research/working-groups/automotive-aqg-324/",
+      "provenance": "Guideline page",
+      "uncertainty": null
+    },
+    {
+      "field": "missing_inputs_floorplan",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 26,
+      "asset_id": null,
+      "locator": "Figure A1/A2 and Table A2",
+      "provenance": "No x_m/y_m block positions or per-block power rows are published; the asset list is empty. The experiment is not feasible as a complete 2D floorplan. Mismatches: 3D layered stack, transient structure-function observable, TIM and cold-plate boundary. No Studio package or material assumptions are stated in the packet.",
+      "uncertainty": null
+    }
+  ]
+}

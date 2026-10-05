@@ -1,0 +1,211 @@
+{
+  "paper_id": "W3035869053",
+  "paper_title": "A Spectral Approach to Scalable Vectorless Thermal Integrity Verification",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 5,
+    "figure_or_table": "Table I (Statistics of two microprocessor designs) with Table II (results for test cases T1-T7) and Figures 3-4 (worst-case temperature distributions)",
+    "description": "Vectorless worst-case thermal integrity verification of two microprocessor designs, Processor A and Processor B (designs taken from Li et al. [8]). The paper gives only total power, die area, layer counts, and equivalent heat transfer coefficients, with no block-level floorplan geometry or per-block power. Power is treated as local and global constraints (bounds), not fixed values. Processor A is the identified scenario: 28 W, 195 mm2, 4 metal layers, 11 material layers, 3.3e3 W/m2K for the heat sink and 2.0e3 W/m2K for the package.",
+    "architecture": "Processor A: 3D multilayer thermal grid with 11 material layers and 4 metal layers, die area 195 mm2, heat sink coefficient 3.3e3 W/m2K, package coefficient 2.0e3 W/m2K. Processor B (6 metal layers, 15 material layers, 302 mm2, 50 W) is the second design and is not selected.",
+    "workload": "Vectorless uncertain power-density workloads defined by local bounds (bL <= b <= bU) and global block bounds (BL <= Mb <= BU). Exact bounds are not given in the packet. Total power is 28 W for Processor A.",
+    "operating_point": "Steady-state worst-case temperature search over 3D thermal grids (Table II grid sizes 25K to 2.0M nodes). Ambient temperature and absolute temperature values are not stated; the figures show node-indexed temperature distributions. Solver: Cholesky (CHOLMOD) plus Gurobi LP, with spectral sparsification, edge scaling, multilevel AMG, and weighted Jacobi refinement.",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "Steady-state 3D thermal grid solve T x = b with CHOLMOD Cholesky factorization, plus spectral graph sparsification, iterative edge weight scaling, AMG-based multilevel coarsening and weighted Jacobi solution refinement (MATLAB and C++). Selected scenario: Processor A.",
+    "optimizer": "Gurobi LP solver for vectorless worst-case power vector search under local (bL<=b<=bU) and global (BL<=Mb<=BU) power constraints",
+    "controller": "None. This is a steady-state verification method with no runtime thermal controller or DTM.",
+    "benchmark": "Processor A (28 W, 195 mm2, 4 metal layers, 11 material layers, heat sink 3.3e3 W/m2K, package 2.0e3 W/m2K) from Li et al. [8]; Table II test cases T1-T7 (25K to 2.0M nodes); worst-case temperature distributions in Fig. 3 (Processor A)."
+  },
+  "thermal_observable": {
+    "value": null,
+    "unit": "",
+    "location": "Per node of the 3D thermal grid; worst-case temperature distribution (node-indexed) for Processor A, Fig. 3. No numeric temperatures, units or ambient value are stated in the text.",
+    "aggregation": "Worst-case (maximum) temperature per node t_i = e_i^T T^-1 b, maximized by LP over local and global power constraints, giving twst = T^-1 bwst. Runtimes in Table II are summed over 100 randomly chosen nodes.",
+    "pdf_page": 6
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The paper gives no block-level floorplan (no x, y, width or height) and no per-block power for Processor A. Only total power (28 W), die area, layer counts and heat transfer coefficients are given on page 5, Table I. Total power must not be split without a published rule, so no complete floorplan experiment can be built.",
+      "essential": true
+    },
+    {
+      "reason": "Power is a set of uncertain local and global bounds, not fixed per-block watts. The observable is an LP-derived worst-case temperature over a power-vector set, not a temperature for a single deterministic power assignment, so it cannot be reproduced by a single-power-map Studio run.",
+      "essential": true
+    },
+    {
+      "reason": "The original model is a multilayer 3D thermal grid (11 material layers, 4 metal layers) with equivalent heat-transfer-coefficient boundaries for heat sink and package. It is not a 2D steady floorplan model, and the layer thicknesses and materials are not given in the packet.",
+      "essential": true
+    },
+    {
+      "reason": "The original solver and optimizer stack (spectral sparsification, multilevel AMG, weighted Jacobi refinement, Gurobi LP) differs from any bundled Studio solver. The paper reports runtime and approximation error and does not report absolute temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "There is no transient, controller, interposer or reliability modelling. Reliability is only motivated qualitatively. These are not mismatches that affect a steady-state setup, but no corresponding data exist.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "Block names and block geometry (x_m, y_m, width_m, height_m) for Processor A; the paper only gives die area 195 mm2 and refers to Li et al. [8], which is not in the packet",
+    "Per-block power_rows (name, watts) for Processor A; only total 28 W is given",
+    "Local and global power bounds (bL, bU, BL, BU) and the constraint matrix M",
+    "Layer thicknesses, material conductivities and the geometry of the 11 material layers",
+    "Ambient temperature and absolute worst-case temperature values with units (only node-indexed figures are shown)",
+    "Thermal grid dimensions and node count mapping to Processor A (Table II gives 25K to 2.0M nodes without saying which case maps to which processor)",
+    "Code, configuration and data repositories: the artifact search found no linked assets and the packet lists none",
+    "Digitized values from Fig. 3, which would carry uncertainty; none are extractable as numbers from the packet text"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "scenario_total_power_processor_A",
+      "block_name": null,
+      "source_value": 28,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 28,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Table I, row 'Power Consumption (W)', column Processor A",
+      "provenance": "Paper text (pdftotext). Total chip power only; no block-level split or published splitting rule is given, so it is not apportioned to blocks.",
+      "uncertainty": null
+    },
+    {
+      "field": "scenario_die_area_processor_A",
+      "block_name": null,
+      "source_value": 195,
+      "source_unit": "mm2",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.000195,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Table I, row 'Die Area (mm2)', column Processor A",
+      "provenance": "Paper text. Total die area only; no x, y, width or height for any block, and the die aspect ratio is not stated.",
+      "uncertainty": null
+    },
+    {
+      "field": "num_metal_layers_processor_A",
+      "block_name": null,
+      "source_value": 4,
+      "source_unit": "layers",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Table I, row 'Num. of Metal Layers', column Processor A",
+      "provenance": "Paper text. Layer count only; no thicknesses or materials are given.",
+      "uncertainty": null
+    },
+    {
+      "field": "num_material_layers_processor_A",
+      "block_name": null,
+      "source_value": 11,
+      "source_unit": "layers",
+      "conversion_factor": 1,
+      "normalized_value": 11,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Table I, row 'Num. of Material Layers', column Processor A",
+      "provenance": "Paper text. The 3D multilayer model is a mismatch with a 2D steady Studio model; thicknesses and conductivities are missing.",
+      "uncertainty": null
+    },
+    {
+      "field": "heat_sink_equivalent_heat_transfer_coefficient",
+      "block_name": null,
+      "source_value": 3.3,
+      "source_unit": "10^3 W/m2K",
+      "conversion_factor": 1000,
+      "normalized_value": 3300,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Table I, row 'Equivalent Heat Transfer Coefficients (10^3 W/m2K)', value '3.3 (heat sink)'",
+      "provenance": "Paper text. The table lists the same value for both Processor A and Processor B; Processor A is selected. The unit is read from the row header.",
+      "uncertainty": "The table is column-merged in the text extraction, so the shared value applying to both processors is an inference from layout."
+    },
+    {
+      "field": "package_equivalent_heat_transfer_coefficient",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "10^3 W/m2K",
+      "conversion_factor": 1000,
+      "normalized_value": 2000,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Table I, row 'Equivalent Heat Transfer Coefficients (10^3 W/m2K)', value '2.0 (package)'",
+      "provenance": "Paper text. Same value listed for both processors; Processor A is selected.",
+      "uncertainty": "The table is column-merged in the text extraction, so the shared value applying to both processors is an inference from layout."
+    },
+    {
+      "field": "thermal_grid_node_count_range",
+      "block_name": null,
+      "source_value": 25000,
+      "source_unit": "nodes",
+      "conversion_factor": 1,
+      "normalized_value": 25000,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Table II, column N.#, case T1 (25K); range up to T7 2.0M",
+      "provenance": "Paper text. Smallest of the test-case grid sizes. The paper does not say which test case belongs to Processor A or B.",
+      "uncertainty": "The mapping of test cases to processors is not stated."
+    },
+    {
+      "field": "thermal_observable_worst_case_temperature_distribution",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Fig. 3 (Worst-case temperature distributions of processor A), panels (a)-(c); text on page 5",
+      "provenance": "Paper figure, node-indexed worst-case temperature t_i = e_i^T T^-1 b maximized by LP over local and global power constraints. No numeric temperature values, units or ambient temperature are present in the extractable text, and no figure was digitized.",
+      "uncertainty": "No numeric values are available. Any digitization would carry axis-reading uncertainty and is not attempted."
+    },
+    {
+      "field": "power_constraints_local_global",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 2,
+      "asset_id": null,
+      "locator": "Eq. (3), Local Constraints bL <= b <= bU, Global Constraints BL <= Mb <= BU",
+      "provenance": "Paper text. Power is defined as bounds on sources and blocks. The numeric bounds and the matrix M are not given, so no per-block watts can be extracted.",
+      "uncertainty": null
+    },
+    {
+      "field": "original_solver_optimizer_implementation",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section III first paragraph; Table II caption; refs [1], [10]",
+      "provenance": "Paper text. Cholesky via CHOLMOD, LP via Gurobi, implemented in MATLAB and C++ on a single core of a 2.67 GHz 12-core CPU with 48 GB DRAM under RHEL 6.0. Spectral sparsification, edge scaling, AMG multilevel coarsening and weighted Jacobi refinement are used. No controller or transient model. Does not match any bundled Studio solver.",
+      "uncertainty": null
+    },
+    {
+      "field": "paper_linked_resources",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "All PDF pages 1-6 read; no availability statement, code or data URL, repository or supplementary data found; packet assets list is empty",
+      "provenance": "Packet inspection. The only external pointers are citations (CHOLMOD and Gurobi websites in refs [1], [10]) and the source design reference Li et al. [8], none of which is a packet asset. No packet asset evidence exists. Floorplan, power rows and layer data are missing, so no complete experiment exists.",
+      "uncertainty": null
+    }
+  ]
+}

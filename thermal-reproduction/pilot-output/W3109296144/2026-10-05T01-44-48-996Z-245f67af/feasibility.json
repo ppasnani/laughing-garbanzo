@@ -1,0 +1,88 @@
+{
+  "paper_id": "W3109296144",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "Evidence 26 lacks a valid page or pinned asset locator",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "Evidence 28 lacks a valid page or pinned asset locator",
+    "Evidence 29 lacks a valid page or pinned asset locator",
+    "Evidence 30 lacks a valid page or pinned asset locator",
+    "Evidence 31 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-core or per-block power in watts for any scenario (no published rule for splitting chip power; the 42 W TDP is only an OSP comparison constraint).",
+    "Block x_m and y_m coordinates for the cores, L2 and L3 in the floorplan (Figure 4 only shows an illustrative layout with the 2.95 mm tile size).",
+    "Width and height of the L2 and L3 blocks within each tile, and the L3 cluster geometry.",
+    "Heat spreader and heat sink dimensions and the full HotSpot configuration file, plus the control period length.",
+    "McPAT power outputs and Sniper traces for radix, ocean, blackscholes and bodytrack.",
+    "Numeric per-threshold temperature values for Figure 10 (the chart is not digitized) and absolute peak temperature values for Figures 9 and 12.",
+    "Code, data or repository links: none found (artifact_search_status checked_no_links, assets list empty), so there is no asset evidence at a pinned version.",
+    "Specification of the bundled Studio package and material assumptions, which was not provided in the packet.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper gives no per-block x/y coordinates and no per-core power in watts for any scenario. Only the core tile size (2.95 mm) and the 64-core, 8x8 layout are stated, so a complete floorplan-and-power experiment cannot be built.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is dynamic and closed-loop. Power changes over time with task migration, DVFS and core wake-up, and the observable is a transient temperature trace. A steady-state, single-power-map thermal model cannot reproduce the controller behavior or the transient percentile statistics.",
+      "essential": true
+    },
+    {
+      "reason": "The workload-driven power traces come from Sniper and McPAT. L3 cache power is excluded from the HotSpot input, and the dark cores are modeled with static power only. Any static power map would not match this time-varying, workload-dependent power.",
+      "essential": true
+    },
+    {
+      "reason": "The detailed HotSpot package (CBGA-style stack, heat sink convection R and C, ambient 318.15 K) may differ from a bundled Studio package, so absolute temperatures are not directly comparable.",
+      "essential": false
+    },
+    {
+      "reason": "The setup is a 2D single-die system. No 3D stacking, interposer, liquid cooling or reliability model is used in the evaluation (LifeSim is a lifetime-reliability tool, but no reliability result is reported).",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "980f86d2425d5d3483a6eb17742b005fcb21b40164ba2e26b3e305ff754d22f8",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

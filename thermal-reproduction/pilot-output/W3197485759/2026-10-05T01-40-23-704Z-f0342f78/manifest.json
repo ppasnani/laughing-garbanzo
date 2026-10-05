@@ -1,0 +1,646 @@
+{
+  "paper_id": "W3197485759",
+  "paper_title": "WaFFLe: Gated Cache-Ways with Per-Core Fine-Grained DVFS for Reduced On-Chip Temperature and Leakage Consumption",
+  "manifest_status": "downloaded",
+  "source_url": "https://www.sjalander.com/research/pdf/sjalander-taco2021.pdf",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "390e6d0d26a68f207b0eb068cdb0bf337ed4f7eff8d1cd205e86c2ca2e67525d",
+  "pdf_pages": 25,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T01:42:04.829Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3197485759",
+    "paper_title": "WaFFLe: Gated Cache-Ways with Per-core Fine-grained DVFS for Reduced On-chip Temperature and Leakage Consumption",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 22,
+      "figure_or_table": "Table 3 (with Table 1, Fig. 13, Fig. 16 and Fig. 29)",
+      "description": "Selected scenario: WaFFLe combined cache-way shutdown plus stall-induced fine-grained DVFS on a 16-core homogeneous tiled CMP with an 8MB LLC, compared against baseline, GDP1 and GDP2. Paper-reported thermal observables are peak temperature reduction 8.4 C and average temperature reduction 6.2 C, with IPS degradation 2.5%. No block-level geometry or per-block power table is published in the packet text, and no linked assets were found.",
+      "architecture": "16-tile homogeneous 2D tiled CMP: Alpha 21364 OoO cores, 64KB 4-way L1-I and L1-D, distributed shared 16-way SNUCA L2 banks (1MB per bank in the analysis; 8MB total LLC in the Table 3 comparison), 2D mesh NoC, per-core on-chip voltage regulators, 32nm technology, ambient 47 C",
+      "workload": "Multi-threaded PARSEC benchmarks (nine applications, large input sets, 16 threads, RoI portion), all cores always active",
+      "operating_point": "Max V/F 1.12V/3.0GHz, min V/F 0.76V/1.2GHz, 70ns DRAM latency, 0.33us thermal interval, 2M-cycle way-shutdown interval, POWER_UP=0.04, POWER_DOWN=0.025",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "Coupled gem5 full-system (Ruby) performance simulation, McPAT 32nm dynamic power and area, per-component temperature-dependent leakage recomputed each interval, and HotSpot 6.0 with HotFloorPlan-generated floorplan. Interval is 0.33 us, with temperature assumed stable within it.",
+      "optimizer": "No formal optimizer. Threshold heuristics set by design-time tuning: POWER_UP=0.04, POWER_DOWN=0.025, a 2M-cycle interval, and a WayLimit cap on gated ways.",
+      "controller": "WaFFLe: (1) Algorithm 1, per-bank miss-ratio-driven LLC cache-way power gating that moves clean non-MRU victim data; (2) Algorithm 2, per-core fine-grained DVFS between 1.12V/3.0GHz and 0.76V/1.2GHz, triggered by global isolated LLC misses detected in the LLC directory.",
+      "benchmark": "Nine multi-threaded PARSEC applications (large inputs, 16 threads, RoI), 16-tile Alpha 21364 OoO CMP, 8MB LLC, 32nm, 47 C ambient. Compared against the baseline and the prior GDP1 and GDP2 policies (Table 3)."
+    },
+    "thermal_observable": {
+      "value": 8.4,
+      "unit": "degC (reduction in peak temperature versus baseline)",
+      "location": "Chip-wide peak temperature across all on-chip components of the 16-core CMP (cores and L2 banks, HotSpot block-level), 8MB LLC configuration",
+      "aggregation": "Maximum reduction in peak chip temperature over the nine PARSEC applications, WaFFLe versus baseline. The paper also reports a 6.2 degC maximum reduction in average chip temperature and 2.5% average IPS degradation.",
+      "pdf_page": 22
+    },
+    "physical_mismatches": [
+      {
+        "reason": "WaFFLe is a runtime transient controller. Cache ways are gated on and off every 2M cycles, and per-core DVFS reacts to memory stalls within about 70 ns. The reported temperature reductions come from time-varying power traces at 0.33 us. A static floorplan with fixed block power cannot represent this controller or its reported gains.",
+        "essential": true
+      },
+      {
+        "reason": "Power depends on the coupled gem5/McPAT performance simulation: workload phases, miss ratios, stall periods, and V/F switching. Leakage is recomputed from per-component temperature feedback. Studio would need equivalent time-resolved per-block power, which the paper does not publish.",
+        "essential": true
+      },
+      {
+        "reason": "The observable is a reduction relative to a baseline across PARSEC workloads, produced by dynamic cache-way gating and DVFS that change power per block. No scenario with fixed published geometry and per-block power reproduces it.",
+        "essential": true
+      },
+      {
+        "reason": "The packet publishes no block-level geometry, no per-block power table, and no HotSpot package or material parameters. Fig. 16 and Fig. 20 show floorplan labels and temperatures only, not coordinates or powers.",
+        "essential": true
+      },
+      {
+        "reason": "The setup is 2D with no 3D stacking or interposer, so no 3D mismatch arises. Cooling and package details such as heat sink and TIM are unspecified, so a cooling mismatch cannot be ruled out.",
+        "essential": false
+      },
+      {
+        "reason": "The LLC size is ambiguous. Table 1 gives 1MB 16-way L2 per tile, which implies 16MB across 16 tiles, while the Table 3 comparison and Sec. 5.1 use an 8MB LLC.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "No linked assets, repository, or supplementary data were found in the packet (assets list is empty; artifact search found no links).",
+      "Per-block x_m, y_m, width_m, and height_m for the 16-tile floorplan (cores, caches, TLBs, register files, routers). Only labels and areas derived from McPAT are mentioned, and no coordinates are published.",
+      "Same-scenario power_rows (block name and watts) for the baseline or WaFFLe 8MB scenario. Only per-core regulator power (0.106 W at 0.76 V, 0.168 W at 1.12 V) and stall-period energies are given, not per-block power.",
+      "Die size and thickness, TIM, heat spreader, heat sink, and convection parameters for the HotSpot 6.0 model.",
+      "Material properties used in HotSpot.",
+      "Per-application power traces and the data behind Fig. 16, Fig. 17, and Fig. 29, which would need digitization with stated uncertainty.",
+      "Studio bundled package and material assumptions were not provided in the packet, so none are recorded here.",
+      "Clarification of the 8MB versus 16 x 1MB LLC configuration."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "peak_temperature_reduction_WaFFLe_8MB_LLC",
+        "block_name": null,
+        "source_value": 8.4,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 8.4,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Peak Temperature', WaFFLe column (8MB LLC)",
+        "provenance": "Paper text and table. This is a maximum reduction versus baseline across the nine PARSEC applications, not an absolute temperature.",
+        "uncertainty": null
+      },
+      {
+        "field": "average_temperature_reduction_WaFFLe_8MB_LLC",
+        "block_name": null,
+        "source_value": 6.2,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 6.2,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Average Temperature', WaFFLe column",
+        "provenance": "Paper text and table. Maximum reduction in average chip temperature versus baseline.",
+        "uncertainty": null
+      },
+      {
+        "field": "IPS_degradation_WaFFLe",
+        "block_name": null,
+        "source_value": 2.5,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.025,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'IPS degradation', WaFFLe column",
+        "provenance": "Paper table, average over the nine applications.",
+        "uncertainty": null
+      },
+      {
+        "field": "peak_temperature_reduction_GDP1",
+        "block_name": null,
+        "source_value": 6.1,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 6.1,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Peak Temperature', GDP1 column",
+        "provenance": "Paper table. Comparison policy from prior work [12].",
+        "uncertainty": null
+      },
+      {
+        "field": "peak_temperature_reduction_GDP2",
+        "block_name": null,
+        "source_value": 6.7,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 6.7,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Peak Temperature', GDP2 column",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "average_temperature_reduction_GDP1",
+        "block_name": null,
+        "source_value": 5.2,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 5.2,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Average Temperature', GDP1 column",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "average_temperature_reduction_GDP2",
+        "block_name": null,
+        "source_value": 5.9,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 5.9,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'Reduction in Average Temperature', GDP2 column",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "IPS_degradation_GDP1",
+        "block_name": null,
+        "source_value": 7.3,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.073,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'IPS degradation', GDP1 column",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "IPS_degradation_GDP2",
+        "block_name": null,
+        "source_value": 6.4,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.064,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3, row 'IPS degradation', GDP2 column",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "ambient_temperature",
+        "block_name": null,
+        "source_value": 47,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 47,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, 'Ambient Temp.' row",
+        "provenance": "Paper table of system parameters. No package, heat sink or material parameters are published.",
+        "uncertainty": null
+      },
+      {
+        "field": "max_voltage",
+        "block_name": null,
+        "source_value": 1.12,
+        "source_unit": "V",
+        "conversion_factor": 1,
+        "normalized_value": 1.12,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, 'Max. V/F' row",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "max_frequency",
+        "block_name": null,
+        "source_value": 3,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 3000000000,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, 'Max. V/F' row",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "min_voltage",
+        "block_name": null,
+        "source_value": 0.76,
+        "source_unit": "V",
+        "conversion_factor": 1,
+        "normalized_value": 0.76,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, 'Min. V/F' row",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "min_frequency",
+        "block_name": null,
+        "source_value": 1.2,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 1200000000,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, 'Min. V/F' row",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "DRAM_latency",
+        "block_name": null,
+        "source_value": 70,
+        "source_unit": "ns",
+        "conversion_factor": 1e-9,
+        "normalized_value": 7e-8,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Table 1, 'DRAM latency' row; also Sec. 3.2.2 on p. 10",
+        "provenance": "Paper table. The text calls it a simplifying uniform assumption.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_update_interval",
+        "block_name": null,
+        "source_value": 0.33,
+        "source_unit": "us",
+        "conversion_factor": 0.000001,
+        "normalized_value": 3.3e-7,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4 Methodology, paragraph on McPAT/HotSpot integration",
+        "provenance": "Paper text. Temperature is assumed stable within each interval.",
+        "uncertainty": null
+      },
+      {
+        "field": "way_shutdown_interval",
+        "block_name": null,
+        "source_value": 2000000,
+        "source_unit": "clock cycles",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4, 'interval length used for Algorithm 1 is set to 2M clock cycles'",
+        "provenance": "Paper text.",
+        "uncertainty": "Converting to seconds would need the clock frequency in effect, which varies with DVFS, so no normalized value is given."
+      },
+      {
+        "field": "POWER_UP_threshold",
+        "block_name": null,
+        "source_value": 0.04,
+        "source_unit": "miss ratio",
+        "conversion_factor": 1,
+        "normalized_value": 0.04,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4, last paragraph on p. 13",
+        "provenance": "Paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "POWER_DOWN_threshold",
+        "block_name": null,
+        "source_value": 0.025,
+        "source_unit": "miss ratio",
+        "conversion_factor": 1,
+        "normalized_value": 0.025,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4, last paragraph on p. 13",
+        "provenance": "Paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "per_core_regulator_power_at_0.76V",
+        "block_name": null,
+        "source_value": 0.106,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.106,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Sec. 4, paragraph on on-chip VR power",
+        "provenance": "Paper text. Regulator overhead per core, not a per-block chip power.",
+        "uncertainty": null
+      },
+      {
+        "field": "per_core_regulator_power_at_1.12V",
+        "block_name": null,
+        "source_value": 0.168,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.168,
+        "pdf_page": 14,
+        "asset_id": null,
+        "locator": "Sec. 4, paragraph on on-chip VR power",
+        "provenance": "Paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "LLC_size_Table3_comparison",
+        "block_name": null,
+        "source_value": 8,
+        "source_unit": "MB",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 22,
+        "asset_id": null,
+        "locator": "Table 3 caption 'considering an 8MB LLC'; Sec. 5.1 'WS_OPT ... at 8 MB LLC'",
+        "provenance": "Paper text.",
+        "uncertainty": "Table 1 on p. 13 lists L2 as '1MB, 16-way', which could be per bank (16 MB total) or per core. The relation to the 8MB LLC is not clarified."
+      },
+      {
+        "field": "floorplan_geometry_x_y_width_height",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 16,
+        "asset_id": null,
+        "locator": "Fig. 13 (p. 12), Fig. 16 and Fig. 20 (p. 16); Sec. 4 on HotFloorPlan",
+        "provenance": "Floorplans are shown only as labelled figures (FPAdd, DTB, L2, IntExec, etc.) and are generated by HotFloorPlan from McPAT areas. No coordinates, widths, heights or areas are published.",
+        "uncertainty": "Digitizing the figures would give only qualitative positions with no dimensional scale, so no geometry values are recorded."
+      },
+      {
+        "field": "per_block_power_rows",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Sec. 4 simulation framework (Fig. 14); Sec. 3.2.2 on p. 10",
+        "provenance": "Power comes from McPAT and temperature-dependent leakage at runtime. The paper publishes no per-block watts for the baseline or WaFFLe 8MB scenario. Only stall-period core energies (337 nJ baseline, 86-94 nJ with FG-DVFS) are given.",
+        "uncertainty": "The stall-period energies are not a steady per-block power and cannot be used as power_rows."
+      },
+      {
+        "field": "linked_assets_repository_supplementary",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "All 25 PDF pages scanned. The packet assets list is empty and the artifact search found no links.",
+        "provenance": "No availability statement, repository URL, code, config or supplementary data link appears in the packet text. The only URLs are the DOI and publisher link on page 1.",
+        "uncertainty": null
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "Sec. 4 (pp. 12-13) confirms the coupled gem5 (Ruby) + McPAT 32nm + per-component leakage recomputation + HotSpot 6.0/HotFloorPlan flow at a 0.33 us interval. Algorithms 1 and 2 (pp. 6, 11) match the controller description. The packet is text-only, so the figures were not visually verified. The extraction's classification of the setup as dynamic/transient is supported by the text. Inferred statements, such as the aggregation of the Table 3 values as a maximum over applications, rest on p. 15 prose, not on the table itself."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No code, repository, availability statement or supplementary link was found in the supplied text, and the assets list is empty. The extraction's 'checked_no_links' rests on a pdftotext scan only, which cannot rule out links lost in layout or figures. No code can be verified."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Table 1 (p. 13), 1.12V/3.0GHz and 0.76V/1.2GHz, 70 ns DRAM latency, 0.33 us and 2M-cycle intervals, POWER_UP 0.04, POWER_DOWN 0.025 and the regulator powers 0.106/0.168 W (p. 14) all match the text. However, the WayLimit value, which is decisive for the maximum LLC shrinkage and therefore for the gains, is never given and the extraction does not list it as missing. The 8MB LLC conflicts with Table 1 and the Fig. 2-5 captions (1MB 16-way per bank x 16 tiles = 16MB); the paper does not resolve this, and the 16MB sensitivity result in Fig. 23b (10.5-12 C) differs from the 8.4 C headline."
+      },
+      "config": {
+        "status": "missing",
+        "note": "HotSpot package, die/thickness, TIM, spreader, heat sink and convection parameters, and material properties are not published, and the HotFloorPlan area inputs are not given. Only a 47 C ambient (p. 13, Table 1) is given. Any reproduction would have to assume the cooling stack. The extraction's 'experiment' field is kind custom_2d_steady with an empty floorplan and power. This contradicts its own steady_2d_relevant=false and its essential mismatches, so no valid scenario configuration exists."
+      },
+      "data": {
+        "status": "missing",
+        "note": "Table 3 (p. 22) reductions of 8.4/6.2 C and 2.5% IPS degradation, plus the GDP1/GDP2 values, are correctly transcribed from the page text. No per-block floorplan coordinates or per-block power exist for the baseline or WaFFLe 8MB scenario, so no same-scenario power can exist for any floorplan block. Fig. 16, 17, 20 and 29, the figures behind the observable, were not available as images, so no decisive figure was visually verified. Fig. 16/20 show labels and temperatures that appear to be in Kelvin (e.g. 373.83 vs 366.59), which the extraction does not note."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment",
+        "reason": "The experiment is declared custom_2d_steady with empty floorplan and power_w, yet the same extraction sets steady_2d_relevant=false and lists essential mismatches (transient DVFS/way-gating, no published power). The 8.4 C figure cannot be called a 2D steady reproduction target.",
+        "locator": "extraction.experiment vs extraction.scenario.steady_2d_relevant and physical_mismatches (essential entries); p. 13, Sec. 4"
+      },
+      {
+        "field": "floorplan / per-block power",
+        "reason": "No block geometry or per-block power is published, so same-scenario power for every floorplan block is absent. Fig. 16/20 floorplans are labelled diagrams without coordinates or scale, and this absence was inferred from garbled text without visual verification of the figures.",
+        "locator": "pp. 12, 16 (Fig. 13, 16, 20); p. 10 (stall energies only)"
+      },
+      {
+        "field": "thermal_observable.aggregation",
+        "reason": "Table 3 does not state that its values are maxima over the nine applications. The extraction relies on p. 15 prose (6.5-8.4 C peak, 5.0-6.2 C avg range). The table value is therefore only partly supported, and the 'HotSpot block-level, all components' location is inferred, not stated.",
+        "locator": "p. 22 Table 3; p. 15 Sec. 5.1 last paragraphs"
+      },
+      {
+        "field": "LLC size",
+        "reason": "The 8MB LLC in Table 3 and Sec. 5.1 contradicts Table 1 and the Fig. 2-5 captions (1MB per bank, 16 banks = 16MB). The scenario architecture field lists both without a resolution, so the scenario match between the observable and the stated configuration is unverified.",
+        "locator": "p. 13 Table 1; pp. 6-7 Fig. 2-5 captions; p. 22 Table 3"
+      },
+      {
+        "field": "WayLimit",
+        "reason": "The maximum number of gated ways is a decisive input to Algorithm 1 and is never specified, yet the extraction names it only as 'a WayLimit cap' and does not list it in missing_inputs.",
+        "locator": "p. 5 Sec. 3.1.1; p. 6 Algorithm 1 input; extraction.missing_inputs"
+      },
+      {
+        "field": "figure/scenario consistency",
+        "reason": "The text on p. 16 says Fig. 20 shows spatial variation for Body, while the caption says Black. The extraction uses Fig. 16/20 as scenario references without flagging this contradiction.",
+        "locator": "p. 16 Sec. 5.1 'Figure 20 shows spatial thermal variation for Body' vs Fig. 20 caption '(for Black)'"
+      },
+      {
+        "field": "linked_assets_repository_supplementary",
+        "reason": "No code, config or data link was found, and no asset was supplied. An absence-of-link claim from text extraction alone is not sufficient to verify the code and data checks.",
+        "locator": "packet.assets=[]; extraction.artifact_search_status"
+      }
+    ],
+    "checked_pdf_pages": [
+      4,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      19,
+      20,
+      22
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3197485759",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No linked assets, repository, or supplementary data were found in the packet (assets list is empty; artifact search found no links).",
+      "Per-block x_m, y_m, width_m, and height_m for the 16-tile floorplan (cores, caches, TLBs, register files, routers). Only labels and areas derived from McPAT are mentioned, and no coordinates are published.",
+      "Same-scenario power_rows (block name and watts) for the baseline or WaFFLe 8MB scenario. Only per-core regulator power (0.106 W at 0.76 V, 0.168 W at 1.12 V) and stall-period energies are given, not per-block power.",
+      "Die size and thickness, TIM, heat spreader, heat sink, and convection parameters for the HotSpot 6.0 model.",
+      "Material properties used in HotSpot.",
+      "Per-application power traces and the data behind Fig. 16, Fig. 17, and Fig. 29, which would need digitization with stated uncertainty.",
+      "Studio bundled package and material assumptions were not provided in the packet, so none are recorded here.",
+      "Clarification of the 8MB versus 16 x 1MB LLC configuration.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "WaFFLe is a runtime transient controller. Cache ways are gated on and off every 2M cycles, and per-core DVFS reacts to memory stalls within about 70 ns. The reported temperature reductions come from time-varying power traces at 0.33 us. A static floorplan with fixed block power cannot represent this controller or its reported gains.",
+        "essential": true
+      },
+      {
+        "reason": "Power depends on the coupled gem5/McPAT performance simulation: workload phases, miss ratios, stall periods, and V/F switching. Leakage is recomputed from per-component temperature feedback. Studio would need equivalent time-resolved per-block power, which the paper does not publish.",
+        "essential": true
+      },
+      {
+        "reason": "The observable is a reduction relative to a baseline across PARSEC workloads, produced by dynamic cache-way gating and DVFS that change power per block. No scenario with fixed published geometry and per-block power reproduces it.",
+        "essential": true
+      },
+      {
+        "reason": "The packet publishes no block-level geometry, no per-block power table, and no HotSpot package or material parameters. Fig. 16 and Fig. 20 show floorplan labels and temperatures only, not coordinates or powers.",
+        "essential": true
+      },
+      {
+        "reason": "The setup is 2D with no 3D stacking or interposer, so no 3D mismatch arises. Cooling and package details such as heat sink and TIM are unspecified, so a cooling mismatch cannot be ruled out.",
+        "essential": false
+      },
+      {
+        "reason": "The LLC size is ambiguous. Table 1 gives 1MB 16-way L2 per tile, which implies 16MB across 16 tiles, while the Table 3 comparison and Sec. 5.1 use an 8MB LLC.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "6977b2b34b4f1bbca57887c11f79e1ca0b635994f6b949d5f0d9a9ffdcbc87cc",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable, and the gate blocked the run (simulation_allowed=false, comparison_valid=false). Studio did not run: simulation status is 'skipped' because the custom experiment has no floorplan blocks and no power_w object, so there is no Studio output. The scenario is WaFFLe (gated LLC ways plus per-core fine-grained DVFS) on a 16-core tiled CMP with an 8MB LLC. The paper reports a peak temperature reduction of 8.4 C, an average temperature reduction of 6.2 C and 2.5% IPS degradation versus baseline, with GDP1 at 6.1 C and GDP2 at 6.7 C peak reduction. These are maximum reductions over nine PARSEC applications from a coupled gem5/McPAT/HotSpot transient simulation at 0.33 us intervals. The experiment was labeled custom_2d_steady, which has no transient trace, and cannot represent a runtime controller whose gains come from time-varying power. No numerical comparison with Studio is made or valid, since the location, aggregation, regime and boundary assumptions do not match and no Studio result exists. Qualitatively, lowering power in cores and cache banks should lower temperature, but that is a general expectation and not a replication or validation of the 8.4 C figure. The final verdict is that the paper is not reproducible in Studio from the packet. The independent page/asset review and the adversarial checks are also unresolved, so none of the extracted evidence is independently verified.",
+    "limitations": [
+      "Studio did not run, so no simulated temperatures exist and no quantitative comparison with the 8.4 C, 6.2 C or 2.5% figures is valid.",
+      "The experiment is custom_2d_steady with an empty floorplan and empty power_w, so it fails input validation (1–128 blocks plus power_w required).",
+      "The paper's observable is a maximum reduction versus baseline across nine PARSEC applications from transient simulation; a static steady-state map would differ in regime and aggregation.",
+      "The packet publishes no block-level geometry (x, y, width, height), no per-block power table, and no die, TIM, heat spreader, heat sink or material parameters.",
+      "Power comes from a coupled gem5/McPAT run with temperature-dependent leakage feedback. This runtime behavior and the per-application power traces are not available to Studio.",
+      "The DVFS reaction (about 70 ns) and the 2M-cycle way-gating interval cannot be represented by fixed block powers.",
+      "The LLC size is ambiguous: Table 1 lists 1MB 16-way L2 per tile (16MB total) while Table 3 uses 8MB.",
+      "Cooling and package details are unspecified, so a cooling-boundary mismatch with Studio cannot be excluded; the 47 C ambient is the only boundary value published.",
+      "Evidence entries failed locator validation, and the adversarial code, parameter, config and data checks are unresolved, so the extraction is unverified.",
+      "No linked assets or repositories were found, and figure digitization would give only qualitative layouts without dimensional scale.",
+      "No exact replication is claimed; the verdict is gated as not 2D applicable.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No linked assets, repository, or supplementary data were found in the packet (assets list is empty; artifact search found no links).",
+      "Per-block x_m, y_m, width_m, and height_m for the 16-tile floorplan (cores, caches, TLBs, register files, routers). Only labels and areas derived from McPAT are mentioned, and no coordinates are published.",
+      "Same-scenario power_rows (block name and watts) for the baseline or WaFFLe 8MB scenario. Only per-core regulator power (0.106 W at 0.76 V, 0.168 W at 1.12 V) and stall-period energies are given, not per-block power.",
+      "Die size and thickness, TIM, heat spreader, heat sink, and convection parameters for the HotSpot 6.0 model.",
+      "Material properties used in HotSpot.",
+      "Per-application power traces and the data behind Fig. 16, Fig. 17, and Fig. 29, which would need digitization with stated uncertainty.",
+      "Studio bundled package and material assumptions were not provided in the packet, so none are recorded here.",
+      "Clarification of the 8MB versus 16 x 1MB LLC configuration.",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ]
+  }
+}

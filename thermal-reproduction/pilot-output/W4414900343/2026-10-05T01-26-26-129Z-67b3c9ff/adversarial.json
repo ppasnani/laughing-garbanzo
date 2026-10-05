@@ -1,0 +1,75 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Text on pp.3, 5, 6 and 9-10 supports the described flow: gem5, McPAT, CACTI-3DD memory power and HotSpot 7.0. It also supports the steady-state heat maps for the baseline chip and the three-layer stack with a passive heat sink. This covers the method description only. It does not establish that the paper's results can be reproduced."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The only code links are the Cool-3D GitHub repo (pp.1, 13) and the Splash2 repo (p.14). The paper says the Cool-3D release is 'in the process of being released'. The packet bundles no assets (assets=[]), so no repo content, config, parser or script was inspected. A bare URL is not evidence. The Splash2 repo holds benchmark source, not thermal inputs."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Table VI values (4 cores, 2 GHz, 8-issue OoO, L1 4KB/8KB 2-way, L2 2MB, 8GB, 32 banks, 8 banks/rank, 3 layers) are verified in the text. The unit conversions are arithmetically correct. The L1 I-cache=4KB and D-cache=8KB assignment is inferred from the 'I/D' label and is not confirmed. The decisive thermal parameters are absent: die area, layer thicknesses, heat-sink, spreader and TIM properties, ambient temperature, grid resolution, and per-block power."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot 7.0 config, floorplan files, gem5 or McPAT or CACTI-3DD configs, or front-end input for the baseline are provided in the paper or the packet. Table VI only names a 'passive heat sink'. The heat-sink side and package are not published. The experiment is typed custom_2d_steady with an empty floorplan, which does not match the 3D stacked scenario."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The printed Fig. 9 maxima (395.52, 392.83, 390.57 K) and the 5.87x core0 ratio are present in the pdftotext output. The paper gives no numeric floorplan geometry for the core blocks, L2 or B_0-B_31, and no same-scenario power for any block in the fft baseline. The floorplan and power_w are empty, so the requirement that every block has power is not met. The heat-map figures were seen only as extracted text labels and were not rendered or visually verified."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind / steady_2d_relevant",
+      "reason": "The experiment is typed custom_2d_steady, but the scenario is a 3-layer 3D stack and the extraction itself says steady_2d_relevant=false. The 3D vertical coupling and layer ordering are decisive for the paper's observable, so any 2D framing would misrepresent it. With an empty floorplan, nothing is actually reproduced.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant; Table VI p.9, Fig. 9 p.10"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "The floorplan is empty and power_w is empty. No block has same-scenario power, and no block geometry is published. The paper gives only a labelled layout with no dimensions.",
+      "locator": "Fig. 9 p.10; Sections IV-A, IV-B pp.9-10"
+    },
+    {
+      "field": "thermal_observable (395.52 K) and Fig. 9 maxima",
+      "reason": "The values come from pdftotext figure labels. No rendered page image or digitization was supplied, so the decisive figure was not visually verified. The text layer also shows colorbar ticks up to 394 while the core-layer maximum is 395.52, so the printed maximum cannot be cross-checked against the colorbar.",
+      "locator": "Fig. 9, pdf p.10; checked_assets empty"
+    },
+    {
+      "field": "architecture_L1_icache_size / architecture_L1_dcache_size",
+      "reason": "The split 4KB (I) and 8KB (D) is inferred from the 'I/D' label order. Table VI does not explicitly assign the values. The extraction flags this, but it is still an unsupported inference.",
+      "locator": "Table VI, 'L1 I/D Cache' row, p.9"
+    },
+    {
+      "field": "linked_assets (cool3d_github_repo, cool3d_github_repo_conclusion, splash2_benchmark_repo)",
+      "reason": "None of the three links was supplied as a pinned asset or inspected. The paper says the release is in process. The Splash2 URL is broken across a line in the PDF text, and the cleaned form 'splash2benchmark' is a reconstruction. These links are not evidence of configs, floorplan or power data.",
+      "locator": "pp.1, 13, 14 (ref [46])"
+    },
+    {
+      "field": "physical_mismatches (Studio capability claims)",
+      "reason": "Statements that a Studio model 'may not support' microfluidic layers or cannot represent 3D stacking are about a tool outside the packet. They are unsupported by the paper and unverified. The paper-grounded mismatch is the missing inputs.",
+      "locator": "extraction.physical_mismatches[2], [3], [4]"
+    },
+    {
+      "field": "stacking heat-sink side",
+      "reason": "The baseline text says the core layer is at the bottom and that heat is hard to release from the backside. It never states which side the heat sink is on. The extraction acknowledges this, so the boundary condition is unresolved for any reproduction.",
+      "locator": "Section IV-C p.10; Table VI p.9"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    3,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,570 @@
+{
+  "paper_id": "W3157445859",
+  "paper_title": "Thermal distribution and reliability prediction for 3D Networks-on-Chip",
+  "manifest_status": "downloaded",
+  "source_url": "https://jcsce.vnu.edu.vn/index.php/jcsce/article/view/245/110",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "d9da0f08c0e84e9714a5779d16e1bf07fd897ebcb49344c00d442e2e3d6a03b8",
+  "pdf_pages": 13,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T01:51:12.301Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3157445859",
+    "paper_title": "Thermal distribution and reliability prediction for 3D Networks-on-Chip",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "ref8_patent_dummy_tsv",
+        "url": "https://patents.google.com/patent/US20110215457A1/en",
+        "kind": "reference_url (patent, background only; URL line-wrapped in PDF text)",
+        "paper_page": 12
+      },
+      {
+        "id": "ref11_renesas_reliability_handbook",
+        "url": "https://www.renesas.com/us/en/doc/products/others/r51zz0001ej0250.pdf/",
+        "kind": "reference_url (third-party reliability handbook, background only)",
+        "paper_page": 12
+      },
+      {
+        "id": "ref12_toshiba_reliability_handbook",
+        "url": "https://toshiba.semicon-storage.com/content/dam/toshiba-ss/shared/docs/design-support/reliability/reliability-handbook-tdsc-en.pdf/",
+        "kind": "reference_url (third-party reliability handbook, background only)",
+        "paper_page": 12
+      },
+      {
+        "id": "ref25_nangate_45nm_library",
+        "url": "http://www.nangate.com/",
+        "kind": "reference_url (NanGate Open Cell Library 45nm, design kit used for router synthesis)",
+        "paper_page": 13
+      },
+      {
+        "id": "ref26_freepdk3d45",
+        "url": "http://www.eda.ncsu.edu/wiki/FreePDK3D45:Contents/",
+        "kind": "reference_url (NCSU FreePDK3D45 TSV process kit used for the design)",
+        "paper_page": 13
+      }
+    ],
+    "scenario": {
+      "pdf_page": 9,
+      "figure_or_table": "Figure 10 (with Table 3 on PDF page 8 and Figure 8 on PDF page 7)",
+      "description": "Steady-state HotSpot 6.0 temperature per layer of the TSV-based 3x3x3 3D-NoC, using the Figure 2(c) layout (TSVs surrounding the router logic), under synthetic benchmarks (Matrix, HotSpot 5%/10%, Uniform, Transpose), compared with the Monolithic 3D-NoC. The text reports a highest Monolithic temperature of 351.64 K (78.49 C). Table 3 gives a 290 um x 290 um router floorplan, 220 um x 220 um router logic and 4.06 um x 4.06 um TSVs. Per-router powers appear only as bar charts (Figure 8) and no block-level x/y coordinates are published, so no complete floorplan/power experiment can be extracted. Decisive mismatches for steady 2D use: the scenario is a 3D stack with bonding/TIM layers, TSV thermal modelling, and a monolithic comparison.",
+      "architecture": "3x3x3 3D Network-on-Chip, TSV-based (compared with Monolithic), 3D mesh routers with 7 ports, 45 nm NanGate library, 1.1 V",
+      "workload": "Synthetic NoC traffic benchmarks (Matrix, HotSpot 5% and 10%, Uniform, Transpose) at maximum injection rate; router power from PrimeTime energy per bit combined with flit counts (Equation 3)",
+      "operating_point": "500 MHz, 1.1 V, maximum injection rate; steady-state temperature from HotSpot 6.0; router static power about 7.6e-4 W, energy per bit about 9.25e-13 J/bit",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "HotSpot 6.0 steady-state grid thermal model of the 3x3x3 TSV-based 3D-NoC (Figure 2(c) layout) with a Monolithic comparison. A Black's-model reliability post-process is applied (PDF pages 2, 5, 8, 9).",
+      "optimizer": "None. Layouts (Figure 2(b), Figure 2(c), added thermal TSVs) were compared by hand, with no automated optimizer (PDF pages 4, 9).",
+      "controller": "None. No thermal-management controller is used. Voltage/frequency scaling is only an analytic power-scaling equation (Equations 4 and 5), and transient temperature is mentioned as supported but not evaluated (PDF pages 5, 7).",
+      "benchmark": "Synthetic NoC traffic (Matrix, HotSpot 5%, HotSpot 10%, Uniform, Transpose) at 500 MHz, 1.1 V and maximum injection rate, with gem5 garnet 2.0 PARSEC traffic as the second workload. Router power comes from PrimeTime energy per bit (9.2546e-13 J/bit) combined with flit counts (PDF pages 7, 9)."
+    },
+    "thermal_observable": {
+      "value": 351.64,
+      "unit": "K",
+      "location": "Hottest point of the Monolithic 3D-NoC under the synthetic benchmarks (Figure 10). The text does not name the layer or router.",
+      "aggregation": "Maximum steady-state HotSpot 6.0 temperature reported in the text for the Monolithic system. The aggregation over routers, layers and benchmarks is not fully specified. The text gives 351.64 K = 78.49 C.",
+      "pdf_page": 9
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The scenario is a 3D stack with 3 layers, bonding/TIM layers, and TSV-based inter-layer heat paths. A steady 2D single-die thermal model cannot represent it.",
+        "essential": true
+      },
+      {
+        "reason": "The Monolithic versus TSV-based comparison depends on removing the bonding layers and on the TSV effective thermal resistivity (0.0226 mK/W from Table 3). A standard 2D package does not have these.",
+        "essential": true
+      },
+      {
+        "reason": "The heatsink sits on top of the stack. Lower layers are cooled only through upper layers and TSVs, so the temperature differences between layers are 3D effects.",
+        "essential": true
+      },
+      {
+        "reason": "The reported observable is a per-layer temperature of a 3D stack. Reliability results use Black's model with a Copper TSV activation energy, which is not a thermal solver output.",
+        "essential": true
+      },
+      {
+        "reason": "Per-router powers are published only as bar charts (Figure 8). Power comes from the router energy-per-bit model scaled by flit counts, not from a published per-block power table.",
+        "essential": true
+      },
+      {
+        "reason": "The original paper has no optimizer or controller (no DTM, no placement optimization), so there is nothing to map onto an optimizer or controller in the Studio.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "No packet assets are provided (assets list is empty). No code, HotSpot config, floorplan (.flp), power trace (.ptrace) or layer-configuration file is bundled.",
+      "No block-level x_m, y_m, width_m and height_m for the full 3x3x3 floorplan. Only the Table 3 router (290 um x 290 um), router logic (220 um x 220 um) and TSV (4.06 um x 4.06 um) sizes are published, with no placement coordinates.",
+      "No numeric same-scenario per-router power_rows in watts. Figure 8 gives bar charts only, and the totals depend on traffic.",
+      "No layer thicknesses, material properties other than the Table 3 resistivities, heatsink or package parameters, or ambient temperature for the HotSpot 6.0 setup.",
+      "No numeric temperature table for Figure 10. Per-layer values for TSV-based and Monolithic systems exist only as charts, apart from the 351.64 K maximum quoted in the text.",
+      "The linked URLs (NanGate library, FreePDK3D45, reliability handbooks, patent) are reference or background links and do not prove that any experiment input files exist.",
+      "The bundled Studio package/material assumptions were not provided in the packet and cannot be recorded."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "thermal_observable.max_monolithic_temperature",
+        "block_name": null,
+        "source_value": 351.64,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 351.64,
+        "pdf_page": 9,
+        "asset_id": null,
+        "locator": "Section 4.2 text before Figure 10: 'highest temperature of Monolithic 3D-NoC even reaches 351.64 K (78.49°C)'",
+        "provenance": "Paper text, maximum steady-state HotSpot 6.0 temperature for the Monolithic 3D-NoC under synthetic benchmarks. Layer, router and benchmark not named.",
+        "uncertainty": "Aggregation over routers, layers and benchmarks is not fully specified. The Celsius value is the paper's own conversion."
+      },
+      {
+        "field": "router_floorplan_width",
+        "block_name": "router_floorplan",
+        "source_value": 290,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00029,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'Router floor-plan 290 um x 290 um'",
+        "provenance": "Paper table, Figure 2(c) layout. No placement x/y coordinates are published.",
+        "uncertainty": "Size only. Cannot form a floorplan without x_m and y_m."
+      },
+      {
+        "field": "router_floorplan_height",
+        "block_name": "router_floorplan",
+        "source_value": 290,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00029,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'Router floor-plan 290 um x 290 um'",
+        "provenance": "Paper table.",
+        "uncertainty": "Size only. No position published."
+      },
+      {
+        "field": "router_logic_width",
+        "block_name": "router_logic",
+        "source_value": 220,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00022,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'Router logic area 220 um x 220 um'",
+        "provenance": "Paper table.",
+        "uncertainty": "Size only. Position inside the 290 um tile is not given."
+      },
+      {
+        "field": "router_logic_height",
+        "block_name": "router_logic",
+        "source_value": 220,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00022,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'Router logic area 220 um x 220 um'",
+        "provenance": "Paper table.",
+        "uncertainty": "Size only."
+      },
+      {
+        "field": "tsv_width",
+        "block_name": "tsv",
+        "source_value": 4.06,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00000406,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'One TSV area 4.06 um x 4.06 um'",
+        "provenance": "Paper table.",
+        "uncertainty": "Single TSV size. TSV positions and counts are not published as coordinates."
+      },
+      {
+        "field": "tsv_height",
+        "block_name": "tsv",
+        "source_value": 4.06,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00000406,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'One TSV area 4.06 um x 4.06 um'",
+        "provenance": "Paper table.",
+        "uncertainty": "Size only."
+      },
+      {
+        "field": "router_static_power",
+        "block_name": "router",
+        "source_value": 0.000766,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.000766,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Section 4.1 text: 'static power and energy per data bit are 7.66e-4 W and 9.246e-13 J/bit'",
+        "provenance": "Paper text, PrimeTime single-router heuristic benchmark at 500 MHz, 1.1 V.",
+        "uncertainty": "Table 2 gives 7.64e-4 W for the same quantity, so the paper is internally inconsistent. Not a per-block power row for the stacked scenario."
+      },
+      {
+        "field": "router_static_power_table2",
+        "block_name": "router",
+        "source_value": 0.000764,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.000764,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 2, row 'Static Power (at 500MHz) 7.64e-4 Watt'",
+        "provenance": "Paper table.",
+        "uncertainty": "Differs from 7.66e-4 W in the text. Single router, not the scenario per-router power."
+      },
+      {
+        "field": "router_dynamic_power",
+        "block_name": "router",
+        "source_value": 0.01028,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 0.01028,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 2, row 'Dynamic Power (at 500MHz) 1.028e-2 Watt'",
+        "provenance": "Paper table, single-router heuristic benchmark.",
+        "uncertainty": "Not the Figure 8 synthetic-benchmark per-router power. Cannot be used as a same-scenario power row."
+      },
+      {
+        "field": "energy_per_data_bit",
+        "block_name": "router",
+        "source_value": 9.246e-13,
+        "source_unit": "J/bit",
+        "conversion_factor": 1,
+        "normalized_value": 9.246e-13,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Section 4.1 text and Table 2 (9.2546e-13 J/bit in table)",
+        "provenance": "Paper text and table.",
+        "uncertainty": "Text gives 9.246e-13 and Table 2 gives 9.2546e-13 J/bit, a small inconsistency."
+      },
+      {
+        "field": "operating_frequency",
+        "block_name": null,
+        "source_value": 500,
+        "source_unit": "MHz",
+        "conversion_factor": 1000000,
+        "normalized_value": 500000000,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 2 'Operating Frequency 500 MHz'; Section 4.2 synthetic benchmarks kept at 500 MHz",
+        "provenance": "Paper table and text.",
+        "uncertainty": "PARSEC results are scaled to 2 GHz, whereas the synthetic scenario uses 500 MHz."
+      },
+      {
+        "field": "supply_voltage",
+        "block_name": null,
+        "source_value": 1.1,
+        "source_unit": "V",
+        "conversion_factor": 1,
+        "normalized_value": 1.1,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 2, row 'Voltage 1.1 V'",
+        "provenance": "Paper table.",
+        "uncertainty": null
+      },
+      {
+        "field": "copper_thermal_resistivity",
+        "block_name": "tsv",
+        "source_value": 0.0025,
+        "source_unit": "mK/W",
+        "conversion_factor": 1,
+        "normalized_value": 0.0025,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'Copper thermal resistivity 0.0025mK/W'",
+        "provenance": "Paper table.",
+        "uncertainty": "Unit is printed as 'mK/W'. Presumably m·K/W, but this is not verified."
+      },
+      {
+        "field": "tim_thermal_resistivity",
+        "block_name": null,
+        "source_value": 0.25,
+        "source_unit": "mK/W",
+        "conversion_factor": 1,
+        "normalized_value": 0.25,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'TIM thermal resistivity 0.25mK/W'",
+        "provenance": "Paper table.",
+        "uncertainty": "Unit as printed. Presumably m·K/W."
+      },
+      {
+        "field": "tsv_area_thermal_resistivity",
+        "block_name": "tsv",
+        "source_value": 0.0226,
+        "source_unit": "mK/W",
+        "conversion_factor": 1,
+        "normalized_value": 0.0226,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table 3, row 'TSV area thermal resistivity 0.0226mK/W'; Section 4.2 text",
+        "provenance": "Paper table and text.",
+        "uncertainty": "Unit as printed. Presumably m·K/W."
+      },
+      {
+        "field": "asset_availability",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 12,
+        "asset_id": null,
+        "locator": "References [8], [11], [12] (PDF page 12); [25], [26] (PDF page 13)",
+        "provenance": "Linked resources are the dummy-TSV patent, Renesas and Toshiba reliability handbooks, the NanGate 45nm library and FreePDK3D45. The packet contains no assets.",
+        "uncertainty": "These are background or design-kit references and do not prove any floorplan, power or HotSpot input files exist. No Studio package/material assumptions were provided."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "Text-supported: HotSpot 6.0 steady grid (p2, p5), Black's model (p2, p6), Eq. 3 power from PrimeTime energy/bit times flit counts (p5, p7), manual layout comparison with no optimizer or controller (p4, p9), and transient temperature mentioned but not evaluated (p5). But experiment.kind is 'custom_2d_steady' while steady_2d_relevant is false and the extraction lists essential 3D/TSV/bonding-layer/monolithic mismatches. A 3D stack must not be labelled a 2D steady reproduction. The Figure 10 comparison was not visually verified."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The packet has no assets and no code, HotSpot config, .flp, .ptrace or layer files. The five linked URLs (patent, Renesas and Toshiba handbooks, NanGate, FreePDK3D45) are bare reference links. They were not opened and prove nothing about experiment inputs. The execution-time note (C++/Python/Bash, p10) names no repo."
+      },
+      "parameters": {
+        "status": "contradicted",
+        "note": "Router static power is 7.66e-4 W in the p7 text but 7.64e-4 W in Table 2 (p7). Energy per bit is 9.246e-13 in the text but 9.2546e-13 in Table 2. Table 2 energy 2.9022496e-8 J / 31360 bits = 9.2547e-13, so the extraction's normalized 9.246e-13 follows the text typo rather than the arithmetically consistent value. Table 3 TSV area '35,700 um2 / 10.16%' is inconsistent with a 290x290 um tile (10.16% is about 8,545 um2) and is unexplained. Table 3 resistivities are plausible as m·K/W: Cu 0.0025 corresponds to 400 W/mK. The extraction still labels them unverified. Table 1 vs text: 1/0.011537 is about 87x, not the stated 220x at 30 C."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No layer thicknesses, bonding-layer thickness, heatsink or package parameters, ambient temperature, HotSpot layer-config file, or Studio package/material assumptions (studio_assumptions is empty). Only the Table 3 sizes and resistivities are given. Floorplan x/y placement is absent, and Figure 2(c) and Figure 4 were not visually inspected."
+      },
+      "data": {
+        "status": "missing",
+        "note": "No same-scenario per-router power in W for any floorplan block. Figure 8 (p8) and Figure 10 (p9) values exist only as charts, and no figure images were supplied, only pdftotext output. The one decisive number, 351.64 K = 78.49 C (p9 text), is verified as text and 351.64-273.15 = 78.49. Its layer, router and benchmark are unspecified. The floorplan list and power_w are empty, so the scenario cannot be matched."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The extraction sets kind 'custom_2d_steady' with empty floorplan and power_w, yet it declares steady_2d_relevant=false and lists essential 3D mismatches (3 layers, bonding/TIM, TSV paths, top heatsink, monolithic comparison). The experiment is a 3D/TSV scenario mislabelled as 2D steady, and it is also empty.",
+        "locator": "extraction.experiment vs scenario.steady_2d_relevant and physical_mismatches"
+      },
+      {
+        "field": "router_static_power",
+        "reason": "The text (7.66e-4 W) and Table 2 (7.64e-4 W) disagree. The extraction records both but normalizes the text value to a single block 'router'. It does not resolve the conflict and the value is not a stacked-scenario per-block power.",
+        "locator": "PDF p7, Section 4.1 text and Table 2"
+      },
+      {
+        "field": "energy_per_data_bit",
+        "reason": "The extraction uses 9.246e-13 J/bit, but Table 2 energy / bits gives 9.2547e-13, which matches the table value. The chosen normalized value is likely a text typo.",
+        "locator": "PDF p7, Section 4.1 text, Table 2 and the 7x7x2x10x32=31360-bit calculation"
+      },
+      {
+        "field": "thermal_observable.max_monolithic_temperature",
+        "reason": "The 351.64 K figure is text-supported, but the scenario is described as per-layer Figure 10. Figure 10 was not visually verified, and the layer, benchmark and aggregation are unspecified. The paper also says Monolithic reached 351.64 K without naming the benchmark, and the TSV-based counterpart value is not provided.",
+        "locator": "PDF p9, Section 4.2 text before Figure 10"
+      },
+      {
+        "field": "scenario.figure_page",
+        "reason": "Figure 8 is cited as being on PDF p7. Its caption and chart appear on p8, and only the lead-in text is on p7. The per-router power charts were never visually confirmed.",
+        "locator": "PDF p7-8, Figure 8"
+      },
+      {
+        "field": "floorplan/power_rows",
+        "reason": "The extraction claims no block coordinates or numeric per-router powers are published. This negative claim rests on text extraction only. The floorplan images (Figures 2, 4) and bar charts were not viewed, so it is unverified and the floorplan is incomplete.",
+        "locator": "PDF p4-6 Figures 2 and 4; p7-8 Figure 8"
+      },
+      {
+        "field": "linked_assets",
+        "reason": "artifact_search_status 'checked_links_found' overstates things: the URLs are reference and background links, none were fetched, and no asset is in the packet. The patent URL was reconstructed from a line-wrapped PDF string, and the cited patent number (10,181,454) does not match the URL's application number.",
+        "locator": "PDF p12 ref [8], refs [11],[12]; p13 refs [25],[26]"
+      },
+      {
+        "field": "unit_conversion",
+        "reason": "The mK/W units in Table 3 are marked 'presumably', but they could be verified by physical plausibility (Cu 0.0025 m·K/W = 400 W/mK). Conversion factors of 1e-6 for um were not independently checked against figure geometry. The Table 3 TSV area and utilization entry is internally inconsistent with the 290 um tile.",
+        "locator": "PDF p8, Table 3"
+      },
+      {
+        "field": "paper_internal_inconsistency",
+        "reason": "Table 1 gives about 87x for 30 C vs 70 C, while the text says 220x. The text also says 'less than 2%' while Table 1 shows 1.15%. The Black's-model parameters (Ea, n, J) are not given, so the reliability data cannot be reproduced.",
+        "locator": "PDF p6, Section 3.4 and Table 1"
+      }
+    ],
+    "checked_pdf_pages": [
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3157445859",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No packet assets are provided (assets list is empty). No code, HotSpot config, floorplan (.flp), power trace (.ptrace) or layer-configuration file is bundled.",
+      "No block-level x_m, y_m, width_m and height_m for the full 3x3x3 floorplan. Only the Table 3 router (290 um x 290 um), router logic (220 um x 220 um) and TSV (4.06 um x 4.06 um) sizes are published, with no placement coordinates.",
+      "No numeric same-scenario per-router power_rows in watts. Figure 8 gives bar charts only, and the totals depend on traffic.",
+      "No layer thicknesses, material properties other than the Table 3 resistivities, heatsink or package parameters, or ambient temperature for the HotSpot 6.0 setup.",
+      "No numeric temperature table for Figure 10. Per-layer values for TSV-based and Monolithic systems exist only as charts, apart from the 351.64 K maximum quoted in the text.",
+      "The linked URLs (NanGate library, FreePDK3D45, reliability handbooks, patent) are reference or background links and do not prove that any experiment input files exist.",
+      "The bundled Studio package/material assumptions were not provided in the packet and cannot be recorded.",
+      "Linked asset ref8_patent_dummy_tsv is not pinned and available",
+      "Linked asset ref11_renesas_reliability_handbook is not pinned and available",
+      "Linked asset ref12_toshiba_reliability_handbook is not pinned and available",
+      "Linked asset ref25_nangate_45nm_library is not pinned and available",
+      "Linked asset ref26_freepdk3d45 is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The scenario is a 3D stack with 3 layers, bonding/TIM layers, and TSV-based inter-layer heat paths. A steady 2D single-die thermal model cannot represent it.",
+        "essential": true
+      },
+      {
+        "reason": "The Monolithic versus TSV-based comparison depends on removing the bonding layers and on the TSV effective thermal resistivity (0.0226 mK/W from Table 3). A standard 2D package does not have these.",
+        "essential": true
+      },
+      {
+        "reason": "The heatsink sits on top of the stack. Lower layers are cooled only through upper layers and TSVs, so the temperature differences between layers are 3D effects.",
+        "essential": true
+      },
+      {
+        "reason": "The reported observable is a per-layer temperature of a 3D stack. Reliability results use Black's model with a Copper TSV activation energy, which is not a thermal solver output.",
+        "essential": true
+      },
+      {
+        "reason": "Per-router powers are published only as bar charts (Figure 8). Power comes from the router energy-per-bit model scaled by flit counts, not from a published per-block power table.",
+        "essential": true
+      },
+      {
+        "reason": "The original paper has no optimizer or controller (no DTM, no placement optimization), so there is nothing to map onto an optimizer or controller in the Studio.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "3677ff5998271c46a4efe1f01590e4d19cbf1421104d5a0e0657d8d8b410b4c1",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable. Studio did not run: the simulation status is skipped, the gate has simulation_allowed false, and comparison_valid is false. The reason given is that a custom experiment needs 1–128 blocks and a power_w object, and the extraction supplied an empty floorplan and empty power map. The paper scenario is the steady-state HotSpot 6.0 per-layer temperature of a TSV-based 3x3x3 3D-NoC (Figure 10), compared with a Monolithic 3D-NoC. The only numeric observable is the text-quoted maximum Monolithic temperature of 351.64 K (78.49 C). Its layer, router and benchmark are not named, and the aggregation is not fully specified. The intended experiment kind was custom_2d_steady, so even if it had run it would have produced a steady result with no transient trace and no bundled EV6/GCC adaptation. There is therefore no Studio temperature to compare with 351.64 K, and no numerical agreement or disagreement can be claimed. The 3D stack physics (three layers, bonding/TIM layers, TSV heat paths, a top-mounted heatsink, a monolithic comparison) cannot be represented by a single-die 2D steady model. The paper's reliability results use Black's model and are not thermal solver outputs. Only qualitative remarks are defensible: in the paper, layer position and TSV or bonding-layer treatment drive temperature differences, which a 2D model would not capture. This assessment does not replicate or validate the paper, and it makes no claim of exact replication.",
+    "limitations": [
+      "Studio was not executed, so no simulated temperature, map or trace exists for this scenario.",
+      "The 2D screening verdict is not_2d_applicable. The input gate and scientific gate both failed, independent verification is absent, and comparison_valid is false.",
+      "The reported 351.64 K maximum is for the Monolithic 3D-NoC at an unspecified layer, router and benchmark, with unclear aggregation. It cannot be matched to any 2D output in location, aggregation, regime or boundary conditions.",
+      "Essential physical mismatches: a 3-layer stack, bonding/TIM layers, TSV effective resistivity, a top heatsink with lower layers cooled through upper layers, and a per-layer observable. None is representable by a steady 2D single-die model.",
+      "The inputs are insufficient: no block placement coordinates, no numeric per-router power (Figure 8 is a bar chart only), no layer thicknesses, package or heatsink parameters or ambient temperature, no numeric Figure 10 table, and no packet assets such as HotSpot configs, .flp or .ptrace files.",
+      "The evidence items lack valid page or pinned asset locators, and the adversarial methods, code, parameters, config and data checks are unresolved. The reviewer did not approve all extracted claims, and the independent page/asset review is pending.",
+      "The linked URLs are background references or design kits (patent, reliability handbooks, NanGate, FreePDK3D45), are not pinned, and do not show that experiment input files exist.",
+      "The paper has internal inconsistencies: static power is 7.66e-4 W in the text and 7.64e-4 W in Table 2, and energy per bit is 9.246e-13 in the text and 9.2546e-13 J/bit in the table. The Table 3 resistivity units are printed as mK/W and are unverified.",
+      "The paper has no optimizer or controller, so no Studio optimizer or controller mapping applies. The studio_assumptions list is empty and the bundled Studio package/material assumptions are unknown.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "No packet assets are provided (assets list is empty). No code, HotSpot config, floorplan (.flp), power trace (.ptrace) or layer-configuration file is bundled.",
+      "No block-level x_m, y_m, width_m and height_m for the full 3x3x3 floorplan. Only the Table 3 router (290 um x 290 um), router logic (220 um x 220 um) and TSV (4.06 um x 4.06 um) sizes are published, with no placement coordinates.",
+      "No numeric same-scenario per-router power_rows in watts. Figure 8 gives bar charts only, and the totals depend on traffic.",
+      "No layer thicknesses, material properties other than the Table 3 resistivities, heatsink or package parameters, or ambient temperature for the HotSpot 6.0 setup.",
+      "No numeric temperature table for Figure 10. Per-layer values for TSV-based and Monolithic systems exist only as charts, apart from the 351.64 K maximum quoted in the text.",
+      "The linked URLs (NanGate library, FreePDK3D45, reliability handbooks, patent) are reference or background links and do not prove that any experiment input files exist.",
+      "The bundled Studio package/material assumptions were not provided in the packet and cannot be recorded.",
+      "Linked asset ref8_patent_dummy_tsv is not pinned and available",
+      "Linked asset ref11_renesas_reliability_handbook is not pinned and available",
+      "Linked asset ref12_toshiba_reliability_handbook is not pinned and available",
+      "Linked asset ref25_nangate_45nm_library is not pinned and available",
+      "Linked asset ref26_freepdk3d45 is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ]
+  }
+}

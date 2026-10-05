@@ -1,0 +1,86 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The DTaPO description matches pp. 3-8: threshold-based heuristic (Algorithm 1, Eq. 3), cluster-based one-way migration plus stepwise DVFS, and the LifeSim chain of Sniper, McPAT and HotSpot. Two caveats. The conclusion (p. 15) says tasks are swapped between active and dark cores, while Sections 1 and 3 say migration is one-way, and the extraction does not flag this. The CBGA-style package is inferred, not stated (see config)."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets, and pp. 1-18 contain no code, data or repository URL. The only URLs are bibliographic references. The extraction correctly reports no linked artifacts, but this leaves nothing to verify at a pinned version."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The main-experiment values are verified: 64 cores, 4 GHz, 2.95 mm tile, eps 5 C, step 200 MHz, Fthr 3.6 GHz, Tthr 60-85 C, 100 us wake-up, 1000-cycle penalty, ten runs, and the Table 4 values. Gaps and omissions: the control period has no value. The OSP comparison on p. 15 uses a different setting (delta-f 200, eps 0.5, TDP 42 W), and the extraction omits eps 0.5 and does not note that the 200 there is unitless. No per-core power in W is given for any scenario."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The Table 4 HotSpot values are transcribed correctly. The evaluated package being 'CBGA-style' is an inference from the generic Figure 6, which is adapted from the HotSpot paper. The spreader and heat-sink dimensions, the full HotSpot configuration file and the control period are all absent. No Studio package or assumptions were supplied, yet the extraction compares against one."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No per-core or per-block power in W exists for any scenario, no block coordinates exist, and the McPAT and Sniper traces are not available. The floorplan and power_w entries are empty, so no floorplan block has same-scenario power. The Figure 10 numeric values and the absolute peak temperatures in Figures 9 and 12 are not digitized, and only garbled pdftotext output was supplied for them, so no decisive figure was visually verified. The thermal observable value is null."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is labelled custom_2d_steady while the extraction itself states steady_2d_relevant=false. The paper's scenario is a closed-loop transient with task migration, DVFS and wake-up, so a steady-state 2D label mischaracterizes it. The floorplan is also empty.",
+      "locator": "extraction.experiment.kind vs scenario.steady_2d_relevant; paper Sec 3.2-3.3, 4.1 (pp. 6-10)"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "Both are empty. There are no block coordinates, no per-core power in W, and no power for L2 or L3 in any scenario. The scenario cannot be reproduced as a floorplan-and-power experiment, and the dynamic power-trace dependence is a decisive missing feature.",
+      "locator": "p. 9 Figure 4 and Sec 4.1 McPAT/HotSpot paragraph (p. 10); extraction missing_inputs"
+    },
+    {
+      "field": "original_setup.solver / architecture (CBGA-style stack)",
+      "reason": "The paper only says HotSpot is based on the stacked-layer packaging scheme (Figure 6, adapted from the HotSpot paper). It does not state that the evaluated system uses a CBGA package, so presenting the simulated package as CBGA-style is an unsupported inference.",
+      "locator": "p. 9 Sec 4.1 text referencing Figure 6; p. 10 Figure 6 caption; Table 4 p. 11"
+    },
+    {
+      "field": "original_setup.controller (epsilon)",
+      "reason": "The extraction gives eps = 5 C only. The OSP comparison sets delta-f = 200 and eps = 0.5 (units unstated), which is a different configuration. The Figure 12 results and the 13.6 C claim come from this configuration, and the extraction does not distinguish it.",
+      "locator": "p. 15 Sec 4.2 OSP paragraph; p. 10 Sec 4.1 parameter sentence"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "The value is null. Figures 10, 9 and 12 hold the decisive data, and only garbled text was supplied for them; no visual verification or digitization was done. The aggregation claim, a 90th-percentile maximum averaged over four applications and ten runs, is partly inferred. The text says only that the 10th and 90th percentiles represent min and max in Figure 10 and that the average peak is reduced by 10.8 C. The 'up to' wording appears in the abstract but not in Sec 4.2.",
+      "locator": "p. 12-13 Figures 9-11; p. 15 Sec 4.2; p. 1 abstract"
+    },
+    {
+      "field": "original_setup.controller (one-way migration)",
+      "reason": "The extraction asserts one-way migration only. The paper contradicts itself: the conclusion and an earlier passage say tasks are swapped among active and dark cores, while Sections 1 and 3 say they move only in one direction.",
+      "locator": "p. 11 Sec 4.2 (Figure 7 text); p. 15 Conclusions vs p. 2 and p. 6"
+    },
+    {
+      "field": "studio_assumptions / physical_mismatches",
+      "reason": "The mismatch notes reference a bundled Studio package that was not in the packet. The comparison to Studio absolute temperatures is therefore unsupported, and the studio assumptions list is empty.",
+      "locator": "extraction.physical_mismatches[3]; evidence studio_package_material_assumptions"
+    },
+    {
+      "field": "control_period_length / spreader and sink geometry",
+      "reason": "These are correctly flagged as missing, but they leave the transient HotSpot setup underdetermined, so the config cannot be considered resolved.",
+      "locator": "p. 10 Sec 4.1 'control period'; Table 4 p. 11"
+    },
+    {
+      "field": "code/data assets",
+      "reason": "There are no linked assets and no pinned version. The packet has no code, data or configuration evidence, so the code and data checks cannot be resolved.",
+      "locator": "packet.assets=[]; pp. 16-18 back matter"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18
+  ],
+  "checked_assets": []
+}

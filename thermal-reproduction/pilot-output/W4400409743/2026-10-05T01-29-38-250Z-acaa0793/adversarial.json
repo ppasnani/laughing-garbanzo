@@ -1,0 +1,103 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The 3D steady Icepak/FLUENT, realizable k-epsilon setup is stated on pdf pages 3 and 5-7. The paper contradicts itself on the flow regime: Table 2 says 'Axisymmetric' and the assumptions list says 'Laminar flow', while the model is a 3D k-epsilon case. The extraction records this as a non-essential mismatch, but it means the solver description is not a consistent method. The case is 3D forced-air CFD, so it is not a 2D reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet lists no assets and the Data availability statement (pdf page 11) says no data was used. There is no code, repository, Icepak project or geometry file to verify. The extraction's checked_no_links status matches this, but nothing can be reproduced from code."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "The chip size (2.2 x 2.2 x 0.1 cm), 8 W, 0.1 m/s, 298 K and 36 fins match Tables 1 and 3. The heat sink is 4x4x1.7 cm in Table 1 but 3x3.5x2 cm in the text. The fin is D=0.2 cm in Table 1 but radius 0.16 cm and height 1.5 cm in the text. The base height is 0.2 cm in Table 1 against a 2 cm third dimension in the text. Tin is 298 K in Table 3 but 295 K in the Fig. 9 discussion. Fin pitch, cabinet axis assignment and material properties are not given. No self-consistent parameter set exists."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The extraction's experiment has an empty floorplan and empty power_w, and the chip x/y position is null. The packet has no coordinates for the chip or heat sink, no block geometry file and no Studio configuration, so no same-scenario power-per-block mapping can be checked. The extraction claims Fig. 1 (c,d) has no coordinates, but only pdftotext output is in the packet, so that figure was not visually inspected."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The text-table values (Table 6: 126.97 C for IA circular, Table 3, Table 4, Table 5) are present in the extracted text. The decisive figures (Fig. 1, Figs. 6-12) are not supplied as images, so no digitization or visual verification was possible. The Rth value is not tabulated and there are no raw data. The Table 7 pressure drop has no unit. The temperature location is ambiguous: 'Source' in Table 6 versus 'fin base' in Eq. 8."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind / steady_2d_relevant",
+      "reason": "The experiment is labelled custom_2d_steady with an empty floorplan and empty power map, while the scenario is a 3D forced-air pin-fin CFD case and steady_2d_relevant is false. The label implies a 2D reproduction that the evidence does not support. The decisive 3D, airflow and pin-fin features cannot be reduced to 2D without invented effective boundary conditions.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant; pdf pages 3 and 5-7"
+    },
+    {
+      "field": "chip_x_m / chip_y_m",
+      "reason": "The chip coordinates are null, so no floorplan block can be placed and per-block power cannot be tied to geometry. The assertion that Fig. 1 has no coordinates was not visually verified because no figure image is in the packet.",
+      "locator": "pdf page 3, Table 1 and Fig. 1(c,d)"
+    },
+    {
+      "field": "heat_sink_dimensions_table1_cm / heat_sink_dimensions_text_cm",
+      "reason": "The paper contradicts itself (4x4x1.7 cm against 3x3.5x2 cm). The extraction records only the first value of each triplet, so the evidence rows are incomplete. The base height of 0.2 cm and the text's 2 cm are also inconsistent. No decisive geometry can be approved.",
+      "locator": "pdf page 3 Table 1; pdf page 5 Section 2.1"
+    },
+    {
+      "field": "fin_diameter_table1 / fin_radius_text",
+      "reason": "Fin D=0.2 cm (Table 1) conflicts with radius 0.16 cm, i.e. D=0.32 cm (text). Fin height is given only in the text (1.5 cm), and fin pitch for the selected case is not given.",
+      "locator": "pdf page 3 Table 1; pdf page 5 Section 2.1"
+    },
+    {
+      "field": "fin_count locator",
+      "reason": "The locator says the mesh study on pdf page 7 describes 6 rows x 6 columns. The 6x6 layout with a 0.4 cm gap appears only in the Section 2.4 comparison on pdf page 8, and the page-7 mesh study mentions only 36 inline circular pins. The locator is misattributed, and the pitch for the Table 6 case is still unsupported.",
+      "locator": "pdf page 7 Section 2.3; pdf page 8 Section 2.4"
+    },
+    {
+      "field": "inlet_air_temperature_K",
+      "reason": "298 K (Table 3) conflicts with the roughly 295 K stated in Section 3.1. This is flagged as an uncertainty but not resolved. It affects the reference temperature for any delta T or Rth.",
+      "locator": "pdf page 4 Table 3; pdf page 8 Section 3.1"
+    },
+    {
+      "field": "source_temperature_inline_circular_degC",
+      "reason": "The 126.97 C value is in Table 6, but the observable location is ambiguous (chip 'Source' versus 'maximum temperature on the fin base' in Eq. 8), and the heat load is described as applied at the sink bottom wall. The case is also inconsistent with the Table 5 validation numbers (IA 106.474 C) for an apparently similar 6x6 layout. The unit is garbled in the text extraction ('C◦').",
+      "locator": "pdf page 11 Table 6; pdf page 6 Eqs. 7-8 and Table 5; pdf page 7 Section 2.2"
+    },
+    {
+      "field": "pressure_drop_inline_circular",
+      "reason": "The 0.12 value has no unit, so it cannot be used as an observable.",
+      "locator": "pdf page 11 Table 7"
+    },
+    {
+      "field": "validation_error_adhikari_percent",
+      "reason": "The validation covers a rectangular-fin experiment from another study. The 3.68% is a bound read from text, and Fig. 6 data were not visually verified or digitized.",
+      "locator": "pdf page 8 Section 2.4; pdf page 6 Fig. 6"
+    },
+    {
+      "field": "thermal_resistance_definition",
+      "reason": "The Rth number is not tabulated, and Fig. 12 was not visually verified. The extraction's statement that Rth appears only graphically is unverified from the supplied text.",
+      "locator": "pdf page 10 Fig. 12; pdf page 6 Eqs. 7-8"
+    },
+    {
+      "field": "mesh_cells_circular",
+      "reason": "Table 4 gives node and cell counts, but the grid-independence case (case four in Fig. 4) was not tied to those counts. Section 3.4 also cites 'Tables 4 and 6' for temperature data, although Table 4 is the mesh table, so the paper's own table referencing is inconsistent.",
+      "locator": "pdf page 4 Table 4; pdf page 7 Section 2.3; pdf page 11"
+    },
+    {
+      "field": "missing_inputs / studio_assumptions",
+      "reason": "studio_assumptions is empty and missing_inputs refers to 'bundled Studio package/material assumptions' that are not in the packet. These cannot be verified or cited. Chip, substrate and interface materials and properties are absent from the paper.",
+      "locator": "extraction.studio_assumptions; extraction.missing_inputs"
+    },
+    {
+      "field": "checked_assets",
+      "reason": "The packet has no figure images or linked assets, so every decisive figure is unverified.",
+      "locator": "packet.assets=[]; pdf pages 3, 6-10"
+    }
+  ],
+  "checked_pdf_pages": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11
+  ],
+  "checked_assets": []
+}

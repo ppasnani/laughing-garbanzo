@@ -1,0 +1,87 @@
+{
+  "paper_id": "W7167828524",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block-level floorplan (x_m, y_m, width_m, height_m) for the 5x4 core / 1x2 chiplet design: core, chiplet and I/O die positions and sizes. Only ICS 2.3 mm, interposer area constraint 300 mm2 and area percentages from Fig. 10(a) (about 49% compute, 17.6% cooling area) are published, with no absolute coordinates.",
+    "Per-block power rows in watts for the selected scenario. Only total energy of 59.8 mJ and delay of 2.01 ms are reported; average power could be derived but no published rule allocates it per block.",
+    "Thermal material parameters (conductivity, thickness) for TIM, heat spreader, heat sink, interposer and silicon. These are only referenced to TESA [12] and HotSpot 6.0 defaults.",
+    "Source code, configuration files, HotSpot input files (.flp, .ptrace, config), and datasets. The packet contains no linked assets and the paper has no availability statement, so artifact_search_status is checked_no_links.",
+    "Exact location and value of the hotspot in Fig. 10(b). Only the reported peak temperature of 74.8 C is available, with no digitized figure data.",
+    "Inconsistency to note: the Table IV NoC bandwidth for the selected design is 240 GB/s, while the Fig. 8 text mentions a 256 GB/s variant. The scenario uses the Table IV value.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper states that 3D stacking is future work. The model is 2.5D with compute dies and an I/O die on a passive interposer, so it cannot represent 3D heterogeneous integration or TSV/bonding thermal paths.",
+      "essential": true
+    },
+    {
+      "reason": "Interposer and package detail is incomplete. NoP power is assumed uniformly distributed over the interposer, and no interposer thickness, material or micro-bump/BEOL thermal parameters are given. Cooling parameters are taken from TESA [12] by reference only (convection resistance 0.4 K/W).",
+      "essential": true
+    },
+    {
+      "reason": "The workload is thermally static. HotSpot uses time-averaged component power from an analytical model (energy/delay), and the networks run sequentially. There is no transient thermal simulation and no workload-phase temperature trace, so the reported peak temperature is a steady-state estimate of average power.",
+      "essential": true
+    },
+    {
+      "reason": "The thermal-aware greedy mapping policy (high-power tasks on corner cores) and the TED+SCBO optimizer are not reproducible in a steady-state 2D Studio solve. Only a single fixed design with given power can be evaluated, not the DSE loop or mapping.",
+      "essential": false
+    },
+    {
+      "reason": "Per-block power values in W and block coordinates and sizes are not published for the selected design. Only totals are given: energy 59.8 mJ over 2.01 ms delay, and areas only as percentages in Fig. 10(a). Block-level power and geometry therefore cannot be reproduced from the packet.",
+      "essential": true
+    },
+    {
+      "reason": "No reliability or electromigration analysis is included; thermal constraints are limited to the peak-temperature bound.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Steady-state 2D conduction in the bundled Studio solver is used as an approximation of HotSpot 6.0 steady-state, with TIM, heat spreader and heat sink as lumped or layered package materials. Material properties are Studio defaults, since the paper only points to TESA [12] for values.",
+    "Ambient 45 C and convection resistance 0.4 K/W would be applied as the paper's stated boundary conditions only if a complete floorplan and power set were available.",
+    "No floorplan or power rows are provided in this extraction because block geometry and per-block watts are missing. Total chip power is not split among blocks without a published rule, and dimensions or powers from other scenarios (e.g., B1-B4, the 200 mm2 case) are not mixed in."
+  ],
+  "evidence_sha256": "0fe63ef026add19428f698073c07bf8dd167b27122141feb44661ac0ff88f075",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

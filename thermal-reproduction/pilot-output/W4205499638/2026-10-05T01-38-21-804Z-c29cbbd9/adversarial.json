@@ -1,0 +1,79 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The method descriptions (3D-ICE v3.0.0, Sniper ROB model, McPAT 1.2, Definition 1, 1 mm radius, 80/25 C thresholds) match pp.3-5. But experiment.kind is custom_2d_steady while the extraction itself says steady_2d_relevant=false and lists essential mismatches: transient, multi-layer stack with heatsink and fan, idle-warmup initial state. A 2D steady reproduction of a transient multi-layer observable is therefore unsupported. The aggregation of the 70 C peak (die-wide max over pixels) is also inferred."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The assets list is empty. The GitHub and both Zenodo links appear only as paper text (pp.1, 13). Nothing was inspected: no repository files, versions, Sniper/McPAT modifications or 3D-ICE scripts. A bare URL is not evidence."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "The Table II conductivities, heat capacities, heights, Table IV Psi/TDP, 1.4 V, 5 GHz, thresholds, 50% area scaling and unit conversions check out against pp.3-5. However, the scenario claims a 5 mm2 die at 14nm scaled to about 1.25 mm2 per core, while Table I lists 5/2.5/1.25 mm2 as core area. The text on p.3 says 'approximately a 5mm2 die'. The extraction notes this ambiguity but still asserts the die-area interpretation in the scenario. No actual die dimensions are given."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No 3D-ICE stack description file, floorplan file, warmup power trace, initial temperature field, heatsink HTC or geometry, or active/bulk layer split was supplied. The ambient used in the Fig. 9 transient runs is not stated. The 40 C ambient is only for the TDP calculation."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Fig. 9 (p.8) has no supplied image or digitization; the ~70 C and <60 C values come only from text on p.7. There are no per-block geometries (Fig. 5 is an image only) and no per-block or total gobmk 7nm power for the same scenario. The floorplan list is empty, so the floorplan-block power coverage check cannot be satisfied. No decisive figure was visually verified."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is custom_2d_steady, but the observable is transient MLTD after an idle warmup, using a 3D-ICE multi-layer stack with a modeled heatsink and fan. The extraction itself lists these as essential mismatches and steady_2d_relevant=false. Calling this a 2D steady reproduction would hide decisive 3D, transient and cooling features.",
+      "locator": "extraction.experiment; physical_mismatches[0-2]; pdf pp.3-4, 7-8"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "The floorplan is empty and power_w is empty. No same-scenario per-block x/y/w/h and no per-block power exist for 7nm gobmk, so the check that every floorplan block has same-scenario power cannot be met.",
+      "locator": "pdf p.4 Fig. 5; pdf p.8 Fig. 9; evidence power.per_block_power_rows, floorplan.block_geometry"
+    },
+    {
+      "field": "thermal_observable.value",
+      "reason": "The 70 C peak is approximate text ('almost 70'), not a digitized or visually verified value from Fig. 9. The paper does not say which core produces the peak. The claimed aggregation (die-wide max over pixels, ~20 ms window) is inferred and not stated.",
+      "locator": "pdf p.7 Sec. IV-B; pdf p.8 Fig. 9"
+    },
+    {
+      "field": "scenario.architecture / evidence architecture.die_area_14nm_approx",
+      "reason": "The scenario asserts about 1.25 mm2 per core and a 5 mm2 die at 14nm scaled 50% per node. Table I gives 5 mm2 as the 14nm core area, and 7 cores at those areas contradict a 5 mm2 die. The paper text on p.3 says '5mm2 die'. The paper is internally ambiguous, and the extraction resolves it without support.",
+      "locator": "pdf p.3 Table I and Sec. III text"
+    },
+    {
+      "field": "original_setup.solver",
+      "reason": "The claim of 'temperature-dependent leakage' in the case-study co-simulation loop is not stated for the actual case study. Leakage is mentioned only as a motivation (p.2), and the McPAT description gives no thermal feedback detail. The extraction also lumps the 7nm model into 'validation sets', although only 14nm and 10nm models were validated against silicon (Table III), not 7nm.",
+      "locator": "pdf p.2 Sec. II-C; pdf p.3-4 Sec. III-B; pdf p.5 Table III"
+    },
+    {
+      "field": "linked_assets.hotgauge_zenodo_archived",
+      "reason": "The extraction labels DOI 5523535 an 'archived concept DOI'. The paper only says 'Archived: Zenodo DOI 5523535' and gives no resolved URL, so the 'concept DOI' label is unsupported. All three linked assets are unavailable in the packet and unverified.",
+      "locator": "pdf p.13 Appendix B; pdf p.1"
+    },
+    {
+      "field": "workload.time_step",
+      "reason": "The 1M-cycle step is correctly quoted, but the 0.2 ms equivalent depends on the 5 GHz clock, which the paper does not state as constant. It is an inferred conversion, not paper evidence.",
+      "locator": "pdf p.3 Sec. III-A"
+    },
+    {
+      "field": "checked_assets",
+      "reason": "No pinned asset excerpts were supplied, so no code, config or data asset could be checked. The Fig. 9, Fig. 5 and Fig. 11 images were not supplied, only pdftotext output, so no decisive figure was visually verified.",
+      "locator": "packet.assets=[]; pdf pp.4, 8, 9"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    13
+  ],
+  "checked_assets": []
+}

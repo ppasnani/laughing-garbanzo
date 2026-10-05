@@ -1,0 +1,67 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The extracted method chain matches the text on PDF pages 9, 12 and 13: PARSEC switching activity and energy per bit give router power, HotSpot 6.0 gives temperature, Black's model (Eq. 17-18) gives the normalized fault rate with the coolest area as Tref, and a grid search over theta1/theta2 (Eq. 19) sets 0, 1 or 2 redundancies. This verifies only the textual description, not a reproducible procedure. The 'TSV thermal effect negligible and not modeled' claim is stronger than the paper's wording on page 14."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets, and the paper gives no repository, supplementary data or code link. The reference-list URLs on page 15 are citations only. No HotSpot input files, gem5/Garnet configs, or grid-search or IaSiG scripts are available."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Black's-model Ea, J, n and A, absolute Tref, absolute temperatures, theta1 and theta2, per-router power, energy per bit, clock frequency and numeric MTTF values are not in the text. Verified text-level parameters are K=32, R<=2, 36 TSVs per vertical connection, a 4x4x4 mesh with 64 cores, and target MTTF multipliers of 1.5x, 2x and 2.5x. None of these is a thermal-solver input."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The HotSpot 6.0 layer stack, TSV/interposer properties, package, heat sink, TIM, ambient temperature, boundary conditions and grid resolution are not stated. A Studio run would therefore use different, assumed package and cooling settings and would not be a match."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no block names, coordinates, dimensions or per-block power in watts, so no same-scenario floorplan and power set exists. Figure 9 is the decisive result figure, but only pdftotext output and no rendered image or digitization is supplied, so its content was not visually verified. The claims about what it shows are unverified."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is labelled custom_2d_steady with an empty floorplan and empty power_w, while the extraction itself says the scenario is a 4-layer 3D, TSV-based, reliability (MTTF) study that a 2D steady model cannot represent. This is internally inconsistent. No reproducible 2D experiment exists, and any 2D label risks passing a different scenario off as a reproduction.",
+      "locator": "extraction.experiment; extraction.physical_mismatches; PDF page 12 (4x4x4 mesh) and page 13 (Figure 9)"
+    },
+    {
+      "field": "thermal_observable / Figure 9 contents",
+      "reason": "The claim that Figure 9 shows only normalized MTTF and redundancy maps and no temperatures is unsupported. The packet contains no rendered figure image, and the page 13 text extraction carries no figure data. The decisive figure was not visually verified, and no digitized values exist.",
+      "locator": "PDF page 13, Figure 9; thermal_observable and scenario fields"
+    },
+    {
+      "field": "physical_mismatch_3d_and_package",
+      "reason": "The extraction says Section IV-G states the TSV temperature effect is negligible and is not modeled. Page 14 says only that inserting one or two TSVs can slightly reduce router temperature, calls the reduction negligible ('ineligible'), and says designers could modify the HotSpot 6.0 configuration to update the temperature. It does not say outright that TSV thermal effects were excluded from the HotSpot setup used. The 'not modeled' wording is an inference.",
+      "locator": "PDF page 14, Section IV-G fourth point"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "All five linked assets are reference-list citations (NanGate, FreePDK3D45, PARSEC paper, HotSpot 6.0 report, JPL text). None is a pinned input file, config, floorplan, power trace or code. They give no evidence that code, config or data can be obtained, and should not count toward resolving the code, config or data checks.",
+      "locator": "PDF page 15, references [24], [41], [42], [47], [49]; packet assets list empty"
+    },
+    {
+      "field": "floorplan and power_w",
+      "reason": "Floorplan and power are empty because the paper publishes no block geometry or per-block watts. Because nothing is extractable, every block-level power and geometry check fails: there is no same-scenario power for any floorplan block, and total power must not be split without a published rule.",
+      "locator": "Whole paper, PDF pages 1-16; Section IV-F pages 12-13"
+    },
+    {
+      "field": "Black's model and Tref",
+      "reason": "The central physical chain (temperature to normalized fault rate to MTTF) cannot be checked numerically, since Ea, J, n and the absolute Tref are absent. The only quantitative statement, that 10:0 drops system MTTF to below 50% of target, is qualitative, and the meaning of the 10:0, 11:1 and 11:2 labels is not defined in the text.",
+      "locator": "PDF page 9 Eq. 17-18; PDF page 13 Figure 9 discussion"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    7,
+    9,
+    12,
+    13,
+    14,
+    15
+  ],
+  "checked_assets": []
+}

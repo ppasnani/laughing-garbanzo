@@ -1,0 +1,101 @@
+{
+  "paper_id": "W4205499638",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "Evidence 26 lacks a valid page or pinned asset locator",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "Evidence 28 lacks a valid page or pinned asset locator",
+    "Evidence 29 lacks a valid page or pinned asset locator",
+    "Evidence 30 lacks a valid page or pinned asset locator",
+    "Evidence 31 lacks a valid page or pinned asset locator",
+    "Evidence 32 lacks a valid page or pinned asset locator",
+    "Evidence 33 lacks a valid page or pinned asset locator",
+    "Evidence 34 lacks a valid page or pinned asset locator",
+    "Evidence 35 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-block x_m, y_m, width_m, height_m for the 7nm Skylake-like core/die floorplan (Fig. 5 is an image only; no numeric table in the packet).",
+    "Per-block power_rows (name, watts) for gobmk at 1.4 V / 5 GHz at 7nm; no per-block or total power split is published in the text.",
+    "Digitized or tabulated MLTD-vs-time data for Fig. 9 (the ~70 C peak comes from text only).",
+    "Linked assets are not available in the packet (assets list is empty): https://github.com/TuftsCompArchLab/HotGauge (pdf page 1), https://doi.org/10.5281/zenodo.5523504 (pdf page 1), and Zenodo DOI 5523535 (pdf page 13). No stack description files, floorplan files, power traces or configs were provided at pinned versions.",
+    "Idle-warmup power trace, initial temperature field and 3D-ICE stack description file.",
+    "Ambient/heatsink boundary-condition details beyond the 40 C ambient used for TDP, and the exact die dimensions (the paper says only approximately 5 mm2 at 14nm with 3x2 core aspect ratio).",
+    "Linked asset hotgauge_github is not pinned and available",
+    "Linked asset hotgauge_zenodo_latest is not pinned and available",
+    "Linked asset hotgauge_zenodo_archived is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "No complete floorplan experiment can be extracted. The paper packet gives no per-block x_m, y_m, width_m, height_m and no per-block power_rows for the gobmk scenario. Only Table I core areas (1.25 mm2 at 7nm) and a Fig. 5 floorplan image are provided. Total chip power is not split into blocks because no rule is published, so the floorplan is empty.",
+      "essential": true
+    },
+    {
+      "reason": "The original uses a multi-layer 3D-ICE stack with an active/bulk silicon split, solder TIM, copper heat spreader, thermal grease and a modeled finned heatsink with fan. A steady-state 2D Studio model with simplified package layers cannot reproduce the transient cooling path and thermal time constants behind the MLTD result.",
+      "essential": true
+    },
+    {
+      "reason": "The observable is transient. MLTD is evaluated over time with a 1M-cycle (~0.2 ms at 5 GHz) step, after a non-uniform idle-warmup thermal initialization. A steady-state solve does not capture this time-dependent behavior or the initial-condition dependence.",
+      "essential": true
+    },
+    {
+      "reason": "The MLTD is computed on a 100 µm thermal grid with a 1 mm radius over a 7-core die including AVX512, SoC/IMC and I/O units. Matching it requires the same resolution and unit set, which are not provided in the packet.",
+      "essential": true
+    },
+    {
+      "reason": "The power comes from a heavily modified McPAT (14/10/7nm scaling with calibrated Cdyn, reported errors of 11-20% on the validation sets) coupled to Sniper, with temperature-dependent leakage. Studio cannot reproduce this performance-power-thermal co-simulation loop.",
+      "essential": false
+    },
+    {
+      "reason": "There is no 3D-IC, interposer, optimizer, controller or reliability model in the original beyond the sigmoid severity metric, so none of these can be compared. Only the thermal stack and solver differ materially.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "The bundled Studio package/material assumptions were not provided in the packet, so they cannot be stated. Any Studio run would use its own default package stack and material properties, which differ from the 3D-ICE Table II layers and the HS483-ND/fan heatsink.",
+    "No claim of exact replication is made, and the GitHub/Zenodo URLs are not treated as proof that the required inputs exist."
+  ],
+  "evidence_sha256": "90cc39a39b25dc4a4e5f409e115cae40e9ae230f3f47eae85827f53dd5edb5c8",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

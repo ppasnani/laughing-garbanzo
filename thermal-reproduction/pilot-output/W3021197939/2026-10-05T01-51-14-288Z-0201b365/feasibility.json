@@ -1,0 +1,74 @@
+{
+  "paper_id": "W3021197939",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Numeric x_m, y_m, width_m and height_m for the four 1 x 1 mm2 heat sources in each layout. Figure 13 is only a sketch with no numeric coordinates in the text.",
+    "Die position within the package and any die offset relative to the epad.",
+    "Die thickness, die attach type and thickness, and the material properties (thermal conductivities) of die, die attach, epad, mold, pins and board. The eQFN package thickness of 0.9 mm and the 375 um die thickness are stated only for the simulations in Section 4 in general, not for this scenario.",
+    "Board dimensions and effective conductivity, and the heat-transfer coefficients and boundary-condition values of the JEDEC junction-to-ambient environment for this case.",
+    "Ambient temperature for this scenario. The paper states Tamb = 20 C only for the Figure 11 eTQFP cases.",
+    "Layout #2-#4 HS coordinates and the FloTHERM temperature maps (not shown in the paper).",
+    "No code, repository, configuration, geometry or supplementary data assets were found in the packet, so there are no linked assets to verify.",
+    "Bundled Studio package and material assumptions are not provided in the packet, so they cannot be recorded here.",
+    "Power rows. Four heat sources at 0.5 W each (2 W total) are stated per source in the text, but a mapping of each source to named blocks and positions per layout is missing.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The original model is a full 3D package-level detailed thermal model (die, die attach, epad, mold, leads/pins as an effective-conductivity block, and a board represented as a single parallelepiped). A 2D floorplan-level thermal solver cannot represent the vertical heat paths from die through epad to board, or the board and pin effective conductivities, that set the 57 K rise.",
+      "essential": true
+    },
+    {
+      "reason": "Boundary conditions follow the JEDEC JESD51 junction-to-ambient environment for the package with calibrated heat-transfer coefficients and an assumed board. These package-level and board-level conditions are not specified for this scenario and cannot be mapped onto a generic Studio chip boundary condition without new assumptions.",
+      "essential": true
+    },
+    {
+      "reason": "The solver differs. The paper uses a projection-based compact thermal model derived from a finite-volume detailed model, with a quarter-symmetry reduction for most cases (not for the multi-source analysis, which is excluded). A Studio solver will use a different discretization, so any agreement with the reported 57.06 K would not be an exact replication.",
+      "essential": false
+    },
+    {
+      "reason": "The scenario is steady-state. The paper's transient capability, optimizer and controller play no role, so there are no mismatches in those areas for this scenario.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "d355322fccca96139aad01de076c8a66ba28a379574dbc8b6fb0d6d3efb38013",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

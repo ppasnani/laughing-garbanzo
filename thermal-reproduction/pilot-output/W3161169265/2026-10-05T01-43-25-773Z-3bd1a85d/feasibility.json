@@ -1,0 +1,74 @@
+{
+  "paper_id": "W3161169265",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No linked assets, repositories, supplementary data, or code are available in the packet (artifact search found no links).",
+    "Block names, x_m, y_m, width_m, and height_m for any FP1 or FP2 floorplan of n100 are not published. Figure 9 is only a thermal map image.",
+    "Per-block power rows (name and watts) for the same scenario are not published. Only the 1e5-1e7 W/m2 range and random assignment are stated, and total chip power is not given, so none may be split or inferred.",
+    "Numeric FP1 and FP2 peak temperatures for Figure 9 are not stated in text. Digitizing the figure with uncertainty would be needed.",
+    "Die or layer dimensions and the 4-layer stacking order beyond layer 0 being farthest from the sink. Only the Figure 10 areas of 0.319 and 0.326 mm2 are given, and their link to the Figure 9 floorplans is unconfirmed.",
+    "HotSpot configuration: material properties, layer thicknesses, heat-sink and convection parameters, ambient temperature, and TSV island treatment.",
+    "Random seed or the actual random power-density assignment used per module.",
+    "Studio package and material assumptions were not supplied in the packet and could not be recorded.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a 4-layer TSV-based 3D stack with inter-layer heat flow and TSV islands. A planar or 2D steady-state Studio model cannot represent the vertical layer coupling that decides which layer is hottest.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's primary metric is a non-physical power-based TGV (W/m2) that is not a temperature. It is validated only by correlation with HotSpot peak temperature, so there is no published absolute temperature field to replicate.",
+      "essential": true
+    },
+    {
+      "reason": "Module power densities were randomly assigned from 1e5-1e7 W/m2 and are not published. Block geometry and per-block powers for FP1 and FP2 are not given, so a faithful thermal setup cannot be built.",
+      "essential": true
+    },
+    {
+      "reason": "Layer thicknesses (Si, BEOL SiO2, TIM), heat-sink configuration, and the TSV island thermal treatment are only described qualitatively. HotSpot 'default parameters' are not specified in the paper. TSV islands are treated as zero-power modules in TGV.",
+      "essential": true
+    },
+    {
+      "reason": "The paper has no transient analysis, no controller, and no reliability analysis, so those aspects have nothing to compare against. The optimizer is a floorplanner, not a thermal controller, and does not map to a steady-state solve.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "bc9426cb6ffa934189e3f6f9b9ebedbd5d7a5acfb5241fcfd042c430216cc109",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

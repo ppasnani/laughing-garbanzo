@@ -1,0 +1,86 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper does state a steady-state HotSpot v7.0 block/grid RC solver, 27 C ambient and uniform power per block (PDF pp. 3-4). However, the extraction labels the experiment kind custom_2d_steady and sets steady_2d_relevant=false for a scenario that its own mismatches call an essential 3D F2F memory-on-logic stack. That stack has a 5 um thinned logic die, size-dependent silicon kth and a two-sided package heat path. Calling this a 2D reproduction is contradicted by the extraction itself."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet assets list is empty. The only link is the generic HotSpot GitHub URL from ref [45] on PDF p. 9. It is a bare URL and not a pinned asset, and it holds no MemPool floorplan, power or config files. The paper gives no code or data-availability statement. No code evidence exists."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "The Table I layer sizes, thicknesses and kth, the Rconv values of 0.17 and 50 K/W, the 40 W 2D TDP, the 0.913x power scaling and the 1.37x density are supported by page text (PDF pp. 3-4). Decisive parameters are still missing or inferred. The SPM capacity (1 MiB) for Fig. 4 and the 'full workload' label are inferred, not stated. No absolute 3D power is given. HotSpot grid resolution and boundary settings are absent. The footprint scale is 0.665 in the text and 0.667 in Fig. 9. Table I's 2.85 um 'BEOL stack' is conflated with the 'F2F via layer of thickness 2.85 um' on p. 2."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The extracted floorplan is an empty list and power_w is empty. No block names, coordinates or sizes exist for the logic die, memory die or any tile block. The paper defers the floorplan to [38] and [41], which are not in the packet. Fig. 9 is only a schematic. No HotSpot config, layer file or boundary-condition file is available."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No per-block power exists for any floorplan block in the same scenario. The Fig. 3 pie percentages (11/27/10/13/39) cannot be mapped to cores, I$, SPM, interconnects or others from garbled pdftotext. The Tmax values of 46/55/57 C appear in the text and in the figure labels on PDF pp. 3-4. No rendered figure image or digitization was supplied, so the Fig. 4 maps and the Fig. 5, 6 and 11 curves and values were not visually verified. The garbled Fig. 11(a) digits suggest the 1 MiB values may differ (about 56.3 and 57.01) from the Fig. 4 value of 55 C. This could not be resolved."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind / steady_2d_relevant",
+      "reason": "The experiment is labelled custom_2d_steady while the extraction says the scenario is an essential 3D F2F stack, so steady_2d_relevant is false. Presenting this as a 2D reproduction is unsupported. Two stacked tiers, the 2.85 um F2F/BEOL layer, the 5 um thinned logic die with size-dependent kth and the two-sided package path are all decisive 3D features.",
+      "locator": "extraction.experiment.kind; physical_mismatches[0-2]; PDF p. 2 Fig. 2; PDF p. 3 Table I"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "The floorplan and power_w are empty. No floorplan block has same-scenario power or geometry, so no block-level power-to-geometry mapping can be checked. The paper only gives total TDP, scaling ratios and an unreadable pie chart.",
+      "locator": "extraction.experiment; evidence floorplan_block_geometry, per_block_power_rows; PDF p. 3 Fig. 3"
+    },
+    {
+      "field": "l1_spm_capacity_selected_scenario",
+      "reason": "The 1 MiB SPM capacity for the Fig. 4 2D vs 3D comparison is inferred from surrounding text, as the extraction admits. The paper does not state it at Fig. 4, and an inferred value is not evidence. The normalized byte value 1048576 is a conversion of that inferred value.",
+      "locator": "PDF p. 3 Fig. 4 and PDF p. 6 Section IV.A / Fig. 9"
+    },
+    {
+      "field": "workload (full workload at 40 W)",
+      "reason": "The paper says the 2D TDP is 40 W 'for larger workloads' as a baseline. It does not state that Fig. 4 is a full-workload run. No absolute 3D power is published, since 0.913x of 40 W is not stated. The Fig. 4 workload level is therefore an extraction inference.",
+      "locator": "PDF p. 3 Section II power paragraph; extraction.scenario.workload"
+    },
+    {
+      "field": "3d_beol_stack_thickness",
+      "reason": "Page 2 says the six-metal BEOL tiers are separated by an F2F via layer of 2.85 um. Table I lists 2.85 um as the whole BEOL stack, and Fig. 2 describes an effective single layer for the 12-layer BEOL plus F2F via. The extraction treats these as the same quantity without resolving the ambiguity. The 1.2 W/m-K value and the 2.85 um thickness for the effective BEOL layer are not independently verified.",
+      "locator": "PDF p. 2 Section II and Fig. 2; PDF p. 3 Table I BEOL row"
+    },
+    {
+      "field": "3d_die_footprint_scale_factor / 3d_tile_size_scale_factor",
+      "reason": "The footprint scale is 0.665 in the text and 0.667 in Fig. 9. The Table I side of 3.95 mm against the 4.8 mm 2D side gives an area ratio of about 0.677. The extraction records the discrepancy but does not resolve which value drives the 1.37x density. The 0.667 tile-size factor and the 0.665 footprint factor are inconsistent.",
+      "locator": "PDF p. 3 Section II; PDF p. 6 Fig. 9; Table I"
+    },
+    {
+      "field": "observable_tmax_3d_logic_die vs memory die",
+      "reason": "The text says the logic hotspot is relatively 3 C higher than the memory die. The labels of 57 C and 55 C give 2 C, and the abstract's 3.6% matches 57/55. The extraction does not note this internal contradiction. The Fig. 11 garble also suggests different 1 MiB values, about 56.3 and 57.01, which could not be reconciled with 55 C. The figure images were not supplied, so these values are text-only and not visually verified.",
+      "locator": "PDF p. 4 Section III.A; PDF p. 3 Fig. 4 labels; PDF p. 7 Fig. 11(a)"
+    },
+    {
+      "field": "2d_soc_footprint_side / 2d_tile_size_side / table size units",
+      "reason": "The units are printed as mm2 and um2 for side-length pairs, and the Table I column header is mm2 for pairs such as 3.95 x 3.95. The side-length reading is plausible, since the 64 tiles at 425 um and 50% utilization give about 4.8 mm. It is still an interpretation and not stated by the paper.",
+      "locator": "PDF p. 3 Table I and Section II"
+    },
+    {
+      "field": "linked_assets / artifact_search_status",
+      "reason": "The status 'checked_links_found' rests only on the HotSpot URL, which is not a packet asset. It does not provide MemPool inputs or outputs. No reproducibility artifact is verified, and code and config remain missing.",
+      "locator": "extraction.linked_assets; PDF p. 9 ref [45]; packet.assets=[]"
+    },
+    {
+      "field": "missing_inputs / reproduction feasibility",
+      "reason": "Per-block floorplan and powers from refs [38] and [41] are absent from the packet, so no reproduction input can be built without inventing data. The paper's validation claims (ANSYS, test chip) rest on refs [47] and [48] and are unchecked here.",
+      "locator": "extraction.missing_inputs; PDF p. 3-4 Section III"
+    }
+  ],
+  "checked_pdf_pages": [
+    2,
+    3,
+    4,
+    6,
+    7,
+    9
+  ],
+  "checked_assets": []
+}

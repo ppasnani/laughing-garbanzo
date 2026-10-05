@@ -1,0 +1,64 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The page 1-2 text supports POD with the method of snapshots, Galerkin projection onto M modes and a FEniCS FEM DNS. It also supports adiabatic sides and top, a Robin boundary at the substrate bottom, and a 3 ms transient. The 1/3/5-mode comparison is supported only by text; the Fig. 4 legends and curves were not visually verified."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets and no code or data availability statement. The FEniCS, HotSpot and microprocessor-trend URLs are a software site, a tool site and a transistor-count repository. None of them is the authors' scripts, mesh or POD data, and none is pinned."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Mesh, duration, period, 3 GHz, 10k cycles and 0 C ambient are text-supported. The 129x129x7 mesh unit 'cells' is inferred. Missing: block geometry, per-block power in W, pulse amplitude and duty, layer thicknesses, k, rho, C, the Robin coefficient, and tabulated temperatures."
+    },
+    "config": {
+      "status": "contradicted",
+      "note": "The experiment kind is 'custom_2d_steady', but the extraction itself calls the scenario a 3D, 3 ms transient with a substrate Robin cooling path and sets steady_2d_relevant to false. The floorplan is empty and power_w is empty, so no same-scenario geometry and power set exists."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Fig. 1 (floorplan), Figs. 3 and 4 (temperatures) and Fig. 2 (eigenvalues) are available only as text extraction, with no rendered figure or asset. The thermal observables are null and nothing was digitized. No block has numeric geometry or power."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind 'custom_2d_steady' contradicts the extraction's own essential mismatches (3D 129x129x7 layered, transient 3 ms, substrate Robin cooling) and steady_2d_relevant=false. No decisive 3D/transient/cooling feature may be labeled a 2D steady reproduction.",
+      "locator": "extraction.experiment.kind vs physical_mismatches[0-1] and scenario.steady_2d_relevant; paper p.2 Sec. III.A"
+    },
+    {
+      "field": "mesh_resolution_x/y/z source_unit",
+      "reason": "The unit 'cells' is not in the paper, which says only 'meshes of 129×129×7'. The extraction's own uncertainty note admits the values could be nodes or elements.",
+      "locator": "p.2 Sec. III.A 'meshes of 129×129×7'"
+    },
+    {
+      "field": "block_geometry_and_power",
+      "reason": "No numeric x, y, width or height for any Alpha EV6 block and no per-block power is available. The floorplan is not a pinned asset, and the HotSpot URL is not evidence. Same-scenario power for the floorplan blocks cannot be verified, so no experiment can be built.",
+      "locator": "p.2 Fig. 1(a); p.4 ref [22]"
+    },
+    {
+      "field": "thermal_observable",
+      "reason": "The decisive observables (unit C dynamic temperature and the x/y profiles at 3 ms) exist only as plots, with no values in the text. The figures were not visually inspected here, only the text layer, so the 1/3/5-mode agreement claims rest on unverified figures. The page 3 caption says each curve has a different number of modes, but the legend assignment is not verified.",
+      "locator": "p.3 Figs. 3, 4(a)-(c); p.4 text"
+    },
+    {
+      "field": "scenario.architecture (device layer/substrate layering)",
+      "reason": "The layered structure of the Fig. 1(b) 3D view is asserted, but the figure content is not in the supplied evidence. Layer count and material assignments cannot be verified beyond the '7' in the mesh text.",
+      "locator": "p.2 Fig. 1(b)"
+    },
+    {
+      "field": "linked_assets/code availability",
+      "reason": "artifact_search_status 'checked_links_found' is misleading. The links found are reference citations, not artifacts for the reproduction, and none is pinned. No code, config or data is verified.",
+      "locator": "extraction.linked_assets; p.4 refs [1], [19], [22]"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "checked_assets": []
+}

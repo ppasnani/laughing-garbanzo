@@ -1,0 +1,77 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "missing",
+      "note": "The PPO+RND agent, the reward form, the LTI self/mutual thermal-resistance fast model and the TAP-2.5D baselines match the page-1 and page-2 text. But the paper never says whether the Table I temperatures come from HotSpot or the fast model, and the extraction asserts the fast model. It also marks the case steady_2d_relevant=true although the paper gives no steady-state statement and no floorplan or power. Decisive method details are therefore not supported."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The paper says 'More details can be found at the github' but gives no URL, and the packet has no assets. The only linked asset is the ref [6] ServeTheHome URL, which is a bare reference URL with no pinned content. No code, thermal tables or floorplan files could be inspected."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Lambda, mu, alpha, T0, total power, workload, HotSpot grid and package parameters, and the thermal-resistance table values are all absent. The reward -7.4063 cannot be recomputed. The wirelength unit is not confirmed: the column is labelled mm but the values are in the thousands, and the extraction converts them to 18.13 m without support."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No Ascend 910 chiplet names, x/y/width/height or per-block power rows are given, and no same-scenario power exists for any floorplan block. The extraction's experiment is custom_2d_steady with empty floorplan and power_w, so it is not a runnable 2D reproduction. The paper's scenario is a 2.5D interposer system with RL-driven placement. Cooling, boundary and material stack are unspecified."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The text-layer Table I values for the Ascend 910 RLPlanner row (-7.4063, 18130, 77.12, 7773) and the Table II MAE and speed values match the pdftotext output. However, the table was read only from the pdftotext layout, so its column alignment, the unit labels and the digitization were not visually verified. Floorplan geometry and power data are not available at all."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind / scenario.steady_2d_relevant",
+      "reason": "The extraction sets steady_2d_relevant=true and experiment kind custom_2d_steady, but the paper does not state steady-state or 2D analysis, and gives no floorplan or power. The experiment cannot be run. This is an unsupported claim of 2D reproducibility.",
+      "locator": "extraction.scenario.steady_2d_relevant; extraction.experiment; PDF p.1-2"
+    },
+    {
+      "field": "physical_mismatches[3] (steady-state-style maximum temperature)",
+      "reason": "The paper never says whether the Table I temperatures are steady state, as the extraction's own evidence note admits. The mismatch entry claims a 'steady-state-style' result, which is unsupported.",
+      "locator": "extraction.physical_mismatches; Table I, PDF p.2"
+    },
+    {
+      "field": "physical_mismatches[5] (published temperature from fast LTI model)",
+      "reason": "The packet does not say whether the Table I temperatures are HotSpot or fast-model evaluations. Table II uses HotSpot as ground truth, and the abstract and Section III say only that RLPlanner is integrated with the fast model. The claim that the 77.12 C value comes from the fast model is unsupported.",
+      "locator": "Table I and Table II, PDF p.2; extraction.physical_mismatches"
+    },
+    {
+      "field": "original_setup.solver",
+      "reason": "The claim that the fast model was used 'during RLPlanner training and evaluation' goes beyond the text. Only training or iteration use is supported, and the Table I temperature source is unspecified.",
+      "locator": "extraction.original_setup.solver; Section II-C and III, PDF p.2"
+    },
+    {
+      "field": "benchmark.wirelength unit conversion",
+      "reason": "The extraction applies a 0.001 factor (18130 mm to 18.13 m) although it acknowledges the unit may be wrong or a sum over connections. The conversion is unverified and should not be used.",
+      "locator": "extraction.evidence[benchmark.wirelength]; Table I, PDF p.2"
+    },
+    {
+      "field": "thermal_observable.value",
+      "reason": "The 77.12 C value is the RLPlanner row (non-RND). The headline 20.28% claim in the paper is for RLPlanner with RND (76.84 C). Column attribution was read from pdftotext layout only and not visually verified. The table is the decisive evidence, so approval is blocked.",
+      "locator": "Table I Ascend 910 columns, PDF p.2; Section III-B"
+    },
+    {
+      "field": "floorplan / power_rows",
+      "reason": "No block names, coordinates, widths, heights or per-block power exist for Ascend 910, so the floorplan has no same-scenario power. Correctly marked missing, but this blocks any reproduction.",
+      "locator": "Whole PDF (pp.1-2)"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "The ref [6] URL is only a bibliography entry with no pinned content. The GitHub repository referenced in Section II-C has no URL. Neither provides evidence of geometry, power or code.",
+      "locator": "Reference [6]; Section II-C, PDF p.2"
+    },
+    {
+      "field": "studio_assumptions",
+      "reason": "The list is empty, so no package, material or boundary assumptions are stated for any Studio run.",
+      "locator": "extraction.studio_assumptions"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2
+  ],
+  "checked_assets": []
+}

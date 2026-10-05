@@ -1,0 +1,83 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The HotSpot 7.0 verification, the C++ CMO implementation and alpha=0.5 are supported on PDF pages 3, 8 and 10. The extraction calls the observable a 'HotSpot steady-state thermal map', but the paper never says steady-state and describes HotSpot solving transient equations with RK4. The extraction also sets experiment.kind=custom_2d_steady and steady_2d_relevant=true. The paper uses a six-layer 2.5-D stack (organic substrate, C4 bumps, interposer with TSVs, microbumps, chiplets, TIM) with a fin-channel forced-air heatsink and fan, and the extraction itself lists these as essential mismatches. Calling this a 2D reproduction is unsupported. The peak vs average temperature definition is also ambiguous, since the abstract says 'average temperature'."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository or asset is linked (assets=[], artifact_search_status checked_no_links). The pseudocode in Algorithms 1-3 is internally inconsistent. Algorithm 2 uses undefined L1/W1/k1 and loops k<L×W. Algorithm 3 tests mapflag==-2 where the text uses -1, and has malformed syntax such as D[map[i]]D[map[k]]. It hard-codes 0.186 for Ebit, which the text does not state. Eq. (1) and (2) are described as 'probability of being selected', yet the pseudocode picks the minimum cost. None of this is runnable, and the extraction does not flag it."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Verified on PDF page 3: ambient 318.5 K, spreader edge 5 mm, heatsink edge 20 mm, fin height 30 mm, fin width 1 mm, fan radius 10 cm, 5000 rpm. The 5 mm spreader value looks inconsistent with a 20 mm heatsink and the chiplet array, and is unresolved. The Table 2 power column is garbled in the extracted text. Only blend=5 W and mem1=10 W are read with any confidence. The other 10 chiplet powers are not extracted or verified, so the same-scenario power for every block is not established. The Ebit value, grid unit size (2 mm only inferred) and grid dimensions (Figures 3 and 4 show different column counts) are not stated."
+    },
+    "config": {
+      "status": "missing",
+      "note": "There are no HotSpot config or floorplan files, no layer thicknesses or materials, no bump or TSV dimensions, no interposer or substrate size, and no TIM or heat-transfer coefficients. experiment.floorplan=[] and power_w={}, so no floorplan block has same-scenario power. The Figure 9b layout (alpha=0.5) was never digitised and no rendered figure image was supplied. Figure 1 dimension labels (30/20/5/1 mm) are not mapped to components."
+    },
+    "data": {
+      "status": "contradicted",
+      "note": "The numbers 373.58 K, 381.41 K, 794.59 uJ and 1026.72 uJ are supported on PDF page 10, and the uJ difference 232.13 is arithmetically consistent. The paper's claimed temperature reduction of 8.34 K contradicts its own values: 381.41-373.58=7.83 K. The extraction does not flag this. The 373.58 K observable has no stated location (which chiplet or node). No decisive figure (9a-9e, 10, 2, 3) was visually verified; the supplied evidence is text only, and the block positions in Figure 9b are not obtainable."
+    }
+  },
+  "findings": [
+    {
+      "field": "thermal_observable.peak_temperature_reduction",
+      "reason": "The paper states a reduction of 8.34 K (abstract, Section 4, Conclusions) but gives 381.41 K -> 373.58 K, which is 7.83 K. The paper is internally inconsistent and the extraction does not reconcile it, so the 373.58 K target cannot be treated as confirmed against the 8.34 K claim.",
+      "locator": "Abstract; PDF page 10, Section 4 paragraph 3; PDF page 12, Conclusions"
+    },
+    {
+      "field": "experiment.kind / steady_2d_relevant",
+      "reason": "custom_2d_steady and steady_2d_relevant=true are unsupported. The paper uses a six-layer 2.5-D stack with TSVs and bumps, a fin-channel forced-air heatsink and a fan model in HotSpot 7.0. Reducing it to a 2D steady case drops decisive 3D and cooling features, and the extraction's own essential mismatches contradict the relevance claim. The word 'steady-state' is not in the paper.",
+      "locator": "PDF page 3, Section 3.1; extraction.experiment and physical_mismatches"
+    },
+    {
+      "field": "experiment.floorplan",
+      "reason": "The floorplan is empty. There are no x/y/width/height values for the 12 chiplets in the Figure 9b layout, and no digitisation or rendered figure was provided. The grid-map figure on PDF page 11 was not visually verified, so the scenario layout is unsupported.",
+      "locator": "PDF page 11, Figure 9b"
+    },
+    {
+      "field": "experiment.power_w",
+      "reason": "power_w is empty. Table 2 power values are garbled in the extracted text, and only 2 of 12 chiplets (blend, mem1) are partially read. Same-scenario per-block power is not established for all floorplan blocks.",
+      "locator": "PDF page 5, Table 2"
+    },
+    {
+      "field": "thermal_observable.aggregation",
+      "reason": "The aggregation is declared 'peak over the HotSpot steady-state thermal map', but the abstract says the algorithm minimizes 'average temperature' and Section 3 says 'peak operating temperature'. The observable location and statistic are ambiguous, and steady-state is inferred.",
+      "locator": "PDF page 1 abstract; PDF page 2 Section 3; PDF page 10"
+    },
+    {
+      "field": "code / linked_assets",
+      "reason": "No code, HotSpot files or data are linked. The Data Availability Statement only says the data are in the article, which is not sufficient for reproducing the layout or HotSpot results.",
+      "locator": "PDF page 12, Data Availability Statement; assets=[]"
+    },
+    {
+      "field": "algorithm_pseudocode",
+      "reason": "The paper's own Algorithms 2 and 3 contain undefined variables, inconsistent flags (-1 vs -2), and a hard-coded 0.186 Ebit not stated in the text. The heuristic is described as a selection probability but is implemented as min-cost selection. The CMO algorithm cannot be verified as implemented.",
+      "locator": "PDF pages 7-8, Algorithms 2-3, Eq. (1)-(3)"
+    },
+    {
+      "field": "heat_spreader_edge_size",
+      "reason": "A 5 mm spreader edge is smaller than the 20 mm heatsink edge and the chiplet array extent (individual chiplets reach 7.5 mm). The value is unreconciled and the modeling intent is unclear.",
+      "locator": "PDF page 3, Section 3.1 and Figure 1"
+    },
+    {
+      "field": "grid_unit_and_topology_size",
+      "reason": "The grid unit (2 mm) is only inferred from the blend example. The topology dimensions N1×N2 are not stated and Figures 3 and 4 show different column counts, so chiplet coordinates cannot be converted to metres even if the layout were digitised.",
+      "locator": "PDF pages 4-6, Figures 3-4, Algorithm 1"
+    }
+  ],
+  "checked_pdf_pages": [
+    3,
+    4,
+    5,
+    7,
+    8,
+    10,
+    11,
+    12
+  ],
+  "checked_assets": []
+}

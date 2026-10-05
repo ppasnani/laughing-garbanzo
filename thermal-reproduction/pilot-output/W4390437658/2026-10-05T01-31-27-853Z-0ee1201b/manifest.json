@@ -1,0 +1,469 @@
+{
+  "paper_id": "W4390437658",
+  "paper_title": "RLPlanner: Reinforcement Learning based Floorplanning for Chiplets with Fast Thermal Analysis",
+  "manifest_status": "downloaded",
+  "source_url": "https://arxiv.org/pdf/2312.16895",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "965c0d8955bba981f3938dd02cda06a3fc9242d73b002bd3d3cd01e3ae417c7e",
+  "pdf_pages": 2,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T01:32:51.652Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W4390437658",
+    "paper_title": "RLPlanner: Reinforcement Learning based Floorplanning for Chiplets with Fast Thermal Analysis",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "ref6_ascend910_servethehome",
+        "url": "https://www.servethehome.com/huawei-ascend-910-provides-a-nvidia-aitraining-alternative/",
+        "kind": "reference_url_benchmark_source_description",
+        "paper_page": 2
+      }
+    ],
+    "scenario": {
+      "pdf_page": 2,
+      "figure_or_table": "Table I (Ascend 910 System columns)",
+      "description": "Selected scenario: the Ascend 910 System benchmark (ref [6]) in Table I, comparing RLPlanner, RLPlanner(RND), TAP-2.5D(HotSpot) and TAP-2.5D*(Fast Thermal Model). The RLPlanner row reports reward -7.4063, wirelength 18130 (labelled mm), temperature 77.12 C and runtime 7773 s. The paper mentions a github repository for the fast thermal model but gives no URL in the packet text, and the packet has no assets. Chiplet block names, x/y/width/height and per-block power values are not given in the 2-page paper, so no floorplan can be extracted from it.",
+      "architecture": "2.5D chiplet-based system on an interposer (Huawei Ascend 910 benchmark), floorplanned by RL (PPO with RND bonus) and TAP-2.5D baselines; thermal evaluation by HotSpot or a physics-informed fast thermal model (self- and mutual-thermal resistance tables)",
+      "workload": "Not specified in the paper",
+      "operating_point": "Maximum chiplet-system temperature in C (aggregation: maximum); the temperature limit T0 and the weights lambda, mu and alpha are not given. Total power is not given.",
+      "steady_2d_relevant": true
+    },
+    "original_setup": {
+      "solver": "Fast physics-informed thermal model (LTI self- and mutual-thermal resistance tables characterized with HotSpot) used during RLPlanner training and evaluation. HotSpot is the ground-truth and baseline solver (TAP-2.5D(HotSpot)).",
+      "optimizer": "RLPlanner: reinforcement learning with proximal policy optimization (PPO) and an optional random network distillation (RND) exploration bonus. It jointly minimizes wirelength and maximum temperature. The baseline is the simulated-annealing-based TAP-2.5D.",
+      "controller": "None reported. The RL agent places chiplets sequentially at floorplanning time, with an action mask. There is no runtime thermal controller.",
+      "benchmark": "Ascend 910 System (ref [6]), Table I on PDF page 2. The RLPlanner row reports reward -7.4063, wirelength 18130 (column labelled mm), temperature 77.12 C and runtime 7773 s."
+    },
+    "thermal_observable": {
+      "value": 77.12,
+      "unit": "C",
+      "location": "Maximum operating temperature of the chiplet-based Ascend 910 system, taken from the RLPlanner row of Table I. The exact spatial location (which chiplet or grid cell) is not stated.",
+      "aggregation": "Maximum temperature over the system, as the fast thermal model estimates maximum chiplet-system temperature. The paper does not state whether it is a steady-state value. This is the single reported value for the RLPlanner row, not a mean over runs.",
+      "pdf_page": 2
+    },
+    "physical_mismatches": [
+      {
+        "reason": "3D stacking is not modeled. The scenario is a 2.5D interposer-based chiplet floorplan, and the paper gives no stack or vertical-layer detail.",
+        "essential": false
+      },
+      {
+        "reason": "Interposer, package and material stack parameters (layer thicknesses, conductivities, TIM, heat spreader) are not given in the paper. The thermal result depends on them and cannot be reproduced without them.",
+        "essential": true
+      },
+      {
+        "reason": "Cooling and boundary conditions (heat sink, convection coefficient, ambient temperature) are not stated. The reported 77.12 C cannot be matched to any specific cooling configuration.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports only a steady-state-style maximum temperature, with no transient or workload-dependent thermal behavior. A transient or workload-driven Studio study would not correspond to the published observable.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer is PPO+RND reinforcement learning with a reward combining wirelength and a temperature penalty. A Studio simulation that does not reproduce this optimizer and reward cannot reproduce the published floorplan, so it can only evaluate a given floorplan.",
+        "essential": true
+      },
+      {
+        "reason": "The published temperature comes from the fast LTI thermal-resistance model approximating HotSpot (MAE 0.25 K), not a full-field solver. A different solver in Studio may give a different value.",
+        "essential": true
+      },
+      {
+        "reason": "No reliability or thermomechanical stress analysis is reported. The introduction mentions thermomechanical stress only as motivation.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "Chiplet block names for the Ascend 910 system",
+      "Block x_m, y_m, width_m and height_m for the selected floorplan, whether the RLPlanner result or the benchmark input",
+      "Per-block power rows (name and watts) and total system power for the Ascend 910 scenario",
+      "Any published rule for splitting total power across blocks",
+      "Workload description",
+      "Temperature limit T0 and the reward weights lambda, mu and alpha",
+      "HotSpot configuration: package and material stack, interposer, heat sink, ambient temperature, grid resolution",
+      "Fast thermal model self- and mutual-thermal-resistance tables for this system",
+      "GitHub repository URL for the fast thermal model. The paper mentions it but the packet text gives no URL, and the packet has no assets.",
+      "Content of the ref [6] ServeTheHome page. It is listed only as a reference URL, with no pinned asset in the packet.",
+      "Unit confirmation for the wirelength column (labelled mm but values are in the thousands)",
+      "The resulting RLPlanner floorplan geometry, which is not reported in the 2-page paper",
+      "Studio package and material assumptions. No bundled Studio package or material information is present in the packet."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "thermal_observable.max_temperature",
+        "block_name": null,
+        "source_value": 77.12,
+        "source_unit": "C",
+        "conversion_factor": 1,
+        "normalized_value": 77.12,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Table I, Ascend 910 System, RLPlanner row, Temperature (C) column",
+        "provenance": "Paper PDF text (pdftotext). Value as printed. The paper does not state the spatial location or whether it is steady state.",
+        "uncertainty": "The table header reads degrees C. Column alignment in the extracted text is slightly ambiguous, but the Ascend 910 RLPlanner row reads reward -7.4063, wirelength 18130, temperature 77.12, runtime 7773."
+      },
+      {
+        "field": "benchmark.reward",
+        "block_name": null,
+        "source_value": -7.4063,
+        "source_unit": "dimensionless",
+        "conversion_factor": 1,
+        "normalized_value": -7.4063,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Table I, Ascend 910 System, RLPlanner row, Reward column",
+        "provenance": "Paper PDF text. Reward combines wirelength and a temperature penalty (Section II-C).",
+        "uncertainty": "Weights lambda, mu and alpha and the limit T0 are not given, so the reward cannot be recomputed."
+      },
+      {
+        "field": "benchmark.wirelength",
+        "block_name": null,
+        "source_value": 18130,
+        "source_unit": "mm (as labelled)",
+        "conversion_factor": 0.001,
+        "normalized_value": 18.13,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Table I, Ascend 910 System, RLPlanner row, Wirelength (mm) column",
+        "provenance": "Paper PDF text. Normalized to metres with 1 mm = 0.001 m.",
+        "uncertainty": "The column is labelled mm but the values are in the thousands. The unit may be wrong or the value may be a sum over many connections."
+      },
+      {
+        "field": "benchmark.runtime",
+        "block_name": null,
+        "source_value": 7773,
+        "source_unit": "s",
+        "conversion_factor": 1,
+        "normalized_value": 7773,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Table I, Ascend 910 System, RLPlanner row, Runtime (s) column",
+        "provenance": "Paper PDF text.",
+        "uncertainty": null
+      },
+      {
+        "field": "fast_thermal_model.MAE",
+        "block_name": null,
+        "source_value": 0.2523,
+        "source_unit": "K",
+        "conversion_factor": 1,
+        "normalized_value": 0.2523,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Table II, MAE row, Fast Thermal Model column",
+        "provenance": "Paper PDF text. Accuracy against HotSpot ground truth on 2,000 synthetic chiplet systems.",
+        "uncertainty": "Not specific to the Ascend 910 system."
+      },
+      {
+        "field": "fast_thermal_model.speedup",
+        "block_name": null,
+        "source_value": 127,
+        "source_unit": "x",
+        "conversion_factor": 1,
+        "normalized_value": 127,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Table II, Speed row (0.1012 s vs 12.8976 s); Section III-A text",
+        "provenance": "Paper PDF text.",
+        "uncertainty": "Measured on synthetic systems. The abstract says over 120x."
+      },
+      {
+        "field": "floorplan.block_geometry",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Whole 2-page PDF; no figure or table lists chiplet names, x, y, width or height",
+        "provenance": "Not reported in the paper. The packet has no assets.",
+        "uncertainty": "No floorplan can be extracted."
+      },
+      {
+        "field": "power_rows",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Whole 2-page PDF; no per-block or total power given for the Ascend 910 system",
+        "provenance": "Not reported in the paper. No power-splitting rule is published.",
+        "uncertainty": "Total power must not be split without a published rule."
+      },
+      {
+        "field": "linked_resource.ref6_ascend910_servethehome",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": "ref6_ascend910_servethehome",
+        "locator": "Reference [6], References list (URL: https://www.servethehome.com/huawei-ascend-910-provides-a-nvidia-aitraining-alternative/)",
+        "provenance": "URL printed in the paper's reference list. It is a benchmark source description, not a pinned packet asset.",
+        "uncertainty": "The packet contains no content from this page. The URL does not show that geometry or power inputs exist."
+      },
+      {
+        "field": "linked_resource.github_fast_thermal_model",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section II-C, last sentence: 'More details can be found at the github.'",
+        "provenance": "The paper mentions a GitHub repository but the packet text gives no URL.",
+        "uncertainty": "Repository URL missing and not pinned; no packet asset is available."
+      },
+      {
+        "field": "studio_assumptions",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Packet contains no Studio package or material information",
+        "provenance": "Not in packet.",
+        "uncertainty": "No bundled Studio package or material assumptions can be recorded."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "missing",
+        "note": "The PPO+RND agent, the reward form, the LTI self/mutual thermal-resistance fast model and the TAP-2.5D baselines match the page-1 and page-2 text. But the paper never says whether the Table I temperatures come from HotSpot or the fast model, and the extraction asserts the fast model. It also marks the case steady_2d_relevant=true although the paper gives no steady-state statement and no floorplan or power. Decisive method details are therefore not supported."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The paper says 'More details can be found at the github' but gives no URL, and the packet has no assets. The only linked asset is the ref [6] ServeTheHome URL, which is a bare reference URL with no pinned content. No code, thermal tables or floorplan files could be inspected."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Lambda, mu, alpha, T0, total power, workload, HotSpot grid and package parameters, and the thermal-resistance table values are all absent. The reward -7.4063 cannot be recomputed. The wirelength unit is not confirmed: the column is labelled mm but the values are in the thousands, and the extraction converts them to 18.13 m without support."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No Ascend 910 chiplet names, x/y/width/height or per-block power rows are given, and no same-scenario power exists for any floorplan block. The extraction's experiment is custom_2d_steady with empty floorplan and power_w, so it is not a runnable 2D reproduction. The paper's scenario is a 2.5D interposer system with RL-driven placement. Cooling, boundary and material stack are unspecified."
+      },
+      "data": {
+        "status": "missing",
+        "note": "The text-layer Table I values for the Ascend 910 RLPlanner row (-7.4063, 18130, 77.12, 7773) and the Table II MAE and speed values match the pdftotext output. However, the table was read only from the pdftotext layout, so its column alignment, the unit labels and the digitization were not visually verified. Floorplan geometry and power data are not available at all."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind / scenario.steady_2d_relevant",
+        "reason": "The extraction sets steady_2d_relevant=true and experiment kind custom_2d_steady, but the paper does not state steady-state or 2D analysis, and gives no floorplan or power. The experiment cannot be run. This is an unsupported claim of 2D reproducibility.",
+        "locator": "extraction.scenario.steady_2d_relevant; extraction.experiment; PDF p.1-2"
+      },
+      {
+        "field": "physical_mismatches[3] (steady-state-style maximum temperature)",
+        "reason": "The paper never says whether the Table I temperatures are steady state, as the extraction's own evidence note admits. The mismatch entry claims a 'steady-state-style' result, which is unsupported.",
+        "locator": "extraction.physical_mismatches; Table I, PDF p.2"
+      },
+      {
+        "field": "physical_mismatches[5] (published temperature from fast LTI model)",
+        "reason": "The packet does not say whether the Table I temperatures are HotSpot or fast-model evaluations. Table II uses HotSpot as ground truth, and the abstract and Section III say only that RLPlanner is integrated with the fast model. The claim that the 77.12 C value comes from the fast model is unsupported.",
+        "locator": "Table I and Table II, PDF p.2; extraction.physical_mismatches"
+      },
+      {
+        "field": "original_setup.solver",
+        "reason": "The claim that the fast model was used 'during RLPlanner training and evaluation' goes beyond the text. Only training or iteration use is supported, and the Table I temperature source is unspecified.",
+        "locator": "extraction.original_setup.solver; Section II-C and III, PDF p.2"
+      },
+      {
+        "field": "benchmark.wirelength unit conversion",
+        "reason": "The extraction applies a 0.001 factor (18130 mm to 18.13 m) although it acknowledges the unit may be wrong or a sum over connections. The conversion is unverified and should not be used.",
+        "locator": "extraction.evidence[benchmark.wirelength]; Table I, PDF p.2"
+      },
+      {
+        "field": "thermal_observable.value",
+        "reason": "The 77.12 C value is the RLPlanner row (non-RND). The headline 20.28% claim in the paper is for RLPlanner with RND (76.84 C). Column attribution was read from pdftotext layout only and not visually verified. The table is the decisive evidence, so approval is blocked.",
+        "locator": "Table I Ascend 910 columns, PDF p.2; Section III-B"
+      },
+      {
+        "field": "floorplan / power_rows",
+        "reason": "No block names, coordinates, widths, heights or per-block power exist for Ascend 910, so the floorplan has no same-scenario power. Correctly marked missing, but this blocks any reproduction.",
+        "locator": "Whole PDF (pp.1-2)"
+      },
+      {
+        "field": "linked_assets",
+        "reason": "The ref [6] URL is only a bibliography entry with no pinned content. The GitHub repository referenced in Section II-C has no URL. Neither provides evidence of geometry, power or code.",
+        "locator": "Reference [6]; Section II-C, PDF p.2"
+      },
+      {
+        "field": "studio_assumptions",
+        "reason": "The list is empty, so no package, material or boundary assumptions are stated for any Studio run.",
+        "locator": "extraction.studio_assumptions"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W4390437658",
+    "decision": "illustrative_2d_only",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Chiplet block names for the Ascend 910 system",
+      "Block x_m, y_m, width_m and height_m for the selected floorplan, whether the RLPlanner result or the benchmark input",
+      "Per-block power rows (name and watts) and total system power for the Ascend 910 scenario",
+      "Any published rule for splitting total power across blocks",
+      "Workload description",
+      "Temperature limit T0 and the reward weights lambda, mu and alpha",
+      "HotSpot configuration: package and material stack, interposer, heat sink, ambient temperature, grid resolution",
+      "Fast thermal model self- and mutual-thermal-resistance tables for this system",
+      "GitHub repository URL for the fast thermal model. The paper mentions it but the packet text gives no URL, and the packet has no assets.",
+      "Content of the ref [6] ServeTheHome page. It is listed only as a reference URL, with no pinned asset in the packet.",
+      "Unit confirmation for the wirelength column (labelled mm but values are in the thousands)",
+      "The resulting RLPlanner floorplan geometry, which is not reported in the 2-page paper",
+      "Studio package and material assumptions. No bundled Studio package or material information is present in the packet.",
+      "Linked asset ref6_ascend910_servethehome is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "3D stacking is not modeled. The scenario is a 2.5D interposer-based chiplet floorplan, and the paper gives no stack or vertical-layer detail.",
+        "essential": false
+      },
+      {
+        "reason": "Interposer, package and material stack parameters (layer thicknesses, conductivities, TIM, heat spreader) are not given in the paper. The thermal result depends on them and cannot be reproduced without them.",
+        "essential": true
+      },
+      {
+        "reason": "Cooling and boundary conditions (heat sink, convection coefficient, ambient temperature) are not stated. The reported 77.12 C cannot be matched to any specific cooling configuration.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports only a steady-state-style maximum temperature, with no transient or workload-dependent thermal behavior. A transient or workload-driven Studio study would not correspond to the published observable.",
+        "essential": true
+      },
+      {
+        "reason": "The optimizer is PPO+RND reinforcement learning with a reward combining wirelength and a temperature penalty. A Studio simulation that does not reproduce this optimizer and reward cannot reproduce the published floorplan, so it can only evaluate a given floorplan.",
+        "essential": true
+      },
+      {
+        "reason": "The published temperature comes from the fast LTI thermal-resistance model approximating HotSpot (MAE 0.25 K), not a full-field solver. A different solver in Studio may give a different value.",
+        "essential": true
+      },
+      {
+        "reason": "No reliability or thermomechanical stress analysis is reported. The introduction mentions thermomechanical stress only as motivation.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "365474c8447837b099751e1e52ffd9ab718afd8c0c9d2271b88220789584980a",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "illustrative_2d_only",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is illustrative_2d_only, but the gate did not pass (input_gate_pass false, scientific_gate_pass false, simulation_allowed false), so Studio did not run: simulation status is skipped because a custom experiment needs 1–128 blocks and a power_w object. The experiment was a custom 2D steady case with empty floorplan and power_w, so no Studio result and no transient trace exist. The paper scenario is the Ascend 910 System row of Table I (RLPlanner reward -7.4063, wirelength 18130 as labelled mm, runtime 7773 s), with a reported maximum temperature of 77.12 C from the fast thermal model. comparison_valid is false, so there is no numerical comparison with 77.12 C and no claim of replication or agreement. The 2-page paper gives no chiplet names, geometry, per-block or total power, or power-splitting rule, so no floorplan could be built. Package, material and cooling boundary conditions, the workload, and the steady/transient regime are also unstated. The 77.12 C value is a single maximum with an unstated spatial location, produced by a fast LTI thermal-resistance model approximating HotSpot (MAE 0.25 K) rather than a full-field solver. The RL optimizer and reward cannot be reproduced by a Studio run, which could at most evaluate a given floorplan. The ServeTheHome reference is not a pinned asset and the GitHub URL is missing. Several evidence items lack valid page or asset locators and the adversarial and independent reviews are unresolved. The only defensible conclusion is that this paper is not currently usable for a quantitative Studio comparison; at best it supports a qualitative remark that floorplan placement affects maximum temperature.",
+    "limitations": [
+      "Studio did not run, so there is no simulated temperature, field or trace to compare.",
+      "The custom 2D steady experiment has no blocks and no power_w, so it fails input validation.",
+      "No numerical comparison with 77.12 C is valid: location, aggregation, regime and boundary assumptions are unmatched or unknown.",
+      "The Ascend 910 floorplan geometry and per-block power are not reported in the paper, and no power-splitting rule is published.",
+      "Interposer, package and material stack, heat sink, convection and ambient conditions are unspecified.",
+      "The paper does not state whether 77.12 C is steady-state, and it reports no transient behavior; a custom steady run would have no transient trace.",
+      "The published value comes from a fast LTI thermal-resistance model approximating HotSpot, not from a solver comparable to Studio.",
+      "The PPO+RND optimizer, reward weights, and temperature limit T0 are not reproduced or given, so the published floorplan cannot be regenerated.",
+      "The wirelength column is labelled mm but has values in the thousands, so its unit is uncertain.",
+      "Linked assets (ServeTheHome page, GitHub repository) are unpinned or have no URL, and several evidence items lack valid locators.",
+      "Adversarial and independent review checks are unresolved, and the result is not independently verified.",
+      "This is not a replication, and 3D stacking and thermomechanical or reliability effects are outside scope.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Chiplet block names for the Ascend 910 system",
+      "Block x_m, y_m, width_m and height_m for the selected floorplan, whether the RLPlanner result or the benchmark input",
+      "Per-block power rows (name and watts) and total system power for the Ascend 910 scenario",
+      "Any published rule for splitting total power across blocks",
+      "Workload description",
+      "Temperature limit T0 and the reward weights lambda, mu and alpha",
+      "HotSpot configuration: package and material stack, interposer, heat sink, ambient temperature, grid resolution",
+      "Fast thermal model self- and mutual-thermal-resistance tables for this system",
+      "GitHub repository URL for the fast thermal model. The paper mentions it but the packet text gives no URL, and the packet has no assets.",
+      "Content of the ref [6] ServeTheHome page. It is listed only as a reference URL, with no pinned asset in the packet.",
+      "Unit confirmation for the wirelength column (labelled mm but values are in the thousands)",
+      "The resulting RLPlanner floorplan geometry, which is not reported in the 2-page paper",
+      "Studio package and material assumptions. No bundled Studio package or material information is present in the packet.",
+      "Linked asset ref6_ascend910_servethehome is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ]
+  }
+}

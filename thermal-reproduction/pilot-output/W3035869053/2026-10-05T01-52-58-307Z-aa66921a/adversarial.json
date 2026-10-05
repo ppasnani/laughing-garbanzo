@@ -1,0 +1,71 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Pages 2-4 support the extracted method description: steady-state T x = b, LP with local and global constraints (Eq. 2-3), spectral sparsification, edge scaling (Alg. 1), Jacobi refinement (Alg. 2), and the multilevel AMG flow (Alg. 3). Page 5 supports CHOLMOD and Gurobi, MATLAB and C++, and the 2.67 GHz CPU. The method is correctly marked as 3D, vectorless and LP-based, not a 2D reproduction. This verifies the method description only, not any reproducible experiment."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets and no linked code or repository (artifact_search_status checked_no_links). The only external pointers are citations to CHOLMOD and Gurobi. A URL or citation is not evidence of runnable code. No implementation is available."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Table I values for Processor A are supported on page 5: 28 W, 195 mm2, 4 metal layers, 11 material layers, 3.3 and 2.0 (x10^3 W/m2K). The 195 mm2 to 1.95e-4 m2 and 10^3 coefficient conversions are arithmetically correct. The algorithm parameters are not extracted and are not given in the text: epsilon, k, gamma, Nmax, beta, eps_th and the gmin value. The power bounds, the matrix M, the layer thicknesses and conductivities, and the ambient temperature are also absent. Because several decisive parameters are unavailable, this is not resolved."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No floorplan geometry, block names, per-block power, local or global constraint values, 3D grid dimensions, or test-case-to-processor mapping exists in the PDF text. The experiment is empty (floorplan [] and power_w {}), so no same-scenario power exists for any floorplan block. The record is also internally inconsistent: experiment.kind is custom_2d_steady while steady_2d_relevant is false and the model is 3D multilayer."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The decisive observable is the node-indexed worst-case temperature distribution in Fig. 3 (page 6). Only pdftotext output was supplied, so the figure was not visually verified or digitized and has no numeric values. Table II is text-extracted only and is not tied to Processor A. The packet has no data assets. The Table I coefficient row is column-merged in the extraction, so the shared-value reading is an inference from layout."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is set to custom_2d_steady although the source is a 3D multilayer vectorless LP analysis. This contradicts steady_2d_relevant=false and the essential physical_mismatches entries. The empty floorplan and empty power map cannot be called any 2D reproduction.",
+      "locator": "extraction.experiment; extraction.scenario.steady_2d_relevant; page 5 Table I"
+    },
+    {
+      "field": "thermal_observable_worst_case_temperature_distribution",
+      "reason": "Fig. 3 is the decisive observable, and no rendered page image or figure asset was supplied. Pdftotext shows only axis labels, so the figure was not visually verified. The value is null with no unit or ambient temperature.",
+      "locator": "page 6, Fig. 3 panels (a)-(c)"
+    },
+    {
+      "field": "scenario selection (Processor A)",
+      "reason": "Selecting Processor A is arbitrary and unsupported as a reproduction target. Table II test cases T1-T7 are not mapped to either processor, and Figs. 3 and 4 cover both processors. The scenario links Table I, Table II and Fig. 3 together without evidence that they correspond.",
+      "locator": "page 5 Table I; page 6 Table II, Figs. 3-4"
+    },
+    {
+      "field": "floorplan_and_power",
+      "reason": "There are no block names or geometry, and no per-block power for any block. Only total power is given, and power is defined only as uncertain bounds (Eq. 3) with no numeric values. The same-scenario power requirement cannot be satisfied.",
+      "locator": "page 2 Eq. (3); page 5 Table I; extraction.experiment"
+    },
+    {
+      "field": "missing_inputs",
+      "reason": "The missing-inputs list omits the algorithm hyperparameters epsilon, k, gamma, Nmax, beta, eps_th and gmin. It also omits the Gurobi settings and the Table II configuration. Their absence blocks any reproduction but is not recorded.",
+      "locator": "pages 3-4, Alg. 1-3; extraction.missing_inputs"
+    },
+    {
+      "field": "heat_transfer_coefficients",
+      "reason": "The 3.3 and 2.0 values are read from a column-merged text table. The shared value for both processors and the 10^3 unit are layout inferences, with no visual check of the table. The paper does not say how these coefficients map to boundary conditions on specific layers or surfaces.",
+      "locator": "page 5 Table I, equivalent heat transfer coefficients row"
+    },
+    {
+      "field": "code_and_data_availability",
+      "reason": "The packet has no assets, no code, no configuration and no data. Citations to CHOLMOD and Gurobi and to the source design (Li et al. [8]) are not evidence for any decisive input.",
+      "locator": "packet.assets=[]; refs [1], [8], [10] on page 5"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

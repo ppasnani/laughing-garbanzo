@@ -1,0 +1,278 @@
+{
+  "paper_id": "W4381799710",
+  "paper_title": "Thermal aware task assignment for multicore processors using genetic algorithm",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 10,
+    "figure_or_table": "Section 5.3.2 and Figure 9 (non-equal initial temperature case), with the setup in Section 5.1 and Figure 6 and the task parameters in Table 1",
+    "description": "Thermal-aware GA task assignment on a quad-core out-of-order processor. Task parameters come from gem5 and McPAT. HotSpot gives per-core temperatures over 10 hyper-periods. Initial core temperatures are 65.48, 49.77, 45.82 and 51.86 C with a 45 C ambient. Core temperature is rebalanced; the maximum inter-core difference is about 8 C after the first hyper-period (Figure 10).",
+    "architecture": "Quad-core out-of-order CPU with 32 KB I-cache and D-cache, a dedicated 1 MB L2 per core, 64 MB RAM, a DDRx1 memory controller and a 2 GHz clock (Section 5.1, Figure 6). No block floorplan geometry is published.",
+    "workload": "20 independent periodic tasks from SPEC2006, MiBench and MediaBench (Table 1, PDF page 8), with per-task execution time, leakage power, dynamic power and energy.",
+    "operating_point": "2 GHz clock; ambient 45 C; initial core temperatures of 65.48, 49.77, 45.82 and 51.86 C; 10 hyper-periods (about 14 s of simulation, per the abstract and conclusion). The task power values in Table 1 are per task, not per block.",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "HotSpot thermal simulator (compact RC model) driven by gem5 execution times and McPAT task power; the per-core transient temperature is also described by a lumped RC model (Eqs. 1-2), PDF pages 3-7",
+    "optimizer": "Genetic algorithm (binary chromosome, one gene per task, tournament selection, single-point crossover, bitwise mutation, mu+lambda survivor selection) that assigns tasks to cores so each core's energy is about a_j times total energy (Eqs. 8-13, Algorithm-1), PDF pages 5-7",
+    "controller": "Temperature-driven task assignment per hyper-period under EDF scheduling: decision factors a_j are computed from the previous period's steady-state HotSpot core temperatures, with more energy given to cooler cores. This is not a DVFS or closed-loop continuous controller (PDF pages 5-7)",
+    "benchmark": "20 tasks from SPEC2006, MiBench and MediaBench (Table 1, PDF page 8) on a quad-core out-of-order CPU at 2 GHz. Selected scenario: non-equal initial core temperatures (65.48, 49.77, 45.82, 51.86 C; ambient 45 C) over 10 hyper-periods (Section 5.3.2, Figure 9, PDF page 10)"
+  },
+  "thermal_observable": {
+    "value": 8,
+    "unit": "C",
+    "location": "Maximum temperature difference between cores (inter-core spread) in each hyper-period, Figure 10 (PDF page 10). The paper states roughly 8 C, excluding the first hyper-period where the initial temperatures differ",
+    "aggregation": "Maximum inter-core temperature difference per hyper-period over 10 hyper-periods, about 14 s of simulation. The value is approximate and read from the text, not from a tabulated number",
+    "pdf_page": 10
+  },
+  "physical_mismatches": [
+    {
+      "reason": "No block floorplan is published. There are no x, y, width or height values for the cores, L2 caches or other blocks, and Figure 6 is an architecture diagram, not geometry. A steady 2D Studio floorplan therefore cannot be built from the paper without inventing geometry.",
+      "essential": true
+    },
+    {
+      "reason": "Table 1 gives per-task (benchmark) leakage and dynamic power, not per-block power for the same scenario. The paper does not publish a rule for mapping tasks to per-core block power, and the task-to-core assignment per hyper-period is only shown in figures. Total chip power cannot be split into per-block power without inventing a rule.",
+      "essential": true
+    },
+    {
+      "reason": "The original study is transient and scheduling-driven. It uses 10 hyper-periods of about 14 s with core temperatures feeding back into task assignment. A steady 2D thermal solve cannot reproduce the transient peaks or the assignment feedback loop.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer (GA task assignment) and controller (per-period thermal-aware scheduling under EDF) act on workload allocation, not on a floorplan or package parameters, so they have no counterpart in a static Studio steady-state solve.",
+      "essential": true
+    },
+    {
+      "reason": "The HotSpot package, cooling and material parameters (R and C values, heat sink, TIM, die thickness, ambient coupling beyond the 45 C ambient) are not reported, so the original thermal solver setup is not reproducible.",
+      "essential": true
+    },
+    {
+      "reason": "The system is a planar quad-core CPU with no 3D stacking, interposer or advanced cooling. These are not mismatches with a 2D Studio package, but they confirm that the paper's contribution is scheduling and not geometry.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "Block floorplan geometry (x_m, y_m, width_m, height_m) for the four cores, L2 caches and any other blocks",
+    "Per-block power_rows in watts for the selected scenario; Table 1 gives only per-task leakage and dynamic power, with no published mapping rule to cores or blocks",
+    "The task-to-core assignment for each hyper-period, which appears only in Figures 7 and 9 and is not tabulated",
+    "HotSpot configuration: package, heat sink, TIM, die thickness, material properties, thermal R and C values, and the floorplan file used",
+    "Source code, gem5 and McPAT configuration files, GA parameters (Np, iter, k, rho_c, rho_m) and task period and hyper-period definitions; no repository, supplementary data or availability statement is linked in the packet (assets list is empty)",
+    "Tabulated numeric core temperatures for Figures 9 and 10; the roughly 8 C spread is given only in the text and as a plot"
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "initial_temperature_core1",
+      "block_name": "Core1",
+      "source_value": 65.48,
+      "source_unit": "C",
+      "conversion_factor": 1,
+      "normalized_value": 65.48,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 5.3.2 bullet list, 'Core1 Temp: 65.48 ℃'",
+      "provenance": "Paper text, selected scenario: non-equal initial temperature case (Figure 9)",
+      "uncertainty": null
+    },
+    {
+      "field": "initial_temperature_core2",
+      "block_name": "Core2",
+      "source_value": 49.77,
+      "source_unit": "C",
+      "conversion_factor": 1,
+      "normalized_value": 49.77,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 5.3.2 bullet list, 'Core2 Temp: 49.77 ℃'",
+      "provenance": "Paper text, selected scenario: non-equal initial temperature case",
+      "uncertainty": null
+    },
+    {
+      "field": "initial_temperature_core3",
+      "block_name": "Core3",
+      "source_value": 45.82,
+      "source_unit": "C",
+      "conversion_factor": 1,
+      "normalized_value": 45.82,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 5.3.2 bullet list, 'Core3 Temp: 45.82 ℃'",
+      "provenance": "Paper text, selected scenario: non-equal initial temperature case",
+      "uncertainty": null
+    },
+    {
+      "field": "initial_temperature_core4",
+      "block_name": "Core4",
+      "source_value": 51.86,
+      "source_unit": "C",
+      "conversion_factor": 1,
+      "normalized_value": 51.86,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 5.3.2 bullet list, 'Core4 Temp: 51.86 ℃'",
+      "provenance": "Paper text, selected scenario: non-equal initial temperature case",
+      "uncertainty": null
+    },
+    {
+      "field": "ambient_temperature",
+      "block_name": null,
+      "source_value": 45,
+      "source_unit": "C",
+      "conversion_factor": 1,
+      "normalized_value": 45,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 5.3.2 bullet list, 'Ambient Temperature: 45 ℃'",
+      "provenance": "Paper text, selected scenario",
+      "uncertainty": "Ambient boundary only; the HotSpot package, heat sink and convection coupling are not reported"
+    },
+    {
+      "field": "thermal_observable_max_inter_core_temperature_difference",
+      "block_name": null,
+      "source_value": 8,
+      "source_unit": "C",
+      "conversion_factor": 1,
+      "normalized_value": 8,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Section 5.3.2 text after Figure 9, describing Figure 10; the conclusion on pages 10-11 repeats 'highest temperature difference between the cores is 8 ℃'",
+      "provenance": "Paper text, approximate value. Maximum temperature difference between cores per hyper-period over 10 hyper-periods, excluding the first hyper-period",
+      "uncertainty": "The value is stated as 'slightly 8 ℃' and read from the text. Figure 10 was not digitized and no tabulated per-period values exist. The value is an inter-core spread, not an absolute peak temperature"
+    },
+    {
+      "field": "clock_frequency",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 2000000000,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 5.1 Simulation setup, 'clock frequency is set to 2 GHz'",
+      "provenance": "Paper text; operating point of the quad-core O3 architecture",
+      "uncertainty": "normalized_value is in Hz"
+    },
+    {
+      "field": "l1_icache_dcache_capacity",
+      "block_name": null,
+      "source_value": 32,
+      "source_unit": "KB",
+      "conversion_factor": 1024,
+      "normalized_value": 32768,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 5.1, 'I-Cache and D-Cache capacity of 32KB'",
+      "provenance": "Paper text; architecture description, not block geometry",
+      "uncertainty": "normalized_value is in bytes. The binary KB convention is assumed"
+    },
+    {
+      "field": "l2_cache_capacity",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "MB",
+      "conversion_factor": 1048576,
+      "normalized_value": 1048576,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 5.1, 'dedicated L2-Cache memory with 1MB'",
+      "provenance": "Paper text; architecture description, not block geometry",
+      "uncertainty": "normalized_value is in bytes. The binary MB convention is assumed"
+    },
+    {
+      "field": "ram_capacity",
+      "block_name": null,
+      "source_value": 64,
+      "source_unit": "MB",
+      "conversion_factor": 1048576,
+      "normalized_value": 67108864,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 5.1, 'the capacity of the RAM ... is 64 MB'",
+      "provenance": "Paper text; architecture description",
+      "uncertainty": "normalized_value is in bytes. The binary MB convention is assumed"
+    },
+    {
+      "field": "number_of_cores",
+      "block_name": null,
+      "source_value": 4,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 7,
+      "asset_id": null,
+      "locator": "Section 5.1, 'Quad-Core O3 (out of order) Processor'; Figure 6 on page 8",
+      "provenance": "Paper text and architecture diagram",
+      "uncertainty": "No core dimensions or positions are published"
+    },
+    {
+      "field": "number_of_hyper_periods",
+      "block_name": null,
+      "source_value": 10,
+      "source_unit": "hyper-periods",
+      "conversion_factor": 1,
+      "normalized_value": 10,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section 5.3 Simulation results, 'simulation was executed for 10 hyper-periods'",
+      "provenance": "Paper text",
+      "uncertainty": "The hyper-period length in seconds is not given"
+    },
+    {
+      "field": "simulated_duration",
+      "block_name": null,
+      "source_value": 14,
+      "source_unit": "s",
+      "conversion_factor": 1,
+      "normalized_value": 14,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Conclusion, 'approximately 14 seconds'; the abstract on page 1 says 'approximately 14 seconds of simulation'",
+      "provenance": "Paper text",
+      "uncertainty": "The value is stated as approximate"
+    },
+    {
+      "field": "number_of_benchmark_tasks",
+      "block_name": null,
+      "source_value": 20,
+      "source_unit": "tasks",
+      "conversion_factor": 1,
+      "normalized_value": 20,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Table 1 Real benchmarks, task numbers 0-19 (SPEC2006, MiBench, MediaBench)",
+      "provenance": "Paper table. Per-task execution time, leakage power, dynamic power and energy are given, but not per-block power",
+      "uncertainty": "The task-to-core mapping per hyper-period is shown only in figures and is not tabulated. Table 1 power cannot be split into per-block power without a published rule"
+    },
+    {
+      "field": "paper_linked_resources",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "All PDF pages 1-12 were inspected. No availability statement, repository, code, supplementary data or config URL was found. Only author profile and email links on page 12 appear, and these are not data resources. The packet assets list is empty",
+      "provenance": "Packet inspection; artifact_search_status is checked_no_links",
+      "uncertainty": "No assets exist to verify. gem5, McPAT and HotSpot configurations, GA parameters, floorplan and package materials are missing"
+    },
+    {
+      "field": "floorplan_geometry_and_block_power",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Figure 6 (architecture diagram) and Table 1 (per-task power)",
+      "provenance": "Paper figure and table. They give no x_m, y_m, width_m or height_m for any block and no per-block power_rows for the selected scenario",
+      "uncertainty": "No complete experiment can be formed. Studio package and material assumptions are not published and no bundled assumptions are asserted here"
+    }
+  ]
+}

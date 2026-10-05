@@ -1,0 +1,410 @@
+{
+  "paper_id": "W3163019281",
+  "paper_title": "PACT: An Extensible Parallel Thermal Simulator for Emerging Integration and Cooling Technologies",
+  "manifest_status": "downloaded",
+  "source_url": "https://www.bu.edu/peaclab/files/2024/02/PACT_An_Extensible_Parallel_Thermal_Simulator_for_Emerging_Integration_and_Cooling_Technologies.pdf",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "90e99a3bb934d329f6e79998ff730ccaefabb7afc67d945d3a7f0253bf1f5f90",
+  "pdf_pages": 14,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T01:43:24.385Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3163019281",
+    "paper_title": "PACT: An Extensible Parallel Thermal Simulator for Emerging Integration and Cooling Technologies",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "PACT_github_repo",
+        "url": "https://github.com/peaclab/PACT",
+        "kind": "source code repository (PACT simulator; footnote 3, 'PACT is opensourced at')",
+        "paper_page": 2
+      },
+      {
+        "id": "OpenSTA_github_repo",
+        "url": "https://github.com/The-OpenROAD-Project/OpenSTA",
+        "kind": "source code repository (OpenSTA static timing/power tool used in the OpenROAD interface; footnote 4)",
+        "paper_page": 7
+      }
+    ],
+    "scenario": {
+      "pdf_page": 8,
+      "figure_or_table": "Table III (experimental setup) and Table IV (simulation results), Section IV-A",
+      "description": "Selected scenario: the 2-D 256-core SCC-based processor simulated in PACT and HotSpot for speed analysis. The text gives a hot-spot power density of 216.6 W/cm2 and the same medium-cost heat sink in both tools. Table III and Table IV are image content and were not extracted as text. Block geometry (x_m, y_m, width_m, height_m) and per-block power rows are not available in the extracted text, so no complete floorplan can be recorded from this packet. The packet contains no linked asset text for the repository, so its contents are unverified. No paper thermal observable for this specific scenario (temperature in degC) can be cited from the text; the reported results are simulation times and speedups (up to 1.9x steady-state and 232x transient over HotSpot).",
+      "architecture": "256-core 2-D processor inspired by the Intel SCC scaled to 22 nm, with IA-32 cores; medium-cost heat spreader and heat sink model (HotSpot-style) in PACT",
+      "workload": "Simulated power profile of the SCC-based chip from Eris et al. (ref [20]), selected as the profile with the highest thermal gradient and chip temperature; hot spot power density 216.6 W/cm2; total chip power not stated in extracted text",
+      "operating_point": "Steady-state (and transient) thermal simulation at standard-cell/architecture grid resolutions listed in Table III (not extracted); PACT on Xyce 6.12 with OpenMPI 3.1.4, up to 112 cores; solver, grid size and heat sink parameters per Table III (values not available in extracted text)",
+      "steady_2d_relevant": true
+    },
+    "original_setup": {
+      "solver": "PACT (SPICE-based parallel compact thermal simulator) run on the Xyce 6.12 engine with OpenMPI 3.1.4, up to 112 cores. Steady-state solvers are KLU and AztecOO, and the transient solver is TRAP (a hybrid of backward Euler and trapezoidal). The comparison baseline is HotSpot with the same medium-cost heat sink. The exact solver, grid and heat-sink settings for this scenario are in Table III, which was not extracted (PDF page 8).",
+      "optimizer": "None. This is a thermal-simulation speed comparison with no design optimizer.",
+      "controller": "None. No runtime thermal controller is used in this scenario.",
+      "benchmark": "2-D 256-core processor inspired by the Intel SCC and scaled to 22 nm, with IA-32 cores. The power profile comes from the Eris et al. simulation (ref [20]), chosen for the highest thermal gradient and chip temperature, with a hot-spot power density of 216.6 W/cm2. It is simulated in PACT versus HotSpot for speed (Tables III and IV, Section IV-A, PDF page 8). Reported speedups over HotSpot are up to 1.9x steady-state and 232x transient."
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "",
+      "location": "",
+      "aggregation": "",
+      "pdf_page": 8
+    },
+    "physical_mismatches": [
+      {
+        "reason": "No complete floorplan is available for this scenario. Block x/y/width/height and per-block power rows are in image-only tables or figures that were not extracted. Total chip power is not stated, and the packet gives no rule for splitting it. No same-scenario geometry and power can be assembled.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports simulation time and speedup for this scenario, not a temperature observable. No temperature value, unit, location or aggregation can be cited from the extracted text, so the thermal observable cannot be compared with a Studio result.",
+        "essential": true
+      },
+      {
+        "reason": "The original solver is a parallel SPICE-based compact RC network (Xyce, OpenMPI, KLU/AztecOO/TRAP) at standard-cell or architecture grid resolutions. A different solver or discretization in a Studio package would not reproduce the paper's speed or accuracy results.",
+        "essential": true
+      },
+      {
+        "reason": "The original uses a HotSpot-style medium-cost heat spreader and heat sink with air convection. Its parameters are in Table III, which was not extracted. A different cooling stack in Studio would change absolute temperatures.",
+        "essential": true
+      },
+      {
+        "reason": "The scenario is 2-D, so there is no 3-D or interposer mismatch. The paper has no optimizer or controller in this scenario, and no reliability analysis. The paper's 3-D (monolithic), liquid-microchannel and PNoC/interposer experiments are separate scenarios and are not part of this selection.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "Table III (experimental setup for the SCC-based chip) and Table IV (simulation results) are image content and were not extracted: grid resolution, die size, layer stack, material properties, and heat spreader and heat sink parameters.",
+      "Block names, x_m, y_m, width_m and height_m for the 256-core SCC-based floorplan.",
+      "Per-block power_rows (name and watts) for the selected power profile, and total chip power. Only the 216.6 W/cm2 hot-spot power density is stated, on PDF page 8.",
+      "Any peak, average or gradient temperature for the SCC-based chip, with unit, location and aggregation.",
+      "Contents of the linked repositories (PACT at https://github.com/peaclab/PACT, PDF page 2; OpenSTA at https://github.com/The-OpenROAD-Project/OpenSTA, PDF page 7). The packet has no asset text, so their inputs, configs and power files are unverified.",
+      "The Eris et al. (ref [20]) power-profile data file, which is not in the packet.",
+      "Bundled Studio package and material assumptions were not supplied in the packet, so none can be recorded."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "hot_spot_power_density",
+        "block_name": null,
+        "source_value": 216.6,
+        "source_unit": "W/cm2",
+        "conversion_factor": 10000,
+        "normalized_value": 2166000,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section IV-A, paragraph 2: 'The selected power profile has a hot spot power density of 216.6 W/cm2'",
+        "provenance": "Paper text for the selected 256-core SCC-based 2-D chip scenario; the power profile comes from Eris et al. (ref [20]). Converted from W/cm2 to W/m2 (x10^4). The value is a density only, not a per-block power in watts.",
+        "uncertainty": "The hot-spot location, area and block are not stated, so it cannot be converted to watts. Total chip power is not stated, and no rule for splitting it is published."
+      },
+      {
+        "field": "steady_state_speedup_vs_hotspot_scc_chip",
+        "block_name": null,
+        "source_value": 1.9,
+        "source_unit": "x",
+        "conversion_factor": 1,
+        "normalized_value": 1.9,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section IV-A: 'PACT achieves a maximum speedup of 1.9x and 232x for steady-state and transient simulations'",
+        "provenance": "Paper text for the SCC-based chip comparison against HotSpot. It is a simulation-time speedup, not a thermal observable in degC.",
+        "uncertainty": "Speedup, not a temperature. The detailed values are in Table IV, an image that was not extracted."
+      },
+      {
+        "field": "transient_speedup_vs_hotspot_scc_chip",
+        "block_name": null,
+        "source_value": 232,
+        "source_unit": "x",
+        "conversion_factor": 1,
+        "normalized_value": 232,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section IV-A: 'PACT achieves a maximum speedup of 1.9x and 232x for steady-state and transient simulations'",
+        "provenance": "Paper text for the SCC-based chip comparison against HotSpot. It is a simulation-time speedup, not a temperature.",
+        "uncertainty": "Speedup, not a temperature. Table IV is not extracted. Page 3 states 186x for the OpenROAD designs, a different experiment."
+      },
+      {
+        "field": "simulation_platform_cores_max",
+        "block_name": null,
+        "source_value": 112,
+        "source_unit": "cores",
+        "conversion_factor": 1,
+        "normalized_value": 112,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section IV intro: 'We use at most four nodes (112 cores) in each of our experiments'",
+        "provenance": "Paper text. Solver is PACT on Xyce 6.12 with OpenMPI 3.1.4, run at MGHPCC.",
+        "uncertainty": "The core count used for the specific SCC steady-state run is in Table IV, which is not extracted."
+      },
+      {
+        "field": "paper_linked_resource_PACT_repo",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Footnote 3: 'PACT is opensourced at https://github.com/peaclab/PACT'",
+        "provenance": "Paper-linked source code repository. The packet has no asset text or pinned version, so no repository contents are used as evidence.",
+        "uncertainty": "The URL does not prove that inputs, configs or power files for the SCC scenario exist. Unverified."
+      },
+      {
+        "field": "paper_linked_resource_OpenSTA_repo",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Footnote 4: 'OpenSTA: https://github.com/The-OpenROAD-Project/OpenSTA'",
+        "provenance": "Paper-linked repository for the OpenSTA power tool used in the OpenROAD interface. It is not part of the SCC scenario.",
+        "uncertainty": "No asset text in the packet. Contents unverified."
+      },
+      {
+        "field": "floorplan_block_geometry_and_power_rows",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Table III (experimental setup, image content) and Table IV, Section IV-A",
+        "provenance": "Block x_m, y_m, width_m, height_m and per-block watts are not in the extracted text for the SCC scenario. The floorplan and power_rows are left empty.",
+        "uncertainty": "No complete same-scenario geometry and power can be assembled. Total chip power is not stated and no splitting rule is published."
+      },
+      {
+        "field": "paper_thermal_observable",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Section IV-A and Table IV: the SCC-based chip reports simulation time and speedup only",
+        "provenance": "No peak, average or gradient temperature in degC is reported in the text for the SCC chip. Temperatures such as the ~90 degC maximum on PDF page 11 belong to the OpenROAD MPSoC scenario, which is a different experiment.",
+        "uncertainty": "The location and aggregation of any temperature for this scenario are unknown."
+      },
+      {
+        "field": "studio_package_material_assumptions",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "No bundled Studio package or material assumptions are in the packet",
+        "provenance": "The packet has no assets and no Studio description, so none are recorded.",
+        "uncertainty": "Studio assumptions are unknown. Material properties, heat spreader and heat sink parameters, and the original solver (Xyce SPICE RC network with KLU/AztecOO/TRAP) cannot be compared."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "Page 8 text supports the high-level method: PACT is a SPICE-based compact RC simulator on Xyce 6.12 with OpenMPI 3.1.4, run at MGHPCC with up to 112 cores. It also supports the HotSpot comparison on a 256-core SCC-inspired 2-D chip scaled to 22 nm, using the same medium-cost heat sink. The paper's SCC result is a simulation-time speedup, not a temperature. The extraction's experiment kind 'custom_2d_steady' therefore does not match the paper's observable. The 3-D and transient solver features (Table IV mixes the monolithic 3-D and SCC rows) are not a 2-D reproduction."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The only code links are the PACT and OpenSTA GitHub URLs (pages 2 and 7). No asset text, pinned commit or file excerpt is in the packet, so a bare URL is not evidence. Nothing shows that SCC inputs, configs or power files exist."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Table III (grid resolution, die size, layer stack, materials, heat spreader and heat sink parameters) and Table IV (core counts, times, speedups) are image tables on page 8 and were not visually verified. Only the 216.6 W/cm2 hot-spot density, the 1.9x/232x maxima and the 112-core limit are supported by text. The unit conversion to 2,166,000 W/m2 is arithmetically correct but is a density only."
+      },
+      "config": {
+        "status": "missing",
+        "note": "The exact solver choice, grid size, heat sink settings and core count for the SCC steady-state run are in Table III or IV and were not seen. The text only says PACT 'automatically uses AztecOO' at finer grids. KLU, AztecOO and TRAP are described generally, so none can be pinned to this scenario. No Studio package or material assumptions are supplied."
+      },
+      "data": {
+        "status": "missing",
+        "note": "The floorplan is empty: there are no block names, x/y/width/height values, or per-block watts. Total chip power is not stated and the power profile (Eris et al., ref [20]) is not supplied. Same-scenario power for every block is therefore absent. No temperature observable (value, unit, location, aggregation) exists for the SCC scenario. The roughly 90 degC on page 11 belongs to the OpenROAD MPSoC experiment."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment (custom_2d_steady, empty floorplan and power_w)",
+        "reason": "A 2-D steady experiment cannot be built or approved. No block geometry or per-block power is available, and the paper's SCC result is a timing and speedup comparison, not a steady temperature.",
+        "locator": "PDF p.8, Section IV-A, Tables III and IV"
+      },
+      {
+        "field": "thermal_observable",
+        "reason": "The value is null, so there is no paper observable against which a reproduction could be checked. A temperature from a different scenario must not be substituted.",
+        "locator": "PDF p.8 Section IV-A; PDF p.11 (~90 degC belongs to the OpenROAD MPSoC scenario)"
+      },
+      {
+        "field": "Table III and Table IV",
+        "reason": "These decisive tables are images and were not visually verified. Grid size, heat sink parameters, core counts and times are unverified. The packet contains no figure or table assets.",
+        "locator": "PDF p.8, Tables III and IV"
+      },
+      {
+        "field": "original_setup.solver",
+        "reason": "The solver list (KLU, AztecOO, TRAP) comes from other sections and experiments (pages 7, 9, 11, 12). It is not tied to the SCC run by any extracted evidence. The 1.9x speedup is stated as a maximum, with no configuration given.",
+        "locator": "PDF p.8 Section IV-A; PDF p.7 Table II discussion; PDF p.11 Fig. 17 discussion"
+      },
+      {
+        "field": "scenario / speedup attribution",
+        "reason": "Table III and Table IV cover both the monolithic 3-D chip and the SCC chip. The text assigns 1.9x and 232x to the SCC chip, but the per-chip split is in the unverified table image. The 232x transient speedup also depends on thin-layer stiffness and the TRAP solver, which are transient and 3-D features and are not a 2-D steady reproduction.",
+        "locator": "PDF p.8, Section IV-A; PDF p.2 contribution 4"
+      },
+      {
+        "field": "linked_assets (PACT_github_repo, OpenSTA_github_repo)",
+        "reason": "Both are bare URLs with no pinned version or contents in the packet. They cannot support code, config or data claims. The OpenSTA repo belongs to the OpenROAD interface, not the SCC scenario.",
+        "locator": "PDF p.2 footnote 3; PDF p.7 footnote 4"
+      },
+      {
+        "field": "power profile source",
+        "reason": "The SCC power profile comes from Eris et al. (ref [20]), which is not provided. Only a hot-spot density is given, so power cannot be converted to watts. The hot-spot area and block are not stated.",
+        "locator": "PDF p.8, Section IV-A paragraph 2; PDF p.13 ref [20]"
+      },
+      {
+        "field": "studio_assumptions / studio_package_material_assumptions",
+        "reason": "No Studio package or material assumptions are supplied, so no comparison can be made. No heat sink or material equivalence is verified.",
+        "locator": "Packet assets: empty"
+      }
+    ],
+    "checked_pdf_pages": [
+      2,
+      3,
+      4,
+      7,
+      8,
+      11
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3163019281",
+    "decision": "illustrative_2d_only",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "Table III (experimental setup for the SCC-based chip) and Table IV (simulation results) are image content and were not extracted: grid resolution, die size, layer stack, material properties, and heat spreader and heat sink parameters.",
+      "Block names, x_m, y_m, width_m and height_m for the 256-core SCC-based floorplan.",
+      "Per-block power_rows (name and watts) for the selected power profile, and total chip power. Only the 216.6 W/cm2 hot-spot power density is stated, on PDF page 8.",
+      "Any peak, average or gradient temperature for the SCC-based chip, with unit, location and aggregation.",
+      "Contents of the linked repositories (PACT at https://github.com/peaclab/PACT, PDF page 2; OpenSTA at https://github.com/The-OpenROAD-Project/OpenSTA, PDF page 7). The packet has no asset text, so their inputs, configs and power files are unverified.",
+      "The Eris et al. (ref [20]) power-profile data file, which is not in the packet.",
+      "Bundled Studio package and material assumptions were not supplied in the packet, so none can be recorded.",
+      "Linked asset PACT_github_repo is not pinned and available",
+      "Linked asset OpenSTA_github_repo is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "No complete floorplan is available for this scenario. Block x/y/width/height and per-block power rows are in image-only tables or figures that were not extracted. Total chip power is not stated, and the packet gives no rule for splitting it. No same-scenario geometry and power can be assembled.",
+        "essential": true
+      },
+      {
+        "reason": "The paper reports simulation time and speedup for this scenario, not a temperature observable. No temperature value, unit, location or aggregation can be cited from the extracted text, so the thermal observable cannot be compared with a Studio result.",
+        "essential": true
+      },
+      {
+        "reason": "The original solver is a parallel SPICE-based compact RC network (Xyce, OpenMPI, KLU/AztecOO/TRAP) at standard-cell or architecture grid resolutions. A different solver or discretization in a Studio package would not reproduce the paper's speed or accuracy results.",
+        "essential": true
+      },
+      {
+        "reason": "The original uses a HotSpot-style medium-cost heat spreader and heat sink with air convection. Its parameters are in Table III, which was not extracted. A different cooling stack in Studio would change absolute temperatures.",
+        "essential": true
+      },
+      {
+        "reason": "The scenario is 2-D, so there is no 3-D or interposer mismatch. The paper has no optimizer or controller in this scenario, and no reliability analysis. The paper's 3-D (monolithic), liquid-microchannel and PNoC/interposer experiments are separate scenarios and are not part of this selection.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "8f9bb3ab95b10fabb541e6df68f60e1ef8c790b2def9ab35b532c060e958d12e",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "illustrative_2d_only",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is illustrative_2d_only, and the Studio simulation did not run (status skipped). The gate failed because the custom experiment has no floorplan blocks and no power_w object, so Studio input validity fails (input_gate_pass=false, scientific_gate_pass=false, simulation_allowed=false). The selected scenario is the paper's 256-core SCC-inspired 2D processor in PACT versus HotSpot (PDF page 8, Section IV-A). It would be a custom 2D steady run, so there is no transient trace even though the paper also reports transient results. The paper reports only simulation-time speedups (up to 1.9x steady-state and 232x transient over HotSpot) and a hot-spot power density of 216.6 W/cm2. It gives no cited temperature observable with location and aggregation. Because no Studio result exists and no paper temperature is available, no numerical comparison is made and comparison_valid is false. Nothing here replicates the paper, exactly or approximately. The only defensible statement is qualitative: the scenario is 2D and steady-state relevant, and a 2D steady screening model could in principle show sensitivity to power density and heat-sink assumptions. Even that cannot be tested until a floorplan, per-block power and cooling parameters are supplied. The final verdict is no valid comparison and no validation of the paper's claims.",
+    "limitations": [
+      "Studio did not run, so there is no simulated temperature or any other output to assess.",
+      "The custom experiment has an empty floorplan and no power_w. Block geometry and per-block watts are in image-only Table III/IV content that was not extracted, and total chip power is not stated.",
+      "The paper reports speedups (1.9x steady-state, 232x transient), not temperatures. No thermal observable with value, unit, location, or aggregation is cited, so no numerical comparison is possible.",
+      "The 216.6 W/cm2 hot-spot density has no stated location or area and cannot be converted to watts or assigned to blocks.",
+      "The original solver is a parallel SPICE-based compact RC network (Xyce, OpenMPI, KLU/AztecOO/TRAP) at grid resolutions in the unextracted Table III. Studio's solver and discretization would differ, and speed or accuracy results cannot transfer.",
+      "The HotSpot-style medium-cost heat spreader and heat sink parameters were not extracted. Studio's cooling stack and material assumptions are unknown, and these would change absolute temperatures.",
+      "The linked repositories (PACT, OpenSTA) are unpinned and their contents are unverified. The Eris et al. power profile (ref [20]) is not in the packet.",
+      "The evidence entries lack valid page or asset locators, and the adversarial code, parameters, config and data checks, plus the independent page/asset review, are unresolved.",
+      "The paper's transient results are not represented, because a custom 2D steady run has no transient trace, and the regime was not cited as steady or transient in the evidence.",
+      "No exact replication is claimed. The deterministic gate sets the final verdict as comparison_valid=false.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "Thermal observable needs a valid page, unit, location, and aggregation",
+      "No cited steady/transient regime",
+      "Table III (experimental setup for the SCC-based chip) and Table IV (simulation results) are image content and were not extracted: grid resolution, die size, layer stack, material properties, and heat spreader and heat sink parameters.",
+      "Block names, x_m, y_m, width_m and height_m for the 256-core SCC-based floorplan.",
+      "Per-block power_rows (name and watts) for the selected power profile, and total chip power. Only the 216.6 W/cm2 hot-spot power density is stated, on PDF page 8.",
+      "Any peak, average or gradient temperature for the SCC-based chip, with unit, location and aggregation.",
+      "Contents of the linked repositories (PACT at https://github.com/peaclab/PACT, PDF page 2; OpenSTA at https://github.com/The-OpenROAD-Project/OpenSTA, PDF page 7). The packet has no asset text, so their inputs, configs and power files are unverified.",
+      "The Eris et al. (ref [20]) power-profile data file, which is not in the packet.",
+      "Bundled Studio package and material assumptions were not supplied in the packet, so none can be recorded.",
+      "Linked asset PACT_github_repo is not pinned and available",
+      "Linked asset OpenSTA_github_repo is not pinned and available",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ]
+  }
+}

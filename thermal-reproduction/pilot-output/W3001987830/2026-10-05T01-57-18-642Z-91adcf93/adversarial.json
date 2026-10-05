@@ -1,0 +1,90 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The pdftotext of PDF pp.4-10 supports the high-level method: a FloTHERM 3D transient simulation of an IGBT module on a cold plate with a 50 um TIM varied over 0.2/1/4 W/mK, and Zth, structure-function and TDIM RthJC derived from it. The same text does not say how the 3000 W/m2K HTC is applied, even though Table A2 lists a 500x140x20 mm aluminum cold plate block. Mesh and solver settings are also absent. The extraction correctly treats this as not a 2D steady floorplan scenario."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, FloTHERM model or input file is supplied. The asset list is empty. The linked URLs are vendor product pages, a datasheet, standards and a round-robin report, and none is evidence for the Section 3 scenario. A bare URL is not evidence."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Table A2 geometry and Table A1 materials were read and match the extracted sizes. However, the power is contradictory: the text on PDF p.5 says a 100 W step, while the Figure 4 caption on p.6 says 50 W. The RthJC values in Figure 6 annotations disagree with the text on p.7 (see findings). Table A2 is captioned 'Section 4' but is used for Section 3. The aluminum cV is 2160 in Table A2 but 2470 in Table A1. The two-die claim and the 'Copper (upper)' and 'Aluminum base plate' labels are inferred rather than stated."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No per-block x_m/y_m coordinates are given. Figures A1/A2 are undimensioned sketches, and there are no same-scenario per-block power rows. The Studio package and material assumptions are not stated in the packet, so no complete floorplan can be built. The empty floorplan and power_w are consistent with that, but experiment.kind='custom_2d_steady' is not."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No data assets were supplied. Only the pdftotext layer was available, with no rendered figures. Figures 4-10 were not visually verified, and the annotation numbers in Figs 6/10 are garbled in the text layer. Values taken from prose (0.52/0.36/0.28 K/W RthJA, 140/50/30 s, 0.17-0.19 K/W) are readable but not figure-verified."
+    }
+  },
+  "findings": [
+    {
+      "field": "power_step",
+      "reason": "The text says 100 W uniformly on the die surface, while the Figure 4 caption says 50 W. The extraction records both and emits no power row, but the scenario's operating-point power is unresolved. The RthJA values and the stated 50 K to 26 K rise are only roughly consistent with 100 W.",
+      "locator": "PDF p.5 Section 3 text vs PDF p.6 Figure 4 caption"
+    },
+    {
+      "field": "two_point_RthJC_probe_touching_TIM_0.2",
+      "reason": "The extraction takes 0.45 K/W from the text (PDF p.7). The Figure 6a annotation in the same text layer shows 0.32 for 'A=0-2'. The figure value contradicts the text and could not be visually verified.",
+      "locator": "PDF p.7 text vs PDF p.8 Figure 6a"
+    },
+    {
+      "field": "Figure 6b/6c annotations",
+      "reason": "The text gives RthJC=0.16 (penetrating) and 0.28 (touching) for 1 W/mK. The Figure 6b annotations read 0.12 (A) and 0.16 (B), with no 0.28. The Figure 6c text layer shows 0.18 with a stray '0.01'. The figure annotations are garbled and unverified.",
+      "locator": "PDF p.7 text vs PDF p.8 Figure 6b/6c"
+    },
+    {
+      "field": "visual_verification",
+      "reason": "Decisive figures (4, 5, 6, 7, 9, 10) were not visually verified, since only text-layer excerpts were supplied. The 0.17 vs 0.18 K/W TDIM RthJC and the CthJC=30 J/K reading rest on prose and annotation text.",
+      "locator": "PDF pp.6-10"
+    },
+    {
+      "field": "TDIM_RthJC evidence page",
+      "reason": "The evidence cites Figure 10 (0.18 K/W annotation) but gives pdf_page 9, while Figure 10 is on p.10. The value is also given as a 0.17-0.19 range, not a single number.",
+      "locator": "PDF p.9-10"
+    },
+    {
+      "field": "Table A2 caption/material consistency",
+      "reason": "The caption says 'example in Section 4', but the table is cited as the Section 3 simulation stack. Aluminum cV is 2160 kJ/m3K in Table A2 but 2470 in Table A1. Die attach, AlN, solder and grease properties are only 'estimated from literature'.",
+      "locator": "PDF p.26 Tables A1/A2"
+    },
+    {
+      "field": "scenario_geometry",
+      "reason": "'Two 11.2 mm dies, one powered' is inferred from the Figure 3 caption ('left IGBT is powered'). Table A2 lists only one silicon die. The second die position and the layout of the copper islands are not given, and the block names 'Copper (upper)' and 'Aluminum base plate' are inferred.",
+      "locator": "PDF p.5 Figure 3; PDF p.26 Table A2"
+    },
+    {
+      "field": "cold_plate_boundary",
+      "reason": "The text says the cold plate was modelled with a constant HTC of 3000 W/m2K. Table A2 lists a 500x140x20 mm aluminum cold plate with 3024 J/K. The surface to which the HTC is applied is not stated.",
+      "locator": "PDF p.5 text vs PDF p.26 Table A2"
+    },
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is 'custom_2d_steady' although steady_2d_relevant is false and the scenario is a transient layered 3D stack with a structure-function observable. No decisive 3D/transient/cooling feature may be called a 2D reproduction.",
+      "locator": "extraction.experiment vs scenario.steady_2d_relevant and physical_mismatches"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "The 'checked_links_found' status is misleading: no linked resource provides code, config or data for the selected scenario. They are vendor pages, a datasheet for the unrelated Section 8 MOSFET case, LED round-robin data and standards.",
+      "locator": "PDF p.28 references [13],[16],[19]-[21],[25],[27],[28]"
+    }
+  ],
+  "checked_pdf_pages": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    26,
+    27,
+    28
+  ],
+  "checked_assets": []
+}

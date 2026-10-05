@@ -1,0 +1,692 @@
+{
+  "paper_id": "W3036764451",
+  "paper_title": "Thermal-Cycling-aware Dynamic Reliability Management in Many-Core System-on-Chip",
+  "manifest_status": "downloaded",
+  "source_url": "https://re.public.polimi.it/retrieve/handle/11311/1150421/551972/thermal_cycling_in_resource_management.pdf",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "27da01be396649e88269c3a25d65288872bc48389e58102707ba93812401bbf4",
+  "pdf_pages": 6,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T01:55:53.040Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W3036764451",
+    "paper_title": "Thermal-Cycling-aware Dynamic Reliability Management in Many-Core System-on-Chip",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 5,
+      "figure_or_table": "Section V experimental setup and Fig. 5 (per-core MTTF snapshot for the proposed approach versus baselines)",
+      "description": "Thermal-cycling-aware runtime resource manager (reliability-aware mapping, thread scheduling and DPM) evaluated on a simulated 8x8 NoC-based many-core running 25 randomly selected PARSEC application executions. The setup is compared against a nominal baseline, MOC [14] and reliability-aware mapping [2]. The paper gives a 109 mm2 chip area in 16nm and a 90 W TDP, but no per-block coordinates or per-block powers.",
+      "architecture": "8x8 homogeneous mesh NoC many-core with a squared floorplan, Niagara2/SPARC cores, private L1 and distributed shared L2 caches, four memory controllers, 16nm, 109 mm2 chip area, 90 W TDP; per-core DVFS and PCPG",
+      "workload": "Multi-threaded PARSEC benchmarks, randomly selected and issued at runtime; 25 application executions per simulation",
+      "operating_point": "TDP 90 W; thermal cycling model with Ea_TC=0.42 eV, b=2.35, Tth=1 C, k=8.62e-5 eV/K, A_TC fitted to give MTTF_TC=10 years at deltaT=20 C, Tmax=70 C, 1 hour, m=10; temperature sampled about every 1 s",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "Noculator shared-memory NoC many-core simulator (Intel PIN based) with McPAT/Lumos power and scaling parameters. HotSpot steady-state thermal model integrated in the simulator. Per-core temperatures sampled about every 1 s feed the rainflow and Coffin-Manson reliability model (pdf pages 3 and 5).",
+      "optimizer": "Heuristic reliability-aware resource management: an extension of MapPro mapping using the RAF affinity metric (VF*AF/(MF*TF)), temperature-deviation-sorted round-robin thread scheduling, and DPM that adds the avgAmplitude*maxT metric to MOC (pdf pages 4 and 5).",
+      "controller": "Runtime feedback controller on the global controller. It combines a Reliability Analysis unit (low-pass filter, rainflow counting, Miner's rule, MTTF_TC with a 1-2 hour long-term period), mapping, thread scheduling with a few-ms short-term period, and DPM. DPM uses a PID stage plus MOC multi-objective control for per-core DVFS and PCPG under the 90 W TDP (pdf pages 3-5).",
+      "benchmark": "Simulated 8x8 NoC many-core with a squared floorplan, 109 mm2 chip area, 16nm, TDP 90 W. Workload: 25 randomly selected multi-threaded PARSEC application executions. Compared against nominal baseline, MOC [14] and reliability-aware mapping [2] (pdf page 5)."
+    },
+    "thermal_observable": {
+      "value": null,
+      "unit": "years (per-core MTTF_TC derived from per-core temperature cycles)",
+      "location": "Per core of the 8x8 mesh, from per-core temperature sensors (Fig. 5 snapshot of cores' MTTF)",
+      "aggregation": "Reported as minimum, average and standard deviation of per-core MTTF_TC over the cores. The paper gives only relative improvements in the text (min +54%/51%/39%, avg +40%/21%/20% vs baseline/MOC/RA-mapping). No absolute value is extracted from the figure bars.",
+      "pdf_page": 5
+    },
+    "physical_mismatches": [
+      {
+        "reason": "No per-block floorplan geometry (x, y, width, height) or per-block power is published, only total chip area (109 mm2) and TDP (90 W). A Studio steady-state 2D thermal model cannot be built without splitting total power by an unpublished rule.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's output metric is thermal-cycling lifetime (MTTF_TC), computed from transient temperature traces, rainflow cycle counting and long-term aging history. It is not a steady-state temperature field, so a steady-state Studio solve cannot reproduce it.",
+        "essential": true
+      },
+      {
+        "reason": "The controller is a dynamic closed loop with PID/MOC DVFS, PCPG, runtime application mapping and thread scheduling at ms to hour timescales. A static Studio solve has no equivalent controller or optimizer behavior.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is time-varying and random (PARSEC applications entering and leaving at runtime). The power map is therefore transient and not a single fixed operating point.",
+        "essential": true
+      },
+      {
+        "reason": "The original thermal solver is HotSpot embedded in the Noculator/McPAT/Lumos simulation flow, and the package and cooling configuration is not described in the paper. The solver, boundary conditions and cooling therefore cannot be matched.",
+        "essential": true
+      },
+      {
+        "reason": "The scenario is a planar 2D many-core. No 3D stacking or interposer is involved, so there is no 3D or interposer mismatch.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete published floorplan and power scenario exists, so no Studio floorplan is produced (empty floorplan).",
+      "Any Studio bundled package, material, TIM, heat sink or boundary-condition defaults would be Studio assumptions and not paper-derived, because the paper specifies none of them.",
+      "The result would be a steady-state temperature estimate and cannot replicate the paper's MTTF_TC, controller or simulator behavior. No exact replication is claimed."
+    ],
+    "missing_inputs": [
+      "Per-block or per-core x_m, y_m, width_m, height_m, beyond the 109 mm2 total area and 'squared' floorplan with no layout dimensions",
+      "Per-block or per-core power values (name and watts) for any single scenario, beyond the 90 W TDP total",
+      "Package, heat spreader, heat sink, TIM and cooling parameters and ambient or boundary conditions",
+      "HotSpot configuration files and the Noculator/McPAT/Lumos configuration",
+      "Absolute per-core MTTF values or temperatures for Fig. 5 and Fig. 6, which are only in figures with no numeric data",
+      "Fitted A_TC value and the PARSEC application list and seeds for the 25 executions",
+      "Code, repository, dataset or supplementary assets: the packet has no linked assets and the artifact search found no links"
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "chip_area_total",
+        "block_name": null,
+        "source_value": 109,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.000109,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, paragraph 'For the experiments, we characterized a realistic 8x8 architecture...'",
+        "provenance": "Paper text: total chip area of the 8x8 many-core in 16nm. Only a total is given. No per-block dimensions or x/y positions are published.",
+        "uncertainty": null
+      },
+      {
+        "field": "tdp_total_power",
+        "block_name": null,
+        "source_value": 90,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 90,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, same paragraph: 'TDP of 90W'",
+        "provenance": "Paper text. This is a chip-level power budget (TDP). It is not a per-block power and was not split among blocks.",
+        "uncertainty": "TDP is a budget cap, not a measured or simulated operating power. Runtime power varies with the workload."
+      },
+      {
+        "field": "technology_node",
+        "block_name": null,
+        "source_value": 16,
+        "source_unit": "nm",
+        "conversion_factor": 1e-9,
+        "normalized_value": 1.6e-8,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'in 16nm technology'",
+        "provenance": "Paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "core_grid_dimension_per_side",
+        "block_name": null,
+        "source_value": 8,
+        "source_unit": "cores per side",
+        "conversion_factor": 1,
+        "normalized_value": 8,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V 'realistic 8x8 architecture with a squared floorplan'; also Section II Motivating Example and Fig. 1 on pdf page 2",
+        "provenance": "Paper text. The 8x8 mesh gives 64 homogeneous Niagara2/SPARC cores. No core coordinates or sizes are published.",
+        "uncertainty": null
+      },
+      {
+        "field": "memory_controller_count",
+        "block_name": null,
+        "source_value": 4,
+        "source_unit": "count",
+        "conversion_factor": 1,
+        "normalized_value": 4,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'The system has four memory banks each of them connected to the NoC through a separate memory controller'",
+        "provenance": "Paper text. Fig. 1 on pdf page 2 shows memory controllers (MC) around the mesh edges. No geometry is given.",
+        "uncertainty": "The number of controllers is known, but their physical size and placement are not published."
+      },
+      {
+        "field": "thermal_cycling_activation_energy_Ea_TC",
+        "block_name": null,
+        "source_value": 0.42,
+        "source_unit": "eV",
+        "conversion_factor": 1,
+        "normalized_value": 0.42,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, thermal cycling model parameters following Eq. 1-3",
+        "provenance": "Paper text. Reliability model parameter, not a thermal solver input.",
+        "uncertainty": null
+      },
+      {
+        "field": "coffin_manson_exponent_b",
+        "block_name": null,
+        "source_value": 2.35,
+        "source_unit": "dimensionless",
+        "conversion_factor": 1,
+        "normalized_value": 2.35,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, thermal cycling parameters, 'b = 2.35'",
+        "provenance": "Paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "inelastic_deformation_threshold_Tth",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 1,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'Tth = 1 C'",
+        "provenance": "Paper text. A temperature difference threshold in the Coffin-Manson equation.",
+        "uncertainty": null
+      },
+      {
+        "field": "boltzmann_constant_k",
+        "block_name": null,
+        "source_value": 0.0000862,
+        "source_unit": "eV/K",
+        "conversion_factor": 1,
+        "normalized_value": 0.0000862,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'k = 8.62e-5 eV/K'",
+        "provenance": "Paper text.",
+        "uncertainty": null
+      },
+      {
+        "field": "MTTF_TC_fitting_target",
+        "block_name": null,
+        "source_value": 10,
+        "source_unit": "years",
+        "conversion_factor": 31536000,
+        "normalized_value": 315360000,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'we fitted A_TC to have a MTTF_TC = 10 years in a steady state condition'",
+        "provenance": "Paper text. Calibration condition for A_TC; the fitted A_TC value is not published. Conversion uses 365-day years.",
+        "uncertainty": "The A_TC value itself is not given. The year length used in the conversion is an assumption."
+      },
+      {
+        "field": "fitting_condition_cycle_amplitude_deltaT",
+        "block_name": null,
+        "source_value": 20,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 20,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'delta T = 20 C' in the A_TC fitting condition",
+        "provenance": "Paper text. Reliability model calibration condition, not a chip temperature field.",
+        "uncertainty": null
+      },
+      {
+        "field": "fitting_condition_Tmax",
+        "block_name": null,
+        "source_value": 70,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 70,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'TMax = 70 C' in the A_TC fitting condition",
+        "provenance": "Paper text. Calibration value, not a simulated peak temperature.",
+        "uncertainty": null
+      },
+      {
+        "field": "fitting_condition_run_duration",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "hour",
+        "conversion_factor": 3600,
+        "normalized_value": 3600,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'Delta T = 1 hour and m = 10' in the A_TC fitting condition",
+        "provenance": "Paper text. Characteristic run duration in Eq. 3.",
+        "uncertainty": null
+      },
+      {
+        "field": "fitting_condition_cycle_count_m",
+        "block_name": null,
+        "source_value": 10,
+        "source_unit": "cycles",
+        "conversion_factor": 1,
+        "normalized_value": 10,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'm = 10' in the A_TC fitting condition",
+        "provenance": "Paper text. Number of thermal cycles in the characteristic run.",
+        "uncertainty": null
+      },
+      {
+        "field": "temperature_sampling_period",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "s",
+        "conversion_factor": 1,
+        "normalized_value": 1,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section IV, Reliability Analysis unit: 'fixed sampling period (approximately 1 second)'",
+        "provenance": "Paper text. Per-core temperature sensor sampling feeding the rainflow algorithm.",
+        "uncertainty": "Stated as approximate."
+      },
+      {
+        "field": "long_term_control_period_lower",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "hour",
+        "conversion_factor": 3600,
+        "normalized_value": 3600,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section IV, Reliability Analysis unit: 'long-term control period (lasting 1-2 hours)'",
+        "provenance": "Paper text. Lower bound of the long-term period used for the MTTF_TC analysis and the mapping unit.",
+        "uncertainty": "The paper gives a range, not a single value."
+      },
+      {
+        "field": "long_term_control_period_upper",
+        "block_name": null,
+        "source_value": 2,
+        "source_unit": "hour",
+        "conversion_factor": 3600,
+        "normalized_value": 7200,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section IV, Reliability Analysis unit: 'long-term control period (lasting 1-2 hours)'",
+        "provenance": "Paper text. Upper bound of the same range.",
+        "uncertainty": "The paper gives a range, not a single value."
+      },
+      {
+        "field": "short_term_scheduling_period",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "ms",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Section IV, Reliability-aware Thread Scheduling: 'short-term control period (few milliseconds as in a common operating system)'",
+        "provenance": "Paper text gives only a qualitative 'few milliseconds'. No numeric value is published.",
+        "uncertainty": "No numeric value. Left null rather than invented."
+      },
+      {
+        "field": "application_executions_per_simulation",
+        "block_name": null,
+        "source_value": 25,
+        "source_unit": "application executions",
+        "conversion_factor": 1,
+        "normalized_value": 25,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, 'The simulation is lasted until completing 25 application executions randomly selected from the PARSEC multi-threaded suite'",
+        "provenance": "Paper text. The application list and random seeds are not published.",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable_min_MTTF_TC_improvement_vs_nominal_baseline",
+        "block_name": null,
+        "source_value": 54,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.54,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, discussion of Fig. 6: 'improves the minimum MTTF of the core in the system by 54%, 51%, and 39%'",
+        "provenance": "Paper text. Observable is per-core MTTF_TC in years, aggregated as the minimum over the 8x8 cores. Only the relative improvement is reported; this value is vs the nominal baseline.",
+        "uncertainty": "The absolute MTTF in years is not numerically published; it is only in the Fig. 5/6 bars and was not digitized."
+      },
+      {
+        "field": "thermal_observable_min_MTTF_TC_improvement_vs_MOC",
+        "block_name": null,
+        "source_value": 51,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.51,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, discussion of Fig. 6: second of 54%, 51%, 39%",
+        "provenance": "Paper text. Minimum per-core MTTF_TC improvement vs MOC [14]. The order of the three percentages is assumed to match the baseline list 'nominal baseline, MOC, reliability-aware mapping'.",
+        "uncertainty": "The mapping of percentages to comparators relies on the order in the sentence."
+      },
+      {
+        "field": "thermal_observable_min_MTTF_TC_improvement_vs_RA_mapping",
+        "block_name": null,
+        "source_value": 39,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.39,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, discussion of Fig. 6: third of 54%, 51%, 39%",
+        "provenance": "Paper text. Minimum per-core MTTF_TC improvement vs reliability-aware mapping [2]. This is the headline 39% longer lifetime.",
+        "uncertainty": "The mapping of percentages to comparators relies on the order in the sentence."
+      },
+      {
+        "field": "thermal_observable_avg_MTTF_TC_improvement_vs_nominal_baseline",
+        "block_name": null,
+        "source_value": 40,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.4,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, discussion of Fig. 6: 'average MTTF by 40%, 21%, and 20%'",
+        "provenance": "Paper text. Observable is per-core MTTF_TC, averaged over cores; this is the improvement vs the nominal baseline.",
+        "uncertainty": "Relative value only; no absolute years extracted."
+      },
+      {
+        "field": "thermal_observable_avg_MTTF_TC_improvement_vs_MOC",
+        "block_name": null,
+        "source_value": 21,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.21,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, discussion of Fig. 6: second of 40%, 21%, 20%",
+        "provenance": "Paper text. Average per-core MTTF_TC improvement vs MOC [14].",
+        "uncertainty": "The mapping of percentages to comparators relies on the order in the sentence."
+      },
+      {
+        "field": "thermal_observable_avg_MTTF_TC_improvement_vs_RA_mapping",
+        "block_name": null,
+        "source_value": 20,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.2,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V, discussion of Fig. 6: third of 40%, 21%, 20%",
+        "provenance": "Paper text. Average per-core MTTF_TC improvement vs reliability-aware mapping [2].",
+        "uncertainty": "The mapping of percentages to comparators relies on the order in the sentence."
+      },
+      {
+        "field": "fig5_absolute_per_core_MTTF",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "years",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Fig. 5 (a)-(d) per-core MTTF snapshots and Fig. 6 bars (pdf page 6)",
+        "provenance": "Figures are bar and heatmap graphics with no numeric table in the extracted text. No values were digitized, so none are claimed.",
+        "uncertainty": "Absolute per-core MTTF values are unavailable. Digitizing would carry reading error."
+      },
+      {
+        "field": "per_block_geometry_and_power",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Section V experimental setup (pdf page 5) and Fig. 1 (pdf page 2)",
+        "provenance": "The paper publishes only total chip area (109 mm2), 'squared' floorplan, and TDP 90 W. It gives no per-block x_m, y_m, width_m, height_m and no per-block watts. No splitting rule for total power is published, so no floorplan or power rows are extracted.",
+        "uncertainty": "Complete geometry and per-block power are missing, so no valid scenario for a steady-state thermal model can be built."
+      },
+      {
+        "field": "paper_linked_resources",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "All PDF pages 1-6: no availability statement, repository URL, supplementary data, code or config reference; packet assets list is empty and artifact_search_status is checked_no_links",
+        "provenance": "The only URL in the PDF is the ITRS website in reference [17] (pdf page 6), which is a bibliography item and not a paper-linked input resource. No packet assets exist at pinned versions.",
+        "uncertainty": "No asset evidence is available. HotSpot, Noculator and McPAT/Lumos configuration inputs are not provided."
+      },
+      {
+        "field": "studio_package_material_assumptions",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Not specified anywhere in the paper (pdf pages 1-6)",
+        "provenance": "The paper specifies no package, heat spreader, TIM, heat sink, cooling or ambient conditions. Any bundled Studio package or material defaults would be Studio assumptions and not paper-derived. Decisive mismatches: the paper's observable is MTTF_TC from transient rainflow cycles, produced by a dynamic controller with a time-varying random workload, while a steady-state Studio solve cannot reproduce those. Exact replication is not claimed.",
+        "uncertainty": "Not applicable. The values are absent."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "verified",
+        "note": "Text claims were checked against pages 3-5: the Reliability Analysis chain (low-pass filter, rainflow, Miner's rule, MTTF_TC), the RAF=VF*AF/(MF*TF) mapping, temperature-deviation-sorted scheduling, and MOC DPM extended with avgAmplitude*maxT. The percentage-to-comparator order is explicit ('respectively'), so the extraction's order-assumption caveat is unnecessary. Fig. 1, 5 and 6 were not visually verified because only extracted text is supplied."
+      },
+      "code": {
+        "status": "missing",
+        "note": "No repository, code link or availability statement appears on pages 1-6, and the asset list is empty. The only URL is the ITRS bibliography entry [17]. Noculator, HotSpot, McPAT/Lumos and MOC code are cited only. The extraction correctly claims nothing here."
+      },
+      "parameters": {
+        "status": "verified",
+        "note": "The Section V text on page 5 supports 109 mm2, 16nm, 90 W TDP, 8x8 cores, four memory controllers, Ea=0.42 eV, b=2.35, Tth=1 C, k=8.62e-5 eV/K, the A_TC fit (10 y, dT=20 C, Tmax=70 C, 1 h, m=10) and 25 applications. Page 3 supports the ~1 s sampling and the 1-2 h long-term period. Page 4 supports 'few milliseconds' (null is correct). The unit conversions are arithmetically correct. The fitted A_TC is not published."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No HotSpot configuration, package, heat spreader, TIM, heat sink, cooling or ambient boundary conditions, Noculator/McPAT/Lumos configuration, PARSEC list or seeds are given. The experiment kind is nevertheless set to custom_2d_steady with an empty floorplan, which is internally inconsistent (see findings)."
+      },
+      "data": {
+        "status": "missing",
+        "note": "No per-block geometry (x, y, width, height) or same-scenario per-block power is published, so the empty floorplan and empty power_w are consistent with the paper. Absolute per-core MTTF for Fig. 5 and Fig. 6 exists only in figures that were not visually verified or digitized. Only relative improvements from text are usable. No numeric observable value is extracted."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The kind is labeled custom_2d_steady although steady_2d_relevant is false and the floorplan and power_w are empty. The paper's decisive features are transient temperature traces, rainflow cycle counting, long-term aging history, a closed-loop DVFS/PCPG/mapping controller and a random time-varying workload. Labeling it a steady 2D experiment implies a reproduction path that the evidence does not support. It should be an explicit not-reproducible or no-experiment designation.",
+        "locator": "extraction.experiment vs extraction.scenario.steady_2d_relevant; pdf pages 3-5"
+      },
+      {
+        "field": "scenario.pdf_page / thermal_observable.pdf_page",
+        "reason": "Fig. 5 (per-core MTTF snapshots) and Fig. 6 are on pdf page 6, but the scenario and observable cite page 5. Only the text discussion of the percentages is on page 5.",
+        "locator": "scenario.pdf_page=5 and thermal_observable.pdf_page=5 vs Fig. 5/6 on pdf page 6"
+      },
+      {
+        "field": "figure verification",
+        "reason": "Fig. 1 (memory controller placement), Fig. 5 and Fig. 6 are supplied only as extracted text fragments, with no rendered images. The extraction's statements about MC positions 'around the mesh edges' and the Fig. 5 per-core snapshot cannot be visually verified. No decisive figure was visually verified.",
+        "locator": "pdf pages 2 and 6, Fig. 1, Fig. 5, Fig. 6"
+      },
+      {
+        "field": "evidence uncertainty for percentage mapping",
+        "reason": "The extraction treats the comparator order of 54/51/39 and 40/21/20 as an assumption. The text says 'w.r.t. the nominal baseline, MOC, and reliability-aware mapping, respectively', so the mapping is stated and the caveat is inaccurate. This is minor and does not change the values.",
+        "locator": "pdf page 5, Section V results paragraph"
+      },
+      {
+        "field": "code/config/data artifacts",
+        "reason": "There are no linked assets, code, configuration or numeric data. Nothing at pinned versions was reviewed. The extraction's no-artifact claim is consistent, but it leaves code, config and data checks unresolved, so approval is not possible.",
+        "locator": "packet.assets=[]; pdf pages 1-6"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W3036764451",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "Evidence 28 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-block or per-core x_m, y_m, width_m, height_m, beyond the 109 mm2 total area and 'squared' floorplan with no layout dimensions",
+      "Per-block or per-core power values (name and watts) for any single scenario, beyond the 90 W TDP total",
+      "Package, heat spreader, heat sink, TIM and cooling parameters and ambient or boundary conditions",
+      "HotSpot configuration files and the Noculator/McPAT/Lumos configuration",
+      "Absolute per-core MTTF values or temperatures for Fig. 5 and Fig. 6, which are only in figures with no numeric data",
+      "Fitted A_TC value and the PARSEC application list and seeds for the 25 executions",
+      "Code, repository, dataset or supplementary assets: the packet has no linked assets and the artifact search found no links",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "No per-block floorplan geometry (x, y, width, height) or per-block power is published, only total chip area (109 mm2) and TDP (90 W). A Studio steady-state 2D thermal model cannot be built without splitting total power by an unpublished rule.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's output metric is thermal-cycling lifetime (MTTF_TC), computed from transient temperature traces, rainflow cycle counting and long-term aging history. It is not a steady-state temperature field, so a steady-state Studio solve cannot reproduce it.",
+        "essential": true
+      },
+      {
+        "reason": "The controller is a dynamic closed loop with PID/MOC DVFS, PCPG, runtime application mapping and thread scheduling at ms to hour timescales. A static Studio solve has no equivalent controller or optimizer behavior.",
+        "essential": true
+      },
+      {
+        "reason": "The workload is time-varying and random (PARSEC applications entering and leaving at runtime). The power map is therefore transient and not a single fixed operating point.",
+        "essential": true
+      },
+      {
+        "reason": "The original thermal solver is HotSpot embedded in the Noculator/McPAT/Lumos simulation flow, and the package and cooling configuration is not described in the paper. The solver, boundary conditions and cooling therefore cannot be matched.",
+        "essential": true
+      },
+      {
+        "reason": "The scenario is a planar 2D many-core. No 3D stacking or interposer is involved, so there is no 3D or interposer mismatch.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "No complete published floorplan and power scenario exists, so no Studio floorplan is produced (empty floorplan).",
+      "Any Studio bundled package, material, TIM, heat sink or boundary-condition defaults would be Studio assumptions and not paper-derived, because the paper specifies none of them.",
+      "The result would be a steady-state temperature estimate and cannot replicate the paper's MTTF_TC, controller or simulator behavior. No exact replication is claimed."
+    ],
+    "evidence_sha256": "59de6c128daad059b4f913dcefef0456be470cd6ceaae8ab8c52a422f3e121a2",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The 2D screening label is not_2d_applicable, and Studio did not run (simulation status: skipped). The deterministic gate failed on input validity: a custom_2d_steady experiment needs 1-128 blocks and a power_w object, but the extraction supplied an empty floorplan and empty power. The gate also found evidence entries lacking valid page or pinned-asset locators, no cited thermal observable or regime, and unresolved adversarial and independent reviews. comparison_valid is false, so there is no Studio result to compare against the paper and no replication of any kind is claimed. The paper's observable is per-core thermal-cycling MTTF_TC. It comes from sampled transient temperature traces, rainflow counting and long-term aging under a closed-loop controller (mapping, scheduling, DVFS/PCPG) with a random PARSEC workload, simulated with HotSpot inside Noculator/McPAT/Lumos. A custom 2D steady run has no transient trace and cannot produce MTTF_TC or controller behavior. The paper reports only relative MTTF_TC gains (minimum +54%/51%/39%, average +40%/21%/20% vs nominal baseline/MOC/RA-mapping, assuming the percentages follow the baseline order), with no absolute years or temperatures. Even if a steady solve were run, no numeric comparison would be valid because location, aggregation, regime and boundary assumptions would not match. At most, qualitative reasoning would apply: lower or more uniform temperatures and smaller cycle amplitudes should favor longer thermal-cycling lifetime.",
+    "limitations": [
+      "Studio did not run; there is no simulated thermal result and the comparison is invalid.",
+      "No per-block floorplan geometry or per-block power is published, only the 109 mm2 total area, 16nm node, 8x8 squared layout and 90 W TDP. TDP is a budget cap, not an operating power, and splitting it by an unpublished rule would be invented input.",
+      "Regime mismatch: the paper's MTTF_TC derives from transient traces, rainflow cycle counting and aging history, whereas a custom 2D steady run has no transient trace.",
+      "Controller mismatch: the PID/MOC DVFS, PCPG, runtime mapping and thread scheduling closed loop (ms to hour timescales) has no equivalent in a static solve.",
+      "Workload mismatch: 25 randomly selected PARSEC executions give a time-varying power map, and the application list and seeds are unpublished.",
+      "Solver and boundary mismatch: the original used HotSpot within Noculator/McPAT/Lumos with unspecified package, heat spreader, TIM, heat sink, cooling and ambient; any Studio defaults would be assumptions, not paper-derived values.",
+      "Observable and aggregation mismatch: the paper reports per-core MTTF_TC (min, avg, std) as relative improvements only; absolute Fig. 5/6 values were not digitized, and the assignment of percentages to comparators relies on sentence order.",
+      "The gate also reported evidence entries lacking valid page or pinned-asset locators, no cited steady/transient regime, no linked code, config or data assets, and pending adversarial and independent review, so the extraction is not independently verified.",
+      "No exact replication is claimed or possible; the 3D/interposer mismatch is not applicable because the scenario is planar.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "Evidence 28 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-block or per-core x_m, y_m, width_m, height_m, beyond the 109 mm2 total area and 'squared' floorplan with no layout dimensions",
+      "Per-block or per-core power values (name and watts) for any single scenario, beyond the 90 W TDP total",
+      "Package, heat spreader, heat sink, TIM and cooling parameters and ambient or boundary conditions",
+      "HotSpot configuration files and the Noculator/McPAT/Lumos configuration",
+      "Absolute per-core MTTF values or temperatures for Fig. 5 and Fig. 6, which are only in figures with no numeric data",
+      "Fitted A_TC value and the PARSEC application list and seeds for the 25 executions",
+      "Code, repository, dataset or supplementary assets: the packet has no linked assets and the artifact search found no links",
+      "Adversarial code check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "No complete published floorplan and power scenario exists, so no Studio floorplan is produced (empty floorplan).",
+      "Any Studio bundled package, material, TIM, heat sink or boundary-condition defaults would be Studio assumptions and not paper-derived, because the paper specifies none of them.",
+      "The result would be a steady-state temperature estimate and cannot replicate the paper's MTTF_TC, controller or simulator behavior. No exact replication is claimed."
+    ]
+  }
+}

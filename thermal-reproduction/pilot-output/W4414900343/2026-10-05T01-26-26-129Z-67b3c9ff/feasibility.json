@@ -1,0 +1,89 @@
+{
+  "paper_id": "W4414900343",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Numeric floorplan geometry (x_m, y_m, width_m, height_m) for core-layer blocks (e.g., C0_IC, C0_FPU, L2_shared) and memory banks B_0-B_31; not given in the paper, only a labelled heat-map layout in Fig. 9",
+    "Per-block power (W) for the Splash2 fft baseline scenario; neither McPAT nor CACTI-3DD outputs are tabulated",
+    "Die area/dimensions and layer thicknesses",
+    "HotSpot 7.0 configuration: heat-sink, spreader, TIM, material properties, ambient temperature, grid resolution",
+    "Cool-3D GitHub repository (https://github.com/iCAS-SJTU/Cool-3D, pdf p.1 and p.13): the paper says release is 'in process'; no asset was bundled in the packet (assets list empty), so existence of its inputs is unverified",
+    "Splash2 benchmark repository (https://github.com/liuyix/splash2benchmark, pdf p.14): no asset bundled in the packet; and it holds benchmark source, not thermal inputs",
+    "gem5, McPAT, CACTI-3DD configuration files and the unified front-end input for the baseline",
+    "Linked asset cool3d_github_repo is not pinned and available",
+    "Linked asset cool3d_github_repo_conclusion is not pinned and available",
+    "Linked asset splash2_benchmark_repo is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Paper provides no numeric floorplan geometry (x, y, width, height) for any block; Fig. 9 shows only a labelled heat-map layout with no dimensions, and die area is not stated. A Studio floorplan cannot be built without inventing coordinates.",
+      "essential": true
+    },
+    {
+      "reason": "Paper provides no per-block power values for the fft baseline; McPAT and CACTI-3DD outputs are not tabulated, and total chip power is not given. Splitting power would require an unpublished rule.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is a 3-layer 3D stack with a core layer under two memory layers. A 2D or single-die Studio model cannot represent the vertical stacking, layer-to-layer coupling, or the 3D layer-ordering effects the paper studies.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling in the baseline is a passive heat sink whose HotSpot 7.0 package parameters are not published. Case studies II-III add microfluidic cooling layers (vertical and 90-degree bent channels), which a Studio model may not support.",
+      "essential": true
+    },
+    {
+      "reason": "The original flow chains gem5, McPAT, CACTI-3DD, and HotSpot 7.0, with per-block power derived from workload simulation. Studio cannot reproduce that upstream power generation, so the thermal solve is only an approximation of the HotSpot 7.0 step.",
+      "essential": false
+    },
+    {
+      "reason": "The paper has no transient, controller, optimizer, or reliability component in the selected baseline scenario, so there is no mismatch from those; only a steady-state solve is relevant.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No complete experiment can be extracted: the floorplan is returned empty because no block geometry or power rows are published in the paper packet.",
+    "Any Studio package, material, heat-sink, and ambient-temperature assumptions would be bundled defaults and not from the paper; none are asserted for the Cool-3D baseline.",
+    "No exact replication of the paper's HotSpot 7.0 result is claimed."
+  ],
+  "evidence_sha256": "7431de25193a340a6af6500463d0ddaffd9691b13ec3710f7a59788b9e927673",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

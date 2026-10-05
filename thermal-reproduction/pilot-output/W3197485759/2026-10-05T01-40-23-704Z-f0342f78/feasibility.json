@@ -1,0 +1,85 @@
+{
+  "paper_id": "W3197485759",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No linked assets, repository, or supplementary data were found in the packet (assets list is empty; artifact search found no links).",
+    "Per-block x_m, y_m, width_m, and height_m for the 16-tile floorplan (cores, caches, TLBs, register files, routers). Only labels and areas derived from McPAT are mentioned, and no coordinates are published.",
+    "Same-scenario power_rows (block name and watts) for the baseline or WaFFLe 8MB scenario. Only per-core regulator power (0.106 W at 0.76 V, 0.168 W at 1.12 V) and stall-period energies are given, not per-block power.",
+    "Die size and thickness, TIM, heat spreader, heat sink, and convection parameters for the HotSpot 6.0 model.",
+    "Material properties used in HotSpot.",
+    "Per-application power traces and the data behind Fig. 16, Fig. 17, and Fig. 29, which would need digitization with stated uncertainty.",
+    "Studio bundled package and material assumptions were not provided in the packet, so none are recorded here.",
+    "Clarification of the 8MB versus 16 x 1MB LLC configuration.",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "WaFFLe is a runtime transient controller. Cache ways are gated on and off every 2M cycles, and per-core DVFS reacts to memory stalls within about 70 ns. The reported temperature reductions come from time-varying power traces at 0.33 us. A static floorplan with fixed block power cannot represent this controller or its reported gains.",
+      "essential": true
+    },
+    {
+      "reason": "Power depends on the coupled gem5/McPAT performance simulation: workload phases, miss ratios, stall periods, and V/F switching. Leakage is recomputed from per-component temperature feedback. Studio would need equivalent time-resolved per-block power, which the paper does not publish.",
+      "essential": true
+    },
+    {
+      "reason": "The observable is a reduction relative to a baseline across PARSEC workloads, produced by dynamic cache-way gating and DVFS that change power per block. No scenario with fixed published geometry and per-block power reproduces it.",
+      "essential": true
+    },
+    {
+      "reason": "The packet publishes no block-level geometry, no per-block power table, and no HotSpot package or material parameters. Fig. 16 and Fig. 20 show floorplan labels and temperatures only, not coordinates or powers.",
+      "essential": true
+    },
+    {
+      "reason": "The setup is 2D with no 3D stacking or interposer, so no 3D mismatch arises. Cooling and package details such as heat sink and TIM are unspecified, so a cooling mismatch cannot be ruled out.",
+      "essential": false
+    },
+    {
+      "reason": "The LLC size is ambiguous. Table 1 gives 1MB 16-way L2 per tile, which implies 16MB across 16 tiles, while the Table 3 comparison and Sec. 5.1 use an 8MB LLC.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "6977b2b34b4f1bbca57887c11f79e1ca0b635994f6b949d5f0d9a9ffdcbc87cc",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

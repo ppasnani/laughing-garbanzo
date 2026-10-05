@@ -1,0 +1,384 @@
+{
+  "paper_id": "W4400409743",
+  "paper_title": "A computational search for the optimal microelectronic heat sink using ANSYS Icepak",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 11,
+    "figure_or_table": "Table 6 (with Table 1, Table 3 and Fig. 1)",
+    "description": "Steady 3D ANSYS Icepak (FLUENT solver) simulation of the inline-arrangement (IA) circular pin-fin aluminium heat sink with 36 fins. The source temperature is reported as 126.97 C (Table 6). The packet shows no code, config or data links; the Data availability statement says no data was used. The paper gives conflicting heat sink and fin dimensions: Table 1 says 4x4x1.7 cm with D=0.2 cm, while the text says 3x3.5x2 cm with fin radius 0.16 cm and height 1.5 cm. Chip position coordinates are not given.",
+    "architecture": "Single chip 2.2 x 2.2 x 0.1 cm on a substrate board, with an aluminium pin-fin heat sink (36 inline circular fins) in a 6 x 5 x 2 cm cabinet. Air-cooled, with adiabatic walls except the inlet and outlet.",
+    "workload": "Constant uniform 8 W heat load on the chip. No application workload is specified.",
+    "operating_point": "Inlet velocity 0.1 m/s, inlet air temperature 298 K, power 8 W, steady state, realizable k-epsilon turbulence model.",
+    "steady_2d_relevant": false
+  },
+  "original_setup": {
+    "solver": "ANSYS Icepak (FLUENT solver), 3D steady-state, pressure-based, implicit, realizable k-epsilon turbulence with standard wall functions; conjugate conduction plus forced-air convection (Table 2, pdf pages 3 and 5-6)",
+    "optimizer": "None. The paper compares four fixed geometries (inline/staggered x circular/conical fins) by parametric comparison. No optimization algorithm is used.",
+    "controller": "None. There is no thermal controller or DVFS; the chip heat load is constant at 8 W.",
+    "benchmark": "Validated against the Adhikari et al. experiment (Fig. 6, deviation under 3.68%) and the Rosli et al. numerical study (Table 5: IA 107.43 C vs 106.474 C, SA 101.85 C vs 101.662 C). The selected scenario is the inline circular pin-fin heat sink (Table 6, pdf page 11)."
+  },
+  "thermal_observable": {
+    "value": 126.97,
+    "unit": "degC",
+    "location": "Heat source (chip) maximum temperature for the inline (IA) circular pin-fin case. Section 2.1 defines delta T_max as the maximum temperature on the fin base minus the ambient air temperature, so the exact location is ambiguous.",
+    "aggregation": "Maximum (peak) steady-state source temperature from the 3D CFD solution",
+    "pdf_page": 11
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The original model is a 3D forced-air convection CFD case (inlet velocity 0.1 m/s, realizable k-epsilon, pressure outlet) with a pin-fin heat sink in a cabinet. A steady 2D conduction floorplan model cannot represent the fluid flow, pressure drop, or 36 discrete pin fins.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling path is an air-cooled finned heat sink with a velocity inlet and pressure outlet. A Studio package/heat-sink model would have to replace this with an effective convection coefficient or boundary resistance, which changes the thermal result.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives conflicting heat sink and fin dimensions. Table 1 says heat sink 4x4x1.7 cm and fin D=0.2 cm. The text says 3x3.5x2 cm, fin radius 0.16 cm and height 1.5 cm. Chip coordinates are not given. A consistent geometry cannot be built from the paper alone.",
+      "essential": true
+    },
+    {
+      "reason": "The paper has no optimizer or controller, no transient behaviour, and no reliability analysis. Optimizer, controller, transient, and reliability comparisons are therefore not applicable to this scenario.",
+      "essential": false
+    },
+    {
+      "reason": "There is no 3D stack or interposer. The paper has a single chip on a substrate board and a heat sink with an adiabatic cabinet except at the inlet and outlet. Substrate and chip layer properties are not given.",
+      "essential": false
+    },
+    {
+      "reason": "The solver assumptions are internally inconsistent: Table 2 says 'Axisymmetric' and the text lists 'laminar flow' alongside a k-epsilon turbulence model. The inlet temperature is 298 K in Table 3 but about 295 K in the Fig. 9 text. The validation case in Table 5 (IA 106.474 C, 0.4 cm gap) differs from the selected case value (126.97 C).",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "missing_inputs": [
+    "No linked assets: the packet lists none, and the Data availability statement says no data was used. No code, config, geometry files, or repository.",
+    "Chip block x_m and y_m position on the substrate or heat sink base is not given. Only the 2.2 x 2.2 x 0.1 cm size is stated.",
+    "A single consistent set of heat sink and fin dimensions (Table 1 versus text conflict) and fin pitch or spacing for the selected scenario.",
+    "Material properties for chip, substrate board, and interface (only 'aluminium' fins and base are stated), and any contact resistance.",
+    "Details of the bundled Studio package/material assumptions are not provided in the packet and cannot be recorded.",
+    "Exact digitized or tabulated source of the temperature location (chip surface versus fin base) and pdf page evidence beyond Table 6.",
+    "Per-block power rows beyond the single 8 W total chip load are not available; the 8 W is assigned to one chip only, with no published split rule.",
+    "Heat transfer coefficient or equivalent boundary condition needed to map the air-cooled finned heat sink into a 2D steady model."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "chip_width_m",
+      "block_name": "chip",
+      "source_value": 2.2,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.022,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Source': 2.2 x 2.2 x 0.1 cm; also Section 2.1 bullet 'Heat Source (Chip)' on pdf page 5",
+      "provenance": "Published table and text, inline circular pin-fin scenario geometry; no packet assets exist",
+      "uncertainty": "Table 1 does not state which of the 2.2 cm dimensions is x and which is y. The chip is square, so the ambiguity does not change the values."
+    },
+    {
+      "field": "chip_height_m",
+      "block_name": "chip",
+      "source_value": 2.2,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.022,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Source': 2.2 x 2.2 x 0.1 cm",
+      "provenance": "Published table; planar y-extent taken as the second 2.2 cm dimension",
+      "uncertainty": "Assumes the second 2.2 cm value is the planar y-extent. Axis orientation relative to the flow is not stated."
+    },
+    {
+      "field": "chip_thickness_m",
+      "block_name": "chip",
+      "source_value": 0.1,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.001,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Source': third dimension 0.1 cm",
+      "provenance": "Published table",
+      "uncertainty": "The thickness is not used in a 2D floorplan. The chip material is not stated."
+    },
+    {
+      "field": "chip_x_m",
+      "block_name": "chip",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 and Fig. 1 (c,d); no chip coordinates are given in text or tables",
+      "provenance": "Searched all 12 PDF pages; position is not published",
+      "uncertainty": "The chip position on the substrate or heat sink base is missing and cannot be inferred. Fig. 1 is a schematic with no coordinates."
+    },
+    {
+      "field": "chip_y_m",
+      "block_name": "chip",
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1 and Fig. 1 (c,d); no chip coordinates are given",
+      "provenance": "Searched all 12 PDF pages; position is not published",
+      "uncertainty": "The chip position is missing, so no floorplan is built."
+    },
+    {
+      "field": "chip_power_W",
+      "block_name": "chip",
+      "source_value": 8,
+      "source_unit": "W",
+      "conversion_factor": 1,
+      "normalized_value": 8,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Table 3, row 'Power' = 8 W; Section 2.1 on pdf page 5 ('constant heat load of 8.0 W'); Section 2.2 on pdf page 7",
+      "provenance": "Published boundary condition, same scenario for inline and staggered fin cases",
+      "uncertainty": "The paper states a single total chip power with no split rule. It is applied as one uniform load. Section 2.2 also describes the load as applied at the heat sink bottom wall."
+    },
+    {
+      "field": "inlet_velocity_m_s",
+      "block_name": null,
+      "source_value": 0.1,
+      "source_unit": "m/s",
+      "conversion_factor": 1,
+      "normalized_value": 0.1,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Table 3, row 'Vin'; Section 2.2 on pdf page 7",
+      "provenance": "Published CFD boundary condition",
+      "uncertainty": "The inlet velocity profile is not stated. A uniform profile is implied."
+    },
+    {
+      "field": "inlet_air_temperature_K",
+      "block_name": null,
+      "source_value": 298,
+      "source_unit": "K",
+      "conversion_factor": 1,
+      "normalized_value": 298,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Table 3, row 'Tin'; Section 2.2 on pdf page 7",
+      "provenance": "Published CFD boundary condition",
+      "uncertainty": "Section 3.1 on pdf page 8 says the temperature before the heat sink is 295 K, which is inconsistent with 298 K. The Rth definition in Eq. 8 uses Tin."
+    },
+    {
+      "field": "cabinet_length_x_m",
+      "block_name": "cabinet",
+      "source_value": 6,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.06,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Cabinet': 6 x 5 x 2 cm; Section 2.1 on pdf page 5",
+      "provenance": "Published table and text",
+      "uncertainty": "The assignment of 6, 5 and 2 cm to the x, y and z axes is not stated."
+    },
+    {
+      "field": "cabinet_width_y_m",
+      "block_name": "cabinet",
+      "source_value": 5,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.05,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Cabinet': 6 x 5 x 2 cm",
+      "provenance": "Published table",
+      "uncertainty": "Axis assignment is not stated."
+    },
+    {
+      "field": "cabinet_height_z_m",
+      "block_name": "cabinet",
+      "source_value": 2,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.02,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Cabinet': 6 x 5 x 2 cm",
+      "provenance": "Published table",
+      "uncertainty": "Axis assignment is not stated. The 1.7 cm heat sink height in Table 1 is close to this 2 cm cabinet height."
+    },
+    {
+      "field": "heat_sink_dimensions_table1_cm",
+      "block_name": "heat_sink",
+      "source_value": 4,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.04,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Heat sink': 4 x 4 x 1.7 cm (first value shown; the others are 4 cm and 1.7 cm)",
+      "provenance": "Published Table 1",
+      "uncertainty": "This conflicts with the text dimensions of 3 x 3.5 x 2 cm on pdf page 5. No single consistent heat sink geometry exists."
+    },
+    {
+      "field": "heat_sink_dimensions_text_cm",
+      "block_name": "heat_sink",
+      "source_value": 3,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.03,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 2.1 bullet 'Heat Sink': 3 cm x 3.5 cm x 2 cm (first value shown; the others are 3.5 cm and 2 cm)",
+      "provenance": "Published text",
+      "uncertainty": "This conflicts with Table 1 (4 x 4 x 1.7 cm). The heat sink is not placed in the floorplan because the dimensions conflict and no coordinates are given."
+    },
+    {
+      "field": "fin_count",
+      "block_name": "heat_sink",
+      "source_value": 36,
+      "source_unit": "count",
+      "conversion_factor": 1,
+      "normalized_value": 36,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Fins': Number of fins=36; the mesh study on pdf page 7 describes 6 rows x 6 columns",
+      "provenance": "Published table",
+      "uncertainty": "The 6 x 6 layout is stated on pdf page 8. The pitch is not given for this case; a 0.4 cm gap is mentioned only for the comparison study."
+    },
+    {
+      "field": "fin_diameter_table1",
+      "block_name": "heat_sink",
+      "source_value": 0.2,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.002,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Cross section': Circular (D = 0.2)",
+      "provenance": "Published Table 1",
+      "uncertainty": "This conflicts with the text, which gives a fin radius of 0.16 cm (D = 0.32 cm), on pdf page 5."
+    },
+    {
+      "field": "fin_radius_text",
+      "block_name": "heat_sink",
+      "source_value": 0.16,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.0016,
+      "pdf_page": 5,
+      "asset_id": null,
+      "locator": "Section 2.1 bullet 'Heat Sink Fins': height 1.5 cm and radius 0.16 cm",
+      "provenance": "Published text",
+      "uncertainty": "This conflicts with Table 1 (D = 0.2 cm). The text fin height is 1.5 cm."
+    },
+    {
+      "field": "base_height_m",
+      "block_name": "heat_sink",
+      "source_value": 0.2,
+      "source_unit": "cm",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.002,
+      "pdf_page": 3,
+      "asset_id": null,
+      "locator": "Table 1, row 'Base height (tb)'",
+      "provenance": "Published Table 1",
+      "uncertainty": "The text gives a 2 cm third dimension for the heat sink base, which is inconsistent with this 0.2 cm base height."
+    },
+    {
+      "field": "source_temperature_inline_circular_degC",
+      "block_name": "chip",
+      "source_value": 126.97,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 126.97,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 6, row 'Inline (IA)', column 'Source Temp (Circular)'",
+      "provenance": "Published CFD result for the inline circular pin-fin scenario, a maximum steady-state temperature",
+      "uncertainty": "The location is ambiguous: the table says 'Source', while Eq. 8 defines the maximum temperature on the fin base. The aggregation is a maximum; the spatial averaging is not specified."
+    },
+    {
+      "field": "thermal_resistance_definition",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": "degC/W",
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Eqs. 7-8: Rth = (Ts - Tin)/Q, with Ts the maximum temperature on the fin base",
+      "provenance": "Published definition; no numeric Rth value is tabulated, and Fig. 12 on pdf page 10 shows Rth only graphically",
+      "uncertainty": "Rth is not given numerically. It could be derived as (126.97 - 24.85)/8, but this is not published, so it is not recorded as a source value."
+    },
+    {
+      "field": "pressure_drop_inline_circular",
+      "block_name": null,
+      "source_value": 0.12,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Table 7, row 'Inline (IA)', column 'Pressure Drop (Circular)'",
+      "provenance": "Published CFD result",
+      "uncertainty": "The unit is not stated, so it is not normalized."
+    },
+    {
+      "field": "validation_error_adhikari_percent",
+      "block_name": null,
+      "source_value": 3.68,
+      "source_unit": "percent",
+      "conversion_factor": 1,
+      "normalized_value": 3.68,
+      "pdf_page": 8,
+      "asset_id": null,
+      "locator": "Section 2.4 text, 'deviation of less than 3.68%'; Fig. 6 on pdf page 6",
+      "provenance": "Published validation against Adhikari et al. [37], a rectangular-fin experiment, so not the same geometry",
+      "uncertainty": "This is an upper bound. The validation case differs from the selected scenario, and the Fig. 6 data points are not tabulated."
+    },
+    {
+      "field": "validation_rosli_IA_current_study_degC",
+      "block_name": null,
+      "source_value": 106.474,
+      "source_unit": "degC",
+      "conversion_factor": 1,
+      "normalized_value": 106.474,
+      "pdf_page": 6,
+      "asset_id": null,
+      "locator": "Table 5, row 'Inline (IA)', column 'Source Temperature (Current Study)' (reference value 107.43 degC; error 0.898%)",
+      "provenance": "Published validation case with a 6 x 6 fin layout and 0.4 cm gap, as described on pdf page 8",
+      "uncertainty": "The validation case value (106.474 degC) differs from the Table 6 value (126.97 degC) for the selected scenario. The cases must not be combined."
+    },
+    {
+      "field": "mesh_cells_circular",
+      "block_name": null,
+      "source_value": 265075,
+      "source_unit": "cells",
+      "conversion_factor": 1,
+      "normalized_value": 265075,
+      "pdf_page": 4,
+      "asset_id": null,
+      "locator": "Table 4, circular fins, Number of cells (nodes 285,155)",
+      "provenance": "Published mesh parameters",
+      "uncertainty": "Table 4 is on pdf page 4 but extracted as part of a page 4 layout; the Fig. 4 grid-independence data are only graphical."
+    },
+    {
+      "field": "linked_assets",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": 11,
+      "asset_id": null,
+      "locator": "Data availability statement: 'No data was used for the research described in the article.' The packet assets list is empty",
+      "provenance": "Read all 12 pages; the packet lists no code, repository, supplementary data, or config assets",
+      "uncertainty": "No paper-linked resources were found; the only URLs are DOIs of references. No Studio package or material assumptions can be cited from the packet."
+    }
+  ]
+}

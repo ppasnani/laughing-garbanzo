@@ -1,0 +1,87 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper's methods are text-verified: HotSpot 6.0 on a 64x64 grid, a 2N+3-parameter compact Green's-function model, MILP init, Polak-Ribiere CGD, and MILP legalization. But the extraction marks the scenario steady_2d_relevant=true and sets experiment.kind=custom_2d_steady. It also lists as essential mismatches the multilayer 2.5D stack (substrate, C4, TSV, interposer, microbump, epoxy), the heatsink path and the different solver. Those mismatches contradict the 2D claim. The paper's thermal model is a layered 3D-style stack, so this cannot be called a 2D reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets and no repository link. The ATPlace2.5D code is not linked, and the TAP-2.5D open-source code is mentioned without a URL. The HotSpot configuration files are not available either. Nothing in the packet can verify the implementation."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Scalar values are text-supported: 45 C ambient, 0.1 K/W, 100 um gap, 64x64 grid, 8 dies, 8448 nets, 39x39 mm interposer, and Tmax 92.3/94.1 C. Decisive parameters are missing: per-chiplet power in W for Case 3 (only a benchmark-wide 2e5-3e6 W/m^2 range is given), per-chiplet sizes (only a single CPU of 9x8 mm and a single DRAM of 9x9 mm are given from the Fig. 5 caption), chiplet counts by type, layer thicknesses, material properties, and TIM/spreader/heatsink dimensions. The lambda values, lr_pos/lr_ang, epsilon, and the Optuna-tuned hyperparameters are also not stated. The whitespace '0.6' is labeled '%' in the table header, but the 0.35-0.65 range indicates a fraction, so the unit is ambiguous."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The experiment has an empty floorplan and an empty power_w. No block names, same-scenario coordinates or per-block watts exist, so no floorplan block has same-scenario power. The Case 3 final layout exists only graphically in Fig. 5, and no text evidence shows it was visually checked or digitized. Studio package and material assumptions are absent. The boundary conditions (adiabatic lateral surfaces, spreader and heatsink edges at 2x the interposer) cannot be mapped to a concrete configuration. The 2x factor wording is ambiguous."
+    },
+    "data": {
+      "status": "missing",
+      "note": "The Case 3 benchmark files, netlists and bump maps are not provided. The Table 6 values are text-verified: ATPlace2.5D 92.3 C, 142.42 m and 6 min, and TAP-2.5D 94.1 C, 185.20 m and 186 min. The packet does not say whether the 92.3 C comes from HotSpot or from the compact model (MAE about 1.25 C in Table 5), and the layer is unspecified. The per-chiplet watt values needed to reproduce the observable are unavailable. No figure or asset was visually verified, because only pdftotext output was supplied."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.floorplan / experiment.power_w",
+      "reason": "Both are empty. No floorplan block has same-scenario coordinates, dimensions or watts, so the scenario cannot be reproduced and the 92.3 C target cannot be checked.",
+      "locator": "extraction.experiment; missing_inputs"
+    },
+    {
+      "field": "scenario.steady_2d_relevant",
+      "reason": "Marked true, yet the same extraction lists the multilayer 2.5D stack, the heatsink cooling model and the solver difference as essential mismatches with a 2D model. This is internally contradictory and risks calling a layered-stack result a 2D reproduction.",
+      "locator": "scenario.steady_2d_relevant vs physical_mismatches[0..2]; paper PDF p.2-3, Sec. 2.1 and 2.3"
+    },
+    {
+      "field": "solver.compact_model_MAE_case3 (pdf_page)",
+      "reason": "Cited as PDF page 6, but Table 5 (Case 3 MAE 1.25, MAPE 3.27) appears in the page 7 text; page 6 ends before Table 5.",
+      "locator": "evidence solver.compact_model_MAE_case3; PDF p.7 Table 5"
+    },
+    {
+      "field": "scenario.case3.whitespace",
+      "reason": "The value 0.6 is recorded with unit '%', but the 0.35-0.65 range in the text implies a fraction (60%). The unit is unresolved and no value is verified for use.",
+      "locator": "Table 3 PDF p.6; Sec. 4.1 PDF p.6"
+    },
+    {
+      "field": "chiplet.cpu / chiplet.dram dimensions",
+      "reason": "The 9x8 and 9x9 mm sizes come from a Fig. 5 caption for one CPU and one DRAM only. The chiplet counts and types in Case 3 are not given, and the width/height order is assumed. These sizes do not complete a Case 3 floorplan.",
+      "locator": "Fig. 5 caption PDF p.8"
+    },
+    {
+      "field": "scenario.architecture (chiplet types)",
+      "reason": "The claim that Case 3 consists of CPU, DRAM and related HPC modules is only partly supported. Sec. 4.1 says the first five cases are CPU/GPU/HBM/DRAM systems adapted from [6], and Fig. 5 shows CPUs and DRAMs. The exact Case 3 composition is not stated.",
+      "locator": "Sec. 4.1 PDF p.6; Fig. 5 PDF p.8"
+    },
+    {
+      "field": "thermal_observable.value 92.3",
+      "reason": "The simulator behind the Table 6 Tmax (HotSpot vs compact model), the layer, and the exact aggregation are not stated. The value is not tied to a reproducible scenario, and the compact-model error is about 1.25 C.",
+      "locator": "Table 6 PDF p.7; Sec. 4.2 PDF p.6-7"
+    },
+    {
+      "field": "code / benchmark assets",
+      "reason": "The assets list is empty and no URL is given. No code, configuration or benchmark data exists to support any reproduction claim. A bare mention of open-source TAP-2.5D code is not evidence.",
+      "locator": "packet.assets=[]; extraction.linked_assets=[]; Sec. 4.3 PDF p.7"
+    },
+    {
+      "field": "physical inputs (layers, materials, heat path)",
+      "reason": "Layer thicknesses and material and bump/TSV properties are inherited from [6, 36], which are not in the packet. They cannot be verified and the stack cannot be configured. The ambiguity in the 2x spreader/heatsink edge wording is also unresolved.",
+      "locator": "Sec. 2.3 PDF p.2-3"
+    },
+    {
+      "field": "figure verification",
+      "reason": "Only pdftotext extraction was supplied. Fig. 4, Fig. 5 and Fig. 6 were not visually verified or digitized, so no decisive figure-based quantity is confirmed.",
+      "locator": "packet.extraction_method; PDF p.7-8"
+    }
+  ],
+  "checked_pdf_pages": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "checked_assets": []
+}

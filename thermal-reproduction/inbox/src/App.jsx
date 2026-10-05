@@ -219,7 +219,7 @@ export default function App() {
       <NavbarGroup>
         <div className="brand-mark" aria-hidden="true"><span /><span /><span /><span /></div>
         <div className="brand"><strong>Chip Fry</strong>
-          <small>Reproduce, Replicate and Reuse published results for your own application</small></div>
+          <small>Replicate, Reproduce and Reuse published results for your own application</small></div>
       </NavbarGroup>
     </Navbar>
     <div className="workspace">

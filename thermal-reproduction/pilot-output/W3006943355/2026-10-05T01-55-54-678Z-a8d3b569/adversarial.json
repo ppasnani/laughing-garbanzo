@@ -1,0 +1,77 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text-level method claims match the pages: 3D NUCA with 4 cores and 3 L2 layers (pp. 3, 8), Eqs. 1-2 super-core model (p. 3), Algorithm 1 with shadow tags (pp. 5-6), 9-rule fuzzy controller with mean-of-maxima (pp. 7-8), HotSpot/gem5/McPAT/CACTI toolchain (p. 9). The Figure 6 observable (p. 10) and the Figure 1/5 content were seen only as pdftotext output, with no image evidence. The method is 3D, transient and closed-loop, so it cannot be called a 2D steady reproduction."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, supplementary files or availability statement appear on pages 1-12. The assets list is empty. Only generic tool citations (HotSpot, gem5, McPAT, CACTI, SPEC) are given, and a bare URL is not evidence."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Only partial parameters are supported: T=2M cycles, 3% degradation, e range [0,3], rate range [-1.5,1.5], 256 KB banks, 32 KB L1. Missing or unsupported: units of the fuzzy ranges (presumed), Ramb, Rv, Pgated, ambient temperature, Vdd, frequency levels, threshold schedule, control-step length, and numeric Figure 6 curve values. The com2 set lists only 3 applications against the stated 4."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot config (package, heat sink, TIM, layer thicknesses, grid), no gem5 or McPAT config, no runtime threshold schedule. The packet's 'Studio' package and material assumptions are an empty list, and nothing is sourced from the paper."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no block names, coordinates or dimensions. There are no per-block powers for mem2 or com2 and no total power, so the same-scenario power requirement for every floorplan block cannot be met. Figure 1 is qualitative. Figure 6 curves are not digitized. Only the approximate text statements (about 3 degC, 0.5 degC, 3.5 degC) are available."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The extraction sets kind='custom_2d_steady' with an empty floorplan and empty power_w. This contradicts its own steady_2d_relevant=false and the essential physical_mismatches (3D stack, transient closed-loop DVFS and cache gating). It labels a non-reproducible 3D transient scenario as a 2D steady experiment. It should be marked not extractable or not applicable.",
+      "locator": "extraction.experiment; extraction.scenario.steady_2d_relevant; physical_mismatches[0-1]; PDF pp. 3-4, 6-10"
+    },
+    {
+      "field": "thermal_observable_max_temperature_axis_range",
+      "reason": "The provenance says 'Digitized axis range from figure text extraction'. No figure image was supplied, only pdftotext tick labels. The decisive Figure 6 was therefore not visually verified. The curves, the 75-81 degC span, and the claimed ordering of Baseline, FLC and FBTM are unconfirmed from the evidence.",
+      "locator": "PDF p. 10, Figure 6(a)/(b); evidence[thermal_observable_max_temperature_axis_range]"
+    },
+    {
+      "field": "floorplan_geometry_and_power_rows",
+      "reason": "The claim that Figure 1 has no coordinates or dimensions and that no power table exists rests on text extraction only. Figure 1 and the other figure images were not visually inspected. The absence of geometry is plausible but not visually verified. Per-block power is confirmed absent only in the text.",
+      "locator": "PDF p. 3, Figure 1; evidence[floorplan_geometry_and_power_rows]"
+    },
+    {
+      "field": "controller_fuzzy ranges and units",
+      "reason": "The units of e(n) (degC) and of the rate (degC per step) are presumed, not stated. The Figure 5 membership points (0, 1.5, 3 and -1.5, 0, 1.5) come from extracted text labels, not an inspected figure image. The output membership parameters (0.25, 0.5, 0.75) are not extracted as parameters.",
+      "locator": "PDF p. 7 Sec. 3.2(2); PDF p. 8 Figure 5"
+    },
+    {
+      "field": "workload_com2",
+      "reason": "Table 3 lists only three benchmarks for com2, while the text says four-application workloads. The extraction flags this but leaves it unresolved. The com2 scenario is therefore not fully defined.",
+      "locator": "PDF p. 9 Table 3"
+    },
+    {
+      "field": "physical_mismatches[3] / studio_assumptions",
+      "reason": "The mismatch cites 'the Studio solver', but nothing in the paper or packet defines a Studio solver. The claim is not supported by the supplied evidence and mixes target-tool assumptions into the paper extraction. studio_assumptions is empty.",
+      "locator": "extraction.physical_mismatches[3]; extraction.studio_assumptions"
+    },
+    {
+      "field": "thermal_observable.value",
+      "reason": "No scalar or digitized value exists for the selected scenario. The 3 degC reduction is an average across experiments (abstract and Sec. 4), not specific to mem2 or com2. It must not be treated as the Figure 6 observable.",
+      "locator": "PDF p. 1 abstract; PDF p. 10 Sec. 4"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "checked_assets": []
+}

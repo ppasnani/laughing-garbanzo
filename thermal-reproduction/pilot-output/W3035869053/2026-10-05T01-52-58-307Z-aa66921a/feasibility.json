@@ -1,0 +1,68 @@
+{
+  "paper_id": "W3035869053",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "Thermal observable needs a valid page, unit, location, and aggregation",
+    "No cited steady/transient regime",
+    "Block names and block geometry (x_m, y_m, width_m, height_m) for Processor A; the paper only gives die area 195 mm2 and refers to Li et al. [8], which is not in the packet",
+    "Per-block power_rows (name, watts) for Processor A; only total 28 W is given",
+    "Local and global power bounds (bL, bU, BL, BU) and the constraint matrix M",
+    "Layer thicknesses, material conductivities and the geometry of the 11 material layers",
+    "Ambient temperature and absolute worst-case temperature values with units (only node-indexed figures are shown)",
+    "Thermal grid dimensions and node count mapping to Processor A (Table II gives 25K to 2.0M nodes without saying which case maps to which processor)",
+    "Code, configuration and data repositories: the artifact search found no linked assets and the packet lists none",
+    "Digitized values from Fig. 3, which would carry uncertainty; none are extractable as numbers from the packet text",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper gives no block-level floorplan (no x, y, width or height) and no per-block power for Processor A. Only total power (28 W), die area, layer counts and heat transfer coefficients are given on page 5, Table I. Total power must not be split without a published rule, so no complete floorplan experiment can be built.",
+      "essential": true
+    },
+    {
+      "reason": "Power is a set of uncertain local and global bounds, not fixed per-block watts. The observable is an LP-derived worst-case temperature over a power-vector set, not a temperature for a single deterministic power assignment, so it cannot be reproduced by a single-power-map Studio run.",
+      "essential": true
+    },
+    {
+      "reason": "The original model is a multilayer 3D thermal grid (11 material layers, 4 metal layers) with equivalent heat-transfer-coefficient boundaries for heat sink and package. It is not a 2D steady floorplan model, and the layer thicknesses and materials are not given in the packet.",
+      "essential": true
+    },
+    {
+      "reason": "The original solver and optimizer stack (spectral sparsification, multilevel AMG, weighted Jacobi refinement, Gurobi LP) differs from any bundled Studio solver. The paper reports runtime and approximation error and does not report absolute temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "There is no transient, controller, interposer or reliability modelling. Reliability is only motivated qualitatively. These are not mismatches that affect a steady-state setup, but no corresponding data exist.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "6794f9f96ec1272ec9b4f1dcb9d53a389948b34eb2f8b569bac9c3c62548d9ec",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

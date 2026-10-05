@@ -1,0 +1,81 @@
+{
+  "paper_id": "W4361199658",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Numeric x_m, y_m, width_m and height_m for each of the 12 chiplets in the Figure 9b layout. Only a grid-map figure exists (PDF page 11). The grid unit size and node coordinates are not tabulated, and the paper gives only the 2.0 mm unit implied by the blend example (2.5 mm chiplet, 4.0 mm theoretical size).",
+    "A clean per-chiplet power table. Table 2 (PDF page 5) is garbled in the text extraction: the power column is interleaved with the other columns, so power_rows (name and watts) cannot be assigned reliably without checking the PDF image.",
+    "HotSpot configuration and floorplan files, layer thicknesses and materials, bump and TSV dimensions, interposer and substrate size, TIM properties and heat-transfer coefficients. None are published.",
+    "Code, repository, supplementary data or any linked assets. The packet lists no assets and the Data Availability Statement says the data are in the article. artifact_search_status is checked_no_links, so no repository URL proves inputs exist.",
+    "Definition of the reported temperature (which chiplet or node, and whether it is the HotSpot steady-state value), and the Figure 9b temperature map with a numeric color scale.",
+    "Specification of the bundled Studio package, materials and solver assumptions needed to judge any replication.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "Cooling mismatch: the paper uses a fin-channel air-forced heatsink (30 mm fin height, 1 mm fin width, 10 cm fan radius, 5000 rpm, lateral airflow), a 5 mm spreader edge, a 20 mm heatsink edge and 318.5 K ambient. A simplified Studio package with a generic convective boundary will not reproduce this HotSpot fan and heatsink model.",
+      "essential": true
+    },
+    {
+      "reason": "Interposer stack mismatch: the paper models a six-layer stack (FR-4 organic substrate, C4 bumps, silicon interposer with TSVs, microbumps, chiplet layer, TIM) with detailed bump and TSV parameters that are not published in the packet. A simplified Studio layer stack cannot reproduce the vertical heat paths.",
+      "essential": true
+    },
+    {
+      "reason": "Solver mismatch: HotSpot's compact RC network (grid of nodes) differs from a different steady-state solver, so absolute temperatures will not match 373.58 K exactly.",
+      "essential": true
+    },
+    {
+      "reason": "Block geometry is available only as grid-map figures (Figure 9b) with theoretical sizes that include spacing. Absolute block positions are not published numerically, so the same-scenario layout cannot be reconstructed without digitising.",
+      "essential": true
+    },
+    {
+      "reason": "The CMO optimizer and its weight alpha are not reproduced by a thermal solver. They only generated the layout, so this is not a thermal mismatch if the published layout is fixed.",
+      "essential": false
+    },
+    {
+      "reason": "No controller, transient workload or reliability analysis is part of the selected scenario, so these are not mismatches. The scenario is a steady, static 2.5-D placement, not 3D stacking.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "The packet does not specify the bundled Studio package, materials or boundary conditions, so none are assumed here.",
+    "Power is treated as uniform over each chiplet, as the paper states (PDF page 4, Section 3.2.1).",
+    "Chiplet surface temperature is treated as equal to the chiplet overall temperature, as the paper states (PDF page 4)."
+  ],
+  "evidence_sha256": "6a0d862fbca30924e28e0f63929257db8e83d8218cd341a3dfa64768fff0b369",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

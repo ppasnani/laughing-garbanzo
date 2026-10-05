@@ -1,0 +1,82 @@
+{
+  "paper_id": "W4390437658",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Chiplet block names for the Ascend 910 system",
+    "Block x_m, y_m, width_m and height_m for the selected floorplan, whether the RLPlanner result or the benchmark input",
+    "Per-block power rows (name and watts) and total system power for the Ascend 910 scenario",
+    "Any published rule for splitting total power across blocks",
+    "Workload description",
+    "Temperature limit T0 and the reward weights lambda, mu and alpha",
+    "HotSpot configuration: package and material stack, interposer, heat sink, ambient temperature, grid resolution",
+    "Fast thermal model self- and mutual-thermal-resistance tables for this system",
+    "GitHub repository URL for the fast thermal model. The paper mentions it but the packet text gives no URL, and the packet has no assets.",
+    "Content of the ref [6] ServeTheHome page. It is listed only as a reference URL, with no pinned asset in the packet.",
+    "Unit confirmation for the wirelength column (labelled mm but values are in the thousands)",
+    "The resulting RLPlanner floorplan geometry, which is not reported in the 2-page paper",
+    "Studio package and material assumptions. No bundled Studio package or material information is present in the packet.",
+    "Linked asset ref6_ascend910_servethehome is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "3D stacking is not modeled. The scenario is a 2.5D interposer-based chiplet floorplan, and the paper gives no stack or vertical-layer detail.",
+      "essential": false
+    },
+    {
+      "reason": "Interposer, package and material stack parameters (layer thicknesses, conductivities, TIM, heat spreader) are not given in the paper. The thermal result depends on them and cannot be reproduced without them.",
+      "essential": true
+    },
+    {
+      "reason": "Cooling and boundary conditions (heat sink, convection coefficient, ambient temperature) are not stated. The reported 77.12 C cannot be matched to any specific cooling configuration.",
+      "essential": true
+    },
+    {
+      "reason": "The paper reports only a steady-state-style maximum temperature, with no transient or workload-dependent thermal behavior. A transient or workload-driven Studio study would not correspond to the published observable.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer is PPO+RND reinforcement learning with a reward combining wirelength and a temperature penalty. A Studio simulation that does not reproduce this optimizer and reward cannot reproduce the published floorplan, so it can only evaluate a given floorplan.",
+      "essential": true
+    },
+    {
+      "reason": "The published temperature comes from the fast LTI thermal-resistance model approximating HotSpot (MAE 0.25 K), not a full-field solver. A different solver in Studio may give a different value.",
+      "essential": true
+    },
+    {
+      "reason": "No reliability or thermomechanical stress analysis is reported. The introduction mentions thermomechanical stress only as motivation.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "365474c8447837b099751e1e52ffd9ab718afd8c0c9d2271b88220789584980a",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

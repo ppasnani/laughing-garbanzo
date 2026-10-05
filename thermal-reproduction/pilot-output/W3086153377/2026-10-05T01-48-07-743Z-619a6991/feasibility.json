@@ -1,0 +1,76 @@
+{
+  "paper_id": "W3086153377",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block names, x_m, y_m, width_m and height_m for the routers, cores or TSV groups in the 4x4x4 3D-NoC",
+    "Per-block power_rows (name and watts) for the PARSEC workload, including router power and energy per bit values",
+    "HotSpot 6.0 configuration: layer stack, TSV and interposer properties, package, heat sink, ambient temperature and boundary conditions",
+    "Absolute temperatures, including the coolest-area Tref, and numeric peak or mean temperature values",
+    "Black's-model parameters (Ea, current density J, exponent n, A)",
+    "Optimized thresholds theta1 and theta2, and the numeric per-group redundancy map and MTTF values from Figure 9 (digitization needed)",
+    "Packet assets: none are bundled (assets list is empty), and no repository, supplementary data or code link for this paper's setup is given. The reference URLs on PDF page 15 are only citations.",
+    "Linked asset ref41_nangate_45nm is not pinned and available",
+    "Linked asset ref42_freepdk3d45 is not pinned and available",
+    "Linked asset ref47_parsec is not pinned and available",
+    "Linked asset ref49_hotspot6 is not pinned and available",
+    "Linked asset ref24_jpl_reliability is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper gives no block names, x/y positions, widths, heights or per-block power in watts. Figure 9 shows only normalized MTTF and redundancy maps. There is no complete same-scenario floorplan, so none can be extracted, and total power must not be split without a published rule.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is a 3D stacked NoC (4 layers) with TSV-based vertical links, and HotSpot 6.0 3D layer and interposer configuration is not published. A steady-state 2D Studio model cannot represent the inter-layer thermal coupling or TSV thermal effects that drive the result.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's result is a reliability and MTTF outcome (Black's model, redundancy count), not a temperature field. The thermal solver is only an input to a fault-rate model. Black's-model parameters (Ea, J, n) and the absolute Tref are not given.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's optimizer is a grid search over fault-rate thresholds, and the controller is a hardware TSV fault detector with a WCET of 5,152 cycles. Neither is a thermal controller or cooling policy, and both are workload- and reliability-specific with no counterpart in a Studio thermal setup.",
+      "essential": true
+    },
+    {
+      "reason": "The paper does not state the cooling or package details (heat sink, spreader, TIM) used in HotSpot, and no transient behaviour is reported. The Studio package assumptions cannot be matched to the original.",
+      "essential": true
+    }
+  ],
+  "studio_assumptions": [
+    "No complete experiment with block geometry and power is available, so the floorplan is empty and no Studio run is justified.",
+    "If a Studio run were attempted anyway, its default package, material stack and cooling would replace the HotSpot 6.0 configuration, which the paper does not specify. That run would be a different scenario and not a replication.",
+    "The linked reference URLs (NanGate, FreePDK3D45, PARSEC, HotSpot 6.0 report, JPL reliability text) are documentation or library references. They are not evidence that any thermal input file, config, floorplan or power trace exists."
+  ],
+  "evidence_sha256": "879fb15a25ae9b50dffc2561a5cda727d6b74654bf546f79f5a65a18e847dc32",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

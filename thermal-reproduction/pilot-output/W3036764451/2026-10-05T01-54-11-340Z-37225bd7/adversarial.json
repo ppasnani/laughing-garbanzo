@@ -1,0 +1,61 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Text claims were checked against pages 3-5: the Reliability Analysis chain (low-pass filter, rainflow, Miner's rule, MTTF_TC), the RAF=VF*AF/(MF*TF) mapping, temperature-deviation-sorted scheduling, and MOC DPM extended with avgAmplitude*maxT. The percentage-to-comparator order is explicit ('respectively'), so the extraction's order-assumption caveat is unnecessary. Fig. 1, 5 and 6 were not visually verified because only extracted text is supplied."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No repository, code link or availability statement appears on pages 1-6, and the asset list is empty. The only URL is the ITRS bibliography entry [17]. Noculator, HotSpot, McPAT/Lumos and MOC code are cited only. The extraction correctly claims nothing here."
+    },
+    "parameters": {
+      "status": "verified",
+      "note": "The Section V text on page 5 supports 109 mm2, 16nm, 90 W TDP, 8x8 cores, four memory controllers, Ea=0.42 eV, b=2.35, Tth=1 C, k=8.62e-5 eV/K, the A_TC fit (10 y, dT=20 C, Tmax=70 C, 1 h, m=10) and 25 applications. Page 3 supports the ~1 s sampling and the 1-2 h long-term period. Page 4 supports 'few milliseconds' (null is correct). The unit conversions are arithmetically correct. The fitted A_TC is not published."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot configuration, package, heat spreader, TIM, heat sink, cooling or ambient boundary conditions, Noculator/McPAT/Lumos configuration, PARSEC list or seeds are given. The experiment kind is nevertheless set to custom_2d_steady with an empty floorplan, which is internally inconsistent (see findings)."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No per-block geometry (x, y, width, height) or same-scenario per-block power is published, so the empty floorplan and empty power_w are consistent with the paper. Absolute per-core MTTF for Fig. 5 and Fig. 6 exists only in figures that were not visually verified or digitized. Only relative improvements from text are usable. No numeric observable value is extracted."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The kind is labeled custom_2d_steady although steady_2d_relevant is false and the floorplan and power_w are empty. The paper's decisive features are transient temperature traces, rainflow cycle counting, long-term aging history, a closed-loop DVFS/PCPG/mapping controller and a random time-varying workload. Labeling it a steady 2D experiment implies a reproduction path that the evidence does not support. It should be an explicit not-reproducible or no-experiment designation.",
+      "locator": "extraction.experiment vs extraction.scenario.steady_2d_relevant; pdf pages 3-5"
+    },
+    {
+      "field": "scenario.pdf_page / thermal_observable.pdf_page",
+      "reason": "Fig. 5 (per-core MTTF snapshots) and Fig. 6 are on pdf page 6, but the scenario and observable cite page 5. Only the text discussion of the percentages is on page 5.",
+      "locator": "scenario.pdf_page=5 and thermal_observable.pdf_page=5 vs Fig. 5/6 on pdf page 6"
+    },
+    {
+      "field": "figure verification",
+      "reason": "Fig. 1 (memory controller placement), Fig. 5 and Fig. 6 are supplied only as extracted text fragments, with no rendered images. The extraction's statements about MC positions 'around the mesh edges' and the Fig. 5 per-core snapshot cannot be visually verified. No decisive figure was visually verified.",
+      "locator": "pdf pages 2 and 6, Fig. 1, Fig. 5, Fig. 6"
+    },
+    {
+      "field": "evidence uncertainty for percentage mapping",
+      "reason": "The extraction treats the comparator order of 54/51/39 and 40/21/20 as an assumption. The text says 'w.r.t. the nominal baseline, MOC, and reliability-aware mapping, respectively', so the mapping is stated and the caveat is inaccurate. This is minor and does not change the values.",
+      "locator": "pdf page 5, Section V results paragraph"
+    },
+    {
+      "field": "code/config/data artifacts",
+      "reason": "There are no linked assets, code, configuration or numeric data. Nothing at pinned versions was reviewed. The extraction's no-artifact claim is consistent, but it leaves code, config and data checks unresolved, so approval is not possible.",
+      "locator": "packet.assets=[]; pdf pages 1-6"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,74 @@
+{
+  "paper_id": "W4381799710",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block floorplan geometry (x_m, y_m, width_m, height_m) for the four cores, L2 caches and any other blocks",
+    "Per-block power_rows in watts for the selected scenario; Table 1 gives only per-task leakage and dynamic power, with no published mapping rule to cores or blocks",
+    "The task-to-core assignment for each hyper-period, which appears only in Figures 7 and 9 and is not tabulated",
+    "HotSpot configuration: package, heat sink, TIM, die thickness, material properties, thermal R and C values, and the floorplan file used",
+    "Source code, gem5 and McPAT configuration files, GA parameters (Np, iter, k, rho_c, rho_m) and task period and hyper-period definitions; no repository, supplementary data or availability statement is linked in the packet (assets list is empty)",
+    "Tabulated numeric core temperatures for Figures 9 and 10; the roughly 8 C spread is given only in the text and as a plot",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "No block floorplan is published. There are no x, y, width or height values for the cores, L2 caches or other blocks, and Figure 6 is an architecture diagram, not geometry. A steady 2D Studio floorplan therefore cannot be built from the paper without inventing geometry.",
+      "essential": true
+    },
+    {
+      "reason": "Table 1 gives per-task (benchmark) leakage and dynamic power, not per-block power for the same scenario. The paper does not publish a rule for mapping tasks to per-core block power, and the task-to-core assignment per hyper-period is only shown in figures. Total chip power cannot be split into per-block power without inventing a rule.",
+      "essential": true
+    },
+    {
+      "reason": "The original study is transient and scheduling-driven. It uses 10 hyper-periods of about 14 s with core temperatures feeding back into task assignment. A steady 2D thermal solve cannot reproduce the transient peaks or the assignment feedback loop.",
+      "essential": true
+    },
+    {
+      "reason": "The optimizer (GA task assignment) and controller (per-period thermal-aware scheduling under EDF) act on workload allocation, not on a floorplan or package parameters, so they have no counterpart in a static Studio steady-state solve.",
+      "essential": true
+    },
+    {
+      "reason": "The HotSpot package, cooling and material parameters (R and C values, heat sink, TIM, die thickness, ambient coupling beyond the 45 C ambient) are not reported, so the original thermal solver setup is not reproducible.",
+      "essential": true
+    },
+    {
+      "reason": "The system is a planar quad-core CPU with no 3D stacking, interposer or advanced cooling. These are not mismatches with a 2D Studio package, but they confirm that the paper's contribution is scheduling and not geometry.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "8aa86ad99999bd23aa189764992d883a0daf4725ff53466598c2410fe3305223",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

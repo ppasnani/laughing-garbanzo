@@ -1,0 +1,94 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "The text on pp. 4, 7 and 8 supports HotSpot 6.0 steady-state thermal simulation from component-wise average power, a floorplan and material properties. It also supports TED+SCBO in BoTorch, the SA and PPO baselines, and the EDYP objective under 300 mm2 and 75 C. Two limits apply. Section V.B 'Simulation Validation' on p. 9 is an empty heading, so no thermal or performance validation is shown. The step from the paper's layered 2.5D HotSpot stack (Fig. 6) to a 2D Studio steady solve is an unsupported assumption."
+    },
+    "code": {
+      "status": "missing",
+      "note": "I found no repository, code or availability statement on any of the 14 pages. The only URLs are reference citations (Cerebras, UCIe). The packet has no assets, so nothing about the simulator, DSE code or HotSpot wrappers can be verified."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Several scalar parameters check out against pp. 9-10 and Table II: 1.8 GHz, 14 nm, 45 C ambient, 0.4 K/W convection, the 300 mm2 and 75 C limits, and 5x4 cores, 1x2 chiplets, 2.3 mm ICS, 1024 KB buffer and a 208x112 array. Decisive thermal inputs are absent. TIM, spreader, heat sink, interposer and silicon conductivities and thicknesses are only referenced to TESA [12]. The die and I/O die sizes and the power values are not given. The 240 vs 256 GB/s bandwidth and the NoC vs NoP label are ambiguous, and the unit of bandwidth in Table II is unstated."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No HotSpot .flp, .ptrace or config files, no SCBO hyperparameters beyond th=16 for the comparison, and no Studio-equivalent boundary or layer stack are provided. The extraction's floorplan is [] and its power_w is {}, so no runnable same-scenario configuration exists."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Table IV 'Ours' (74.8 C, 59.8 mJ, 2.01 ms, 0.911, 132.2) and the Table III workloads are present in the text. There is no block-level floorplan geometry and no per-block power in W for the selected scenario. Fig. 10(a) and 10(b) were not visually verified: the evidence is pdftotext only and no figure image or digitization was supplied. Without a floorplan and power set for the same scenario, no reproducible thermal dataset exists."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.floorplan / experiment.power_w",
+      "reason": "Both are empty. The 'every floorplan block has same-scenario power' requirement cannot be met, and a custom_2d_steady experiment cannot be run or checked. The paper gives only percentages (49% compute, 17.6% 'cooling'), ICS and total energy/delay. Coordinates and per-block watts are not recoverable from the supplied evidence.",
+      "locator": "extraction.experiment; PDF p.10 Table IV; p.12 Sec. V.F / Fig. 10(a)"
+    },
+    {
+      "field": "thermal_observable (74.8 C) / Fig. 10(b)",
+      "reason": "The value is text-supported by Table IV. Fig. 10(b) is the only evidence of the thermal distribution and hotspot, and it was not visually verified (text extraction only, no image). The hotspot block and location are unknown, so the observable cannot be matched to any block.",
+      "locator": "PDF p.10 Table IV 'Ours' Temp.; p.12 Fig. 10(b)"
+    },
+    {
+      "field": "scenario / steady_2d_relevant = true",
+      "reason": "Marking this as a steady 2D relevant reproduction is overreaching. The paper models a 2.5D stack (Fig. 6: heat sink, spreader, TIM, dies with BEOL, micro-bumps, interposer) in HotSpot 6.0 with NoP power spread across the interposer. A single-layer 2D solve drops essential vertical and interposer paths. The extraction itself lists three essential mismatches (interposer detail, static power, missing block power), which contradicts the true flag.",
+      "locator": "PDF p.7 Fig. 6 and Sec. IV-C.4; extraction.scenario.steady_2d_relevant and physical_mismatches"
+    },
+    {
+      "field": "studio_assumptions: material properties",
+      "reason": "The paper gives no material properties and defers to TESA [12], so Studio defaults would be an unsupported substitution. The 0.4 K/W convection resistance alone cannot define the heat sink and spreader geometry.",
+      "locator": "PDF p.7 Sec. IV-C.4; p.9 Sec. V.A final paragraph"
+    },
+    {
+      "field": "noc_bandwidth (240 GB/s)",
+      "reason": "Table IV labels 'Ours' as 240GB/s NoC bandwidth, and the text on p.10 calls it a 240GB/s inter-chiplet link. The extraction field name 'noc_bandwidth' therefore assumes NoC. The scanned design on p.11 uses 256 GB/s and is described as slightly better in delay and EDYP, so the 'optimal' design is not the global optimum the paper found. The value is used with unresolved ambiguity.",
+      "locator": "PDF p.10 Table IV 'Ours' and text; p.11 Sec. V.E"
+    },
+    {
+      "field": "EDYP cost (132.2) vs Table V (132.4)",
+      "reason": "The same design's EDYP is 132.2 in Table IV and 132.4 in Table V. Recomputing 59.8*2.01/0.911 gives about 131.9. The paper is internally inconsistent in the last digit. The EDYP unit (mJ*ms) is inferred and not stated.",
+      "locator": "PDF p.10 Table IV; p.12 Table V"
+    },
+    {
+      "field": "claimed improvement over B1",
+      "reason": "Text says 3.4x EDYP reduction vs B1, but 461.6/132.2 is about 3.5x. The abstract and intro say 'up to 3.5x'. This is a paper-internal discrepancy, not independently resolved.",
+      "locator": "PDF p.10 Sec. V.D.1 vs Table IV; p.1 abstract"
+    },
+    {
+      "field": "total power / energy allocation",
+      "reason": "Only totals (59.8 mJ, 2.01 ms) are reported, giving roughly 29.7 W average. The paper's Eq. 19 average power divides by D x Pclk (the clock period), which is dimensionally odd. No per-module average power is published, so any block power would be invented. Eq. 4 sums delay unweighted while the benchmark text says a 'weighted sum', so the aggregation is ambiguous.",
+      "locator": "PDF p.7 Eq. 19; p.5 Eq. 4; p.9 Benchmarks paragraph"
+    },
+    {
+      "field": "code/config/data availability",
+      "reason": "Absence of links is not evidence of availability. No assets exist to check code, HotSpot configs, power traces or the DSE database, so reproducibility claims rest on text alone.",
+      "locator": "packet.assets = []; PDF pp.1-14"
+    },
+    {
+      "field": "Simulation validation section",
+      "reason": "Sec. V.B 'Simulation Validation' has no content. The paper's accuracy claims (53% energy and 73% delay errors in Chiplet-Gym) are compared only against its own simulator, and the HotSpot setup is not validated, so the temperatures are model outputs, not verified measurements.",
+      "locator": "PDF p.9 Sec. V.B; p.10 Sec. V.D.3"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "checked_assets": []
+}

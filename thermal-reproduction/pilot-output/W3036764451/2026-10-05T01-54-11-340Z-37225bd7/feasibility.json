@@ -1,0 +1,91 @@
+{
+  "paper_id": "W3036764451",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "Evidence 26 lacks a valid page or pinned asset locator",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "Evidence 28 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-block or per-core x_m, y_m, width_m, height_m, beyond the 109 mm2 total area and 'squared' floorplan with no layout dimensions",
+    "Per-block or per-core power values (name and watts) for any single scenario, beyond the 90 W TDP total",
+    "Package, heat spreader, heat sink, TIM and cooling parameters and ambient or boundary conditions",
+    "HotSpot configuration files and the Noculator/McPAT/Lumos configuration",
+    "Absolute per-core MTTF values or temperatures for Fig. 5 and Fig. 6, which are only in figures with no numeric data",
+    "Fitted A_TC value and the PARSEC application list and seeds for the 25 executions",
+    "Code, repository, dataset or supplementary assets: the packet has no linked assets and the artifact search found no links",
+    "Adversarial code check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "No per-block floorplan geometry (x, y, width, height) or per-block power is published, only total chip area (109 mm2) and TDP (90 W). A Studio steady-state 2D thermal model cannot be built without splitting total power by an unpublished rule.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's output metric is thermal-cycling lifetime (MTTF_TC), computed from transient temperature traces, rainflow cycle counting and long-term aging history. It is not a steady-state temperature field, so a steady-state Studio solve cannot reproduce it.",
+      "essential": true
+    },
+    {
+      "reason": "The controller is a dynamic closed loop with PID/MOC DVFS, PCPG, runtime application mapping and thread scheduling at ms to hour timescales. A static Studio solve has no equivalent controller or optimizer behavior.",
+      "essential": true
+    },
+    {
+      "reason": "The workload is time-varying and random (PARSEC applications entering and leaving at runtime). The power map is therefore transient and not a single fixed operating point.",
+      "essential": true
+    },
+    {
+      "reason": "The original thermal solver is HotSpot embedded in the Noculator/McPAT/Lumos simulation flow, and the package and cooling configuration is not described in the paper. The solver, boundary conditions and cooling therefore cannot be matched.",
+      "essential": true
+    },
+    {
+      "reason": "The scenario is a planar 2D many-core. No 3D stacking or interposer is involved, so there is no 3D or interposer mismatch.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "No complete published floorplan and power scenario exists, so no Studio floorplan is produced (empty floorplan).",
+    "Any Studio bundled package, material, TIM, heat sink or boundary-condition defaults would be Studio assumptions and not paper-derived, because the paper specifies none of them.",
+    "The result would be a steady-state temperature estimate and cannot replicate the paper's MTTF_TC, controller or simulator behavior. No exact replication is claimed."
+  ],
+  "evidence_sha256": "59de6c128daad059b4f913dcefef0456be470cd6ceaae8ab8c52a422f3e121a2",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

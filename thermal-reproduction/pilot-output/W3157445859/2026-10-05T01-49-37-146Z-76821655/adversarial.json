@@ -1,0 +1,85 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "Text-supported: HotSpot 6.0 steady grid (p2, p5), Black's model (p2, p6), Eq. 3 power from PrimeTime energy/bit times flit counts (p5, p7), manual layout comparison with no optimizer or controller (p4, p9), and transient temperature mentioned but not evaluated (p5). But experiment.kind is 'custom_2d_steady' while steady_2d_relevant is false and the extraction lists essential 3D/TSV/bonding-layer/monolithic mismatches. A 3D stack must not be labelled a 2D steady reproduction. The Figure 10 comparison was not visually verified."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The packet has no assets and no code, HotSpot config, .flp, .ptrace or layer files. The five linked URLs (patent, Renesas and Toshiba handbooks, NanGate, FreePDK3D45) are bare reference links. They were not opened and prove nothing about experiment inputs. The execution-time note (C++/Python/Bash, p10) names no repo."
+    },
+    "parameters": {
+      "status": "contradicted",
+      "note": "Router static power is 7.66e-4 W in the p7 text but 7.64e-4 W in Table 2 (p7). Energy per bit is 9.246e-13 in the text but 9.2546e-13 in Table 2. Table 2 energy 2.9022496e-8 J / 31360 bits = 9.2547e-13, so the extraction's normalized 9.246e-13 follows the text typo rather than the arithmetically consistent value. Table 3 TSV area '35,700 um2 / 10.16%' is inconsistent with a 290x290 um tile (10.16% is about 8,545 um2) and is unexplained. Table 3 resistivities are plausible as m·K/W: Cu 0.0025 corresponds to 400 W/mK. The extraction still labels them unverified. Table 1 vs text: 1/0.011537 is about 87x, not the stated 220x at 30 C."
+    },
+    "config": {
+      "status": "missing",
+      "note": "No layer thicknesses, bonding-layer thickness, heatsink or package parameters, ambient temperature, HotSpot layer-config file, or Studio package/material assumptions (studio_assumptions is empty). Only the Table 3 sizes and resistivities are given. Floorplan x/y placement is absent, and Figure 2(c) and Figure 4 were not visually inspected."
+    },
+    "data": {
+      "status": "missing",
+      "note": "No same-scenario per-router power in W for any floorplan block. Figure 8 (p8) and Figure 10 (p9) values exist only as charts, and no figure images were supplied, only pdftotext output. The one decisive number, 351.64 K = 78.49 C (p9 text), is verified as text and 351.64-273.15 = 78.49. Its layer, router and benchmark are unspecified. The floorplan list and power_w are empty, so the scenario cannot be matched."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The extraction sets kind 'custom_2d_steady' with empty floorplan and power_w, yet it declares steady_2d_relevant=false and lists essential 3D mismatches (3 layers, bonding/TIM, TSV paths, top heatsink, monolithic comparison). The experiment is a 3D/TSV scenario mislabelled as 2D steady, and it is also empty.",
+      "locator": "extraction.experiment vs scenario.steady_2d_relevant and physical_mismatches"
+    },
+    {
+      "field": "router_static_power",
+      "reason": "The text (7.66e-4 W) and Table 2 (7.64e-4 W) disagree. The extraction records both but normalizes the text value to a single block 'router'. It does not resolve the conflict and the value is not a stacked-scenario per-block power.",
+      "locator": "PDF p7, Section 4.1 text and Table 2"
+    },
+    {
+      "field": "energy_per_data_bit",
+      "reason": "The extraction uses 9.246e-13 J/bit, but Table 2 energy / bits gives 9.2547e-13, which matches the table value. The chosen normalized value is likely a text typo.",
+      "locator": "PDF p7, Section 4.1 text, Table 2 and the 7x7x2x10x32=31360-bit calculation"
+    },
+    {
+      "field": "thermal_observable.max_monolithic_temperature",
+      "reason": "The 351.64 K figure is text-supported, but the scenario is described as per-layer Figure 10. Figure 10 was not visually verified, and the layer, benchmark and aggregation are unspecified. The paper also says Monolithic reached 351.64 K without naming the benchmark, and the TSV-based counterpart value is not provided.",
+      "locator": "PDF p9, Section 4.2 text before Figure 10"
+    },
+    {
+      "field": "scenario.figure_page",
+      "reason": "Figure 8 is cited as being on PDF p7. Its caption and chart appear on p8, and only the lead-in text is on p7. The per-router power charts were never visually confirmed.",
+      "locator": "PDF p7-8, Figure 8"
+    },
+    {
+      "field": "floorplan/power_rows",
+      "reason": "The extraction claims no block coordinates or numeric per-router powers are published. This negative claim rests on text extraction only. The floorplan images (Figures 2, 4) and bar charts were not viewed, so it is unverified and the floorplan is incomplete.",
+      "locator": "PDF p4-6 Figures 2 and 4; p7-8 Figure 8"
+    },
+    {
+      "field": "linked_assets",
+      "reason": "artifact_search_status 'checked_links_found' overstates things: the URLs are reference and background links, none were fetched, and no asset is in the packet. The patent URL was reconstructed from a line-wrapped PDF string, and the cited patent number (10,181,454) does not match the URL's application number.",
+      "locator": "PDF p12 ref [8], refs [11],[12]; p13 refs [25],[26]"
+    },
+    {
+      "field": "unit_conversion",
+      "reason": "The mK/W units in Table 3 are marked 'presumably', but they could be verified by physical plausibility (Cu 0.0025 m·K/W = 400 W/mK). Conversion factors of 1e-6 for um were not independently checked against figure geometry. The Table 3 TSV area and utilization entry is internally inconsistent with the 290 um tile.",
+      "locator": "PDF p8, Table 3"
+    },
+    {
+      "field": "paper_internal_inconsistency",
+      "reason": "Table 1 gives about 87x for 30 C vs 70 C, while the text says 220x. The text also says 'less than 2%' while Table 1 shows 1.15%. The Black's-model parameters (Ea, n, J) are not given, so the reliability data cannot be reproduced.",
+      "locator": "PDF p6, Section 3.4 and Table 1"
+    }
+  ],
+  "checked_pdf_pages": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13
+  ],
+  "checked_assets": []
+}

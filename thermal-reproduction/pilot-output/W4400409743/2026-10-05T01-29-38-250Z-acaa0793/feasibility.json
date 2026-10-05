@@ -1,0 +1,85 @@
+{
+  "paper_id": "W4400409743",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No linked assets: the packet lists none, and the Data availability statement says no data was used. No code, config, geometry files, or repository.",
+    "Chip block x_m and y_m position on the substrate or heat sink base is not given. Only the 2.2 x 2.2 x 0.1 cm size is stated.",
+    "A single consistent set of heat sink and fin dimensions (Table 1 versus text conflict) and fin pitch or spacing for the selected scenario.",
+    "Material properties for chip, substrate board, and interface (only 'aluminium' fins and base are stated), and any contact resistance.",
+    "Details of the bundled Studio package/material assumptions are not provided in the packet and cannot be recorded.",
+    "Exact digitized or tabulated source of the temperature location (chip surface versus fin base) and pdf page evidence beyond Table 6.",
+    "Per-block power rows beyond the single 8 W total chip load are not available; the 8 W is assigned to one chip only, with no published split rule.",
+    "Heat transfer coefficient or equivalent boundary condition needed to map the air-cooled finned heat sink into a 2D steady model.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The original model is a 3D forced-air convection CFD case (inlet velocity 0.1 m/s, realizable k-epsilon, pressure outlet) with a pin-fin heat sink in a cabinet. A steady 2D conduction floorplan model cannot represent the fluid flow, pressure drop, or 36 discrete pin fins.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling path is an air-cooled finned heat sink with a velocity inlet and pressure outlet. A Studio package/heat-sink model would have to replace this with an effective convection coefficient or boundary resistance, which changes the thermal result.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives conflicting heat sink and fin dimensions. Table 1 says heat sink 4x4x1.7 cm and fin D=0.2 cm. The text says 3x3.5x2 cm, fin radius 0.16 cm and height 1.5 cm. Chip coordinates are not given. A consistent geometry cannot be built from the paper alone.",
+      "essential": true
+    },
+    {
+      "reason": "The paper has no optimizer or controller, no transient behaviour, and no reliability analysis. Optimizer, controller, transient, and reliability comparisons are therefore not applicable to this scenario.",
+      "essential": false
+    },
+    {
+      "reason": "There is no 3D stack or interposer. The paper has a single chip on a substrate board and a heat sink with an adiabatic cabinet except at the inlet and outlet. Substrate and chip layer properties are not given.",
+      "essential": false
+    },
+    {
+      "reason": "The solver assumptions are internally inconsistent: Table 2 says 'Axisymmetric' and the text lists 'laminar flow' alongside a k-epsilon turbulence model. The inlet temperature is 298 K in Table 3 but about 295 K in the Fig. 9 text. The validation case in Table 5 (IA 106.474 C, 0.4 cm gap) differs from the selected case value (126.97 C).",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "2dc65f0960ebe86f98e6707ca83c545b3861aecdc9e250b8ec5e2f596d54560a",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

@@ -1,0 +1,82 @@
+{
+  "paper_id": "W3157445859",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No packet assets are provided (assets list is empty). No code, HotSpot config, floorplan (.flp), power trace (.ptrace) or layer-configuration file is bundled.",
+    "No block-level x_m, y_m, width_m and height_m for the full 3x3x3 floorplan. Only the Table 3 router (290 um x 290 um), router logic (220 um x 220 um) and TSV (4.06 um x 4.06 um) sizes are published, with no placement coordinates.",
+    "No numeric same-scenario per-router power_rows in watts. Figure 8 gives bar charts only, and the totals depend on traffic.",
+    "No layer thicknesses, material properties other than the Table 3 resistivities, heatsink or package parameters, or ambient temperature for the HotSpot 6.0 setup.",
+    "No numeric temperature table for Figure 10. Per-layer values for TSV-based and Monolithic systems exist only as charts, apart from the 351.64 K maximum quoted in the text.",
+    "The linked URLs (NanGate library, FreePDK3D45, reliability handbooks, patent) are reference or background links and do not prove that any experiment input files exist.",
+    "The bundled Studio package/material assumptions were not provided in the packet and cannot be recorded.",
+    "Linked asset ref8_patent_dummy_tsv is not pinned and available",
+    "Linked asset ref11_renesas_reliability_handbook is not pinned and available",
+    "Linked asset ref12_toshiba_reliability_handbook is not pinned and available",
+    "Linked asset ref25_nangate_45nm_library is not pinned and available",
+    "Linked asset ref26_freepdk3d45 is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a 3D stack with 3 layers, bonding/TIM layers, and TSV-based inter-layer heat paths. A steady 2D single-die thermal model cannot represent it.",
+      "essential": true
+    },
+    {
+      "reason": "The Monolithic versus TSV-based comparison depends on removing the bonding layers and on the TSV effective thermal resistivity (0.0226 mK/W from Table 3). A standard 2D package does not have these.",
+      "essential": true
+    },
+    {
+      "reason": "The heatsink sits on top of the stack. Lower layers are cooled only through upper layers and TSVs, so the temperature differences between layers are 3D effects.",
+      "essential": true
+    },
+    {
+      "reason": "The reported observable is a per-layer temperature of a 3D stack. Reliability results use Black's model with a Copper TSV activation energy, which is not a thermal solver output.",
+      "essential": true
+    },
+    {
+      "reason": "Per-router powers are published only as bar charts (Figure 8). Power comes from the router energy-per-bit model scaled by flit counts, not from a published per-block power table.",
+      "essential": true
+    },
+    {
+      "reason": "The original paper has no optimizer or controller (no DTM, no placement optimization), so there is nothing to map onto an optimizer or controller in the Studio.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "3677ff5998271c46a4efe1f01590e4d19cbf1421104d5a0e0657d8d8b410b4c1",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

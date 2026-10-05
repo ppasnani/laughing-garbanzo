@@ -1,0 +1,838 @@
+{
+  "paper_id": "W4205499638",
+  "paper_title": "HotGauge: A Methodology for Characterizing Advanced Hotspots in Modern and Next Generation Processors",
+  "manifest_status": "downloaded",
+  "source_url": "https://sites.tufts.edu/tcal/files/2021/11/HotGauge_IISWC_2021.pdf",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "580a481466cd2a8c04520cda8f0cc6f1b80ab9ccec614a9a6a2e214366a5c137",
+  "pdf_pages": 13,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T01:40:21.732Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W4205499638",
+    "paper_title": "HotGauge: A Methodology for Characterizing Advanced Hotspots in Modern and Next Generation Processors",
+    "artifact_search_status": "checked_links_found",
+    "linked_assets": [
+      {
+        "id": "hotgauge_github",
+        "url": "https://github.com/TuftsCompArchLab/HotGauge",
+        "kind": "source code repository (HotGauge framework and case-study models)",
+        "paper_page": 1
+      },
+      {
+        "id": "hotgauge_zenodo_latest",
+        "url": "https://doi.org/10.5281/zenodo.5523504",
+        "kind": "Zenodo archive (most recent archive)",
+        "paper_page": 1
+      },
+      {
+        "id": "hotgauge_zenodo_archived",
+        "url": "https://doi.org/10.5281/zenodo.5523535",
+        "kind": "Zenodo archive (archived concept DOI listed in artifact checklist)",
+        "paper_page": 13
+      }
+    ],
+    "scenario": {
+      "pdf_page": 8,
+      "figure_or_table": "Fig. 9 (MLTD within 1 mm radius for single-threaded gobmk after idle warmup), with Table I, Table II and Fig. 5",
+      "description": "Transient perf-power-therm co-simulation of a 7nm Skylake-like 7-core client CPU running single-threaded gobmk on one core at a time after an idle thermal warm-up. Maximum localized temperature difference (MLTD) is computed within a 1 mm radius. The 7nm MLTD peaks at almost 70 C versus under 60 C for 14nm, and is highest for cores 0, 2 and 5. The paper packet gives no per-block x, y, width, height or power values, only Table I areas and the Fig. 5 floorplan image, so no floorplan can be extracted from the text.",
+      "architecture": "7nm out-of-order Skylake-like client CPU, 7 cores with 2-way SMT, about 1.25 mm2 per core (about 5 mm2 die at 14nm scaled 50% per node), 224-entry ROB, private L1 and L2, shared L3; 3D-ICE v3.0.0 stack of silicon, solder TIM, copper heat spreader, thermal grease and heatsink",
+      "workload": "SPEC2006 gobmk, single-threaded, run on each core individually; 200M-instruction region of interest after cache warm-up, 1M-cycle time step",
+      "operating_point": "1.4 V and 5 GHz (turbo), idle-warmup initial thermal state, 7nm node; hotspot thresholds Tth=80 C, MLTDth=25 C, radius 1 mm; 40 C local ambient assumed for TDP",
+      "steady_2d_relevant": false
+    },
+    "original_setup": {
+      "solver": "3D-ICE v3.0.0 compact transient thermal model (CTTM), driven by Sniper (instruction-window-centric/ROB model) performance simulation and a modified McPAT v1.2 power model (extended to 14/10/7nm). Stack: silicon (active layer plus bulk), solder TIM, copper heat spreader, thermal grease, HS483-ND heatsink with P14752-ND fan at 6000 rpm (pdf pages 3-4, Table II).",
+      "optimizer": "None. The paper is a hotspot characterization methodology, not an optimizer. The only design-space exploration is a manual sweep of unit-area scaling (e.g. fpIWin, RATs, RFs at up to 10x) and uniform IC area scaling (pdf pages 9-10).",
+      "controller": "None. No thermal controller or DVFS/throttling policy is simulated. Throttling is discussed only as a motivation, and 1.4 V / 5 GHz is held fixed as a turbo operating point (pdf pages 2-3).",
+      "benchmark": "SPEC2006 single-threaded gobmk, run on each of 7 cores individually after idle warmup (Fig. 9, pdf page 8). The 7nm Skylake-like 7-core client CPU runs a 200M-instruction region of interest with a 1M-cycle time step, at 1.4 V and 5 GHz, with Tth=80 C, MLTDth=25 C and a 1 mm radius."
+    },
+    "thermal_observable": {
+      "value": 70,
+      "unit": "degC",
+      "location": "Maximum localized temperature difference (MLTD) within a 1 mm radius on the 7nm die while single-threaded gobmk runs after idle warmup; highest for cores 0, 2 and 5. The peak value is read from text ('peaks at almost 70 C'), not from a digitized figure, so it is approximate.",
+      "aggregation": "Peak over time of the die-wide MLTD (maximum over thermal pixels of the temperature difference to neighbors within 1 mm), reported for the first ~20 ms of the workload; the 14nm part peaks under 60 C.",
+      "pdf_page": 7
+    },
+    "physical_mismatches": [
+      {
+        "reason": "No complete floorplan experiment can be extracted. The paper packet gives no per-block x_m, y_m, width_m, height_m and no per-block power_rows for the gobmk scenario. Only Table I core areas (1.25 mm2 at 7nm) and a Fig. 5 floorplan image are provided. Total chip power is not split into blocks because no rule is published, so the floorplan is empty.",
+        "essential": true
+      },
+      {
+        "reason": "The original uses a multi-layer 3D-ICE stack with an active/bulk silicon split, solder TIM, copper heat spreader, thermal grease and a modeled finned heatsink with fan. A steady-state 2D Studio model with simplified package layers cannot reproduce the transient cooling path and thermal time constants behind the MLTD result.",
+        "essential": true
+      },
+      {
+        "reason": "The observable is transient. MLTD is evaluated over time with a 1M-cycle (~0.2 ms at 5 GHz) step, after a non-uniform idle-warmup thermal initialization. A steady-state solve does not capture this time-dependent behavior or the initial-condition dependence.",
+        "essential": true
+      },
+      {
+        "reason": "The MLTD is computed on a 100 µm thermal grid with a 1 mm radius over a 7-core die including AVX512, SoC/IMC and I/O units. Matching it requires the same resolution and unit set, which are not provided in the packet.",
+        "essential": true
+      },
+      {
+        "reason": "The power comes from a heavily modified McPAT (14/10/7nm scaling with calibrated Cdyn, reported errors of 11-20% on the validation sets) coupled to Sniper, with temperature-dependent leakage. Studio cannot reproduce this performance-power-thermal co-simulation loop.",
+        "essential": false
+      },
+      {
+        "reason": "There is no 3D-IC, interposer, optimizer, controller or reliability model in the original beyond the sigmoid severity metric, so none of these can be compared. Only the thermal stack and solver differ materially.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "The bundled Studio package/material assumptions were not provided in the packet, so they cannot be stated. Any Studio run would use its own default package stack and material properties, which differ from the 3D-ICE Table II layers and the HS483-ND/fan heatsink.",
+      "No claim of exact replication is made, and the GitHub/Zenodo URLs are not treated as proof that the required inputs exist."
+    ],
+    "missing_inputs": [
+      "Per-block x_m, y_m, width_m, height_m for the 7nm Skylake-like core/die floorplan (Fig. 5 is an image only; no numeric table in the packet).",
+      "Per-block power_rows (name, watts) for gobmk at 1.4 V / 5 GHz at 7nm; no per-block or total power split is published in the text.",
+      "Digitized or tabulated MLTD-vs-time data for Fig. 9 (the ~70 C peak comes from text only).",
+      "Linked assets are not available in the packet (assets list is empty): https://github.com/TuftsCompArchLab/HotGauge (pdf page 1), https://doi.org/10.5281/zenodo.5523504 (pdf page 1), and Zenodo DOI 5523535 (pdf page 13). No stack description files, floorplan files, power traces or configs were provided at pinned versions.",
+      "Idle-warmup power trace, initial temperature field and 3D-ICE stack description file.",
+      "Ambient/heatsink boundary-condition details beyond the 40 C ambient used for TDP, and the exact die dimensions (the paper says only approximately 5 mm2 at 14nm with 3x2 core aspect ratio)."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "thermal_observable.mltd_peak_7nm",
+        "block_name": null,
+        "source_value": 70,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 70,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Sec. IV-B Maximum Localized Temperature Difference, text: 'peaks at almost 70°C' (gobmk, 7nm, after idle warmup, first 20 ms); plotted in Fig. 9 (pdf page 8)",
+        "provenance": "Paper text, not digitized from Fig. 9. It is a temperature difference, so the unit is degC (K difference).",
+        "uncertainty": "Approximate ('almost 70'). The exact peak value, per-core values and time of the peak are not tabulated."
+      },
+      {
+        "field": "thermal_observable.mltd_peak_14nm",
+        "block_name": null,
+        "source_value": 60,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 60,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Sec. IV-B, text: '14nm part peaks at under 60°C'",
+        "provenance": "Paper text upper bound.",
+        "uncertainty": "Upper bound only ('under 60'); the true 14nm peak is lower and unspecified."
+      },
+      {
+        "field": "thermal_observable.mltd_radius",
+        "block_name": null,
+        "source_value": 1,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.001,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Sec. III-E Hotspot Definition: 'we choose a radius of 1mm'; Fig. 9 caption (pdf page 8)",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_observable.aggregation",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Sec. IV-B and Fig. 9 caption (pdf page 8): MLTD within 1 mm radius, single-threaded gobmk after idle warmup, over time, core-to-core sweep over 7 cores",
+        "provenance": "Paper text. The MLTD is the maximum temperature difference between a point and neighbors within 1 mm, on a die-wide basis, versus time. Cores 0, 2, 5 are highest and cores 1, 4, 6 lowest (qualitative).",
+        "uncertainty": "The exact aggregation (the max over all pixels vs. per hotspot candidate) is described only qualitatively. No numeric per-core values."
+      },
+      {
+        "field": "hotspot_threshold.Tth",
+        "block_name": null,
+        "source_value": 80,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 80,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Sec. III-E: 'we select values of 80°C and 25°C'; Fig. 10 caption (pdf page 8)",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "hotspot_threshold.MLTDth",
+        "block_name": null,
+        "source_value": 25,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 25,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Sec. III-E: 'we select values of 80°C and 25°C'",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "operating_point.voltage",
+        "block_name": null,
+        "source_value": 1.4,
+        "source_unit": "V",
+        "conversion_factor": 1,
+        "normalized_value": 1.4,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Sec. III-B Power Model: 'frequency of 5 GHz and a voltage of 1.4 V to represent turbo boost'; also pdf page 2 Sec. II-A",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "operating_point.frequency",
+        "block_name": null,
+        "source_value": 5,
+        "source_unit": "GHz",
+        "conversion_factor": 1000000000,
+        "normalized_value": 5000000000,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table I (Frequency 5 GHz); Sec. III-B",
+        "provenance": "Paper text and table",
+        "uncertainty": null
+      },
+      {
+        "field": "architecture.core_area_7nm",
+        "block_name": "core",
+        "source_value": 1.25,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00000125,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table I, 'Core area [mm2] 5, 2.5, 1.25' for 14, 10, 7 nm",
+        "provenance": "Paper table. Column mapping to 7nm is inferred from the order of the node list. Core aspect ratio 3x2 from Sec. III.",
+        "uncertainty": "The table gives areas only. No x_m, y_m, width_m, height_m per block. The 3x2 aspect ratio does not fix absolute dimensions."
+      },
+      {
+        "field": "architecture.die_area_14nm_approx",
+        "block_name": null,
+        "source_value": 5,
+        "source_unit": "mm2",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.000005,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Sec. III text: 'We use approximately a 5mm2 die where each core has an aspect ratio of 3×2'",
+        "provenance": "Paper text. It conflicts with Table I, which lists 5 mm2 as the core area at 14nm, so it is ambiguous whether this is die or core area.",
+        "uncertainty": "Ambiguous (die vs. core). Do not use for geometry."
+      },
+      {
+        "field": "architecture.cores",
+        "block_name": null,
+        "source_value": 7,
+        "source_unit": "cores",
+        "conversion_factor": 1,
+        "normalized_value": 7,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table I (Cores 7); footnote 1",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "workload.roi_instructions",
+        "block_name": null,
+        "source_value": 200000000,
+        "source_unit": "instructions",
+        "conversion_factor": 1,
+        "normalized_value": 200000000,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Sec. III-A Performance Model: 'region of interest (roi) for 200M instructions, using a time step of 1M cycles'",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "workload.time_step",
+        "block_name": null,
+        "source_value": 1000000,
+        "source_unit": "cycles",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Sec. III-A: 'time step of 1M cycles'",
+        "provenance": "Paper text. At 5 GHz this is 0.2 ms, but the paper does not state this conversion explicitly.",
+        "uncertainty": "The time-step conversion depends on the 5 GHz clock, assumed constant."
+      },
+      {
+        "field": "power.per_block_power_rows",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "Searched all 13 pages: no per-block or total power table for 7nm gobmk. Only Cdyn validation (Table III, pdf page 5) and the statement 'power density greater than 8 W/mm2 running bzip2' (pdf page 2).",
+        "provenance": "Missing from the packet. The power traces come from the Sniper+McPAT toolchain, and the repo assets are not in the packet.",
+        "uncertainty": "Not available. Total power must not be split without a published rule."
+      },
+      {
+        "field": "floorplan.block_geometry",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Fig. 5 (core floorplan image, pdf page 4); Fig. 12 hotspot locations (pdf page 8)",
+        "provenance": "Floorplan given only as an image. The text lists unit names (cALU, fpIWin, RATs, RFs, core other, ROB, AVX512, Agent/SoC, IMC, I/O) with no numeric x, y, width or height.",
+        "uncertainty": "Digitizing is not feasible from text. No numeric block coordinates are available."
+      },
+      {
+        "field": "thermal_stack.thermal_grease.conductivity",
+        "block_name": "thermal grease",
+        "source_value": 0.000004,
+        "source_unit": "W/(um K)",
+        "conversion_factor": 1000000,
+        "normalized_value": 4,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Thermal grease row, conductivity 0.04e-4 W/µm K",
+        "provenance": "Paper table, converted to W/(m K)",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.thermal_grease.volumetric_heat_capacity",
+        "block_name": "thermal grease",
+        "source_value": 3.376e-12,
+        "source_unit": "J/(um3 K)",
+        "conversion_factor": 1000000000000000000,
+        "normalized_value": 3376000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Thermal grease row, volumetric heat capacity 3.376e-12",
+        "provenance": "Paper table, converted to J/(m3 K)",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.thermal_grease.height",
+        "block_name": "thermal grease",
+        "source_value": 30,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00003,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Thermal grease row, height 30 µm",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.copper_spreader.conductivity",
+        "block_name": "copper heat spreader",
+        "source_value": 0.00039,
+        "source_unit": "W/(um K)",
+        "conversion_factor": 1000000,
+        "normalized_value": 390,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Copper (heat spreader) row, conductivity 3.9e-4",
+        "provenance": "Paper table, converted",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.copper_spreader.volumetric_heat_capacity",
+        "block_name": "copper heat spreader",
+        "source_value": 3.376e-12,
+        "source_unit": "J/(um3 K)",
+        "conversion_factor": 1000000000000000000,
+        "normalized_value": 3376000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Copper row, volumetric heat capacity 3.376e-12",
+        "provenance": "Paper table, converted",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.copper_spreader.height",
+        "block_name": "copper heat spreader",
+        "source_value": 3000,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.003,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Copper row, height 3e3 µm",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.solder_tim.conductivity",
+        "block_name": "solder TIM",
+        "source_value": 0.000025,
+        "source_unit": "W/(um K)",
+        "conversion_factor": 1000000,
+        "normalized_value": 25,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Solder TIM row, conductivity 0.25e-4",
+        "provenance": "Paper table, converted",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.solder_tim.volumetric_heat_capacity",
+        "block_name": "solder TIM",
+        "source_value": 1.628e-12,
+        "source_unit": "J/(um3 K)",
+        "conversion_factor": 1000000000000000000,
+        "normalized_value": 1628000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Solder TIM row, volumetric heat capacity 1.628e-12",
+        "provenance": "Paper table, converted",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.solder_tim.height",
+        "block_name": "solder TIM",
+        "source_value": 200,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.0002,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Solder TIM row, height 200 µm",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.silicon.conductivity",
+        "block_name": "silicon IC",
+        "source_value": 0.00012,
+        "source_unit": "W/(um K)",
+        "conversion_factor": 1000000,
+        "normalized_value": 120,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Silicon (IC wafer) row, conductivity 1.20e-4",
+        "provenance": "Paper table, converted",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.silicon.volumetric_heat_capacity",
+        "block_name": "silicon IC",
+        "source_value": 1.651e-12,
+        "source_unit": "J/(um3 K)",
+        "conversion_factor": 1000000000000000000,
+        "normalized_value": 1651000,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Silicon row, volumetric heat capacity 1.651e-12",
+        "provenance": "Paper table, converted",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.silicon.height",
+        "block_name": "silicon IC",
+        "source_value": 380,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.00038,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II, Silicon row, height 380 µm; Sec. III-C: the IC is divided into an active layer and bulk",
+        "provenance": "Paper table. The active/bulk split thicknesses are not given.",
+        "uncertainty": "The active layer thickness is not stated."
+      },
+      {
+        "field": "thermal_stack.fan_speed",
+        "block_name": null,
+        "source_value": 6000,
+        "source_unit": "rpm",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Table II caption: HS483-ND heatsink with P14752-ND fan spinning at 6000 rpm",
+        "provenance": "Paper text. The heatsink model is bundled with 3D-ICE, and its HTC/geometry are not in the packet.",
+        "uncertainty": "The effective heat transfer coefficient is not stated in the packet."
+      },
+      {
+        "field": "thermal_stack.psi_ja_7nm",
+        "block_name": null,
+        "source_value": 1.4,
+        "source_unit": "degC/W",
+        "conversion_factor": 1,
+        "normalized_value": 1.4,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table IV, Ψ j,a at 7 nm",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "thermal_stack.tdp_7nm",
+        "block_name": null,
+        "source_value": 43,
+        "source_unit": "W",
+        "conversion_factor": 1,
+        "normalized_value": 43,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Table IV, TDP at 7 nm (60 degC budget / Psi)",
+        "provenance": "Paper table. It is a thermal-budget estimate, not the gobmk power.",
+        "uncertainty": "Must not be used as the workload power."
+      },
+      {
+        "field": "boundary_condition.ambient_temperature",
+        "block_name": null,
+        "source_value": 40,
+        "source_unit": "degC",
+        "conversion_factor": 1,
+        "normalized_value": 40,
+        "pdf_page": 5,
+        "asset_id": null,
+        "locator": "Sec. III-D Thermal Stack Validation: 'local ambient temperature of 40°C and maximum operating temperature of 100°C'",
+        "provenance": "Paper text. Used for the TDP calculation, not necessarily for the transient runs.",
+        "uncertainty": "Ambient used in the Fig. 9 simulations is not explicitly stated."
+      },
+      {
+        "field": "model_scaling.area_scaling_per_node",
+        "block_name": null,
+        "source_value": 50,
+        "source_unit": "percent",
+        "conversion_factor": 0.01,
+        "normalized_value": 0.5,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Sec. III-B: 'We use 50% area scaling node to node, and a 20% decrease in Cdyn'",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "result.tuh_7nm_median_idle_warmup",
+        "block_name": null,
+        "source_value": 0.6,
+        "source_unit": "ms",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.0006,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Fig. 10 caption: 5th/25th/50th percentiles for 7nm 0.2, 0.4, 0.6 ms; Sec. IV-C text",
+        "provenance": "Paper text. Aggregated over SPEC benchmarks, not gobmk-specific.",
+        "uncertainty": "Aggregate across benchmarks, not the selected gobmk scenario."
+      },
+      {
+        "field": "linked_resource.hotgauge_github",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 1,
+        "asset_id": null,
+        "locator": "Abstract: https://github.com/TuftsCompArchLab/HotGauge",
+        "provenance": "Paper-linked code repository (HotGauge and case-study models). Not present in the packet assets (assets list empty), so contents are unverified.",
+        "uncertainty": "The URL does not prove that floorplan, power or config inputs exist."
+      },
+      {
+        "field": "linked_resource.hotgauge_zenodo_latest",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 1,
+        "asset_id": null,
+        "locator": "Abstract: https://doi.org/10.5281/zenodo.5523504; Appendix pdf page 13 'Most Recent Archive: Zenodo DOI 5523504'",
+        "provenance": "Paper-linked Zenodo archive. Not present in packet assets.",
+        "uncertainty": "Archive contents unverified."
+      },
+      {
+        "field": "linked_resource.hotgauge_zenodo_archived",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 13,
+        "asset_id": null,
+        "locator": "Appendix B Artifact check-list: 'Archived: Zenodo DOI 5523535'",
+        "provenance": "Paper-listed Zenodo DOI. Not present in packet assets.",
+        "uncertainty": "Archive contents unverified. It is listed as an archived DOI, no resolved URL in the text."
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The method descriptions (3D-ICE v3.0.0, Sniper ROB model, McPAT 1.2, Definition 1, 1 mm radius, 80/25 C thresholds) match pp.3-5. But experiment.kind is custom_2d_steady while the extraction itself says steady_2d_relevant=false and lists essential mismatches: transient, multi-layer stack with heatsink and fan, idle-warmup initial state. A 2D steady reproduction of a transient multi-layer observable is therefore unsupported. The aggregation of the 70 C peak (die-wide max over pixels) is also inferred."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The assets list is empty. The GitHub and both Zenodo links appear only as paper text (pp.1, 13). Nothing was inspected: no repository files, versions, Sniper/McPAT modifications or 3D-ICE scripts. A bare URL is not evidence."
+      },
+      "parameters": {
+        "status": "contradicted",
+        "note": "The Table II conductivities, heat capacities, heights, Table IV Psi/TDP, 1.4 V, 5 GHz, thresholds, 50% area scaling and unit conversions check out against pp.3-5. However, the scenario claims a 5 mm2 die at 14nm scaled to about 1.25 mm2 per core, while Table I lists 5/2.5/1.25 mm2 as core area. The text on p.3 says 'approximately a 5mm2 die'. The extraction notes this ambiguity but still asserts the die-area interpretation in the scenario. No actual die dimensions are given."
+      },
+      "config": {
+        "status": "missing",
+        "note": "No 3D-ICE stack description file, floorplan file, warmup power trace, initial temperature field, heatsink HTC or geometry, or active/bulk layer split was supplied. The ambient used in the Fig. 9 transient runs is not stated. The 40 C ambient is only for the TDP calculation."
+      },
+      "data": {
+        "status": "missing",
+        "note": "Fig. 9 (p.8) has no supplied image or digitization; the ~70 C and <60 C values come only from text on p.7. There are no per-block geometries (Fig. 5 is an image only) and no per-block or total gobmk 7nm power for the same scenario. The floorplan list is empty, so the floorplan-block power coverage check cannot be satisfied. No decisive figure was visually verified."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.kind",
+        "reason": "The kind is custom_2d_steady, but the observable is transient MLTD after an idle warmup, using a 3D-ICE multi-layer stack with a modeled heatsink and fan. The extraction itself lists these as essential mismatches and steady_2d_relevant=false. Calling this a 2D steady reproduction would hide decisive 3D, transient and cooling features.",
+        "locator": "extraction.experiment; physical_mismatches[0-2]; pdf pp.3-4, 7-8"
+      },
+      {
+        "field": "experiment.floorplan / power_w",
+        "reason": "The floorplan is empty and power_w is empty. No same-scenario per-block x/y/w/h and no per-block power exist for 7nm gobmk, so the check that every floorplan block has same-scenario power cannot be met.",
+        "locator": "pdf p.4 Fig. 5; pdf p.8 Fig. 9; evidence power.per_block_power_rows, floorplan.block_geometry"
+      },
+      {
+        "field": "thermal_observable.value",
+        "reason": "The 70 C peak is approximate text ('almost 70'), not a digitized or visually verified value from Fig. 9. The paper does not say which core produces the peak. The claimed aggregation (die-wide max over pixels, ~20 ms window) is inferred and not stated.",
+        "locator": "pdf p.7 Sec. IV-B; pdf p.8 Fig. 9"
+      },
+      {
+        "field": "scenario.architecture / evidence architecture.die_area_14nm_approx",
+        "reason": "The scenario asserts about 1.25 mm2 per core and a 5 mm2 die at 14nm scaled 50% per node. Table I gives 5 mm2 as the 14nm core area, and 7 cores at those areas contradict a 5 mm2 die. The paper text on p.3 says '5mm2 die'. The paper is internally ambiguous, and the extraction resolves it without support.",
+        "locator": "pdf p.3 Table I and Sec. III text"
+      },
+      {
+        "field": "original_setup.solver",
+        "reason": "The claim of 'temperature-dependent leakage' in the case-study co-simulation loop is not stated for the actual case study. Leakage is mentioned only as a motivation (p.2), and the McPAT description gives no thermal feedback detail. The extraction also lumps the 7nm model into 'validation sets', although only 14nm and 10nm models were validated against silicon (Table III), not 7nm.",
+        "locator": "pdf p.2 Sec. II-C; pdf p.3-4 Sec. III-B; pdf p.5 Table III"
+      },
+      {
+        "field": "linked_assets.hotgauge_zenodo_archived",
+        "reason": "The extraction labels DOI 5523535 an 'archived concept DOI'. The paper only says 'Archived: Zenodo DOI 5523535' and gives no resolved URL, so the 'concept DOI' label is unsupported. All three linked assets are unavailable in the packet and unverified.",
+        "locator": "pdf p.13 Appendix B; pdf p.1"
+      },
+      {
+        "field": "workload.time_step",
+        "reason": "The 1M-cycle step is correctly quoted, but the 0.2 ms equivalent depends on the 5 GHz clock, which the paper does not state as constant. It is an inferred conversion, not paper evidence.",
+        "locator": "pdf p.3 Sec. III-A"
+      },
+      {
+        "field": "checked_assets",
+        "reason": "No pinned asset excerpts were supplied, so no code, config or data asset could be checked. The Fig. 9, Fig. 5 and Fig. 11 images were not supplied, only pdftotext output, so no decisive figure was visually verified.",
+        "locator": "packet.assets=[]; pdf pp.4, 8, 9"
+      }
+    ],
+    "checked_pdf_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      13
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W4205499638",
+    "decision": "not_2d_applicable",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "Evidence 28 lacks a valid page or pinned asset locator",
+      "Evidence 29 lacks a valid page or pinned asset locator",
+      "Evidence 30 lacks a valid page or pinned asset locator",
+      "Evidence 31 lacks a valid page or pinned asset locator",
+      "Evidence 32 lacks a valid page or pinned asset locator",
+      "Evidence 33 lacks a valid page or pinned asset locator",
+      "Evidence 34 lacks a valid page or pinned asset locator",
+      "Evidence 35 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-block x_m, y_m, width_m, height_m for the 7nm Skylake-like core/die floorplan (Fig. 5 is an image only; no numeric table in the packet).",
+      "Per-block power_rows (name, watts) for gobmk at 1.4 V / 5 GHz at 7nm; no per-block or total power split is published in the text.",
+      "Digitized or tabulated MLTD-vs-time data for Fig. 9 (the ~70 C peak comes from text only).",
+      "Linked assets are not available in the packet (assets list is empty): https://github.com/TuftsCompArchLab/HotGauge (pdf page 1), https://doi.org/10.5281/zenodo.5523504 (pdf page 1), and Zenodo DOI 5523535 (pdf page 13). No stack description files, floorplan files, power traces or configs were provided at pinned versions.",
+      "Idle-warmup power trace, initial temperature field and 3D-ICE stack description file.",
+      "Ambient/heatsink boundary-condition details beyond the 40 C ambient used for TDP, and the exact die dimensions (the paper says only approximately 5 mm2 at 14nm with 3x2 core aspect ratio).",
+      "Linked asset hotgauge_github is not pinned and available",
+      "Linked asset hotgauge_zenodo_latest is not pinned and available",
+      "Linked asset hotgauge_zenodo_archived is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "No complete floorplan experiment can be extracted. The paper packet gives no per-block x_m, y_m, width_m, height_m and no per-block power_rows for the gobmk scenario. Only Table I core areas (1.25 mm2 at 7nm) and a Fig. 5 floorplan image are provided. Total chip power is not split into blocks because no rule is published, so the floorplan is empty.",
+        "essential": true
+      },
+      {
+        "reason": "The original uses a multi-layer 3D-ICE stack with an active/bulk silicon split, solder TIM, copper heat spreader, thermal grease and a modeled finned heatsink with fan. A steady-state 2D Studio model with simplified package layers cannot reproduce the transient cooling path and thermal time constants behind the MLTD result.",
+        "essential": true
+      },
+      {
+        "reason": "The observable is transient. MLTD is evaluated over time with a 1M-cycle (~0.2 ms at 5 GHz) step, after a non-uniform idle-warmup thermal initialization. A steady-state solve does not capture this time-dependent behavior or the initial-condition dependence.",
+        "essential": true
+      },
+      {
+        "reason": "The MLTD is computed on a 100 µm thermal grid with a 1 mm radius over a 7-core die including AVX512, SoC/IMC and I/O units. Matching it requires the same resolution and unit set, which are not provided in the packet.",
+        "essential": true
+      },
+      {
+        "reason": "The power comes from a heavily modified McPAT (14/10/7nm scaling with calibrated Cdyn, reported errors of 11-20% on the validation sets) coupled to Sniper, with temperature-dependent leakage. Studio cannot reproduce this performance-power-thermal co-simulation loop.",
+        "essential": false
+      },
+      {
+        "reason": "There is no 3D-IC, interposer, optimizer, controller or reliability model in the original beyond the sigmoid severity metric, so none of these can be compared. Only the thermal stack and solver differ materially.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [
+      "The bundled Studio package/material assumptions were not provided in the packet, so they cannot be stated. Any Studio run would use its own default package stack and material properties, which differ from the 3D-ICE Table II layers and the HS483-ND/fan heatsink.",
+      "No claim of exact replication is made, and the GitHub/Zenodo URLs are not treated as proof that the required inputs exist."
+    ],
+    "evidence_sha256": "90cc39a39b25dc4a4e5f409e115cae40e9ae230f3f47eae85827f53dd5edb5c8",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "not_2d_applicable",
+    "comparison_valid": false,
+    "summary": "The feasibility gate returned not_2d_applicable (simulation_allowed=false, comparison_valid=false), so Studio did not run: simulation status is 'skipped'. The selected scenario is HotGauge Fig. 9, a transient perf-power-thermal co-simulation of a 7nm Skylake-like 7-core CPU running single-threaded gobmk after idle warmup. It reports a peak MLTD (1 mm radius) of almost 70 C at 7nm versus under 60 C at 14nm. The extraction proposed a custom_2d_steady experiment with an empty floorplan and no power_w, which failed input validation. It has no transient trace and is not a replication. No Studio-derived temperature or MLTD exists, so no numerical comparison with the ~70 C paper value is made. The paper values (about 70 C and under 60 C at 7nm and 14nm, 80 C and 25 C thresholds) are text-derived and approximate, and are context only. Qualitatively, the paper shows that hotspot severity grows from 14nm to 7nm as power density rises with area scaling, and that the hottest core varies with position. These are the paper's own findings and were not checked against any Studio output. The final verdict is that no result can be assessed or confirmed. The extraction lacks per-block geometry and power, and the evidence items lack valid page or asset locators.",
+    "limitations": [
+      "Studio was not run (skipped by the gate), so there is no simulated output and no replication or numerical comparison of any kind.",
+      "Gate failures: custom experiment lacks 1-128 blocks and a power_w object; evidence items 0-35 lack valid page or pinned asset locators; no cited thermal observable or steady/transient regime was accepted; adversarial methods/code/parameters/config/data checks are unresolved; and independent page/asset review is pending.",
+      "Regime mismatch: the paper observable is transient MLTD over time (about 0.2 ms steps at 5 GHz, after non-uniform idle warmup), while any custom 2D steady run has no transient trace and cannot capture time constants or initial-condition dependence.",
+      "Observable mismatch: the paper's MLTD is a die-wide maximum over a 100 um thermal grid with a 1 mm radius, reported over roughly the first 20 ms. Its exact aggregation is only described qualitatively, and a steady 2D peak or gradient would not match the location or aggregation.",
+      "Boundary and stack mismatch: 3D-ICE with an active/bulk silicon split, solder TIM, copper spreader, thermal grease and an HS483-ND heatsink with fan at 6000 rpm, versus Studio's unspecified default package and material assumptions. The effective heat transfer coefficient and the ambient used for the Fig. 9 runs are not stated.",
+      "Power mismatch: Sniper plus modified McPAT power with temperature-dependent leakage and 11-20% reported errors is not reproducible in Studio, and no per-block or total gobmk power split is published.",
+      "Missing inputs: no numeric floorplan (Fig. 5 is an image; Table I gives only areas, and the 5 mm2 die/core statement is ambiguous), no power rows, no digitized Fig. 9 data, and no idle-warmup trace.",
+      "The GitHub and Zenodo links are unpinned, absent from the packet, and unverified, so they do not demonstrate that the required inputs exist.",
+      "The approximately 70 C and under 60 C values come from text (one being an upper bound) and not from digitized data. They are temperature differences, not absolute temperatures, and per-core values are only qualitative.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "Evidence 28 lacks a valid page or pinned asset locator",
+      "Evidence 29 lacks a valid page or pinned asset locator",
+      "Evidence 30 lacks a valid page or pinned asset locator",
+      "Evidence 31 lacks a valid page or pinned asset locator",
+      "Evidence 32 lacks a valid page or pinned asset locator",
+      "Evidence 33 lacks a valid page or pinned asset locator",
+      "Evidence 34 lacks a valid page or pinned asset locator",
+      "Evidence 35 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-block x_m, y_m, width_m, height_m for the 7nm Skylake-like core/die floorplan (Fig. 5 is an image only; no numeric table in the packet).",
+      "Per-block power_rows (name, watts) for gobmk at 1.4 V / 5 GHz at 7nm; no per-block or total power split is published in the text.",
+      "Digitized or tabulated MLTD-vs-time data for Fig. 9 (the ~70 C peak comes from text only).",
+      "Linked assets are not available in the packet (assets list is empty): https://github.com/TuftsCompArchLab/HotGauge (pdf page 1), https://doi.org/10.5281/zenodo.5523504 (pdf page 1), and Zenodo DOI 5523535 (pdf page 13). No stack description files, floorplan files, power traces or configs were provided at pinned versions.",
+      "Idle-warmup power trace, initial temperature field and 3D-ICE stack description file.",
+      "Ambient/heatsink boundary-condition details beyond the 40 C ambient used for TDP, and the exact die dimensions (the paper says only approximately 5 mm2 at 14nm with 3x2 core aspect ratio).",
+      "Linked asset hotgauge_github is not pinned and available",
+      "Linked asset hotgauge_zenodo_latest is not pinned and available",
+      "Linked asset hotgauge_zenodo_archived is not pinned and available",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence",
+      "The bundled Studio package/material assumptions were not provided in the packet, so they cannot be stated. Any Studio run would use its own default package stack and material properties, which differ from the 3D-ICE Table II layers and the HS483-ND/fan heatsink.",
+      "No claim of exact replication is made, and the GitHub/Zenodo URLs are not treated as proof that the required inputs exist."
+    ]
+  }
+}

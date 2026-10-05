@@ -1,0 +1,77 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "contradicted",
+      "note": "The paper describes a power-based TGV compared against HotSpot on 4-layer 3D floorplans (pp.2-5). The extraction sets experiment.kind to custom_2d_steady while also marking steady_2d_relevant false and listing 3D vertical coupling as essential. That is a 2D label on a 3D problem. The scenario also merges Figure 9 (p.5) with Figure 10 (p.6) peak temperatures, and the paper does not say these are the same FP1/FP2."
+    },
+    "code": {
+      "status": "missing",
+      "note": "The paper says the tools were written in C++ (p.4), but no code, repository or supplement is linked. artifact_search_status is checked_no_links and the assets list is empty. Nothing can be run or checked."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Several values are text-verified: 45 nm and 1e5-1e7 W/m2 (p.2), Table 1 runtimes and 22.2X (p.4), r=0.89 (p.4), r=0.96 (p.5), success rates 97%/87% (p.6), and 564/567 K with 0.319/0.326 mm2 (p.6). The exponents in the power range come from a garbled 'pdftotext' line ('105 -107') and are inferred as 10^5 to 10^7. No per-module power densities, layer thicknesses (Si, SiO2, TIM), TSV island sizes or HotSpot 'default parameters' are given, so the decisive simulation inputs are unavailable."
+    },
+    "config": {
+      "status": "missing",
+      "note": "The heat sink is on top and layer 0 is the hottest (pp.2, 5). Beyond that, the die dimensions, stacking order, HotSpot material, convection and ambient settings, and random seed are not published. Studio package and material assumptions are empty. A 2D steady Studio configuration cannot represent the 4-layer stack with TSV islands."
+    },
+    "data": {
+      "status": "missing",
+      "note": "There are no block names, coordinates or per-block watts for any FP1 or FP2 floorplan, and experiment.floorplan and power_w are empty. Figures 6-11 are images, and no figure images or assets were supplied. The packet has only 'pdftotext' text, so the decisive Figure 9 thermal maps were not visually verified. The FP1/FP2 peak temperatures for Figure 9 are not stated numerically."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment.kind",
+      "reason": "The experiment is labelled custom_2d_steady, but the paper's scenario is a 4-layer TSV-based 3D stack with inter-layer heat flow and a top heat sink. This contradicts the extraction's own steady_2d_relevant=false and its essential physical mismatches. Calling it a 2D reproduction is unsupported.",
+      "locator": "extraction.experiment; scenario.steady_2d_relevant; PDF p.2 Section 2, p.5 Fig. 9"
+    },
+    {
+      "field": "experiment.floorplan / power_w",
+      "reason": "The floorplan is empty and no power is given for any block. The paper publishes neither block geometry nor per-block power for FP1 or FP2. Same-scenario power for every floorplan block is therefore absent.",
+      "locator": "extraction.experiment; PDF pp.2-5 (no coordinate or power table)"
+    },
+    {
+      "field": "scenario / thermal_observable",
+      "reason": "The scenario cites Figure 9 (p.5) and Figure 6, but the numeric peak temperatures 564 K and 567 K come from Figure 10 (p.6). The paper does not state that the Figure 10 FP1/FP2 are the Figure 9 FP1/FP2. The text reads like different sample pairs, and the extraction itself flags the link as unconfirmed. Using them in operating_point is a scenario mismatch.",
+      "locator": "scenario.operating_point; thermal_observable.aggregation; PDF p.5 Fig. 9 vs p.6 Fig. 10"
+    },
+    {
+      "field": "decisive figures",
+      "reason": "Figures 6, 7, 9, 10 and 11 were not supplied as images, so none was visually verified. The FP1/FP2 thermal maps and layer ordering are known only from text.",
+      "locator": "PDF pp.4-6 Figs. 6-11; assets: []"
+    },
+    {
+      "field": "power_density_range",
+      "reason": "The source text shows '105 -107 W/m2' because superscripts were lost in extraction. The 10^5 and 10^7 exponents are inferred rather than seen on the rendered page. The range is also only a random-assignment bound, not a per-block value.",
+      "locator": "PDF p.2 Section 2 Background paragraph 2"
+    },
+    {
+      "field": "HotSpot configuration",
+      "reason": "The paper says only 'Hotspot's default parameters' with the heat sink on top. Layer thicknesses, TIM properties, convection resistance and ambient temperature are not specified, and later repository or HotSpot defaults cannot be substituted. TSV islands are treated as zero-power only in the TGV evaluation, and how HotSpot treats them is not stated.",
+      "locator": "PDF p.4 Section 4 paragraph 2; p.2 Section 2.1"
+    },
+    {
+      "field": "code/assets",
+      "reason": "No code, data or repository is available. The C++ implementations and the floorplanner [13] are not linked. The extraction correctly reports no linked assets, so reproduction is not possible from this packet.",
+      "locator": "extraction.linked_assets=[]; PDF p.4 Section 4"
+    },
+    {
+      "field": "TGV method equations",
+      "reason": "The extraction does not capture the TGV equations. Eq. 10 and Eqs. 17-18 are garbled in the 'pdftotext' output, so the neighbor-weighting and exponent terms cannot be confirmed. The paper's TGV is a non-temperature W/m2 metric validated only by correlation with HotSpot, so no absolute temperature field exists to reproduce.",
+      "locator": "PDF p.4 Eqs. 10-18; physical_mismatches[1]"
+    }
+  ],
+  "checked_pdf_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "checked_assets": []
+}

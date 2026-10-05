@@ -1,0 +1,109 @@
+{
+  "paper_id": "W4387010219",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "Evidence 26 lacks a valid page or pinned asset locator",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "Evidence 28 lacks a valid page or pinned asset locator",
+    "Evidence 29 lacks a valid page or pinned asset locator",
+    "Evidence 30 lacks a valid page or pinned asset locator",
+    "Evidence 31 lacks a valid page or pinned asset locator",
+    "Evidence 32 lacks a valid page or pinned asset locator",
+    "Evidence 33 lacks a valid page or pinned asset locator",
+    "Evidence 34 lacks a valid page or pinned asset locator",
+    "Evidence 35 lacks a valid page or pinned asset locator",
+    "Evidence 36 lacks a valid page or pinned asset locator",
+    "Evidence 37 lacks a valid page or pinned asset locator",
+    "Evidence 38 lacks a valid page or pinned asset locator",
+    "Evidence 39 lacks a valid page or pinned asset locator",
+    "Evidence 40 lacks a valid page or pinned asset locator",
+    "Evidence 41 lacks a valid page or pinned asset locator",
+    "Evidence 42 lacks a valid page or pinned asset locator",
+    "Evidence 43 lacks a valid page or pinned asset locator",
+    "Evidence 44 lacks a valid page or pinned asset locator",
+    "Evidence 45 lacks a valid page or pinned asset locator",
+    "Evidence 46 lacks a valid page or pinned asset locator",
+    "Evidence 47 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Block-level floorplan (x_m, y_m, width_m, height_m) for the selected 1 MiB MemPool 2D or 3D scenario. The paper refers to [38] and [41] for this and does not publish it.",
+    "Per-block power_rows in watts for the same scenario. Only the 40 W 2D TDP, the 0.913x 3D scaling and a percentage breakdown pie (Fig. 3) are given, and there is no published rule for splitting the total across individual blocks.",
+    "The Fig. 3 pie chart is a figure not readable from the extracted text, so its percentage-to-category mapping (cores, I$, SPM, interconnects, others) is unverified.",
+    "Linked HotSpot repository (https://github.com/uvahotspot/HotSpot, PDF page 9) is a URL only. It is not a pinned packet asset, and no MemPool configuration, floorplan or power files are provided. The packet's assets list is empty.",
+    "MemPool 3D design data from [41] (arXiv:2112.01168) and the earlier 2D thermal paper [38] are not in the packet, so their floorplan details cannot be used as asset evidence.",
+    "No code, configuration files, supplementary data or data-availability statement for the thermal simulations are provided.",
+    "Exact HotSpot grid resolution and boundary-condition settings. Only the convective resistances (0.17 K/W and 50 K/W) are given.",
+    "Linked asset hotspot_github is not pinned and available",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a 3D face-to-face wafer-bonded memory-on-logic stack with a 2.85 um BEOL layer, a 100 um memory die and a 5 um thinned logic die. The bundled Studio model is presumably a planar 2D die and cannot represent two stacked tiers, the F2F bonding layer or inter-die coupling.",
+      "essential": true
+    },
+    {
+      "reason": "The full package is part of the result: 100 um TIM at 7 W/m-K, 5.92 mm heat spreader, 7.9 mm heatsink at Rconv 0.17 K/W, C4 bumps, substrate, solder balls, underfill and a 15x15 mm PCB with 50 K/W natural convection. A generic Studio cooling model likely does not reproduce this stack or the two-sided heat path.",
+      "essential": true
+    },
+    {
+      "reason": "Silicon thermal conductivity is size-dependent (140 W/m-K for 100 um, 100 W/m-K for the 5 um logic die). Thinning-induced ballistic phonon effects drive the logic-die hotspot, and a bulk-silicon Studio material would miss this.",
+      "essential": true
+    },
+    {
+      "reason": "The paper gives no block-level floorplan coordinates or per-block powers. Only die and tile sizes, a power-breakdown pie chart, a 40 W 2D TDP and a 0.913x 3D power scaling are given, and the floorplan is referenced to [38], which is not in the packet. A faithful 2D block-level Studio input cannot be built without inventing data.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's solver is HotSpot with a specific block/grid RC model and uniform power per block. Studio's solver and meshing differ, so the 55 C and 57 C Tmax values cannot be assumed to match.",
+      "essential": false
+    },
+    {
+      "reason": "The paper contains no optimizer, controller, transient or reliability analysis in the selected scenario, so Studio features for those cannot be compared. The tile activity patterns and the SPM capacity and MOL/LOM sweeps are separate scenarios.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "3dc51ef8702cc8f12641f945d6de60f7f581207cf491f6713eaf725238bafba2",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

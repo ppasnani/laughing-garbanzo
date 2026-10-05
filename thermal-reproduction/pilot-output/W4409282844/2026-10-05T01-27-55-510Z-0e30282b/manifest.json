@@ -1,0 +1,686 @@
+{
+  "paper_id": "W4409282844",
+  "paper_title": "ATPlace2.5D: Analytical Thermal-Aware Chiplet Placement Framework for Large-Scale 2.5D-IC",
+  "manifest_status": "downloaded",
+  "source_url": "https://yibolin.com/publications/papers/PLACE_ICCAD2024_Wang.pdf",
+  "manifest_sha256": "45faedd34854579f4d9f18b58554dbc7e4dbd33a9420a4faa241e11cbcdd4ae8",
+  "pdf_sha256": "c0a44ebba682a3bdff889ba82e6411a633d75e0c797a10ad4b328c4c26268f25",
+  "pdf_pages": 9,
+  "extraction_method": "pdftotext -layout",
+  "linked_assets": [],
+  "independent_review": null,
+  "graph_sha256": "6b5c5ddc5868c63e854d327f4d8c4467dc1bfacf2f35971ad8dc814d1583fcbc",
+  "rubric_sha256": "e6476b8e5b2cd0ba1da5811ae3166d1423f8d85521ecbb8e6d4195c52d8beeb5",
+  "run_type": "custom",
+  "studio_base_url": "http://127.0.0.1:8000",
+  "generated_at": "2026-10-05T01:29:35.845Z",
+  "llm_mode": "live",
+  "llm_provider": "anthropic",
+  "llm_model": "claude-sonnet-5-5",
+  "extraction": {
+    "paper_id": "W4409282844",
+    "paper_title": "ATPlace2.5D: Analytical Thermal-Aware Chiplet Placement Framework for Large-Scale 2.5D-IC",
+    "artifact_search_status": "checked_no_links",
+    "linked_assets": [],
+    "scenario": {
+      "pdf_page": 7,
+      "figure_or_table": "Table 6 (Case 3, thermal-aware optimization), with Table 3 (PDF p.6) and Fig. 5 (PDF p.8)",
+      "description": "Benchmark Case 3 of the paper's ten constructed test cases, run with thermal-aware placement. Table 3 gives this case as 8 dies with 8448 nets on a 39.0 x 39.0 mm interposer at 0.6 whitespace. Table 6 reports TAP-2.5D at 94.1 C maximum temperature, 185.20 m total wirelength and 186 min runtime. ATPlace2.5D reaches 92.3 C, 142.42 m and 6 min. The Fig. 5 caption gives a single CPU as 9 x 8 mm and a single DRAM as 9 x 9 mm. The packet gives no per-chiplet coordinates or per-chiplet power for this case.",
+      "architecture": "2.5D-IC with a passive interposer on an organic substrate. Case 3 has 8 chiplets with UCIe x32 advanced-package D2D links. The chiplets are CPU, DRAM and related HPC modules adapted from the TAP-2.5D cases. The primary heat path is TIM, heat spreader and air-forced heatsink, with adiabatic lateral surfaces.",
+      "workload": "Worst-case power distribution across chiplets. Power densities in the benchmark range from 2e5 to 3e6 W/m^2. The per-chiplet watt values for Case 3 are not stated in the packet text.",
+      "operating_point": "Steady-state temperature at 45 C ambient and a heatsink convective resistance of 0.1 K/W. The heat spreader and heatsink edges are 2x the interposer size. HotSpot 6.0 is the golden simulator on a 64 x 64 grid. The reported thermal observable is the maximum temperature in C (Table 6).",
+      "steady_2d_relevant": true
+    },
+    "original_setup": {
+      "solver": "Steady-state HotSpot 6.0 on a 64x64 thermal grid is the golden simulator. The optimizer uses a physics-based analytical compact thermal model (approximate Green's function per chiplet, 2N+3 parameters) fitted to HotSpot maps from 5-10 legalized layouts. The model solves the steady-state heat equation with adiabatic lateral boundaries and a primary heat path through TIM, spreader and air-forced heatsink (0.1 K/W, 45 C ambient).",
+      "optimizer": "ATPlace2.5D. MILP initialization (Gurobi), then orientation-aware analytical placement by Polak-Ribiere conjugate gradient descent on wirelength + lambda_therm*R[T] + lambda_dens*density penalty, then MILP legalization (Gurobi). Hyperparameters are tuned by Optuna Bayesian optimization.",
+      "controller": "None. This is a static design-time chiplet placement with no runtime thermal controller.",
+      "benchmark": "Case 3 of the paper's ten constructed benchmark cases (8 dies, 8448 nets, x32 UCIe bump type, 39.0 x 39.0 mm interposer, 0.6 whitespace), run as thermal-aware optimization and compared with SA-based TAP-2.5D (Table 3 PDF p.6, Table 6 PDF p.7)."
+    },
+    "thermal_observable": {
+      "value": 92.3,
+      "unit": "C",
+      "location": "Maximum temperature of the final ATPlace2.5D thermal-aware placement for Case 3 (Table 6, Tmax column). The paper does not state the layer explicitly; the temperature map is on the 64x64 thermal grid of the HotSpot-validated model.",
+      "aggregation": "Maximum (Tmax) over the steady-state temperature map under the worst-case power distribution; a single scalar per placement.",
+      "pdf_page": 7
+    },
+    "physical_mismatches": [
+      {
+        "reason": "The paper models a 2.5D-IC with a passive interposer (RDL, TSVs, microbumps, C4 pillars, organic substrate) and heterogeneous epoxy-filled layers. A simple 2D steady-state Studio model cannot represent these layers, so the layer stack and bump/TSV effective conductivities are not reproduced.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling model is an air-forced heatsink with a 0.1 K/W convective resistance. The spreader and heatsink edges are 2x the interposer, ambient is 45 C, lateral surfaces are adiabatic, and the secondary path through substrate and PCB is ignored. Studio cooling and boundary conditions may differ, which shifts absolute temperatures.",
+        "essential": true
+      },
+      {
+        "reason": "The solver differs. The published values come from HotSpot 6.0 (64x64 grid) and an analytical compact model with MAE of about 1.2 C, whereas Studio uses its own solver. The reported 92.3 C cannot be matched exactly.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's objective is a placement optimizer with MILP initialization, CGD, legalization and Bayesian hyperparameter tuning, balancing wirelength and temperature. Studio can at most evaluate a given fixed floorplan and does not reproduce the optimizer or the wirelength results.",
+        "essential": false
+      },
+      {
+        "reason": "The paper is steady-state only, with no transient behaviour, runtime controller or reliability analysis, so there is no transient or controller mismatch beyond the absence of these features.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "missing_inputs": [
+      "Per-chiplet x_m, y_m (placement coordinates) for Case 3. The packet does not list them, and the final-layout figure (Fig. 5, PDF p.8) would only allow uncertain digitization.",
+      "Per-chiplet widths and heights for all 8 Case 3 chiplets. Only the Fig. 5 caption gives a single CPU as 9 x 8 mm and a single DRAM as 9 x 9 mm (PDF p.8), and the identity and count of each chiplet type in Case 3 are not stated.",
+      "Per-chiplet power in watts for Case 3. Only a benchmark-wide power-density range of 2e5 to 3e6 W/m^2 is given (PDF p.6). Total chip power is not stated and no splitting rule is published, so power cannot be derived.",
+      "Layer thicknesses, material properties, bump and TSV dimensions and TIM/spreader/heatsink dimensions. They are only inherited by reference from TAP-2.5D [6] and ATSim3D [36], which are not in the packet.",
+      "Linked assets: no repository, code, configuration, supplementary data or benchmark files are linked in the packet (artifact search found no links; assets list is empty), so no asset evidence exists. The TAP-2.5D open-source code is mentioned without a URL.",
+      "Bundled Studio package and material assumptions are not provided in the packet, so none are recorded.",
+      "A complete, same-scenario floorplan with block names, geometry and watts cannot be assembled, so the floorplan must be left empty."
+    ],
+    "experiment": {
+      "kind": "custom_2d_steady",
+      "floorplan": [],
+      "power_w": {}
+    },
+    "evidence": [
+      {
+        "field": "scenario.case3.die_count",
+        "block_name": null,
+        "source_value": 8,
+        "source_unit": "dies",
+        "conversion_factor": 1,
+        "normalized_value": 8,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 3, Case 3 row, Dies column",
+        "provenance": "Paper table (pdftotext text)",
+        "uncertainty": null
+      },
+      {
+        "field": "scenario.case3.net_count",
+        "block_name": null,
+        "source_value": 8448,
+        "source_unit": "nets",
+        "conversion_factor": 1,
+        "normalized_value": 8448,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 3, Case 3 row, Nets column",
+        "provenance": "Paper table (pdftotext text)",
+        "uncertainty": null
+      },
+      {
+        "field": "interposer.width_m",
+        "block_name": "interposer",
+        "source_value": 39,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.039,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 3, Case 3 row, Interposer Width (mm)",
+        "provenance": "Paper table (pdftotext text)",
+        "uncertainty": null
+      },
+      {
+        "field": "interposer.height_m",
+        "block_name": "interposer",
+        "source_value": 39,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.039,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 3, Case 3 row, Interposer Height (mm)",
+        "provenance": "Paper table (pdftotext text)",
+        "uncertainty": null
+      },
+      {
+        "field": "scenario.case3.whitespace",
+        "block_name": null,
+        "source_value": 0.6,
+        "source_unit": "%",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 3, Case 3 row, Whitespace/% column",
+        "provenance": "Paper table. The column header says % but the values (0.35-0.65) look like fractions; the unit is ambiguous and no conversion is applied.",
+        "uncertainty": "Unit ambiguity between percent and fraction"
+      },
+      {
+        "field": "chiplet.cpu.width_m",
+        "block_name": "CPU (single, type only)",
+        "source_value": 9,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.009,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Fig. 5 caption: 'dimensions of a single CPU and DRAM measure 9 x 8 mm2, and 9 x 9 mm2'",
+        "provenance": "Figure caption text for Case 3 layouts",
+        "uncertainty": "Which Case 3 chiplet instances use these dimensions is not specified; the orientation (width vs height) is assumed from the order written. No position is given."
+      },
+      {
+        "field": "chiplet.cpu.height_m",
+        "block_name": "CPU (single, type only)",
+        "source_value": 8,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.008,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Fig. 5 caption, CPU 9 x 8 mm2",
+        "provenance": "Figure caption text for Case 3 layouts",
+        "uncertainty": "Orientation assumed from the order written; count of CPUs in Case 3 not stated"
+      },
+      {
+        "field": "chiplet.dram.width_m",
+        "block_name": "DRAM (single, type only)",
+        "source_value": 9,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.009,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Fig. 5 caption, DRAM 9 x 9 mm2",
+        "provenance": "Figure caption text for Case 3 layouts",
+        "uncertainty": "Count of DRAMs in Case 3 not stated"
+      },
+      {
+        "field": "chiplet.dram.height_m",
+        "block_name": "DRAM (single, type only)",
+        "source_value": 9,
+        "source_unit": "mm",
+        "conversion_factor": 0.001,
+        "normalized_value": 0.009,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Fig. 5 caption, DRAM 9 x 9 mm2",
+        "provenance": "Figure caption text for Case 3 layouts",
+        "uncertainty": "Count of DRAMs in Case 3 not stated"
+      },
+      {
+        "field": "chiplet.x_m_y_m",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 8,
+        "asset_id": null,
+        "locator": "Fig. 5 shows Case 3 layouts graphically; no numeric coordinates in the text",
+        "provenance": "No numeric placement coordinates are published in the packet text; digitization was not performed",
+        "uncertainty": "Not available"
+      },
+      {
+        "field": "power.per_chiplet_W",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "W",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Section 4.1: power densities range from 2e5 to 3e6 W m^-2; no per-chiplet watts for Case 3",
+        "provenance": "Only a benchmark-wide power-density range is stated; no total chip power or splitting rule is published",
+        "uncertainty": "Per-chiplet watts missing; not derived"
+      },
+      {
+        "field": "power.density_min",
+        "block_name": null,
+        "source_value": 200000,
+        "source_unit": "W/m^2",
+        "conversion_factor": 1,
+        "normalized_value": 200000,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Section 4.1, 'power densities of the chiplets range from 2e5 W m^-2 to 3e6 W m^-2'",
+        "provenance": "Benchmark-wide range, not specific to Case 3",
+        "uncertainty": "Applies to all 10 cases, not Case 3 alone"
+      },
+      {
+        "field": "power.density_max",
+        "block_name": null,
+        "source_value": 3000000,
+        "source_unit": "W/m^2",
+        "conversion_factor": 1,
+        "normalized_value": 3000000,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Section 4.1, same sentence",
+        "provenance": "Benchmark-wide range, not specific to Case 3",
+        "uncertainty": "Applies to all 10 cases, not Case 3 alone"
+      },
+      {
+        "field": "thermal_observable.Tmax_ATPlace2.5D_case3",
+        "block_name": null,
+        "source_value": 92.3,
+        "source_unit": "C",
+        "conversion_factor": 1,
+        "normalized_value": 92.3,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 6, Case 3 row, ATPlace2.5D Tmax/°C column",
+        "provenance": "Paper table. Maximum temperature of the final placement under worst-case power; the layer is not stated.",
+        "uncertainty": "Compact-model MAE is about 1.2 C vs HotSpot. The aggregated layer or location is not stated."
+      },
+      {
+        "field": "thermal_observable.Tmax_TAP2.5D_case3",
+        "block_name": null,
+        "source_value": 94.1,
+        "source_unit": "C",
+        "conversion_factor": 1,
+        "normalized_value": 94.1,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 6, Case 3 row, TAP-2.5D Tmax/°C column",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "result.TWL_ATPlace2.5D_case3",
+        "block_name": null,
+        "source_value": 142.42,
+        "source_unit": "m",
+        "conversion_factor": 1,
+        "normalized_value": 142.42,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 6, Case 3 row, ATPlace2.5D TWL/m",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "result.TWL_TAP2.5D_case3",
+        "block_name": null,
+        "source_value": 185.2,
+        "source_unit": "m",
+        "conversion_factor": 1,
+        "normalized_value": 185.2,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 6, Case 3 row, TAP-2.5D TWL/m",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "result.runtime_ATPlace2.5D_case3",
+        "block_name": null,
+        "source_value": 6,
+        "source_unit": "min",
+        "conversion_factor": 60,
+        "normalized_value": 360,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 6, Case 3 row, ATPlace2.5D RT/min",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "result.runtime_TAP2.5D_case3",
+        "block_name": null,
+        "source_value": 186,
+        "source_unit": "min",
+        "conversion_factor": 60,
+        "normalized_value": 11160,
+        "pdf_page": 7,
+        "asset_id": null,
+        "locator": "Table 6, Case 3 row, TAP-2.5D RT/min",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "boundary.ambient_temperature",
+        "block_name": null,
+        "source_value": 45,
+        "source_unit": "C",
+        "conversion_factor": 1,
+        "normalized_value": 45,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section 2.3, 'the ambient temperature is 45 C'",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "boundary.heatsink_convective_resistance",
+        "block_name": null,
+        "source_value": 0.1,
+        "source_unit": "K/W",
+        "conversion_factor": 1,
+        "normalized_value": 0.1,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 2.3, 'convective resistance of the heatsink is set to be 0.1 K/W for all cases'",
+        "provenance": "Paper text, citing [26]",
+        "uncertainty": null
+      },
+      {
+        "field": "geometry.spreader_heatsink_edge_ratio",
+        "block_name": null,
+        "source_value": 2,
+        "source_unit": "x interposer/spreader edge",
+        "conversion_factor": 1,
+        "normalized_value": 2,
+        "pdf_page": 2,
+        "asset_id": null,
+        "locator": "Section 2.3, 'edge size of the heat spreader and heatsink are both 2x that of the interposer and spreader'",
+        "provenance": "Paper text",
+        "uncertainty": "Wording is ambiguous about which component each factor refers to"
+      },
+      {
+        "field": "geometry.min_chiplet_gap",
+        "block_name": null,
+        "source_value": 100,
+        "source_unit": "um",
+        "conversion_factor": 0.000001,
+        "normalized_value": 0.0001,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Table 2, w_gap = 100 um as in [6]",
+        "provenance": "Paper table of notations",
+        "uncertainty": null
+      },
+      {
+        "field": "solver.hotspot_grid",
+        "block_name": null,
+        "source_value": 64,
+        "source_unit": "grid cells per side (64x64)",
+        "conversion_factor": 1,
+        "normalized_value": 64,
+        "pdf_page": 3,
+        "asset_id": null,
+        "locator": "Section 2.3, 'HotSpot 6.0 as the golden simulator, resolution of thermal grids g is 64 x 64'",
+        "provenance": "Paper text",
+        "uncertainty": null
+      },
+      {
+        "field": "solver.compact_model_MAE_case3",
+        "block_name": null,
+        "source_value": 1.25,
+        "source_unit": "C",
+        "conversion_factor": 1,
+        "normalized_value": 1.25,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Table 5, Case 3 row, MAE/°C",
+        "provenance": "Paper table",
+        "uncertainty": null
+      },
+      {
+        "field": "solver.compact_model_params",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": "parameters (2N+3)",
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 4,
+        "asset_id": null,
+        "locator": "Section 3.2 after Eq. (12), 'we use 2N+3 parameters'",
+        "provenance": "Paper text; N is the chiplet count",
+        "uncertainty": "For N=8 this gives 19, but the paper does not state it for Case 3"
+      },
+      {
+        "field": "resources.linked_assets",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": 6,
+        "asset_id": null,
+        "locator": "Section 4.1/4.3: TAP-2.5D open-source code is mentioned without a URL; the ATPlace2.5D code and benchmark are not linked; packet assets list is empty",
+        "provenance": "All 9 pages read; packet artifact search found no links; no repository or supplementary data link is given in the paper text",
+        "uncertainty": "No paper-linked resources exist in the packet"
+      },
+      {
+        "field": "studio.package_material_assumptions",
+        "block_name": null,
+        "source_value": null,
+        "source_unit": null,
+        "conversion_factor": null,
+        "normalized_value": null,
+        "pdf_page": null,
+        "asset_id": null,
+        "locator": "No Studio package/material bundle is present in the packet",
+        "provenance": "Not provided in the packet, so none can be recorded",
+        "uncertainty": "Layer thicknesses and material properties are only inherited by reference from [6, 36] (PDF p.2-3), which are not in the packet"
+      }
+    ]
+  },
+  "adversarial": {
+    "approved": false,
+    "checklist": {
+      "methods": {
+        "status": "contradicted",
+        "note": "The paper's methods are text-verified: HotSpot 6.0 on a 64x64 grid, a 2N+3-parameter compact Green's-function model, MILP init, Polak-Ribiere CGD, and MILP legalization. But the extraction marks the scenario steady_2d_relevant=true and sets experiment.kind=custom_2d_steady. It also lists as essential mismatches the multilayer 2.5D stack (substrate, C4, TSV, interposer, microbump, epoxy), the heatsink path and the different solver. Those mismatches contradict the 2D claim. The paper's thermal model is a layered 3D-style stack, so this cannot be called a 2D reproduction."
+      },
+      "code": {
+        "status": "missing",
+        "note": "The packet has no assets and no repository link. The ATPlace2.5D code is not linked, and the TAP-2.5D open-source code is mentioned without a URL. The HotSpot configuration files are not available either. Nothing in the packet can verify the implementation."
+      },
+      "parameters": {
+        "status": "missing",
+        "note": "Scalar values are text-supported: 45 C ambient, 0.1 K/W, 100 um gap, 64x64 grid, 8 dies, 8448 nets, 39x39 mm interposer, and Tmax 92.3/94.1 C. Decisive parameters are missing: per-chiplet power in W for Case 3 (only a benchmark-wide 2e5-3e6 W/m^2 range is given), per-chiplet sizes (only a single CPU of 9x8 mm and a single DRAM of 9x9 mm are given from the Fig. 5 caption), chiplet counts by type, layer thicknesses, material properties, and TIM/spreader/heatsink dimensions. The lambda values, lr_pos/lr_ang, epsilon, and the Optuna-tuned hyperparameters are also not stated. The whitespace '0.6' is labeled '%' in the table header, but the 0.35-0.65 range indicates a fraction, so the unit is ambiguous."
+      },
+      "config": {
+        "status": "missing",
+        "note": "The experiment has an empty floorplan and an empty power_w. No block names, same-scenario coordinates or per-block watts exist, so no floorplan block has same-scenario power. The Case 3 final layout exists only graphically in Fig. 5, and no text evidence shows it was visually checked or digitized. Studio package and material assumptions are absent. The boundary conditions (adiabatic lateral surfaces, spreader and heatsink edges at 2x the interposer) cannot be mapped to a concrete configuration. The 2x factor wording is ambiguous."
+      },
+      "data": {
+        "status": "missing",
+        "note": "The Case 3 benchmark files, netlists and bump maps are not provided. The Table 6 values are text-verified: ATPlace2.5D 92.3 C, 142.42 m and 6 min, and TAP-2.5D 94.1 C, 185.20 m and 186 min. The packet does not say whether the 92.3 C comes from HotSpot or from the compact model (MAE about 1.25 C in Table 5), and the layer is unspecified. The per-chiplet watt values needed to reproduce the observable are unavailable. No figure or asset was visually verified, because only pdftotext output was supplied."
+      }
+    },
+    "findings": [
+      {
+        "field": "experiment.floorplan / experiment.power_w",
+        "reason": "Both are empty. No floorplan block has same-scenario coordinates, dimensions or watts, so the scenario cannot be reproduced and the 92.3 C target cannot be checked.",
+        "locator": "extraction.experiment; missing_inputs"
+      },
+      {
+        "field": "scenario.steady_2d_relevant",
+        "reason": "Marked true, yet the same extraction lists the multilayer 2.5D stack, the heatsink cooling model and the solver difference as essential mismatches with a 2D model. This is internally contradictory and risks calling a layered-stack result a 2D reproduction.",
+        "locator": "scenario.steady_2d_relevant vs physical_mismatches[0..2]; paper PDF p.2-3, Sec. 2.1 and 2.3"
+      },
+      {
+        "field": "solver.compact_model_MAE_case3 (pdf_page)",
+        "reason": "Cited as PDF page 6, but Table 5 (Case 3 MAE 1.25, MAPE 3.27) appears in the page 7 text; page 6 ends before Table 5.",
+        "locator": "evidence solver.compact_model_MAE_case3; PDF p.7 Table 5"
+      },
+      {
+        "field": "scenario.case3.whitespace",
+        "reason": "The value 0.6 is recorded with unit '%', but the 0.35-0.65 range in the text implies a fraction (60%). The unit is unresolved and no value is verified for use.",
+        "locator": "Table 3 PDF p.6; Sec. 4.1 PDF p.6"
+      },
+      {
+        "field": "chiplet.cpu / chiplet.dram dimensions",
+        "reason": "The 9x8 and 9x9 mm sizes come from a Fig. 5 caption for one CPU and one DRAM only. The chiplet counts and types in Case 3 are not given, and the width/height order is assumed. These sizes do not complete a Case 3 floorplan.",
+        "locator": "Fig. 5 caption PDF p.8"
+      },
+      {
+        "field": "scenario.architecture (chiplet types)",
+        "reason": "The claim that Case 3 consists of CPU, DRAM and related HPC modules is only partly supported. Sec. 4.1 says the first five cases are CPU/GPU/HBM/DRAM systems adapted from [6], and Fig. 5 shows CPUs and DRAMs. The exact Case 3 composition is not stated.",
+        "locator": "Sec. 4.1 PDF p.6; Fig. 5 PDF p.8"
+      },
+      {
+        "field": "thermal_observable.value 92.3",
+        "reason": "The simulator behind the Table 6 Tmax (HotSpot vs compact model), the layer, and the exact aggregation are not stated. The value is not tied to a reproducible scenario, and the compact-model error is about 1.25 C.",
+        "locator": "Table 6 PDF p.7; Sec. 4.2 PDF p.6-7"
+      },
+      {
+        "field": "code / benchmark assets",
+        "reason": "The assets list is empty and no URL is given. No code, configuration or benchmark data exists to support any reproduction claim. A bare mention of open-source TAP-2.5D code is not evidence.",
+        "locator": "packet.assets=[]; extraction.linked_assets=[]; Sec. 4.3 PDF p.7"
+      },
+      {
+        "field": "physical inputs (layers, materials, heat path)",
+        "reason": "Layer thicknesses and material and bump/TSV properties are inherited from [6, 36], which are not in the packet. They cannot be verified and the stack cannot be configured. The ambiguity in the 2x spreader/heatsink edge wording is also unresolved.",
+        "locator": "Sec. 2.3 PDF p.2-3"
+      },
+      {
+        "field": "figure verification",
+        "reason": "Only pdftotext extraction was supplied. Fig. 4, Fig. 5 and Fig. 6 were not visually verified or digitized, so no decisive figure-based quantity is confirmed.",
+        "locator": "packet.extraction_method; PDF p.7-8"
+      }
+    ],
+    "checked_pdf_pages": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "checked_assets": []
+  },
+  "feasibility": {
+    "paper_id": "W4409282844",
+    "decision": "illustrative_2d_only",
+    "input_gate_pass": false,
+    "scientific_gate_pass": false,
+    "independently_verified": false,
+    "input_errors": [
+      "A custom experiment needs 1–128 blocks and a power_w object"
+    ],
+    "blocking_facts": [
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-chiplet x_m, y_m (placement coordinates) for Case 3. The packet does not list them, and the final-layout figure (Fig. 5, PDF p.8) would only allow uncertain digitization.",
+      "Per-chiplet widths and heights for all 8 Case 3 chiplets. Only the Fig. 5 caption gives a single CPU as 9 x 8 mm and a single DRAM as 9 x 9 mm (PDF p.8), and the identity and count of each chiplet type in Case 3 are not stated.",
+      "Per-chiplet power in watts for Case 3. Only a benchmark-wide power-density range of 2e5 to 3e6 W/m^2 is given (PDF p.6). Total chip power is not stated and no splitting rule is published, so power cannot be derived.",
+      "Layer thicknesses, material properties, bump and TSV dimensions and TIM/spreader/heatsink dimensions. They are only inherited by reference from TAP-2.5D [6] and ATSim3D [36], which are not in the packet.",
+      "Linked assets: no repository, code, configuration, supplementary data or benchmark files are linked in the packet (artifact search found no links; assets list is empty), so no asset evidence exists. The TAP-2.5D open-source code is mentioned without a URL.",
+      "Bundled Studio package and material assumptions are not provided in the packet, so none are recorded.",
+      "A complete, same-scenario floorplan with block names, geometry and watts cannot be assembled, so the floorplan must be left empty.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ],
+    "physical_mismatches": [
+      {
+        "reason": "The paper models a 2.5D-IC with a passive interposer (RDL, TSVs, microbumps, C4 pillars, organic substrate) and heterogeneous epoxy-filled layers. A simple 2D steady-state Studio model cannot represent these layers, so the layer stack and bump/TSV effective conductivities are not reproduced.",
+        "essential": true
+      },
+      {
+        "reason": "The cooling model is an air-forced heatsink with a 0.1 K/W convective resistance. The spreader and heatsink edges are 2x the interposer, ambient is 45 C, lateral surfaces are adiabatic, and the secondary path through substrate and PCB is ignored. Studio cooling and boundary conditions may differ, which shifts absolute temperatures.",
+        "essential": true
+      },
+      {
+        "reason": "The solver differs. The published values come from HotSpot 6.0 (64x64 grid) and an analytical compact model with MAE of about 1.2 C, whereas Studio uses its own solver. The reported 92.3 C cannot be matched exactly.",
+        "essential": true
+      },
+      {
+        "reason": "The paper's objective is a placement optimizer with MILP initialization, CGD, legalization and Bayesian hyperparameter tuning, balancing wirelength and temperature. Studio can at most evaluate a given fixed floorplan and does not reproduce the optimizer or the wirelength results.",
+        "essential": false
+      },
+      {
+        "reason": "The paper is steady-state only, with no transient behaviour, runtime controller or reliability analysis, so there is no transient or controller mismatch beyond the absence of these features.",
+        "essential": false
+      }
+    ],
+    "studio_assumptions": [],
+    "evidence_sha256": "8e6d6f3b6869fbced09208d8716b7203d94b5c451d1bee11b51de1ebedc7dabc",
+    "simulation_allowed": false,
+    "comparison_valid": false,
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+  },
+  "simulation": {
+    "status": "skipped",
+    "reason": "A custom experiment needs 1–128 blocks and a power_w object",
+    "artifacts": {}
+  },
+  "assessment": {
+    "verdict": "illustrative_2d_only",
+    "comparison_valid": false,
+    "summary": "The selected scenario is Case 3 of ATPlace2.5D (8 chiplets, 8448 nets, 39 x 39 mm interposer, thermal-aware placement). The paper reports Tmax of 92.3 C for ATPlace2.5D and 94.1 C for TAP-2.5D, with HotSpot 6.0 on a 64x64 grid as the steady-state golden simulator. The 2D screening label is illustrative_2d_only, but the deterministic gate failed on input validity (no floorplan blocks and no power_w object), so simulation_allowed is false and the Studio run was skipped. The experiment kind was custom_2d_steady. Even if it had run, it would have produced a steady 2D result with no transient trace. No Studio temperature exists, so no numerical comparison with 92.3 C is made and comparison_valid is false. Nothing here is a replication, exact or approximate. The only defensible conclusion is qualitative. The paper is a steady-state, design-time placement study in which temperature depends on chiplet placement, spacing and power density. This could in principle be probed with a fixed floorplan in a 2D steady model, but the inputs needed for that are not available. The final verdict is therefore not a validated reproduction. It is a gated, skipped illustrative case, with several evidence items also failing the page/asset locator checks and adversarial and independent reviews unresolved.",
+    "limitations": [
+      "Studio did not run: the custom experiment has an empty floorplan and no power_w, so no simulated temperature exists and no comparison to the paper's 92.3 C or 94.1 C can be made.",
+      "Per-chiplet coordinates, sizes and watts for Case 3 are not available. Only a CPU of 9 x 8 mm and a DRAM of 9 x 9 mm are given as single-instance caption dimensions, and the benchmark-wide power density range is 2e5 to 3e6 W/m^2. Case 3 chiplet counts and types are unspecified, and no total power is stated.",
+      "Essential physical mismatches: the paper's multilayer 2.5D stack (passive interposer, RDL, TSVs, microbumps, C4, substrate, epoxy fill) cannot be represented in a simple 2D steady model. The paper's cooling (0.1 K/W air-forced heatsink, 45 C ambient, spreader/heatsink at 2x interposer edge, adiabatic lateral surfaces) may not match Studio boundary conditions, and the solver differs (HotSpot 6.0 64x64 plus a compact model with about 1.25 C MAE on Case 3).",
+      "The reported Tmax is a maximum over a temperature map with unstated layer and exact location. Even a matching Studio maximum would not be directly comparable unless layer, aggregation, regime and boundary assumptions were shown to match.",
+      "The optimizer (MILP, conjugate gradient descent, legalization, Bayesian tuning) and the wirelength and runtime results cannot be reproduced by Studio, which could at most evaluate a fixed floorplan.",
+      "Many evidence items lack valid page or pinned asset locators, no paper thermal observable or regime was accepted by the gate, adversarial checks (methods, code, parameters, config, data) are unresolved, and independent verification is pending. No linked code, data or Studio package assumptions exist.",
+      "The whitespace unit (percent vs fraction) is ambiguous, and the spreader/heatsink edge-ratio wording is ambiguous.",
+      "A custom experiment needs 1–128 blocks and a power_w object",
+      "Evidence 0 lacks a valid page or pinned asset locator",
+      "Evidence 1 lacks a valid page or pinned asset locator",
+      "Evidence 2 lacks a valid page or pinned asset locator",
+      "Evidence 3 lacks a valid page or pinned asset locator",
+      "Evidence 4 lacks a valid page or pinned asset locator",
+      "Evidence 5 lacks a valid page or pinned asset locator",
+      "Evidence 6 lacks a valid page or pinned asset locator",
+      "Evidence 7 lacks a valid page or pinned asset locator",
+      "Evidence 8 lacks a valid page or pinned asset locator",
+      "Evidence 9 lacks a valid page or pinned asset locator",
+      "Evidence 10 lacks a valid page or pinned asset locator",
+      "Evidence 11 lacks a valid page or pinned asset locator",
+      "Evidence 12 lacks a valid page or pinned asset locator",
+      "Evidence 13 lacks a valid page or pinned asset locator",
+      "Evidence 14 lacks a valid page or pinned asset locator",
+      "Evidence 15 lacks a valid page or pinned asset locator",
+      "Evidence 16 lacks a valid page or pinned asset locator",
+      "Evidence 17 lacks a valid page or pinned asset locator",
+      "Evidence 18 lacks a valid page or pinned asset locator",
+      "Evidence 19 lacks a valid page or pinned asset locator",
+      "Evidence 20 lacks a valid page or pinned asset locator",
+      "Evidence 21 lacks a valid page or pinned asset locator",
+      "Evidence 22 lacks a valid page or pinned asset locator",
+      "Evidence 23 lacks a valid page or pinned asset locator",
+      "Evidence 24 lacks a valid page or pinned asset locator",
+      "Evidence 25 lacks a valid page or pinned asset locator",
+      "Evidence 26 lacks a valid page or pinned asset locator",
+      "Evidence 27 lacks a valid page or pinned asset locator",
+      "No cited paper thermal observable",
+      "No cited steady/transient regime",
+      "Per-chiplet x_m, y_m (placement coordinates) for Case 3. The packet does not list them, and the final-layout figure (Fig. 5, PDF p.8) would only allow uncertain digitization.",
+      "Per-chiplet widths and heights for all 8 Case 3 chiplets. Only the Fig. 5 caption gives a single CPU as 9 x 8 mm and a single DRAM as 9 x 9 mm (PDF p.8), and the identity and count of each chiplet type in Case 3 are not stated.",
+      "Per-chiplet power in watts for Case 3. Only a benchmark-wide power-density range of 2e5 to 3e6 W/m^2 is given (PDF p.6). Total chip power is not stated and no splitting rule is published, so power cannot be derived.",
+      "Layer thicknesses, material properties, bump and TSV dimensions and TIM/spreader/heatsink dimensions. They are only inherited by reference from TAP-2.5D [6] and ATSim3D [36], which are not in the packet.",
+      "Linked assets: no repository, code, configuration, supplementary data or benchmark files are linked in the packet (artifact search found no links; assets list is empty), so no asset evidence exists. The TAP-2.5D open-source code is mentioned without a URL.",
+      "Bundled Studio package and material assumptions are not provided in the packet, so none are recorded.",
+      "A complete, same-scenario floorplan with block names, geometry and watts cannot be assembled, so the floorplan must be left empty.",
+      "Adversarial methods check is unresolved",
+      "Adversarial code check is unresolved",
+      "Adversarial parameters check is unresolved",
+      "Adversarial config check is unresolved",
+      "Adversarial data check is unresolved",
+      "Adversarial reviewer did not approve all extracted claims",
+      "Independent page/asset review is pending or does not match this evidence"
+    ]
+  }
+}

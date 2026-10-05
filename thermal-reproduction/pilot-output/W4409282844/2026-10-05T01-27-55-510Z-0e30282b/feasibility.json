@@ -1,0 +1,84 @@
+{
+  "paper_id": "W4409282844",
+  "decision": "illustrative_2d_only",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "Evidence 26 lacks a valid page or pinned asset locator",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "Per-chiplet x_m, y_m (placement coordinates) for Case 3. The packet does not list them, and the final-layout figure (Fig. 5, PDF p.8) would only allow uncertain digitization.",
+    "Per-chiplet widths and heights for all 8 Case 3 chiplets. Only the Fig. 5 caption gives a single CPU as 9 x 8 mm and a single DRAM as 9 x 9 mm (PDF p.8), and the identity and count of each chiplet type in Case 3 are not stated.",
+    "Per-chiplet power in watts for Case 3. Only a benchmark-wide power-density range of 2e5 to 3e6 W/m^2 is given (PDF p.6). Total chip power is not stated and no splitting rule is published, so power cannot be derived.",
+    "Layer thicknesses, material properties, bump and TSV dimensions and TIM/spreader/heatsink dimensions. They are only inherited by reference from TAP-2.5D [6] and ATSim3D [36], which are not in the packet.",
+    "Linked assets: no repository, code, configuration, supplementary data or benchmark files are linked in the packet (artifact search found no links; assets list is empty), so no asset evidence exists. The TAP-2.5D open-source code is mentioned without a URL.",
+    "Bundled Studio package and material assumptions are not provided in the packet, so none are recorded.",
+    "A complete, same-scenario floorplan with block names, geometry and watts cannot be assembled, so the floorplan must be left empty.",
+    "Adversarial methods check is unresolved",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The paper models a 2.5D-IC with a passive interposer (RDL, TSVs, microbumps, C4 pillars, organic substrate) and heterogeneous epoxy-filled layers. A simple 2D steady-state Studio model cannot represent these layers, so the layer stack and bump/TSV effective conductivities are not reproduced.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling model is an air-forced heatsink with a 0.1 K/W convective resistance. The spreader and heatsink edges are 2x the interposer, ambient is 45 C, lateral surfaces are adiabatic, and the secondary path through substrate and PCB is ignored. Studio cooling and boundary conditions may differ, which shifts absolute temperatures.",
+      "essential": true
+    },
+    {
+      "reason": "The solver differs. The published values come from HotSpot 6.0 (64x64 grid) and an analytical compact model with MAE of about 1.2 C, whereas Studio uses its own solver. The reported 92.3 C cannot be matched exactly.",
+      "essential": true
+    },
+    {
+      "reason": "The paper's objective is a placement optimizer with MILP initialization, CGD, legalization and Bayesian hyperparameter tuning, balancing wirelength and temperature. Studio can at most evaluate a given fixed floorplan and does not reproduce the optimizer or the wirelength results.",
+      "essential": false
+    },
+    {
+      "reason": "The paper is steady-state only, with no transient behaviour, runtime controller or reliability analysis, so there is no transient or controller mismatch beyond the absence of these features.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "8e6d6f3b6869fbced09208d8716b7203d94b5c451d1bee11b51de1ebedc7dabc",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

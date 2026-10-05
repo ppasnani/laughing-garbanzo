@@ -1,0 +1,94 @@
+{
+  "paper_id": "W3001987830",
+  "decision": "not_2d_applicable",
+  "input_gate_pass": false,
+  "scientific_gate_pass": false,
+  "independently_verified": false,
+  "input_errors": [
+    "A custom experiment needs 1–128 blocks and a power_w object"
+  ],
+  "blocking_facts": [
+    "A custom experiment needs 1–128 blocks and a power_w object",
+    "Evidence 0 lacks a valid page or pinned asset locator",
+    "Evidence 1 lacks a valid page or pinned asset locator",
+    "Evidence 2 lacks a valid page or pinned asset locator",
+    "Evidence 3 lacks a valid page or pinned asset locator",
+    "Evidence 4 lacks a valid page or pinned asset locator",
+    "Evidence 5 lacks a valid page or pinned asset locator",
+    "Evidence 6 lacks a valid page or pinned asset locator",
+    "Evidence 7 lacks a valid page or pinned asset locator",
+    "Evidence 8 lacks a valid page or pinned asset locator",
+    "Evidence 9 lacks a valid page or pinned asset locator",
+    "Evidence 10 lacks a valid page or pinned asset locator",
+    "Evidence 11 lacks a valid page or pinned asset locator",
+    "Evidence 12 lacks a valid page or pinned asset locator",
+    "Evidence 13 lacks a valid page or pinned asset locator",
+    "Evidence 14 lacks a valid page or pinned asset locator",
+    "Evidence 15 lacks a valid page or pinned asset locator",
+    "Evidence 16 lacks a valid page or pinned asset locator",
+    "Evidence 17 lacks a valid page or pinned asset locator",
+    "Evidence 18 lacks a valid page or pinned asset locator",
+    "Evidence 19 lacks a valid page or pinned asset locator",
+    "Evidence 20 lacks a valid page or pinned asset locator",
+    "Evidence 21 lacks a valid page or pinned asset locator",
+    "Evidence 22 lacks a valid page or pinned asset locator",
+    "Evidence 23 lacks a valid page or pinned asset locator",
+    "Evidence 24 lacks a valid page or pinned asset locator",
+    "Evidence 25 lacks a valid page or pinned asset locator",
+    "Evidence 26 lacks a valid page or pinned asset locator",
+    "Evidence 27 lacks a valid page or pinned asset locator",
+    "Evidence 28 lacks a valid page or pinned asset locator",
+    "Evidence 29 lacks a valid page or pinned asset locator",
+    "Evidence 30 lacks a valid page or pinned asset locator",
+    "No cited paper thermal observable",
+    "No cited steady/transient regime",
+    "No linked asset (FloTHERM model, geometry, config or data file) is included in the packet; the assets list is empty and only commercial product pages, a datasheet and standards are cited.",
+    "No per-block x_m and y_m placement coordinates are published for the powered or unpowered die, copper, ceramic and base plate, so no complete floorplan can be built. Table A2 gives only size and thickness, and the Figure A1/A2 sketches are not dimensioned for positions.",
+    "Per-block power_rows are not published. The only power is a single uniform source on the powered die, stated as 100 W in the text and 50 W in the Figure 4 caption.",
+    "The Studio package and material assumptions are not stated anywhere in the packet.",
+    "FloTHERM mesh, solver settings, ambient temperature, cold-plate internal model and the second (unpowered) die position are not provided.",
+    "Exact figure-digitized values (Figures 5-10) with provenance and uncertainty are not recorded here. The Zth and structure-function values come from text and annotations only.",
+    "Linked asset flotherm_tool is not pinned and available",
+    "Linked asset t3ster_tool is not pinned and available",
+    "Linked asset power_tester_1500a is not pinned and available",
+    "Linked asset rjc_test_fixture is not pinned and available",
+    "Linked asset huf75639_datasheet is not pinned and available",
+    "Linked asset delphi4led_round_robin_report is not pinned and available",
+    "Linked asset jedec_jesd51_14 is not pinned and available",
+    "Linked asset jedec_jesd51 is not pinned and available",
+    "Linked asset ecpe_aqg324 is not pinned and available",
+    "Adversarial code check is unresolved",
+    "Adversarial parameters check is unresolved",
+    "Adversarial config check is unresolved",
+    "Adversarial data check is unresolved",
+    "Adversarial reviewer did not approve all extracted claims",
+    "Independent page/asset review is pending or does not match this evidence"
+  ],
+  "physical_mismatches": [
+    {
+      "reason": "The scenario is a layered 3D stack (die, die attach, Cu/AlN/Cu laminate, solder, Al base plate, TIM, cold plate) with vertical heat spreading. Table A2 gives only stack thickness and lateral size, with no 2D in-plane block placement, so a steady 2D chip floorplan cannot represent it.",
+      "essential": true
+    },
+    {
+      "reason": "The observable is transient and structure-function based (Zth curves, Cauer/Foster networks, TDIM divergence threshold epsilon). A steady-state 2D floorplan solver does not produce these metrics.",
+      "essential": true
+    },
+    {
+      "reason": "The cooling boundary is a cold plate with a constant HTC of 3000 W/m2K and a 50 um TIM layer of varied conductivity. The simulation also uses virtual probe points Ch1-Ch4 at TIM interfaces that have no counterpart in a chip-package model.",
+      "essential": true
+    },
+    {
+      "reason": "The power is internally inconsistent in the paper: the text states a 100 W step uniformly on the die, while the Figure 4 caption states 50 W. Power in a same-scenario power row therefore cannot be assigned without ambiguity.",
+      "essential": true
+    },
+    {
+      "reason": "The paper contains no optimizer, controller or reliability component to compare against. The comparison is between measurement methodologies (two-point probe versus TDIM), not an optimization or control study.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [],
+  "evidence_sha256": "a83047b083aa25d22469d7a51f60a07a0adc26e8fde79c02a0f58f7f1baeef43",
+  "simulation_allowed": false,
+  "comparison_valid": false,
+  "reason": "A custom experiment needs 1–128 blocks and a power_w object"
+}

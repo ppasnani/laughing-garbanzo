@@ -1,0 +1,79 @@
+{
+  "approved": false,
+  "checklist": {
+    "methods": {
+      "status": "verified",
+      "note": "Sec. 4 (pp. 12-13) confirms the coupled gem5 (Ruby) + McPAT 32nm + per-component leakage recomputation + HotSpot 6.0/HotFloorPlan flow at a 0.33 us interval. Algorithms 1 and 2 (pp. 6, 11) match the controller description. The packet is text-only, so the figures were not visually verified. The extraction's classification of the setup as dynamic/transient is supported by the text. Inferred statements, such as the aggregation of the Table 3 values as a maximum over applications, rest on p. 15 prose, not on the table itself."
+    },
+    "code": {
+      "status": "missing",
+      "note": "No code, repository, availability statement or supplementary link was found in the supplied text, and the assets list is empty. The extraction's 'checked_no_links' rests on a pdftotext scan only, which cannot rule out links lost in layout or figures. No code can be verified."
+    },
+    "parameters": {
+      "status": "missing",
+      "note": "Table 1 (p. 13), 1.12V/3.0GHz and 0.76V/1.2GHz, 70 ns DRAM latency, 0.33 us and 2M-cycle intervals, POWER_UP 0.04, POWER_DOWN 0.025 and the regulator powers 0.106/0.168 W (p. 14) all match the text. However, the WayLimit value, which is decisive for the maximum LLC shrinkage and therefore for the gains, is never given and the extraction does not list it as missing. The 8MB LLC conflicts with Table 1 and the Fig. 2-5 captions (1MB 16-way per bank x 16 tiles = 16MB); the paper does not resolve this, and the 16MB sensitivity result in Fig. 23b (10.5-12 C) differs from the 8.4 C headline."
+    },
+    "config": {
+      "status": "missing",
+      "note": "HotSpot package, die/thickness, TIM, spreader, heat sink and convection parameters, and material properties are not published, and the HotFloorPlan area inputs are not given. Only a 47 C ambient (p. 13, Table 1) is given. Any reproduction would have to assume the cooling stack. The extraction's 'experiment' field is kind custom_2d_steady with an empty floorplan and power. This contradicts its own steady_2d_relevant=false and its essential mismatches, so no valid scenario configuration exists."
+    },
+    "data": {
+      "status": "missing",
+      "note": "Table 3 (p. 22) reductions of 8.4/6.2 C and 2.5% IPS degradation, plus the GDP1/GDP2 values, are correctly transcribed from the page text. No per-block floorplan coordinates or per-block power exist for the baseline or WaFFLe 8MB scenario, so no same-scenario power can exist for any floorplan block. Fig. 16, 17, 20 and 29, the figures behind the observable, were not available as images, so no decisive figure was visually verified. Fig. 16/20 show labels and temperatures that appear to be in Kelvin (e.g. 373.83 vs 366.59), which the extraction does not note."
+    }
+  },
+  "findings": [
+    {
+      "field": "experiment",
+      "reason": "The experiment is declared custom_2d_steady with empty floorplan and power_w, yet the same extraction sets steady_2d_relevant=false and lists essential mismatches (transient DVFS/way-gating, no published power). The 8.4 C figure cannot be called a 2D steady reproduction target.",
+      "locator": "extraction.experiment vs extraction.scenario.steady_2d_relevant and physical_mismatches (essential entries); p. 13, Sec. 4"
+    },
+    {
+      "field": "floorplan / per-block power",
+      "reason": "No block geometry or per-block power is published, so same-scenario power for every floorplan block is absent. Fig. 16/20 floorplans are labelled diagrams without coordinates or scale, and this absence was inferred from garbled text without visual verification of the figures.",
+      "locator": "pp. 12, 16 (Fig. 13, 16, 20); p. 10 (stall energies only)"
+    },
+    {
+      "field": "thermal_observable.aggregation",
+      "reason": "Table 3 does not state that its values are maxima over the nine applications. The extraction relies on p. 15 prose (6.5-8.4 C peak, 5.0-6.2 C avg range). The table value is therefore only partly supported, and the 'HotSpot block-level, all components' location is inferred, not stated.",
+      "locator": "p. 22 Table 3; p. 15 Sec. 5.1 last paragraphs"
+    },
+    {
+      "field": "LLC size",
+      "reason": "The 8MB LLC in Table 3 and Sec. 5.1 contradicts Table 1 and the Fig. 2-5 captions (1MB per bank, 16 banks = 16MB). The scenario architecture field lists both without a resolution, so the scenario match between the observable and the stated configuration is unverified.",
+      "locator": "p. 13 Table 1; pp. 6-7 Fig. 2-5 captions; p. 22 Table 3"
+    },
+    {
+      "field": "WayLimit",
+      "reason": "The maximum number of gated ways is a decisive input to Algorithm 1 and is never specified, yet the extraction names it only as 'a WayLimit cap' and does not list it in missing_inputs.",
+      "locator": "p. 5 Sec. 3.1.1; p. 6 Algorithm 1 input; extraction.missing_inputs"
+    },
+    {
+      "field": "figure/scenario consistency",
+      "reason": "The text on p. 16 says Fig. 20 shows spatial variation for Body, while the caption says Black. The extraction uses Fig. 16/20 as scenario references without flagging this contradiction.",
+      "locator": "p. 16 Sec. 5.1 'Figure 20 shows spatial thermal variation for Body' vs Fig. 20 caption '(for Black)'"
+    },
+    {
+      "field": "linked_assets_repository_supplementary",
+      "reason": "No code, config or data link was found, and no asset was supplied. An absence-of-link claim from text extraction alone is not sufficient to verify the code and data checks.",
+      "locator": "packet.assets=[]; extraction.artifact_search_status"
+    }
+  ],
+  "checked_pdf_pages": [
+    4,
+    5,
+    6,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20,
+    22
+  ],
+  "checked_assets": []
+}

@@ -1,0 +1,399 @@
+{
+  "paper_id": "W7167828524",
+  "paper_title": "ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators",
+  "artifact_search_status": "checked_no_links",
+  "linked_assets": [],
+  "scenario": {
+    "pdf_page": 10,
+    "figure_or_table": "Table IV, row 'Ours' (ThermoDSE optimum under 300 mm2 interposer area and 75 C peak-temperature constraints); related Fig. 10(b) thermal map on PDF page 12",
+    "description": "ThermoDSE-optimized design: 5x4 NPU cores partitioned into 1x2 chiplets, 2.3 mm inter-chiplet spacing, 240 GB/s NoC bandwidth, 1024 KB uniform buffer, 208x112 systolic array per core. Reported peak temperature 74.8 C, energy 59.8 mJ, delay 2.01 ms, yield 0.911, EDYP cost 132.2. Thermal evaluation uses HotSpot 6.0 steady-state with component-wise average power, floorplan and material properties. The packet gives no block coordinates or sizes and no per-block power in W, so no floorplan or power rows can be extracted. The paper links no code, configs or data. The packet has no assets, and the paper's URLs are only reference citations.",
+    "architecture": "Chiplet-based DNN accelerator with 2.5D integration (Arch-S: fine-grained task orchestration across chiplets with NoC/NoP), 5x4 NPU cores in 1x2 chiplets plus an I/O die on a passive interposer, 14nm assumed (scaled from 28nm with DeepScaleTool). Cooling stack: TIM, heat spreader, heat sink.",
+    "workload": "AR/VR multi-DNN mix (ResNet-50, GoogLeNet, MobileNetv2, Yolov2, U-Net, BERT-Small), batch sizes per Table III, executed sequentially",
+    "operating_point": "1.8 GHz, HotSpot 6.0 default ambient 45 C, convection resistance 0.4 K/W, 300 mm2 interposer area limit, 75 C peak-temperature limit; reported peak temperature 74.8 C",
+    "steady_2d_relevant": true
+  },
+  "original_setup": {
+    "solver": "HotSpot 6.0 steady-state thermal simulation using component-wise average power, chiplet floorplan and material properties. TIM, heat spreader and heat sink properties are adopted from TESA [12]. Ambient is 45 C (HotSpot default) with 0.4 K/W convection resistance. NoP power is assumed spatially distributed across the interposer. The performance, energy, area and yield models are analytical in a custom simulator.",
+    "optimizer": "ThermoDSE: TED (transductive experimental design) initialization followed by SCBO (scalable constrained Bayesian optimization) with GP surrogates and trust regions, implemented in BoTorch. The trust-region threshold th is fixed at 16 for the SA/RL comparison. Objective is EDYP = E x D x Y^-1 under a 75 C peak-temperature limit and a 300 mm2 interposer-area limit. Baselines are SA (TESA) and PPO RL (Chiplet-Gym).",
+    "controller": "No runtime thermal controller. DVFS is discussed on PDF page 3 and judged unsuitable. Thermal management is design-time only: greedy thermal-aware task mapping that places the highest-power tasks on corner cores and lower-power tasks on center cores, plus fine-grained DAG/DP-based task orchestration. Operating frequency is fixed at 1.8 GHz.",
+    "benchmark": "AR/VR multi-DNN mix executed sequentially: ResNet-50 (batch 2), GoogLeNet (2), MobileNetv2 (4), Yolov2 (4), U-Net (2) and BERT-Small (1), 224x224x3 inputs except BERT (Table III, PDF page 9). Selected scenario is the Table IV 'Ours' row on PDF page 10: 5x4 NPU cores in 1x2 chiplets, 2.3 mm ICS, 240 GB/s NoC bandwidth, 1024 KB uniform buffer, 208x112 systolic array, 300 mm2 and 75 C constraints. Reported results: 74.8 C, 59.8 mJ, 2.01 ms, yield 0.911, EDYP 132.2. Baselines are B1 Simba-like, B2 TESA, B3 TESA*, B4 Chiplet-Gym. No code, configs or assets are linked."
+  },
+  "thermal_observable": {
+    "value": 74.8,
+    "unit": "°C",
+    "location": "Peak temperature of the ThermoDSE-optimized design (5x4 NPU cores in 1x2 chiplets, 2.3 mm ICS) on the interposer/die stack. Fig. 10(b) shows the thermal map, but no specific hotspot block or coordinates are reported.",
+    "aggregation": "Maximum (peak) steady-state temperature across the floorplan from HotSpot 6.0, using component-wise average power over the AR/VR multi-DNN workload (Table IV 'Temp.' column).",
+    "pdf_page": 10
+  },
+  "physical_mismatches": [
+    {
+      "reason": "The paper states that 3D stacking is future work. The model is 2.5D with compute dies and an I/O die on a passive interposer, so it cannot represent 3D heterogeneous integration or TSV/bonding thermal paths.",
+      "essential": true
+    },
+    {
+      "reason": "Interposer and package detail is incomplete. NoP power is assumed uniformly distributed over the interposer, and no interposer thickness, material or micro-bump/BEOL thermal parameters are given. Cooling parameters are taken from TESA [12] by reference only (convection resistance 0.4 K/W).",
+      "essential": true
+    },
+    {
+      "reason": "The workload is thermally static. HotSpot uses time-averaged component power from an analytical model (energy/delay), and the networks run sequentially. There is no transient thermal simulation and no workload-phase temperature trace, so the reported peak temperature is a steady-state estimate of average power.",
+      "essential": true
+    },
+    {
+      "reason": "The thermal-aware greedy mapping policy (high-power tasks on corner cores) and the TED+SCBO optimizer are not reproducible in a steady-state 2D Studio solve. Only a single fixed design with given power can be evaluated, not the DSE loop or mapping.",
+      "essential": false
+    },
+    {
+      "reason": "Per-block power values in W and block coordinates and sizes are not published for the selected design. Only totals are given: energy 59.8 mJ over 2.01 ms delay, and areas only as percentages in Fig. 10(a). Block-level power and geometry therefore cannot be reproduced from the packet.",
+      "essential": true
+    },
+    {
+      "reason": "No reliability or electromigration analysis is included; thermal constraints are limited to the peak-temperature bound.",
+      "essential": false
+    }
+  ],
+  "studio_assumptions": [
+    "Steady-state 2D conduction in the bundled Studio solver is used as an approximation of HotSpot 6.0 steady-state, with TIM, heat spreader and heat sink as lumped or layered package materials. Material properties are Studio defaults, since the paper only points to TESA [12] for values.",
+    "Ambient 45 C and convection resistance 0.4 K/W would be applied as the paper's stated boundary conditions only if a complete floorplan and power set were available.",
+    "No floorplan or power rows are provided in this extraction because block geometry and per-block watts are missing. Total chip power is not split among blocks without a published rule, and dimensions or powers from other scenarios (e.g., B1-B4, the 200 mm2 case) are not mixed in."
+  ],
+  "missing_inputs": [
+    "Block-level floorplan (x_m, y_m, width_m, height_m) for the 5x4 core / 1x2 chiplet design: core, chiplet and I/O die positions and sizes. Only ICS 2.3 mm, interposer area constraint 300 mm2 and area percentages from Fig. 10(a) (about 49% compute, 17.6% cooling area) are published, with no absolute coordinates.",
+    "Per-block power rows in watts for the selected scenario. Only total energy of 59.8 mJ and delay of 2.01 ms are reported; average power could be derived but no published rule allocates it per block.",
+    "Thermal material parameters (conductivity, thickness) for TIM, heat spreader, heat sink, interposer and silicon. These are only referenced to TESA [12] and HotSpot 6.0 defaults.",
+    "Source code, configuration files, HotSpot input files (.flp, .ptrace, config), and datasets. The packet contains no linked assets and the paper has no availability statement, so artifact_search_status is checked_no_links.",
+    "Exact location and value of the hotspot in Fig. 10(b). Only the reported peak temperature of 74.8 C is available, with no digitized figure data.",
+    "Inconsistency to note: the Table IV NoC bandwidth for the selected design is 240 GB/s, while the Fig. 8 text mentions a 256 GB/s variant. The scenario uses the Table IV value."
+  ],
+  "experiment": {
+    "kind": "custom_2d_steady",
+    "floorplan": [],
+    "power_w": {}
+  },
+  "evidence": [
+    {
+      "field": "peak_temperature",
+      "block_name": null,
+      "source_value": 74.8,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 74.8,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', column Temp.(°C)",
+      "provenance": "Paper-reported HotSpot 6.0 steady-state peak temperature for the ThermoDSE-optimized design under the 300 mm2 and 75 °C constraints.",
+      "uncertainty": "Reported as a single value. Hotspot block and location are not stated, and the Fig. 10(b) thermal map is not digitized."
+    },
+    {
+      "field": "total_energy",
+      "block_name": null,
+      "source_value": 59.8,
+      "source_unit": "mJ",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0598,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', column Energy(mJ)",
+      "provenance": "Paper-reported total energy for the AR/VR multi-DNN workload.",
+      "uncertainty": "This is a total over the workload. No published rule splits it into per-block power."
+    },
+    {
+      "field": "total_delay",
+      "block_name": null,
+      "source_value": 2.01,
+      "source_unit": "ms",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.00201,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', column Delay(ms)",
+      "provenance": "Paper-reported total delay, a sum over the sequentially executed networks.",
+      "uncertainty": "Total only. No per-phase or per-block timing."
+    },
+    {
+      "field": "yield",
+      "block_name": null,
+      "source_value": 0.911,
+      "source_unit": "dimensionless",
+      "conversion_factor": 1,
+      "normalized_value": 0.911,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', column Yield",
+      "provenance": "Paper-reported die yield from the negative binomial model.",
+      "uncertainty": null
+    },
+    {
+      "field": "EDYP_cost",
+      "block_name": null,
+      "source_value": 132.2,
+      "source_unit": "mJ·ms",
+      "conversion_factor": 1,
+      "normalized_value": 132.2,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', column EDYP cost",
+      "provenance": "Paper-reported objective E×D×Y^-1. Units are not stated explicitly and are inferred from the mJ and ms columns.",
+      "uncertainty": "The EDYP unit is inferred."
+    },
+    {
+      "field": "inter_chiplet_spacing",
+      "block_name": null,
+      "source_value": 2.3,
+      "source_unit": "mm",
+      "conversion_factor": 0.001,
+      "normalized_value": 0.0023,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', description: 2.3mm ICS",
+      "provenance": "Paper-reported inter-chiplet spacing for the selected design.",
+      "uncertainty": "Gap value only. Absolute chiplet coordinates are not given."
+    },
+    {
+      "field": "noc_bandwidth",
+      "block_name": null,
+      "source_value": 240,
+      "source_unit": "GB/s",
+      "conversion_factor": 1,
+      "normalized_value": 240,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', description: 240GB/s NoC bandwidth",
+      "provenance": "Paper-reported bandwidth for the selected design.",
+      "uncertainty": "Text on PDF page 11 describes a scanned neighbor design at 256 GB/s. The Table IV value is used."
+    },
+    {
+      "field": "uniform_buffer_size",
+      "block_name": null,
+      "source_value": 1024,
+      "source_unit": "KB",
+      "conversion_factor": 1024,
+      "normalized_value": 1048576,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', description: 1024KB uniform buffer",
+      "provenance": "Paper-reported per-core uniform buffer. Normalized to bytes.",
+      "uncertainty": "KB is assumed to be 1024 bytes."
+    },
+    {
+      "field": "systolic_array_height",
+      "block_name": null,
+      "source_value": 208,
+      "source_unit": "PEs",
+      "conversion_factor": 1,
+      "normalized_value": 208,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', 208 × 112 systolic array",
+      "provenance": "Paper-reported systolic array height per core, taken as the first listed dimension.",
+      "uncertainty": "The h_sa/w_sa ordering follows the Table II convention of height × width."
+    },
+    {
+      "field": "systolic_array_width",
+      "block_name": null,
+      "source_value": 112,
+      "source_unit": "PEs",
+      "conversion_factor": 1,
+      "normalized_value": 112,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', 208 × 112 systolic array",
+      "provenance": "Paper-reported systolic array width per core.",
+      "uncertainty": null
+    },
+    {
+      "field": "npu_core_count_x",
+      "block_name": null,
+      "source_value": 5,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 5,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', 5 × 4 NPU cores",
+      "provenance": "Paper-reported core array dimension.",
+      "uncertainty": "The axis assignment of 5 and 4 to X and Y is assumed from the table ordering."
+    },
+    {
+      "field": "npu_core_count_y",
+      "block_name": null,
+      "source_value": 4,
+      "source_unit": "cores",
+      "conversion_factor": 1,
+      "normalized_value": 4,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', 5 × 4 NPU cores",
+      "provenance": "Paper-reported core array dimension.",
+      "uncertainty": "Axis assignment assumed."
+    },
+    {
+      "field": "chiplet_partition_x",
+      "block_name": null,
+      "source_value": 1,
+      "source_unit": "chiplets",
+      "conversion_factor": 1,
+      "normalized_value": 1,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', 1 × 2 chiplets",
+      "provenance": "Paper-reported chiplet partition.",
+      "uncertainty": "Axis assignment assumed. The 1×2 partition matches the two dies in Fig. 10(b)."
+    },
+    {
+      "field": "chiplet_partition_y",
+      "block_name": null,
+      "source_value": 2,
+      "source_unit": "chiplets",
+      "conversion_factor": 1,
+      "normalized_value": 2,
+      "pdf_page": 10,
+      "asset_id": null,
+      "locator": "Table IV, row 'Ours', 1 × 2 chiplets",
+      "provenance": "Paper-reported chiplet partition.",
+      "uncertainty": "Axis assignment assumed."
+    },
+    {
+      "field": "interposer_area_limit",
+      "block_name": null,
+      "source_value": 300,
+      "source_unit": "mm2",
+      "conversion_factor": 0.000001,
+      "normalized_value": 0.0003,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V.A Experiment Setup, final paragraph: 'interposer area is constrained to 300 mm2'",
+      "provenance": "Paper-stated design constraint.",
+      "uncertainty": null
+    },
+    {
+      "field": "peak_temperature_limit",
+      "block_name": null,
+      "source_value": 75,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 75,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V.A Experiment Setup, final paragraph: 'maximum peak temperature is limited to 75 °C'",
+      "provenance": "Paper-stated design constraint.",
+      "uncertainty": null
+    },
+    {
+      "field": "ambient_temperature",
+      "block_name": null,
+      "source_value": 45,
+      "source_unit": "°C",
+      "conversion_factor": 1,
+      "normalized_value": 45,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V.A, 'default HotSpot 6.0 ambient temperature of 45 °C'",
+      "provenance": "Paper-stated thermal boundary condition.",
+      "uncertainty": null
+    },
+    {
+      "field": "convection_resistance",
+      "block_name": null,
+      "source_value": 0.4,
+      "source_unit": "K/W",
+      "conversion_factor": 1,
+      "normalized_value": 0.4,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V.A, 'convection resistance of 0.4 K/W'",
+      "provenance": "Paper-stated cooling boundary condition from HotSpot 6.0, citing [43].",
+      "uncertainty": "Heat sink and spreader geometry are not given."
+    },
+    {
+      "field": "operating_frequency",
+      "block_name": null,
+      "source_value": 1.8,
+      "source_unit": "GHz",
+      "conversion_factor": 1000000000,
+      "normalized_value": 1800000000,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V.A, 'operating frequency of 1.8GHz'",
+      "provenance": "Paper-stated worst-case operating frequency, the peak frequency used in Simba.",
+      "uncertainty": null
+    },
+    {
+      "field": "technology_node",
+      "block_name": null,
+      "source_value": 14,
+      "source_unit": "nm",
+      "conversion_factor": 1e-9,
+      "normalized_value": 1.4e-8,
+      "pdf_page": 9,
+      "asset_id": null,
+      "locator": "Section V.A, 'we assume a 14nm process node and scale the results from the 28nm process ... using DeepScaleTool'",
+      "provenance": "Paper-stated assumed node, scaled from 28 nm synthesis.",
+      "uncertainty": null
+    },
+    {
+      "field": "compute_area_fraction",
+      "block_name": null,
+      "source_value": 49,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.49,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section V.F, 'approximately 49% of the total area to computation units' (Fig. 10(a))",
+      "provenance": "Paper text describing the area breakdown of the optimal design.",
+      "uncertainty": "Approximate. This is a fraction of total area only and gives no block dimensions."
+    },
+    {
+      "field": "cooling_area_fraction",
+      "block_name": null,
+      "source_value": 17.6,
+      "source_unit": "percent",
+      "conversion_factor": 0.01,
+      "normalized_value": 0.176,
+      "pdf_page": 12,
+      "asset_id": null,
+      "locator": "Section V.F, '17.6% of the chip area is reserved for cooling structures'",
+      "provenance": "Paper text describing the area breakdown of the optimal design.",
+      "uncertainty": "The meaning of 'cooling structures' (spacing vs. other structures) is not defined."
+    },
+    {
+      "field": "block_floorplan_geometry",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "Searched all 14 PDF pages. No table or text gives x_m, y_m, width_m or height_m for cores, chiplets or the I/O die. Fig. 10(b) is a thermal map with no stated coordinates.",
+      "provenance": "Absent from the packet. The packet lists no linked assets.",
+      "uncertainty": "Not recoverable without digitizing a figure, which cannot give reliable block dimensions. No floorplan was constructed."
+    },
+    {
+      "field": "block_power_rows",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "Searched all 14 PDF pages. No per-block power in W is given for the selected design. Only total energy and delay are reported, in Table IV on PDF page 10.",
+      "provenance": "Absent from the packet. Eq. 19 defines average power as energy divided by delay per module, but module values are not published.",
+      "uncertainty": "No published rule splits total power among blocks, so no power rows were created."
+    },
+    {
+      "field": "paper_linked_resources",
+      "block_name": null,
+      "source_value": null,
+      "source_unit": null,
+      "conversion_factor": null,
+      "normalized_value": null,
+      "pdf_page": null,
+      "asset_id": null,
+      "locator": "Searched all 14 PDF pages for availability statements, repositories, code, config, supplementary data. None found. URLs appear only as reference citations (Cerebras [1], UCIe specs [36]) on PDF pages 13 and 14.",
+      "provenance": "Packet assets list is empty and artifact search status is checked_no_links.",
+      "uncertainty": "Repository and input availability cannot be confirmed from the packet."
+    }
+  ]
+}
